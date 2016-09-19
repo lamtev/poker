@@ -1,0 +1,23 @@
+allprojects {
+    group 'com.lamtev'
+    version '1.0'
+    apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+    }
+
+    apply plugin: 'findbugs'
+    tasks.withType(FindBugs) {
+        reports {
+            xml.enabled true
+        }
+    }
+    findbugs {
+        effort = "max"
+        reportLevel = "high"
+        ignoreFailures = true
+    }
+}
+
+
