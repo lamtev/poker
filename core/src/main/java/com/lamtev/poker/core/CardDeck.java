@@ -1,12 +1,11 @@
-package com.lamtev.poker.core.cards;
+package com.lamtev.poker.core;
 
-public class TexasHoldemCardDeck implements CardDeck {
+public class CardDeck {
 
-    private final int size = 52;
     private Card[] cardDeck;
 
-    public TexasHoldemCardDeck() {
-        cardDeck = new Card[size];
+    public CardDeck() {
+        cardDeck = new Card[52];
         initCards();
     }
 

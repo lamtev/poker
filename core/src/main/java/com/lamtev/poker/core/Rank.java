@@ -1,4 +1,4 @@
-package com.lamtev.poker.core.cards;
+package com.lamtev.poker.core;
 
 public enum Rank {
 

@@ -1,6 +1,4 @@
-package com.lamtev.poker.core.cards;
-
-import java.util.Objects;
+package com.lamtev.poker.core;
 
 public final class Card {
 
@@ -21,12 +19,12 @@ public final class Card {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o instanceof Card) {
-            final Card card = (Card) o;
+        if (obj instanceof Card) {
+            final Card card = (Card) obj;
             return card.rank == rank && card.suit == suit;
         }
         return false;

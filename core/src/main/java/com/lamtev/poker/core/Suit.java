@@ -1,10 +1,10 @@
-package com.lamtev.poker.core.cards;
+package com.lamtev.poker.core;
 
 public enum Suit {
 
     HEARTS,
     TILES,
     CLOVERS,
-    PIKES;
+    PIKES
 
 }
