@@ -1,6 +1,7 @@
 package com.lamtev.poker.core;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Dealer {
 
@@ -27,7 +28,12 @@ public class Dealer {
     }
 
     public void shuffle() {
-        //TODO shuffling cardDeck
+        Random rnd = new Random(13);
+        for (int i = 0; i < 52; ++i) {
+            int i1 = Math.abs(rnd.nextInt()*i - i*rnd.hashCode()) % 52;
+            int i2 = Math.abs(rnd.nextInt()*13*i - i*i + 1234567) % 52;
+            swap(cardDeck.cards, i1, i2);
+        }
     }
 
     public void preflop() {
@@ -66,6 +72,12 @@ public class Dealer {
 
     private void putTopCardToCommonCards() {
         commonCards.add(cardDeck.giveTop());
+    }
+
+    private void swap(ArrayList<Card> cards, int index1, int index2) {
+        Card card = cards.get(index1);
+        cards.set(index1, cards.get(index2));
+        cards.set(index2, card);
     }
 
 }

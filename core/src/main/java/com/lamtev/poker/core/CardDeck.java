@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class CardDeck {
 
-    private ArrayList<Card> cards;
+    ArrayList<Card> cards;
 
     public CardDeck() {
         cards = new ArrayList<>(52);

@@ -4,6 +4,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class DealerTest {
 
@@ -20,7 +21,6 @@ public class DealerTest {
     public void testShuffle() {
         Dealer dealer = new Dealer(players);
         dealer.shuffle();
-        //BUG : it should fail
         assertNotEquals(new CardDeck(), dealer.cardDeck());
     }
 
