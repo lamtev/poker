@@ -48,6 +48,8 @@ public class PlayerTest {
 
         player.fold();
         assertTrue(player.cards().isEmpty());
+
+
     }
 
 }

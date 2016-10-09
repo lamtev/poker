@@ -18,7 +18,7 @@ public class Player {
 
 
     public ArrayList<Card> cards() {
-        return cards;
+        return new ArrayList<>(cards);
     }
 
     public void takeCard(Card card) {

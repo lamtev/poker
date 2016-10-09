@@ -1,26 +1,50 @@
 package com.lamtev.poker.core;
 
+import java.util.ArrayList;
+
 public class CardDeck {
 
-    private Card[] cardDeck;
+    private ArrayList<Card> cards;
 
     public CardDeck() {
-        cardDeck = new Card[52];
+        cards = new ArrayList<>(52);
         initCards();
     }
 
     public Card cardAt(int index) {
-        return cardDeck[index-1];
+        return cards.get(index-1);
+    }
+
+    public Card giveTop() {
+        return cards.remove(0);
     }
 
     private void initCards() {
-        byte index = 0;
         for (Rank rank : Rank.values()) {
             for (Suit suit : Suit.values()) {
-                cardDeck[index] = new Card(rank, suit);
-                ++index;
+                cards.add(new Card(rank, suit));
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof CardDeck) {
+            final CardDeck cardDeck = (CardDeck) obj;
+            return cardDeck.cards == cards;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 29 * hash + cards.hashCode();
+        hash = 29 * hash + cards.hashCode();
+        return hash;
     }
 
 }
