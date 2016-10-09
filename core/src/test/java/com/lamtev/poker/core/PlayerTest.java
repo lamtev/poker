@@ -47,7 +47,7 @@ public class PlayerTest {
         assertEquals(1, player.cards().size());
 
         player.fold();
-        assertEquals(0, player.cards().size());
+        assertTrue(player.cards().isEmpty());
     }
 
 }
