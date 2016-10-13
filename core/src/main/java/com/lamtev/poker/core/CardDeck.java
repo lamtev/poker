@@ -3,17 +3,20 @@ package com.lamtev.poker.core;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class CardDeck {
-
-    ArrayList<Card> cards;
+public class CardDeck extends Cards {
 
     public CardDeck() {
         cards = new ArrayList<>(52);
         initCards();
     }
 
-    public Card giveTop() {
-        return cards.remove(0);
+    public void initCards() {
+        cards.clear();
+        for (Rank rank : Rank.values()) {
+            for (Suit suit : Suit.values()) {
+                cards.add(new Card(rank, suit));
+            }
+        }
     }
 
     public void shuffle() {
@@ -43,18 +46,6 @@ public class CardDeck {
         hash = 29 * hash + cards.hashCode();
         hash = 29 * hash + cards.hashCode();
         return hash;
-    }
-
-    Card cardAt(int index) {
-        return cards.get(index-1);
-    }
-
-    private void initCards() {
-        for (Rank rank : Rank.values()) {
-            for (Suit suit : Suit.values()) {
-                cards.add(new Card(rank, suit));
-            }
-        }
     }
 
     private void swap(ArrayList<Card> cards, int index1, int index2) {

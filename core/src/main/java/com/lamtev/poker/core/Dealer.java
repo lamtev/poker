@@ -6,35 +6,31 @@ public class Dealer {
 
     private CardDeck cardDeck;
     private ArrayList<Player> players;
-    private ArrayList<Card> commonCards;
+    private Cards commonCards;
 
     public Dealer(ArrayList<Player> players) {
         cardDeck = new CardDeck();
         this.players = players;
-        commonCards = new ArrayList<>();
+        commonCards = new Cards();
     }
 
     public CardDeck cardDeck() {
         return cardDeck;
     }
 
-    public ArrayList<Player> players() {
-        return players;
-    }
-
-    public ArrayList<Card> commonCards() {
+    public Cards commonCards() {
         return commonCards;
     }
 
-    public void preflop() {
+    public void makePreflop() {
         for (int i = 0; i < 2; ++i) {
             for (Player player : players) {
-                player.takeCard(cardDeck.giveTop());
+                player.takeCard(cardDeck.pickUpTop());
             }
         }
     }
 
-    public void flop() {
+    public void makeFlop() {
         if (!commonCards.isEmpty()) {
             //TODO normal exception
             throw new RuntimeException();
@@ -44,7 +40,7 @@ public class Dealer {
         }
     }
 
-    public void turn() {
+    public void makeTurn() {
         if (commonCards.size() != 3) {
             //TODO normal exception
             throw new RuntimeException();
@@ -52,7 +48,7 @@ public class Dealer {
         putTopCardToCommonCards();
     }
 
-    public void river() {
+    public void makeRiver() {
         if (commonCards.size() != 4) {
             //TODO normal exception
             throw new RuntimeException();
@@ -61,7 +57,7 @@ public class Dealer {
     }
 
     private void putTopCardToCommonCards() {
-        commonCards.add(cardDeck.giveTop());
+        commonCards.add(cardDeck.pickUpTop());
     }
 
 

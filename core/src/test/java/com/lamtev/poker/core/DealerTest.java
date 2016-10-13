@@ -2,7 +2,6 @@ package com.lamtev.poker.core;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 
 public class DealerTest {
@@ -17,48 +16,48 @@ public class DealerTest {
     }
 
     @Test
-    public void testPreflop() {
+    public void testMakePreflop() {
         Dealer dealer = new Dealer(players);
-        dealer.preflop();
-        for (Player player : dealer.players()) {
+        dealer.makePreflop();
+        for (Player player : players) {
             assertEquals(2, player.cards().size());
         }
     }
 
     @Test(expected = RuntimeException.class)
-    public void testFlop() {
+    public void testMakeFlop() {
         Dealer dealer = new Dealer(players);
-        dealer.flop();
+        dealer.makeFlop();
         assertEquals(3, dealer.commonCards().size());
 
-        dealer.flop();
+        dealer.makeFlop();
     }
 
     @Test(expected = RuntimeException.class)
-    public void testTurn() {
+    public void testMakeTurn() {
         Dealer dealer = new Dealer(players);
-        dealer.turn();
+        dealer.makeTurn();
 
-        dealer.flop();
-        dealer.turn();
+        dealer.makeFlop();
+        dealer.makeTurn();
         assertEquals(4, dealer.commonCards().size());
 
-        dealer.turn();
+        dealer.makeTurn();
     }
 
     @Test(expected = RuntimeException.class)
-    public void testRiver() {
+    public void testMakeRiver() {
         Dealer dealer = new Dealer(players);
-        dealer.river();
+        dealer.makeRiver();
 
-        dealer.flop();
-        dealer.river();
+        dealer.makeFlop();
+        dealer.makeRiver();
 
-        dealer.turn();
-        dealer.river();
+        dealer.makeTurn();
+        dealer.makeRiver();
         assertEquals(5, dealer.commonCards().size());
 
-        dealer.river();
+        dealer.makeRiver();
     }
 
 }

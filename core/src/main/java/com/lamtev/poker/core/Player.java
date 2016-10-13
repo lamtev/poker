@@ -1,23 +1,22 @@
 package com.lamtev.poker.core;
 
-import java.util.ArrayList;
+public final class Player {
 
-public class Player {
-
+    //TODO think about class for money and bank
     private int bank;
-    private ArrayList<Card> cards;
+    private Cards cards;
 
     public Player(int bank) {
         this.bank = bank;
-        cards = new ArrayList<>();
+        cards = new Cards();
     }
 
     public int bank() {
         return bank;
     }
 
-    public ArrayList<Card> cards() {
-        return new ArrayList<>(cards);
+    public Cards cards() {
+        return cards;
     }
 
     public void takeCard(Card card) {
@@ -29,11 +28,13 @@ public class Player {
     }
 
     public void fold() {
-        if (cards.size() == 0) {
+        if (!cards.isEmpty()) {
             //TODO normal exception
             throw new RuntimeException();
         }
-        cards.clear();
+        while (!cards.isEmpty()) {
+            cards.pickUpTop();
+        }
     }
 
     public int giveMoney(int money) {
