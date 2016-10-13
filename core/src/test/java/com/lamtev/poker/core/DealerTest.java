@@ -4,7 +4,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class DealerTest {
 
@@ -15,13 +14,6 @@ public class DealerTest {
         for (int i = 0; i < 3; ++i) {
             players.add(new Player(100));
         }
-    }
-
-    @Test
-    public void testShuffle() {
-        Dealer dealer = new Dealer(players);
-        dealer.shuffle();
-        assertNotEquals(new CardDeck(), dealer.cardDeck());
     }
 
     @Test

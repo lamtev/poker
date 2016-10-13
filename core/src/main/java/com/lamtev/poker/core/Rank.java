@@ -1,7 +1,6 @@
 package com.lamtev.poker.core;
 
 public enum Rank {
-
     TWO,
     THREE,
     FOUR,
@@ -15,5 +14,4 @@ public enum Rank {
     QUEEN,
     KING,
     ACE
-
 }

@@ -16,7 +16,6 @@ public class Player {
         return bank;
     }
 
-
     public ArrayList<Card> cards() {
         return new ArrayList<>(cards);
     }

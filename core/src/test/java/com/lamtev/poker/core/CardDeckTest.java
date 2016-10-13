@@ -22,8 +22,7 @@ public class CardDeckTest {
 
         assertEquals(cardDeck, cardDeck);
 
-        //BUG
-        //assertEquals(new CardDeck(), cardDeck);
+        assertEquals(new CardDeck().toString(), cardDeck.toString());
     }
 
     @Test
@@ -34,7 +33,15 @@ public class CardDeckTest {
         assertEquals(card1, cardDeck.giveTop());
 
         assertEquals(card2, cardDeck.cardAt(1));
+    }
 
+    @Test
+    public void testShuffle() {
+        CardDeck cardDeck = new CardDeck();
+        cardDeck.shuffle();
+        assertNotEquals(new CardDeck(), cardDeck);
+        cardDeck.shuffle();
+        assertNotEquals(new CardDeck(), cardDeck);
     }
 
 }
