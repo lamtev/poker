@@ -2,17 +2,17 @@ package com.lamtev.poker.core;
 
 public final class Player {
 
-    //TODO think about class for money and bank
-    private int bank;
+    //TODO think about class for money and stack
+    private int stack;
     private Cards cards;
 
     public Player(int bank) {
-        this.bank = bank;
+        this.stack = bank;
         cards = new Cards();
     }
 
-    public int bank() {
-        return bank;
+    public int stack() {
+        return stack;
     }
 
     public Cards cards() {
@@ -38,12 +38,12 @@ public final class Player {
     }
 
     public int giveMoney(int money) {
-        bank -= money;
+        stack -= money;
         return money;
     }
 
     public void takeMoney(int money) {
-        bank += money;
+        stack += money;
     }
 
 }

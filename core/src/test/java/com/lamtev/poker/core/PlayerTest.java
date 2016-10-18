@@ -26,14 +26,14 @@ public class PlayerTest {
     public void testGiveMoney() {
         Player player = new Player(1000);
         player.giveMoney(900);
-        assertEquals(100, player.bank());
+        assertEquals(100, player.stack());
     }
 
     @Test
     public void testTakeMoney() {
         Player player = new Player(1000);
         player.takeMoney(500);
-        assertEquals(1500, player.bank());
+        assertEquals(1500, player.stack());
     }
 
     @Test(expected = RuntimeException.class)

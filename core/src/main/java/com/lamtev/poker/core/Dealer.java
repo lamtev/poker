@@ -24,9 +24,7 @@ public class Dealer {
 
     public void makePreflop() {
         for (int i = 0; i < 2; ++i) {
-            for (Player player : players) {
-                player.takeCard(cardDeck.pickUpTop());
-            }
+            players.forEach((x) -> x.takeCard(cardDeck.pickUpTop()));
         }
     }
 
