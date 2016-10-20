@@ -10,14 +10,14 @@ public class Poker implements PokerAPI {
 
     private final static Map<GameStage, GameStage> NEXT_GAME_STAGE = new HashMap<GameStage, GameStage>() {{
         put(BLINDS, PREFLOP);
-        put(PREFLOP, FIRST_BETTING_LAP);
-        put(FIRST_BETTING_LAP, FLOP);
-        put(FLOP, SECOND_BETTING_LAP);
-        put(SECOND_BETTING_LAP, TURN);
-        put(TURN, THIRD_BETTING_LAP);
-        put(THIRD_BETTING_LAP, RIVER);
-        put(RIVER, FOURTH_BETTING_LAP);
-        put(FOURTH_BETTING_LAP, BLINDS);
+        put(PREFLOP, FIRST_WAGERING_LAP);
+        put(FIRST_WAGERING_LAP, FLOP);
+        put(FLOP, SECOND_WAGERING_LAP);
+        put(SECOND_WAGERING_LAP, TURN);
+        put(TURN, THIRD_WAGERING_LAP);
+        put(THIRD_WAGERING_LAP, RIVER);
+        put(RIVER, FOURTH_WAGERING_LAP);
+        put(FOURTH_WAGERING_LAP, BLINDS);
     }};
 
     private int numberOfPlayers;
@@ -36,6 +36,7 @@ public class Poker implements PokerAPI {
     private Dealer dealer;
     private GameStage currentGameStage;
     private int raisesInLap;
+    int moves;
 
     public Poker(int numberOfPlayers, int smallBlindSize, int playerStack) {
         this.numberOfPlayers = numberOfPlayers;
@@ -46,19 +47,70 @@ public class Poker implements PokerAPI {
         players.forEach((x) -> x.takeMoney(playerStack));
         dealer = new Dealer(players);
         activePlayersWagers = new ArrayList<>(numberOfPlayers);
-        smallBlindIndex = 0;
-        bigBlindIndex = 1;
+        smallBlindIndex = -1;
+        bigBlindIndex = 0;
         bank = 0;
         currentPlayerIndex = 2;
         currentGameStage = BLINDS;
         raisesInLap = 0;
+        moves = 0;
         setBlinds();
         makeDealerJob();
     }
 
+    public int getMoves() {
+        return moves;
+    }
+
+    public int getBank() {
+        return bank;
+    }
+
+    public int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
+    }
+
+    public int getNumberOfPlayers() {
+        return numberOfPlayers;
+    }
+
+    public int getSmallBlindSize() {
+        return smallBlindSize;
+    }
+
+    public int getBigBlindSize() {
+        return bigBlindSize;
+    }
+
+    public int getSmallBlindIndex() {
+        return smallBlindIndex;
+    }
+
+    public int getBigBlindIndex() {
+        return bigBlindIndex;
+    }
+
+    public int getCurrentWager() {
+        return currentWager;
+    }
+
+    public GameStage getCurrentGameStage() {
+        return currentGameStage;
+    }
+
+    public int getRaisesInLap() {
+        return raisesInLap;
+    }
+
     public void  call() {
         //TODO validate permissions
+        ++moves;
         bank += activePlayers.get(currentPlayerIndex).giveMoney(currentWager);
+        if (moves < activePlayers.size()) {
+            activePlayersWagers.add(currentWager);
+        } else {
+            activePlayersWagers.set(currentPlayerIndex, currentWager);
+        }
         ++currentPlayerIndex;
         currentPlayerIndex %= activePlayers.size();
         if (isEndOfLap()) {
@@ -74,13 +126,17 @@ public class Poker implements PokerAPI {
             if (!x.equals(currentWager)) {
                 return false;
             }
-
         }
+
         return true;
     }
 
     public void raise(int additionalWager) {
         //TODO validate permissions
+        if (!(activePlayers.size() == 2 || raisesInLap < 3)) {
+            //TODO
+        }
+        ++moves;
         ++raisesInLap;
         currentWager += additionalWager;
         bank += activePlayers.get(currentPlayerIndex).giveMoney(currentWager);
@@ -93,31 +149,42 @@ public class Poker implements PokerAPI {
 
     public void fold() {
         //TODO
+        ++moves;
         activePlayers.remove(currentPlayerIndex);
         ++currentPlayerIndex;
         currentPlayerIndex %= activePlayers.size();
     }
     public void check() {
         //TODO
+        if (!activePlayersWagers.get(currentPlayerIndex).equals(currentWager)) {
+            //TODO
+        }
+        ++moves;
+        ++currentPlayerIndex;
+        if (isEndOfLap()) {
+            currentGameStage = NEXT_GAME_STAGE.get(currentGameStage);
+        }
+        setBlinds();
+        makeDealerJob();
     }
 
     private void makeDealerJob() {
         switch (currentGameStage) {
             case PREFLOP:
                 dealer.makePreflop();
-                currentGameStage = FIRST_BETTING_LAP;
+                currentGameStage = FIRST_WAGERING_LAP;
                 break;
             case FLOP:
                 dealer.makeFlop();
-                currentGameStage = SECOND_BETTING_LAP;
+                currentGameStage = SECOND_WAGERING_LAP;
                 break;
             case TURN:
                 dealer.makeTurn();
-                currentGameStage = THIRD_BETTING_LAP;
+                currentGameStage = THIRD_WAGERING_LAP;
                 break;
             case RIVER:
                 dealer.makeRiver();
-                currentGameStage = FOURTH_BETTING_LAP;
+                currentGameStage = FOURTH_WAGERING_LAP;
                 break;
             default:
                 break;
@@ -128,15 +195,22 @@ public class Poker implements PokerAPI {
         if (currentGameStage.equals(BLINDS)) {
             raisesInLap = 0;
             activePlayers = players;
+            ++smallBlindIndex;
+            ++bigBlindIndex;
             smallBlind = activePlayers.get(smallBlindIndex);
             bigBlind = activePlayers.get(bigBlindIndex);
             bank += smallBlind.giveMoney(smallBlindSize);
             bank += bigBlind.giveMoney(bigBlindSize);
+            moves = 2;
             //TODO
+            activePlayersWagers.clear();
             activePlayersWagers.add(smallBlindSize);
             activePlayersWagers.add(bigBlindSize);
             currentWager = bigBlindSize;
             currentGameStage = PREFLOP;
+            //TEMPORARY solution
+            players.forEach((x) -> x.takeMoney(bank / activePlayers.size()));
+            bank = 0;
         }
     }
 
