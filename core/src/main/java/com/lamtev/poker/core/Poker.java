@@ -101,8 +101,7 @@ public class Poker implements PokerAPI {
         } else {
             activePlayersWagers.set(currentPlayerIndex, currentWager);
         }
-        ++currentPlayerIndex;
-        currentPlayerIndex %= activePlayers.size();
+        changeCurrentIndex();
         if (isEndOfLap()) {
             currentGameStage = currentGameStage.next();
         }
@@ -124,16 +123,20 @@ public class Poker implements PokerAPI {
     public void raise(int additionalWager) {
         //TODO validate permissions
         if (!(activePlayers.size() == 2 || raisesInLap < 3)) {
-            //TODO
+            throw new RuntimeException();
         }
         ++moves;
         ++raisesInLap;
         currentWager += additionalWager;
         bank += activePlayers.get(currentPlayerIndex).giveMoney(currentWager-activePlayersWagers.get(currentPlayerIndex));
         activePlayersWagers.set(currentPlayerIndex, currentWager);
+        changeCurrentIndex();
+
+    }
+
+    private void changeCurrentIndex() {
         ++currentPlayerIndex;
         currentPlayerIndex %= activePlayers.size();
-
     }
 
 
@@ -143,13 +146,13 @@ public class Poker implements PokerAPI {
         //TODO
         ++moves;
         activePlayers.remove(currentPlayerIndex);
-        ++currentPlayerIndex;
-        currentPlayerIndex %= activePlayers.size();
+        changeCurrentIndex();
     }
+
     public void check() {
         //TODO
         if (!activePlayersWagers.get(currentPlayerIndex).equals(currentWager)) {
-            //TODO
+            throw new RuntimeException();
         }
         ++moves;
         ++currentPlayerIndex;

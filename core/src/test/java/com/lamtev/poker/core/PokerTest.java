@@ -21,8 +21,13 @@ public class PokerTest {
         assertEquals(3, poker.getMoves());
         assertEquals(20, poker.getCurrentWager());
         assertEquals(GameStage.FIRST_WAGERING_LAP, poker.getCurrentGameStage());
-        poker.call();
+        poker.raise(10);
         assertEquals(1, poker.getCurrentPlayerIndex());
+        poker.raise(10);
+        poker.raise(10);
+        assertEquals(50, poker.getCurrentWager());
+        poker.call();
+        poker.call();
         assertEquals(GameStage.SECOND_WAGERING_LAP, poker.getCurrentGameStage());
     }
 

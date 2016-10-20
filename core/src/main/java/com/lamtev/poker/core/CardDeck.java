@@ -30,7 +30,7 @@ public class CardDeck extends Cards {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof CardDeck) {
+        if (obj instanceof Cards) {
             final CardDeck cardDeck = (CardDeck) obj;
             return cardDeck.cards == cards;
         }
