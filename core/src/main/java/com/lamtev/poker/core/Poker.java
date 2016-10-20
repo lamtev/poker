@@ -1,6 +1,8 @@
 package com.lamtev.poker.core;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import static com.lamtev.poker.core.GameStage.*;
 
 public class Poker implements PokerAPI {
@@ -9,9 +11,9 @@ public class Poker implements PokerAPI {
     private int smallBlindSize;
     private int bigBlindSize;
     private int bank;
-    private ArrayList<Player> players;
-    private ArrayList<Player> activePlayers;
-    private ArrayList<Integer> activePlayersWagers;
+    private List<Player> players;
+    private List<Player> activePlayers;
+    private List<Integer> activePlayersWagers;
     private Player smallBlind;
     private Player bigBlind;
     private int smallBlindIndex;
@@ -21,17 +23,20 @@ public class Poker implements PokerAPI {
     private Dealer dealer;
     private GameStage currentGameStage;
     private int raisesInLap;
-    int moves;
+    private int moves;
 
     public Poker(int numberOfPlayers, int smallBlindSize, int playerStack) {
         this.numberOfPlayers = numberOfPlayers;
         this.smallBlindSize = smallBlindSize;
         this.bigBlindSize = 2 * smallBlindSize;
 
-        players = new ArrayList<>(numberOfPlayers);
-        players.forEach((x) -> x.takeMoney(playerStack));
+        players = new ArrayList<Player>() {{
+            for (int i = 0; i < numberOfPlayers; ++i) {
+                add(new Player(playerStack));
+            }
+        }};
         dealer = new Dealer(players);
-        activePlayersWagers = new ArrayList<>(numberOfPlayers);
+        activePlayersWagers = new ArrayList<>();
         smallBlindIndex = -1;
         bigBlindIndex = 0;
         bank = 0;
@@ -91,7 +96,7 @@ public class Poker implements PokerAPI {
         //TODO validate permissions
         ++moves;
         bank += activePlayers.get(currentPlayerIndex).giveMoney(currentWager);
-        if (moves < activePlayers.size()) {
+        if (moves <= activePlayers.size()) {
             activePlayersWagers.add(currentWager);
         } else {
             activePlayersWagers.set(currentPlayerIndex, currentWager);
@@ -124,9 +129,11 @@ public class Poker implements PokerAPI {
         ++moves;
         ++raisesInLap;
         currentWager += additionalWager;
-        bank += activePlayers.get(currentPlayerIndex).giveMoney(currentWager);
+        bank += activePlayers.get(currentPlayerIndex).giveMoney(currentWager-activePlayersWagers.get(currentPlayerIndex));
+        activePlayersWagers.set(currentPlayerIndex, currentWager);
         ++currentPlayerIndex;
         currentPlayerIndex %= activePlayers.size();
+
     }
 
 

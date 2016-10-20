@@ -6,8 +6,8 @@ public final class Player {
     private int stack;
     private Cards cards;
 
-    public Player(int bank) {
-        this.stack = bank;
+    public Player(int stack) {
+        this.stack = stack;
         cards = new Cards();
     }
 

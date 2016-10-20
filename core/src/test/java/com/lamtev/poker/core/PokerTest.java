@@ -1,15 +1,29 @@
 package com.lamtev.poker.core;
 
+//import org.testng.annotations.Test;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+//import static org.mockito.Mockito.atLeastOnce;
+//import static org.mockito.Mockito.times;
+//import static org.mockito.Mockito.verify;
+//import static org.testng.Assert.assertEquals;
 
 public class PokerTest {
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testCall() {
-        Poker poker = new Poker(5, 10, 500);
+    //TODO functional tests
+    @Test
+    public void test() {
+        Poker poker = new Poker(3, 10, 500);
+        assertEquals(10, poker.getSmallBlindSize());
+        assertEquals(2, poker.getCurrentPlayerIndex());
         poker.call();
+        assertEquals(0, poker.getCurrentPlayerIndex());
         assertEquals(3, poker.getMoves());
+        assertEquals(20, poker.getCurrentWager());
+        assertEquals(GameStage.FIRST_WAGERING_LAP, poker.getCurrentGameStage());
+        poker.call();
+        assertEquals(1, poker.getCurrentPlayerIndex());
+        assertEquals(GameStage.SECOND_WAGERING_LAP, poker.getCurrentGameStage());
     }
 
 }
