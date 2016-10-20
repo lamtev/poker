@@ -1,20 +1,20 @@
 package com.lamtev.poker.core;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Dealer {
 
-    private CardDeck cardDeck;
-    private ArrayList<Player> players;
+    private Cards cardDeck;
+    private List<Player> players;
     private Cards commonCards;
 
-    public Dealer(ArrayList<Player> players) {
+    public Dealer(List<Player> players) {
         cardDeck = new CardDeck();
         this.players = players;
         commonCards = new Cards();
     }
 
-    public CardDeck cardDeck() {
+    public Cards cardDeck() {
         return cardDeck;
     }
 
@@ -23,13 +23,15 @@ public class Dealer {
     }
 
     public void makePreflop() {
-        for (int i = 0; i < 2; ++i) {
-            players.forEach((x) -> x.takeCard(cardDeck.pickUpTop()));
+        if (preflopHasAlreadyBeen()) {
+            //TODO normal exception
+            throw new RuntimeException();
         }
+        dealTwoCardsToPlayers();
     }
 
     public void makeFlop() {
-        if (!commonCards.isEmpty()) {
+        if (!preflopHasAlreadyBeen() || flopHasAlreadyBeen()) {
             //TODO normal exception
             throw new RuntimeException();
         }
@@ -39,7 +41,7 @@ public class Dealer {
     }
 
     public void makeTurn() {
-        if (commonCards.size() != 3) {
+        if (!preflopHasAlreadyBeen() || !flopHasAlreadyBeen() || turnHasAlreadyBeen()) {
             //TODO normal exception
             throw new RuntimeException();
         }
@@ -47,17 +49,44 @@ public class Dealer {
     }
 
     public void makeRiver() {
-        if (commonCards.size() != 4) {
+        if (!preflopHasAlreadyBeen() || !flopHasAlreadyBeen() ||
+                !turnHasAlreadyBeen() || riverHasAlreadyBeen()) {
             //TODO normal exception
             throw new RuntimeException();
         }
         putTopCardToCommonCards();
     }
 
+    private boolean preflopHasAlreadyBeen() {
+        for (Player player : players) {
+            if (player.cards().size() == 2) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean flopHasAlreadyBeen() {
+        return commonCards.size() >= 3;
+    }
+
+    private boolean turnHasAlreadyBeen() {
+        return commonCards.size() >= 4;
+    }
+
+    private boolean riverHasAlreadyBeen() {
+        return commonCards.size() == 5;
+    }
+
+    private void dealTwoCardsToPlayers() {
+        for (int i = 0; i < 2; ++i) {
+            players.forEach((x) -> x.takeCard(cardDeck.pickUpTop()));
+        }
+    }
+
     private void putTopCardToCommonCards() {
         commonCards.add(cardDeck.pickUpTop());
     }
-
-
 
 }

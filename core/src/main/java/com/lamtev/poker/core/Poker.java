@@ -1,24 +1,9 @@
 package com.lamtev.poker.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.lamtev.poker.core.GameStage.*;
 
 public class Poker implements PokerAPI {
-
-    private final static Map<GameStage, GameStage> NEXT_GAME_STAGE = new HashMap<GameStage, GameStage>() {{
-        put(BLINDS, PREFLOP);
-        put(PREFLOP, FIRST_WAGERING_LAP);
-        put(FIRST_WAGERING_LAP, FLOP);
-        put(FLOP, SECOND_WAGERING_LAP);
-        put(SECOND_WAGERING_LAP, TURN);
-        put(TURN, THIRD_WAGERING_LAP);
-        put(THIRD_WAGERING_LAP, RIVER);
-        put(RIVER, FOURTH_WAGERING_LAP);
-        put(FOURTH_WAGERING_LAP, BLINDS);
-    }};
 
     private int numberOfPlayers;
     private int smallBlindSize;
@@ -114,7 +99,7 @@ public class Poker implements PokerAPI {
         ++currentPlayerIndex;
         currentPlayerIndex %= activePlayers.size();
         if (isEndOfLap()) {
-            currentGameStage = NEXT_GAME_STAGE.get(currentGameStage);
+            currentGameStage = currentGameStage.next();
         }
         setBlinds();
         makeDealerJob();
@@ -162,7 +147,7 @@ public class Poker implements PokerAPI {
         ++moves;
         ++currentPlayerIndex;
         if (isEndOfLap()) {
-            currentGameStage = NEXT_GAME_STAGE.get(currentGameStage);
+            currentGameStage = currentGameStage.next();
         }
         setBlinds();
         makeDealerJob();

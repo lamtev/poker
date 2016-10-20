@@ -1,6 +1,8 @@
 package com.lamtev.poker.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Random;
 
 public class CardDeck extends Cards {
@@ -20,12 +22,7 @@ public class CardDeck extends Cards {
     }
 
     public void shuffle() {
-        Random rnd = new Random(13);
-        for (int i = 0; i < 79; ++i) {
-            int i1 = Math.abs(rnd.nextInt()*i - i*rnd.hashCode()) % 52;
-            int i2 = Math.abs(rnd.nextInt()*13*i - i*i + 1234567) % 52;
-            swap(cards, i1, i2);
-        }
+        Collections.shuffle(cards, new Random(new Date().getTime()));
     }
 
     @Override
@@ -46,12 +43,6 @@ public class CardDeck extends Cards {
         hash = 29 * hash + cards.hashCode();
         hash = 29 * hash + cards.hashCode();
         return hash;
-    }
-
-    private void swap(ArrayList<Card> cards, int index1, int index2) {
-        Card card = cards.get(index1);
-        cards.set(index1, cards.get(index2));
-        cards.set(index2, card);
     }
 
 }
