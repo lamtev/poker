@@ -28,7 +28,7 @@ public final class Player {
     }
 
     public void fold() {
-        if (!cards.isEmpty()) {
+        if (cards.isEmpty()) {
             //TODO normal exception
             throw new RuntimeException();
         }

@@ -4,8 +4,8 @@ sourceCompatibility = 1.8
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.2.5'
-    testCompile group: 'org.testng', name: 'testng', version: '6.9.13.6'
+    //testCompile group: 'org.mockito', name: 'mockito-core', version: '2.2.5'
+    //testCompile group: 'org.testng', name: 'testng', version: '6.9.13.6'
 }
 
 jacocoTestReport {

@@ -8,7 +8,7 @@ import static com.lamtev.poker.core.Suit.*;
 
 public class PlayerTest {
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testTakeCard() {
         Player player = new Player(100);
         Card card1 = new Card(ACE, PIKES);
@@ -18,6 +18,15 @@ public class PlayerTest {
         Card card2 = new Card(FIVE, HEARTS);
         player.takeCard(card2);
         assertEquals(card2, player.cards().cardAt(2));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testTakeCardExceptionThrowing() {
+        Player player = new Player(100);
+
+        player.takeCard(new Card(ACE, PIKES));
+
+        player.takeCard(new Card(FIVE, HEARTS));
 
         player.takeCard(new Card(ACE, TILES));
     }
@@ -36,10 +45,16 @@ public class PlayerTest {
         assertEquals(1500, player.stack());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testFold() {
         Player player = new Player(1000);
+
+        player.takeCard(new Card(ACE, TILES));
+        assertEquals(1, player.cards().size());
+
         player.fold();
+        assertEquals(0, player.cards().size());
+
         player.takeCard(new Card(ACE, TILES));
         assertEquals(1, player.cards().size());
 
@@ -48,6 +63,21 @@ public class PlayerTest {
 
         player.fold();
         assertEquals(0, player.cards().size());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testFoldExceptionThrowing1() {
+        Player player = new Player(1000);
+        player.fold();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testFoldExceptionThrowing2() {
+        Player player = new Player(1000);
+        player.takeCard(new Card(ACE, TILES));
+        player.takeCard(new Card(FIVE, TILES));
+        player.fold();
+        player.fold();
     }
 
 }
