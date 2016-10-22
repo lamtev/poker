@@ -22,9 +22,9 @@ public class Poker implements PokerAPI {
     private int currentPlayerIndex;
     private Dealer dealer;
     private GameStage currentGameStage;
-    private int raisesInLap;
+    private int raisesInWageringLap;
     private int moves;
-    private int movesInLap;
+    private int movesInWageringLap;
     private boolean isGameOver;
 
     public Poker(int numberOfPlayers, int smallBlindSize, int playerStack) {
@@ -44,7 +44,7 @@ public class Poker implements PokerAPI {
         bank = 0;
         currentPlayerIndex = 2;
         currentGameStage = BLINDS;
-        raisesInLap = 0;
+        raisesInWageringLap = 0;
         moves = 0;
         isGameOver = false;
         setBlinds();
@@ -91,90 +91,84 @@ public class Poker implements PokerAPI {
         return currentGameStage;
     }
 
-    public int getRaisesInLap() {
-        return raisesInLap;
+    public int getRaisesInWageringLap() {
+        return raisesInWageringLap;
     }
 
     public void call() {
-        if (isGameOver ||
-                activePlayersWagers.size() > currentPlayerIndex &&
-                activePlayersWagers.get(currentPlayerIndex) == currentWager) {
-            //TODO normal exception
-            throw new RuntimeException(" You can't call");
-        }
-
+        validateCall();
         bank += activePlayers.get(currentPlayerIndex).giveMoney(currentWager);
         updateActivePlayersWagers();
         ++moves;
-        ++movesInLap;
+        ++movesInWageringLap;
         changeCurrentIndex();
-        if (isEndOfLap()) {
-            currentGameStage = currentGameStage.next();
-            setBlinds();
-            makeDealerJob();
-        }
-        //TODO determine winner
-
+        finishWageringLap();
     }
 
-
-
     public void raise(int additionalWager) {
-        if (isGameOver || activePlayers.size() != 2 && raisesInLap >= 3) {
-            //TODO normal exception
-            throw new RuntimeException();
-        }
+        validateRaise();
         currentWager += additionalWager;
         bank += activePlayers.get(currentPlayerIndex).giveMoney(currentWager-activePlayersWagers.get(currentPlayerIndex));
         updateActivePlayersWagers();
-        ++raisesInLap;
+        ++raisesInWageringLap;
         ++moves;
-        ++movesInLap;
+        ++movesInWageringLap;
         changeCurrentIndex();
     }
 
-    //TODO activePlayersWagers
-
     public void fold() {
-        if (isGameOver) {
-            //TODO normal exception
-            throw new RuntimeException();
-        }
+        validateFold();
         activePlayers.get(currentPlayerIndex).fold();
         System.out.println(activePlayers.get(currentPlayerIndex).cards().size());
         activePlayers.remove(currentPlayerIndex);
         activePlayersWagers.remove(currentPlayerIndex);
         ++moves;
-        ++movesInLap;
-        if (isEndOfLap()) {
-            currentGameStage = currentGameStage.next();
-            setBlinds();
-            makeDealerJob();
-        }
-
-        //TODO determine winner
+        ++movesInWageringLap;
+        finishWageringLap();
     }
 
     public void check() {
-        //TODO
-        if (activePlayersWagers.size() <= currentPlayerIndex ||
-                activePlayersWagers.get(currentPlayerIndex) != currentWager) {
-            throw new RuntimeException();
-        }
+        validateCheck();
         ++moves;
-        ++movesInLap;
+        ++movesInWageringLap;
         changeCurrentIndex();
-//        System.out.println(moves);
-//        System.out.println(isEndOfLap());
-//        System.out.println(movesInLap + " " + activePlayers.size() + " " + activePlayers.size());
-//        System.out.println();
-        if (isEndOfLap()) {
-            currentGameStage = currentGameStage.next();
-            setBlinds();
-            makeDealerJob();
-        }
+        finishWageringLap();
+    }
 
-        //TODO determine winner
+    private void validateCall() {
+        if (isGameOver ||
+                activePlayersWagers.size() > currentPlayerIndex &&
+                        activePlayersWagers.get(currentPlayerIndex) == currentWager) {
+            String message = "You can't call because " +
+                    (isGameOver ? "game is over!" : "your wager equals to current wager!");
+
+            throw new RuntimeException(message);
+        }
+    }
+
+    private void validateRaise() {
+        if (isGameOver || activePlayers.size() != 2 && raisesInWageringLap >= 3) {
+            String message = "You can't raise because " +
+                    (isGameOver ? "game is over!" : "there are already 3 raises per lap!");
+
+            throw new RuntimeException(message);
+        }
+    }
+
+    private void validateCheck() {
+        if (isGameOver || activePlayersWagers.size() <= currentPlayerIndex ||
+                activePlayersWagers.get(currentPlayerIndex) != currentWager) {
+            String message = "You can't check because " +
+                    (isGameOver ? "game is over!" : "your wager not equals to current wager!");
+
+            throw new RuntimeException(message);
+        }
+    }
+
+    private void validateFold() {
+        if (isGameOver) {
+            throw new RuntimeException("You can't fold because game is over!");
+        }
     }
 
     private void updateActivePlayersWagers() {
@@ -185,6 +179,20 @@ public class Poker implements PokerAPI {
         }
     }
 
+    private void changeCurrentIndex() {
+        ++currentPlayerIndex;
+        currentPlayerIndex %= activePlayers.size();
+    }
+
+    private void finishWageringLap() {
+        if (isEndOfLap()) {
+            currentGameStage = currentGameStage.next();
+            setBlinds();
+            makeDealerJob();
+            //TODO determine winner
+        }
+    }
+
     private boolean isEndOfLap() {
         for (Integer x : activePlayersWagers) {
             if (x != currentWager) {
@@ -192,12 +200,7 @@ public class Poker implements PokerAPI {
             }
         }
 
-        return movesInLap >= activePlayers.size();
-    }
-
-    private void changeCurrentIndex() {
-        ++currentPlayerIndex;
-        currentPlayerIndex %= activePlayers.size();
+        return movesInWageringLap >= activePlayers.size();
     }
 
     private void makeDealerJob() {
@@ -205,26 +208,22 @@ public class Poker implements PokerAPI {
             case PREFLOP:
                 dealer.makePreflop();
                 currentGameStage = FIRST_WAGERING_LAP;
-                raisesInLap = 0;
-                movesInLap = 0;
+                raisesInWageringLap = movesInWageringLap = 0;
                 break;
             case FLOP:
                 dealer.makeFlop();
                 currentGameStage = SECOND_WAGERING_LAP;
-                raisesInLap = 0;
-                movesInLap = 0;
+                raisesInWageringLap = movesInWageringLap = 0;
                 break;
             case TURN:
                 dealer.makeTurn();
                 currentGameStage = THIRD_WAGERING_LAP;
-                raisesInLap = 0;
-                movesInLap = 0;
+                raisesInWageringLap = movesInWageringLap = 0;
                 break;
             case RIVER:
                 dealer.makeRiver();
                 currentGameStage = FOURTH_WAGERING_LAP;
-                raisesInLap = 0;
-                movesInLap = 0;
+                raisesInWageringLap = movesInWageringLap = 0;
                 break;
             default:
                 break;
@@ -242,12 +241,10 @@ public class Poker implements PokerAPI {
             bigBlind = activePlayers.get(bigBlindIndex);
             bank += smallBlind.giveMoney(smallBlindSize);
             bank += bigBlind.giveMoney(bigBlindSize);
-            moves = 2;
-            movesInLap = 2;
-            //TODO
-
             activePlayersWagers.add(smallBlindSize);
             activePlayersWagers.add(bigBlindSize);
+            moves = 2;
+            movesInWageringLap = 2;
             currentWager = bigBlindSize;
             currentGameStage = currentGameStage.next();
             //TEMPORARY solution
