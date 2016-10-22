@@ -1,4 +1,4 @@
-# poker [![Build Status](https://travis-ci.org/lamtev/poker.svg?branch=master)](https://travis-ci.org/lamtev/poker)  [![codecov](https://codecov.io/gh/lamtev/poker/branch/master/graph/badge.svg)](https://codecov.io/gh/lamtev/poker)
+# poker [![Build Status](https://travis-ci.org/lamtev/poker.svg?branch=develop)](https://travis-ci.org/lamtev/poker)  [![codecov](https://codecov.io/gh/lamtev/poker/branch/master/graph/badge.svg)](https://codecov.io/gh/lamtev/poker)
 
 
 ## Задача
