@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.lamtev.poker.core.GameStage.*;
-import static java.lang.System.gc;
 
 public class Poker implements PokerAPI {
 
@@ -105,39 +104,24 @@ public class Poker implements PokerAPI {
         }
 
         bank += activePlayers.get(currentPlayerIndex).giveMoney(currentWager);
-        //TODO verify the condition
         updateActivePlayersWagers();
         ++moves;
         ++movesInLap;
         changeCurrentIndex();
-        //System.out.println(activePlayersWagers.get(0) + " " + activePlayersWagers.get(1) + " " + activePlayersWagers.get(2) + " " + currentWager);
-        System.out.println(moves);
-        System.out.println(isEndOfLap());
-        System.out.println(movesInLap + " " + activePlayers.size() + " " + activePlayers.size());
-        System.out.println();
         if (isEndOfLap()) {
             currentGameStage = currentGameStage.next();
-            movesInLap = 2;
+            setBlinds();
+            makeDealerJob();
         }
         //TODO determine winner
-        setBlinds();
-        makeDealerJob();
+
     }
 
-    private void updateActivePlayersWagers() {
-        if (moves < activePlayers.size()) {
-            activePlayersWagers.add(currentWager);
 
-        } else {
-            activePlayersWagers.set(currentPlayerIndex, currentWager);
-        }
-    }
 
     public void raise(int additionalWager) {
         if (isGameOver || activePlayers.size() != 2 && raisesInLap >= 3) {
             //TODO normal exception
-            System.out.println(activePlayers.size());
-            System.out.println(raisesInLap);
             throw new RuntimeException();
         }
         currentWager += additionalWager;
@@ -161,29 +145,44 @@ public class Poker implements PokerAPI {
         activePlayers.remove(currentPlayerIndex);
         activePlayersWagers.remove(currentPlayerIndex);
         ++moves;
-        //changeCurrentIndex();
+        ++movesInLap;
+        if (isEndOfLap()) {
+            currentGameStage = currentGameStage.next();
+            setBlinds();
+            makeDealerJob();
+        }
+
         //TODO determine winner
     }
 
     public void check() {
         //TODO
-        if (activePlayersWagers.size() <= currentPlayerIndex || activePlayersWagers.get(currentPlayerIndex) != currentWager) {
-            throw new RuntimeException(String.valueOf(activePlayersWagers.size() <= currentPlayerIndex) + (activePlayersWagers.get(currentPlayerIndex) != currentWager));
+        if (activePlayersWagers.size() <= currentPlayerIndex ||
+                activePlayersWagers.get(currentPlayerIndex) != currentWager) {
+            throw new RuntimeException();
         }
         ++moves;
         ++movesInLap;
         changeCurrentIndex();
-        System.out.println(moves);
-        System.out.println(isEndOfLap());
-        System.out.println(movesInLap + " " + activePlayers.size() + " " + activePlayers.size());
-        System.out.println();
+//        System.out.println(moves);
+//        System.out.println(isEndOfLap());
+//        System.out.println(movesInLap + " " + activePlayers.size() + " " + activePlayers.size());
+//        System.out.println();
         if (isEndOfLap()) {
             currentGameStage = currentGameStage.next();
-            movesInLap = 2;
+            setBlinds();
+            makeDealerJob();
         }
-        setBlinds();
-        makeDealerJob();
+
         //TODO determine winner
+    }
+
+    private void updateActivePlayersWagers() {
+        if (moves < activePlayers.size()) {
+            activePlayersWagers.add(currentWager);
+        } else {
+            activePlayersWagers.set(currentPlayerIndex, currentWager);
+        }
     }
 
     private boolean isEndOfLap() {
@@ -207,21 +206,25 @@ public class Poker implements PokerAPI {
                 dealer.makePreflop();
                 currentGameStage = FIRST_WAGERING_LAP;
                 raisesInLap = 0;
+                movesInLap = 0;
                 break;
             case FLOP:
                 dealer.makeFlop();
                 currentGameStage = SECOND_WAGERING_LAP;
                 raisesInLap = 0;
+                movesInLap = 0;
                 break;
             case TURN:
                 dealer.makeTurn();
                 currentGameStage = THIRD_WAGERING_LAP;
                 raisesInLap = 0;
+                movesInLap = 0;
                 break;
             case RIVER:
                 dealer.makeRiver();
                 currentGameStage = FOURTH_WAGERING_LAP;
                 raisesInLap = 0;
+                movesInLap = 0;
                 break;
             default:
                 break;
@@ -232,9 +235,6 @@ public class Poker implements PokerAPI {
         if (currentGameStage.equals(BLINDS)) {
             activePlayers = players;
             activePlayersWagers.clear();
-//            for (int i = 0; i < activePlayers.size(); ++i) {
-//                activePlayersWagers.add(0);
-//            }
             bank = 0;
             ++smallBlindIndex;
             ++bigBlindIndex;
@@ -249,7 +249,7 @@ public class Poker implements PokerAPI {
             activePlayersWagers.add(smallBlindSize);
             activePlayersWagers.add(bigBlindSize);
             currentWager = bigBlindSize;
-            currentGameStage = PREFLOP;
+            currentGameStage = currentGameStage.next();
             //TEMPORARY solution
             //When winnerDetermination will be implemented, line below will be replaced by
             //giving bank to winner

@@ -44,8 +44,8 @@ public class PokerTest {
         assertEquals(GameStage.SECOND_WAGERING_LAP, poker.getCurrentGameStage());
         poker.check();
         assertEquals(GameStage.SECOND_WAGERING_LAP, poker.getCurrentGameStage());
-        poker.check();
-        assertEquals(GameStage.SECOND_WAGERING_LAP, poker.getCurrentGameStage());
+        poker.fold();
+        assertEquals(GameStage.THIRD_WAGERING_LAP, poker.getCurrentGameStage());
     }
 
 }
