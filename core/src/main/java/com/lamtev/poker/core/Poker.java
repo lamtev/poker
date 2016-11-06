@@ -5,8 +5,11 @@ import java.util.List;
 
 import static com.lamtev.poker.core.GameStage.*;
 
+
+// Не нравится мне этот класс, уж очень много полей
 public class Poker implements PokerAPI {
 
+    //TODO количество игроков можно узнать из количества элементов в списке игроков
     private int numberOfPlayers;
     private int smallBlindSize;
     private int bigBlindSize;

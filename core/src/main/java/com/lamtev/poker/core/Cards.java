@@ -1,10 +1,12 @@
 package com.lamtev.poker.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Cards {
 
-    protected ArrayList<Card> cards;
+    //TODO: лучше более общий указывать тип, если не требуется вызывать специфические методы
+    protected List<Card> cards;
 
     public Cards() {
         cards = new ArrayList<>();
