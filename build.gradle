@@ -4,7 +4,14 @@ allprojects {
     apply plugin: 'java'
 
     repositories {
-        mavenCentral()
+        //TODO: jcenter является теперь надмножеством maven central, то есть
+        // в нем содержатся все те же пакеты, и еще больше дополнительно
+        // Но это полбеды, к мевен сентрал есть претензии по безопасности,
+        // он использует нешифрованное соединение
+        //https://docs.gradle.org/current/userguide/dependency_management.html#sub:maven_central
+        //https://www.jfrog.com/video/using-bintrays-jcenter-gradle-resolution
+        //https://blog.bintray.com/2014/08/04/feel-secure-with-ssl-think-again/
+        jcenter()
     }
 
     apply plugin: 'findbugs'
@@ -15,9 +22,11 @@ allprojects {
     }
     findbugs {
         effort = "max"
-        reportLevel = "high"
+        //TODO лучше попросить findbugs предупреждать о не очень значительных багах,
+        // а если будем много классов или типов ошибок, которые следует игнорировать,
+        // то их можно добавить в список для игнорирования
+        // есть еще режим medium
+        reportLevel = "low"
         ignoreFailures = true
     }
 }
-
-

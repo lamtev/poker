@@ -3,6 +3,7 @@ package com.lamtev.poker.core;
 public final class Player {
 
     //TODO think about class for money and stack
+    // Поддерживаю! Надо же знать кто сколько поставил, чтобы рассказать другим игрокам.
     private int stack;
     private Cards cards;
 

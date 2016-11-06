@@ -2,6 +2,10 @@ package com.lamtev.poker.core;
 
 import java.util.List;
 
+//TODO: специально Runtime Exception?
+// это будет unchecked exception? здесь кажется уместнее checked
+// можно до лучших времен бросать Exception, компилятор заставит декларировать их
+// и обрабатывать
 public class Dealer {
 
     private Cards cardDeck;
@@ -31,35 +35,48 @@ public class Dealer {
     }
 
     public void makeFlop() {
-        if (!preflopHasAlreadyBeen() || flopHasAlreadyBeen()) {
+        //TODO в этом конретном случае и подобных ниже по файлу легче было бы не с ! а с == false
+        // ! не заметен на фоне || особенно в следующих подобных условиях
+        //if (!preflopHasAlreadyBeen() || flopHasAlreadyBeen()) {
+        if (isAbleToMakeFlop()) {
+            for (int i = 0; i < 3; ++i) {
+                commonCards.add(cardDeck.pickUpTop());
+            }
+        }
+        else{
             //TODO normal exception
             throw new RuntimeException();
         }
-        for (int i = 0; i < 3; ++i) {
-            putTopCardToCommonCards();
-        }
+
     }
 
     public void makeTurn() {
-        if (!preflopHasAlreadyBeen() || !flopHasAlreadyBeen() || turnHasAlreadyBeen()) {
+        if (isAbleToMakeTurn()) {
+            commonCards.add(cardDeck.pickUpTop());
+        }
+        else{
             //TODO normal exception
             throw new RuntimeException();
         }
-        putTopCardToCommonCards();
+
     }
 
+
+
     public void makeRiver() {
-        if (!preflopHasAlreadyBeen() || !flopHasAlreadyBeen() ||
-                !turnHasAlreadyBeen() || riverHasAlreadyBeen()) {
+        if (isAbleToMakeRiver()) {
+            commonCards.add(cardDeck.pickUpTop());
+        }
+        else{
             //TODO normal exception
             throw new RuntimeException();
         }
-        putTopCardToCommonCards();
     }
 
     private boolean preflopHasAlreadyBeen() {
         for (Player player : players) {
             if (player.cards().size() == 2) {
+                //TODO: это ведь на первой же итерации для игрока с двумя картами вернет истину, так и надо?
                 return true;
             }
         }
@@ -67,7 +84,23 @@ public class Dealer {
         return false;
     }
 
+    //TODO: вот с этими методами как-то полегче
+    private boolean isAbleToMakeFlop() {
+        return preflopHasAlreadyBeen() && commonCards.size() == 0;
+    }
+
+    private boolean isAbleToMakeTurn() {
+        return preflopHasAlreadyBeen() && commonCards.size() == 3;
+    }
+
+    private boolean isAbleToMakeRiver() {
+        return preflopHasAlreadyBeen() && commonCards.size() == 4;
+    }
+
+
     private boolean flopHasAlreadyBeen() {
+        //TODO: если карт 2, значит флопа не было, по этой логике, но это тоже не корректный случай,
+        // чтобы делать флоп должно быть ноль общих карт, получается неудачная логика
         return commonCards.size() >= 3;
     }
 
@@ -83,10 +116,6 @@ public class Dealer {
         for (int i = 0; i < 2; ++i) {
             players.forEach((x) -> x.takeCard(cardDeck.pickUpTop()));
         }
-    }
-
-    private void putTopCardToCommonCards() {
-        commonCards.add(cardDeck.pickUpTop());
     }
 
 }
