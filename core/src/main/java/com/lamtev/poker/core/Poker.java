@@ -7,6 +7,8 @@ import static com.lamtev.poker.core.GameStage.*;
 
 
 // Не нравится мне этот класс, уж очень много полей
+
+//согласен
 public class Poker implements PokerAPI {
 
     //TODO количество игроков можно узнать из количества элементов в списке игроков

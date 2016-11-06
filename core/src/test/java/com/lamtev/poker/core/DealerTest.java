@@ -18,6 +18,8 @@ public class DealerTest {
     @Test
     public void testMakePreflop() {
         //TODO этих игроков можно сделать полем в классе? одинаковые ведь из раза в раз
+
+        //ANSWER: вроде думал, что если подсовывать тех же самых каждый раз, то они ведь изменяются
         Dealer dealer = new Dealer(players);
         dealer.makePreflop();
         for (Player player : players) {

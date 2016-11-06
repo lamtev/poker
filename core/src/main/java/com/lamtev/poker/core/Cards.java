@@ -6,6 +6,8 @@ import java.util.List;
 public class Cards {
 
     //TODO: лучше более общий указывать тип, если не требуется вызывать специфические методы
+
+    //ANSWER: Вроде и так List
     protected List<Card> cards;
 
     public Cards() {
