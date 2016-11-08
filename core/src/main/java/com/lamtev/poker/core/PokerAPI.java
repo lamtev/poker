@@ -7,11 +7,17 @@ package com.lamtev.poker.core;
 // хочу там игроков создать, ставки, карты брать/не брать, отрисовать у кого какие. Узнать кто победил...
 // А как??
 
-//ANSWER: да, тут пока нет всяких геттеров, которые нужны. Согласен. Но пока просто не успел или забыл...
+import java.util.List;
 
 public interface PokerAPI {
-    void call();
-    void raise(int additionalWager);
-    void fold();
-    void check();
+    void start(List<Object> listWithPlayersInfo, int smallBlindSize);
+    int getPlayerWager(int playerID);
+    int getPlayerStack(int playerID);
+    int getBank();
+    Cards getPlayerCards(int playerID);
+    Cards getCommonCards();
+    void call() throws Exception;
+    void raise(int additionalWager) throws Exception;
+    void fold() throws Exception;
+    void check() throws Exception;
 }

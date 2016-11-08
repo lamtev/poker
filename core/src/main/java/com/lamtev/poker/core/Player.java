@@ -2,25 +2,35 @@ package com.lamtev.poker.core;
 
 public final class Player {
 
-    //TODO think about class for money and stack
+    //TODO think about class for money and getStack
     // Поддерживаю! Надо же знать кто сколько поставил, чтобы рассказать другим игрокам.
     private int stack;
+    private int wager = 0;
     private Cards cards;
+    private boolean isActive = true;
 
     public Player(int stack) {
         this.stack = stack;
-        cards = new Cards();
+        this.cards = new Cards();
     }
 
-    public int stack() {
+    public int getStack() {
         return stack;
     }
 
-    public Cards cards() {
+    public int getWager() {
+        return wager;
+    }
+
+    public Cards getCards() {
         return cards;
     }
 
-    public void takeCard(Card card) {
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void addCard(Card card) {
         if (cards.size() == 2) {
             //TODO normal exception
             throw new RuntimeException();
@@ -36,15 +46,17 @@ public final class Player {
         while (!cards.isEmpty()) {
             cards.pickUpTop();
         }
+        isActive = false;
     }
 
-    public int giveMoney(int money) {
-        stack -= money;
-        return money;
-    }
-
-    public void takeMoney(int money) {
+    public void addMoney(int money) {
         stack += money;
+    }
+
+    public int takeMoney(int money) {
+        stack -= money;
+        wager += money;
+        return money;
     }
 
 }

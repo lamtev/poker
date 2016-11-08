@@ -13,7 +13,7 @@ public class PokerTest {
 
     //TODO functional tests
     @Test
-    public void test() {
+    public void test() throws Exception {
         Poker poker = new Poker(3, 10, 500);
         assertEquals(GameStage.FIRST_WAGERING_LAP, poker.getCurrentGameStage());
         assertEquals(2, poker.getCurrentPlayerIndex());

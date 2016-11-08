@@ -2,16 +2,6 @@ package com.lamtev.poker.core;
 
 import java.util.List;
 
-//TODO: специально Runtime Exception?
-//Не погружался в исключения глубоко. Но на время сделал RuntimeException.
-
-// это будет unchecked exception? здесь кажется уместнее checked
-// можно до лучших времен бросать Exception, компилятор заставит декларировать их
-// и обрабатывать
-
-//ANSWER: в книге Чистый код Р. Мартина написано использовать непроверяемые исключения
-//аргументация: для написания надежных программ достаточно непроверяемых. а с проверяемыми много мороки и лишнего кода
-//проверяемые исключения нарушают принцип открытости/закрытости и могут нарушать инкапсуляцию.
 public class Dealer {
 
     private Cards cardDeck;
@@ -19,20 +9,20 @@ public class Dealer {
     private Cards commonCards;
 
     public Dealer(List<Player> players) {
-        cardDeck = new CardDeck();
+        this.cardDeck = new CardDeck();
         this.players = players;
-        commonCards = new Cards();
+        this.commonCards = new Cards();
     }
 
-    public Cards cardDeck() {
+    public Cards getCardDeck() {
         return cardDeck;
     }
 
-    public Cards commonCards() {
+    public Cards getCommonCards() {
         return commonCards;
     }
 
-    public void makePreflop() {
+    public void makePreflop() throws Exception {
         if (preflopHasAlreadyBeen()) {
             //TODO normal exception
             throw new RuntimeException();
@@ -40,40 +30,32 @@ public class Dealer {
         dealTwoCardsToPlayers();
     }
 
-    public void makeFlop() {
-        //TODO в этом конретном случае и подобных ниже по файлу легче было бы не с ! а с == false
-        // ! не заметен на фоне || особенно в следующих подобных условиях
-        //if (!preflopHasAlreadyBeen() || flopHasAlreadyBeen()) {
+    public void makeFlop() throws Exception {
         if (isAbleToMakeFlop()) {
             for (int i = 0; i < 3; ++i) {
                 commonCards.add(cardDeck.pickUpTop());
             }
-        }
-        else{
+        } else {
             //TODO normal exception
             throw new RuntimeException();
         }
 
     }
 
-    public void makeTurn() {
+    public void makeTurn() throws Exception {
         if (isAbleToMakeTurn()) {
             commonCards.add(cardDeck.pickUpTop());
-        }
-        else{
+        } else {
             //TODO normal exception
             throw new RuntimeException();
         }
 
     }
 
-
-
-    public void makeRiver() {
+    public void makeRiver() throws Exception {
         if (isAbleToMakeRiver()) {
             commonCards.add(cardDeck.pickUpTop());
-        }
-        else{
+        } else {
             //TODO normal exception
             throw new RuntimeException();
         }
@@ -81,16 +63,19 @@ public class Dealer {
 
     private boolean preflopHasAlreadyBeen() {
         for (Player player : players) {
-            if (player.cards().size() == 2) {
-                //TODO: это ведь на первой же итерации для игрока с двумя картами вернет истину, так и надо?
-                return true;
+            if (player.getCards().size() != 2) {
+                return false;
             }
         }
-
-        return false;
+        return true;
     }
 
-    //TODO: вот с этими методами как-то полегче
+    private void dealTwoCardsToPlayers() {
+        for (int i = 0; i < 2; ++i) {
+            players.forEach((x) -> x.addCard(cardDeck.pickUpTop()));
+        }
+    }
+
     private boolean isAbleToMakeFlop() {
         return preflopHasAlreadyBeen() && commonCards.size() == 0;
     }
@@ -101,30 +86,6 @@ public class Dealer {
 
     private boolean isAbleToMakeRiver() {
         return preflopHasAlreadyBeen() && commonCards.size() == 4;
-    }
-
-
-    private boolean flopHasAlreadyBeen() {
-        //TODO: если карт 2, значит флопа не было, по этой логике, но это тоже не корректный случай,
-        // чтобы делать флоп должно быть ноль общих карт, получается неудачная логика
-
-        //ANSWER общих карт либо 0 - до флопа, либо 3 - после флопа и до тёрна, либо 4 - после тёрна, но до ривера,
-        //либо 5 - после ривера. Не может получиться, что 2 общие карты. Метод флоп так устроен, что 3 карты общих сразу.
-        return commonCards.size() >= 3;
-    }
-
-    private boolean turnHasAlreadyBeen() {
-        return commonCards.size() >= 4;
-    }
-
-    private boolean riverHasAlreadyBeen() {
-        return commonCards.size() == 5;
-    }
-
-    private void dealTwoCardsToPlayers() {
-        for (int i = 0; i < 2; ++i) {
-            players.forEach((x) -> x.takeCard(cardDeck.pickUpTop()));
-        }
     }
 
 }
