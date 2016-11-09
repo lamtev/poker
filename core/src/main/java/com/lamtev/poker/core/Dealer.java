@@ -8,18 +8,14 @@ public final class Dealer {
     private List<Player> players;
     private Cards commonCards;
 
-    public Dealer(List<Player> players) {
+    public Dealer(List<Player> players, Cards commonCards) {
         this.cardDeck = new CardDeck();
         this.players = players;
-        this.commonCards = new Cards();
+        this.commonCards = commonCards;
     }
 
     public Cards getCardDeck() {
         return cardDeck;
-    }
-
-    public Cards getCommonCards() {
-        return commonCards;
     }
 
     public void makePreflop() throws Exception {

@@ -7,10 +7,11 @@ package com.lamtev.poker.core;
 // хочу там игроков создать, ставки, карты брать/не брать, отрисовать у кого какие. Узнать кто победил...
 // А как??
 
-import java.util.List;
+import java.util.Map;
 
 public interface PokerAPI {
-    void start(List<Object> listWithPlayersInfo, int smallBlindSize);
+    //TODO start()
+    void start(Map<String, Integer> playersInfo, int smallBlindSize, String smallBlindID);
     int getPlayerWager(String playerID);
     int getPlayerStack(String playerID);
     int getMoneyInBank();

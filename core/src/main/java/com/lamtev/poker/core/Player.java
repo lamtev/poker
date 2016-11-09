@@ -2,12 +2,11 @@ package com.lamtev.poker.core;
 
 public final class Player {
 
-    //TODO think about class for money and getStack
-    // Поддерживаю! Надо же знать кто сколько поставил, чтобы рассказать другим игрокам.
     private int stack;
     private int wager = 0;
     private Cards cards;
     private boolean isActive = true;
+    //TODO think about ID field
 
     public Player(int stack) {
         this.stack = stack;

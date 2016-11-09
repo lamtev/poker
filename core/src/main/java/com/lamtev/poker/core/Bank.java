@@ -1,16 +1,14 @@
 package com.lamtev.poker.core;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Bank {
 
     private int money = 0;
     private List<Player> players;
 
-    public Bank(Map<String, Player> playersMap) {
-        players = new ArrayList<>(playersMap.values());
+    public Bank(List<Player> players) {
+        this.players = players;
     }
 
     public int getMoney() {
