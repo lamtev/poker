@@ -10,11 +10,11 @@ public final class Card {
         this.suit = suit;
     }
 
-    public Rank rank() {
+    public Rank getRank() {
         return rank;
     }
 
-    public Suit suit() {
+    public Suit getSuit() {
         return suit;
     }
 

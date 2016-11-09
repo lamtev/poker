@@ -2,6 +2,7 @@ package com.lamtev.poker.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.lamtev.poker.core.GameStage.*;
 
@@ -13,7 +14,7 @@ public class Poker implements PokerAPI {
 
     private int smallBlindSize;
     private int bigBlindSize;
-    private List<Player> players;
+    private Map<String, Player> players;
     private List<Player> activePlayers;
     private List<Integer> activePlayersWagers;
     private int smallBlindIndex;
@@ -28,15 +29,12 @@ public class Poker implements PokerAPI {
     private int movesInWageringLap;
     private boolean isGameOver;
 
-    public Poker(int numberOfPlayers, int smallBlindSize, int playerStack) throws Exception {
+    public Poker(Map<String, Player> players, int smallBlindSize) throws Exception {
         this.smallBlindSize = smallBlindSize;
         this.bigBlindSize = 2 * smallBlindSize;
 
-        players = new ArrayList<>();
-        for (int i = 0; i < numberOfPlayers; ++i) {
-            players.add(new Player(playerStack));
-        }
-        dealer = new Dealer(players);
+        this.players = players;
+        dealer = new Dealer(new ArrayList<>(this.players.values()));
         activePlayersWagers = new ArrayList<>();
         smallBlindIndex = -1;
         bigBlindIndex = 0;
@@ -55,19 +53,19 @@ public class Poker implements PokerAPI {
     }
 
     @Override
-    public int getPlayerWager(int playerID) {
+    public int getPlayerWager(String playerID) {
         //TODO implement it
         return 0;
     }
 
     @Override
-    public int getPlayerStack(int playerID) {
+    public int getPlayerStack(String playerID) {
         //TODO implement it
         return 0;
     }
 
     @Override
-    public Cards getPlayerCards(int playerID) {
+    public Cards getPlayerCards(String playerID) {
         //TODO implement it
         return null;
     }
@@ -79,7 +77,7 @@ public class Poker implements PokerAPI {
     }
 
     @Override
-    public int getBank() {
+    public int getMoneyInBank() {
         return bank.getMoney();
     }
 
@@ -239,13 +237,11 @@ public class Poker implements PokerAPI {
 
     private void setBlinds() {
         if (currentGameStage.equals(BLINDS)) {
-            activePlayers = players;
+            activePlayers = new ArrayList<>(players.values());
             activePlayersWagers.clear();
             bank = new Bank(players);
             ++smallBlindIndex;
             ++bigBlindIndex;
-            Player smallBlind = activePlayers.get(smallBlindIndex);
-            Player bigBlind = activePlayers.get(bigBlindIndex);
             bank.takeMoneyFromPlayer(smallBlindSize, smallBlindIndex);
             bank.takeMoneyFromPlayer(bigBlindSize, bigBlindIndex);
             activePlayersWagers.add(smallBlindSize);
@@ -258,7 +254,7 @@ public class Poker implements PokerAPI {
             //When winnerDetermination will be implemented, line below will be replaced by
             //giving bank to winner
             int i = 0;
-            for (Player player : players) {
+            for (Player player : players.values()) {
                 bank.giveMoneyToPlayer(bank.getMoney() / activePlayers.size(), i++);
             }
         }

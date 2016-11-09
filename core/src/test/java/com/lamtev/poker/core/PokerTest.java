@@ -2,6 +2,10 @@ package com.lamtev.poker.core;
 
 
 import org.junit.Test;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 //import org.testng.annotations.Test;
 //import static org.mockito.Mockito.atLeastOnce;
@@ -14,7 +18,15 @@ public class PokerTest {
     //TODO functional tests
     @Test
     public void test() throws Exception {
-        Poker poker = new Poker(3, 10, 500);
+        Map<String, Player> players = new LinkedHashMap<String, Player>() {{
+            put("Vasya", new Player(100));
+            put("Petya", new Player(200));
+            put("Vanya", new Player(300));
+            put("Anya", new Player(100));
+            put("Masha", new Player(100));
+            put("Vika", new Player(400));
+        }};
+        Poker poker = new Poker(players, 10);
         assertEquals(GameStage.FIRST_WAGERING_LAP, poker.getCurrentGameStage());
         assertEquals(2, poker.getCurrentPlayerIndex());
         poker.call();

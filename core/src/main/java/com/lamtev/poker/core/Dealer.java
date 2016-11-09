@@ -2,7 +2,7 @@ package com.lamtev.poker.core;
 
 import java.util.List;
 
-public class Dealer {
+public final class Dealer {
 
     private Cards cardDeck;
     private List<Player> players;

@@ -11,10 +11,10 @@ import java.util.List;
 
 public interface PokerAPI {
     void start(List<Object> listWithPlayersInfo, int smallBlindSize);
-    int getPlayerWager(int playerID);
-    int getPlayerStack(int playerID);
-    int getBank();
-    Cards getPlayerCards(int playerID);
+    int getPlayerWager(String playerID);
+    int getPlayerStack(String playerID);
+    int getMoneyInBank();
+    Cards getPlayerCards(String playerID);
     Cards getCommonCards();
     void call() throws Exception;
     void raise(int additionalWager) throws Exception;
