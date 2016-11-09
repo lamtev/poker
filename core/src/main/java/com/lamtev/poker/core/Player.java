@@ -7,10 +7,16 @@ public final class Player {
     private Cards cards;
     private boolean isActive = true;
     //TODO think about ID field
+    private final String id;
 
-    public Player(int stack) {
+    public Player(String id, int stack) {
+        this.id = id;
         this.stack = stack;
         this.cards = new Cards();
+    }
+
+    public String getId() {
+        return id;
     }
 
     public int getStack() {

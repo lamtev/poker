@@ -3,42 +3,49 @@ package com.lamtev.poker.core;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Poker implements PokerAPI {
 
-    private Map<String, Player> players;
     private List<Player> playersList;
     private Bank bank;
     private Cards commonCards;
     private Dealer dealer;
 
     @Override
-    public void start(Map<String, Integer> playersInfo, int smallBlindSize, String smallBlindID) {
-        players = new LinkedHashMap<>();
+    public void start(LinkedHashMap<String, Integer> playersInfo, int smallBlindSize, String smallBlindID) {
+        playersList = new ArrayList<>();
         playersInfo.forEach((key, value) -> {
-            Player player = new Player(value);
-            players.put(key, player);
+            Player player = new Player(key, value);
+            playersList.add(player);
         });
-        playersList = new ArrayList<>(players.values());
         bank = new Bank(playersList);
         commonCards = new Cards();
         dealer = new Dealer(playersList, commonCards);
     }
 
+    //TODO move to new class Players
+    private Player getById(String id) {
+        for (Player player : playersList) {
+            if (player.getId().equals(id)) {
+                return player;
+            }
+        }
+        throw new NullPointerException();
+    }
+
     @Override
     public int getPlayerWager(String playerID) {
-        return players.get(playerID).getWager();
+        return getById(playerID).getWager();
     }
 
     @Override
     public int getPlayerStack(String playerID) {
-        return players.get(playerID).getStack();
+        return getById(playerID).getStack();
     }
 
     @Override
     public Cards getPlayerCards(String playerID) {
-        return players.get(playerID).getCards();
+        return getById(playerID).getCards();
     }
 
     @Override

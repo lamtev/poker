@@ -8,9 +8,13 @@ import static org.junit.Assert.assertEquals;
 
 public class PlayerTest {
 
+    private Player generatePlayer() {
+        return new Player("Anton", 1000);
+    }
+
     @Test
     public void testTakeCard() {
-        Player player = new Player(100);
+        Player player = generatePlayer();
         Card card1 = new Card(ACE, PIKES);
         player.addCard(card1);
         assertEquals(card1, player.getCards().cardAt(1));
@@ -22,7 +26,7 @@ public class PlayerTest {
 
     @Test(expected = RuntimeException.class)
     public void testTakeCardExceptionThrowing() {
-        Player player = new Player(100);
+        Player player = generatePlayer();
 
         player.addCard(new Card(ACE, PIKES));
 
@@ -33,21 +37,21 @@ public class PlayerTest {
 
     @Test
     public void testGiveMoney() {
-        Player player = new Player(1000);
+        Player player = generatePlayer();
         player.takeMoney(900);
         assertEquals(100, player.getStack());
     }
 
     @Test
     public void testTakeMoney() {
-        Player player = new Player(1000);
+        Player player = generatePlayer();
         player.addMoney(500);
         assertEquals(1500, player.getStack());
     }
 
     @Test
     public void testFold() {
-        Player player = new Player(1000);
+        Player player = generatePlayer();
 
         player.addCard(new Card(ACE, TILES));
         assertEquals(1, player.getCards().size());
@@ -67,13 +71,13 @@ public class PlayerTest {
 
     @Test(expected = RuntimeException.class)
     public void testFoldExceptionThrowing1() {
-        Player player = new Player(1000);
+        Player player = generatePlayer();
         player.fold();
     }
 
     @Test(expected = RuntimeException.class)
     public void testFoldExceptionThrowing2() {
-        Player player = new Player(1000);
+        Player player = generatePlayer();
         player.addCard(new Card(ACE, TILES));
         player.addCard(new Card(FIVE, TILES));
         player.fold();

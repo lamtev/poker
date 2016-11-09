@@ -12,7 +12,7 @@ public class DealerTest {
     private List<Player> generatePlayers() {
         return new ArrayList<Player>() {{
             for (int i = 0; i < 5; ++i) {
-                add(new Player(100));
+                add(new Player("pro", 100));
             }
         }};
     }

@@ -3,8 +3,8 @@ package com.lamtev.poker.core;
 
 import org.junit.Test;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import static org.junit.Assert.assertEquals;
 //import org.testng.annotations.Test;
@@ -18,14 +18,21 @@ public class PokerTest {
     //TODO functional tests
     @Test
     public void test() throws Exception {
-        Map<String, Player> players = new LinkedHashMap<String, Player>() {{
-            put("Vasya", new Player(100));
-            put("Petya", new Player(200));
-            put("Vanya", new Player(300));
-            put("Anya", new Player(100));
-            put("Masha", new Player(100));
-            put("Vika", new Player(400));
-        }};
+        Map<String, Integer> playersInfo = new LinkedHashMap<>();
+        playersInfo.put("a", 1);
+
+        playersInfo.put("c", 3);
+        playersInfo.put("b", 2);
+
+        List<Player> playersList = new ArrayList<>();
+        playersInfo.forEach((key, value) -> {
+            Player player = new Player(key, value);
+            playersList.add(player);
+        });
+
+        for (Player player : playersList) {
+            System.out.println(player.getId() + player.getStack());
+        }
     }
 
 }
