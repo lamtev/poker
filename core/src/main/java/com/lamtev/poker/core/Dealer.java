@@ -5,10 +5,10 @@ import java.util.List;
 public final class Dealer {
 
     private Cards cardDeck;
-    private List<Player> players;
+    private Players players;
     private Cards commonCards;
 
-    public Dealer(List<Player> players, Cards commonCards) {
+    public Dealer(Players players, Cards commonCards) {
         this.cardDeck = new CardDeck();
         this.players = players;
         this.commonCards = commonCards;
@@ -68,7 +68,7 @@ public final class Dealer {
 
     private void dealTwoCardsToPlayers() {
         for (int i = 0; i < 2; ++i) {
-            players.forEach((x) -> x.addCard(cardDeck.pickUpTop()));
+            players.forEach((player) -> player.addCard(cardDeck.pickUpTop()));
         }
     }
 

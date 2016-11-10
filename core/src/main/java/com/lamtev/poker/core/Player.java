@@ -4,7 +4,7 @@ public final class Player {
 
     private int stack;
     private int wager = 0;
-    private Cards cards;
+    private Cards cards = new Cards();
     private boolean isActive = true;
     //TODO think about ID field
     private final String id;
@@ -12,7 +12,6 @@ public final class Player {
     public Player(String id, int stack) {
         this.id = id;
         this.stack = stack;
-        this.cards = new Cards();
     }
 
     public String getId() {

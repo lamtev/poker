@@ -1,51 +1,39 @@
 package com.lamtev.poker.core;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 public class Poker implements PokerAPI {
 
-    private List<Player> playersList;
+    private Players players;
     private Bank bank;
     private Cards commonCards;
     private Dealer dealer;
 
     @Override
     public void start(LinkedHashMap<String, Integer> playersInfo, int smallBlindSize, String smallBlindID) {
-        playersList = new ArrayList<>();
+        players = new Players();
         playersInfo.forEach((key, value) -> {
             Player player = new Player(key, value);
-            playersList.add(player);
+            players.add(player);
         });
-        bank = new Bank(playersList);
+        bank = new Bank(players);
         commonCards = new Cards();
-        dealer = new Dealer(playersList, commonCards);
-    }
-
-    //TODO move to new class Players
-    private Player getById(String id) {
-        for (Player player : playersList) {
-            if (player.getId().equals(id)) {
-                return player;
-            }
-        }
-        throw new NullPointerException();
+        dealer = new Dealer(players, commonCards);
     }
 
     @Override
-    public int getPlayerWager(String playerID) {
-        return getById(playerID).getWager();
+    public int getPlayerWager(String playerId) {
+        return players.get(playerId).getWager();
     }
 
     @Override
-    public int getPlayerStack(String playerID) {
-        return getById(playerID).getStack();
+    public int getPlayerStack(String playerId) {
+        return players.get(playerId).getStack();
     }
 
     @Override
-    public Cards getPlayerCards(String playerID) {
-        return getById(playerID).getCards();
+    public Cards getPlayerCards(String playerId) {
+        return players.get(playerId).getCards();
     }
 
     @Override
@@ -56,6 +44,17 @@ public class Poker implements PokerAPI {
     @Override
     public int getMoneyInBank() {
         return bank.getMoney();
+    }
+
+    @Override
+    public LinkedHashMap<String, Integer> getPlayersInfo() {
+        return new LinkedHashMap<String, Integer>() {{
+           players.forEach((player) -> {
+               String id = player.getId();
+               Integer stack = player.getStack();
+               put(id, stack);
+           });
+        }};
     }
 
     @Override

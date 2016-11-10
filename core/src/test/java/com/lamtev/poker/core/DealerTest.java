@@ -2,15 +2,12 @@ package com.lamtev.poker.core;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.*;
 
 public class DealerTest {
 
-    private List<Player> generatePlayers() {
-        return new ArrayList<Player>() {{
+    private Players generatePlayers() {
+        return new Players() {{
             for (int i = 0; i < 5; ++i) {
                 add(new Player("pro", 100));
             }
@@ -26,7 +23,7 @@ public class DealerTest {
 
     @Test
     public void testMakePreflop() throws Exception {
-        List<Player> players = generatePlayers();
+        Players players = generatePlayers();
         Dealer dealer = new Dealer(players, new Cards());
         dealer.makePreflop();
         for (Player player : players) {
@@ -43,7 +40,7 @@ public class DealerTest {
 
     @Test
     public void testMakeFlop() throws Exception {
-        List<Player> players = generatePlayers();
+        Players players = generatePlayers();
         Cards commonCards = new Cards();
         Dealer dealer = new Dealer(players, commonCards);
         dealer.makePreflop();
@@ -67,7 +64,7 @@ public class DealerTest {
 
     @Test
     public void testMakeTurn() throws Exception {
-        List<Player> players = generatePlayers();
+        Players players = generatePlayers();
         Cards commonCards = new Cards();
         Dealer dealer = new Dealer(players, commonCards);
         dealer.makePreflop();
@@ -102,7 +99,7 @@ public class DealerTest {
 
     @Test
     public void testMakeRiver() throws Exception {
-        List<Player> players = generatePlayers();
+        Players players = generatePlayers();
         Cards commonCards = new Cards();
         Dealer dealer = new Dealer(players, commonCards);
         dealer.makePreflop();

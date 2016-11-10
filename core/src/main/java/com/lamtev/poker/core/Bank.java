@@ -1,13 +1,11 @@
 package com.lamtev.poker.core;
 
-import java.util.List;
-
 public class Bank {
 
     private int money = 0;
-    private List<Player> players;
+    private Players players;
 
-    public Bank(List<Player> players) {
+    public Bank(Players players) {
         this.players = players;
     }
 

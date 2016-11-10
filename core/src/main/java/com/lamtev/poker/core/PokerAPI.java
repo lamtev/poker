@@ -18,6 +18,7 @@ public interface PokerAPI {
     int getMoneyInBank();
     Cards getPlayerCards(String playerID);
     Cards getCommonCards();
+    LinkedHashMap<String, Integer> getPlayersInfo();
     void call() throws Exception;
     void raise(int additionalWager) throws Exception;
     void fold() throws Exception;
