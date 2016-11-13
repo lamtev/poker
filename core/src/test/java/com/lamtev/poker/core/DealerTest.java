@@ -22,7 +22,7 @@ public class DealerTest {
     }
 
     @Test
-    public void testMakePreflop() throws Exception {
+    public void testMakePreflop() {
         Players players = generatePlayers();
         Dealer dealer = new Dealer(players, new Cards());
         dealer.makePreflop();
@@ -32,14 +32,14 @@ public class DealerTest {
     }
 
     @Test(expected = Exception.class)
-    public void testMakePreflopExceptionThrowing() throws Exception {
+    public void testMakePreflopExceptionThrowing() {
         Dealer dealer = generateDealer();
         dealer.makePreflop();
         dealer.makePreflop();
     }
 
     @Test
-    public void testMakeFlop() throws Exception {
+    public void testMakeFlop() {
         Players players = generatePlayers();
         Cards commonCards = new Cards();
         Dealer dealer = new Dealer(players, commonCards);
@@ -49,7 +49,7 @@ public class DealerTest {
     }
 
     @Test(expected = Exception.class)
-    public void testMakeFlopExceptionThrowing1() throws Exception {
+    public void testMakeFlopExceptionThrowing1() {
         Dealer dealer = generateDealer();
         dealer.makePreflop();
         dealer.makeFlop();
@@ -57,7 +57,7 @@ public class DealerTest {
     }
 
     @Test(expected = Exception.class)
-    public void testMakeFlopExceptionThrowing2() throws Exception {
+    public void testMakeFlopExceptionThrowing2() {
         Dealer dealer = generateDealer();
         dealer.makeFlop();
     }
@@ -74,20 +74,20 @@ public class DealerTest {
     }
 
     @Test(expected = Exception.class)
-    public void testMakeTurnExceptionThrowing1() throws Exception {
+    public void testMakeTurnExceptionThrowing1() {
         Dealer dealer = generateDealer();
         dealer.makeTurn();
     }
 
     @Test(expected = Exception.class)
-    public void testMakeTurnExceptionThrowing2() throws Exception {
+    public void testMakeTurnExceptionThrowing2() {
         Dealer dealer = generateDealer();
         dealer.makePreflop();
         dealer.makeTurn();
     }
 
     @Test(expected = Exception.class)
-    public void testMakeTurnExceptionThrowing3() throws Exception {
+    public void testMakeTurnExceptionThrowing3() {
         Dealer dealer = generateDealer();
         dealer.makePreflop();
         dealer.makeFlop();
@@ -98,7 +98,7 @@ public class DealerTest {
 
 
     @Test
-    public void testMakeRiver() throws Exception {
+    public void testMakeRiver() {
         Players players = generatePlayers();
         Cards commonCards = new Cards();
         Dealer dealer = new Dealer(players, commonCards);
@@ -110,20 +110,20 @@ public class DealerTest {
     }
 
     @Test(expected = Exception.class)
-    public void testMakeRiverExceptionThrowing1() throws Exception {
+    public void testMakeRiverExceptionThrowing1() {
         Dealer dealer = generateDealer();
         dealer.makeRiver();
     }
 
     @Test(expected = Exception.class)
-    public void testMakeRiverExceptionThrowing2() throws Exception {
+    public void testMakeRiverExceptionThrowing2() {
         Dealer dealer = generateDealer();
         dealer.makePreflop();
         dealer.makeRiver();
     }
 
     @Test(expected = Exception.class)
-    public void testMakeRiverExceptionThrowing3() throws Exception {
+    public void testMakeRiverExceptionThrowing3() {
         Dealer dealer = generateDealer();
         dealer.makePreflop();
         dealer.makeFlop();
@@ -131,7 +131,7 @@ public class DealerTest {
     }
 
     @Test(expected = Exception.class)
-    public void testMakeRiverExceptionThrowing4() throws Exception {
+    public void testMakeRiverExceptionThrowing4() {
         Dealer dealer = generateDealer();
         dealer.makePreflop();
         dealer.makeFlop();

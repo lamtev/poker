@@ -6,7 +6,6 @@ public final class Player {
     private int wager = 0;
     private Cards cards = new Cards();
     private boolean isActive = true;
-    //TODO think about ID field
     private final String id;
 
     public Player(String id, int stack) {
@@ -50,6 +49,7 @@ public final class Player {
         while (!cards.isEmpty()) {
             cards.pickUpTop();
         }
+        wager = 0;
         isActive = false;
     }
 

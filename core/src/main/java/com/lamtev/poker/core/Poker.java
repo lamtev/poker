@@ -1,6 +1,6 @@
 package com.lamtev.poker.core;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 
 public class Poker implements PokerAPI {
 
@@ -8,17 +8,30 @@ public class Poker implements PokerAPI {
     private Bank bank;
     private Cards commonCards;
     private Dealer dealer;
+    //TODO think about moving fields to state
+    private PokerState state;
+    private int smallBlindSize;
 
     @Override
-    public void start(LinkedHashMap<String, Integer> playersInfo, int smallBlindSize, String smallBlindID) {
+    public void start(ArrayList<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
         players = new Players();
-        playersInfo.forEach((key, value) -> {
-            Player player = new Player(key, value);
-            players.add(player);
+        playersInfo.forEach((playerInfo) -> {
+            String id = playerInfo.getId();
+            int stack = playerInfo.getStack();
+            players.add(new Player(id, stack));
         });
         bank = new Bank(players);
         commonCards = new Cards();
         dealer = new Dealer(players, commonCards);
+        this.smallBlindSize =  smallBlindSize;
+        state = new BlindsPokerState(this);
+        setBlinds();
+    }
+
+    private void setBlinds() {
+        state.setBlinds();
+        //TODO think about: make instance of PokerState listener
+        state.nextState(() -> state = new PreflopWageringPokerState(Poker.this));
     }
 
     @Override
@@ -47,34 +60,54 @@ public class Poker implements PokerAPI {
     }
 
     @Override
-    public LinkedHashMap<String, Integer> getPlayersInfo() {
-        return new LinkedHashMap<String, Integer>() {{
-           players.forEach((player) -> {
-               String id = player.getId();
-               Integer stack = player.getStack();
-               put(id, stack);
-           });
+    public ArrayList<PlayerInfo> getPlayersInfo() {
+        return new ArrayList<PlayerInfo>() {{
+            players.forEach((player) -> {
+                String id = player.getId();
+                int stack = player.getStack();
+                add(new PlayerInfo(id, stack));
+            });
         }};
     }
 
     @Override
     public void call() throws Exception {
-        //TODO implement it
+        state.call();
     }
 
     @Override
     public void raise(int additionalWager) throws Exception {
-        //TODO implement it
+        state.raise(additionalWager);
     }
 
     @Override
     public void fold() throws Exception {
-        //TODO implement it
+        state.fold();
     }
 
     @Override
     public void check() throws Exception {
-        //TODO implement it
+        state.check();
+    }
+
+    Players players() {
+        return players;
+    }
+
+    Cards commonCards() {
+        return commonCards;
+    }
+
+    Dealer dealer() {
+        return dealer;
+    }
+
+    Bank bank() {
+        return bank;
+    }
+
+    int smallBlindSize() {
+        return smallBlindSize;
     }
 
 }

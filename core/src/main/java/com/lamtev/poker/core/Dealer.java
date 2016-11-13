@@ -1,10 +1,8 @@
 package com.lamtev.poker.core;
 
-import java.util.List;
-
 public final class Dealer {
 
-    private Cards cardDeck;
+    private CardDeck cardDeck;
     private Players players;
     private Cards commonCards;
 
@@ -12,48 +10,45 @@ public final class Dealer {
         this.cardDeck = new CardDeck();
         this.players = players;
         this.commonCards = commonCards;
+        cardDeck.shuffle();
     }
 
     public Cards getCardDeck() {
         return cardDeck;
     }
 
-    public void makePreflop() throws Exception {
+    public void makePreflop() {
         if (preflopHasAlreadyBeen()) {
-            //TODO normal exception
-            throw new RuntimeException();
+            throw new RuntimeException("preflop has already been");
         }
         dealTwoCardsToPlayers();
     }
 
-    public void makeFlop() throws Exception {
+    public void makeFlop() {
         if (isAbleToMakeFlop()) {
             for (int i = 0; i < 3; ++i) {
                 commonCards.add(cardDeck.pickUpTop());
             }
         } else {
-            //TODO normal exception
-            throw new RuntimeException();
+            throw new RuntimeException("can't make flop");
         }
 
     }
 
-    public void makeTurn() throws Exception {
+    public void makeTurn() {
         if (isAbleToMakeTurn()) {
             commonCards.add(cardDeck.pickUpTop());
         } else {
-            //TODO normal exception
-            throw new RuntimeException();
+            throw new RuntimeException("can't make turn");
         }
 
     }
 
-    public void makeRiver() throws Exception {
+    public void makeRiver() {
         if (isAbleToMakeRiver()) {
             commonCards.add(cardDeck.pickUpTop());
         } else {
-            //TODO normal exception
-            throw new RuntimeException();
+            throw new RuntimeException("can't make river");
         }
     }
 

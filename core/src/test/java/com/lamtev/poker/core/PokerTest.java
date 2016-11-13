@@ -5,18 +5,28 @@ import org.junit.Test;
 
 import java.util.*;
 
+import static org.junit.Assert.assertEquals;
+
 public class PokerTest {
 
     //TODO functional tests
     @Test
     public void test() throws Exception {
-        LinkedHashMap<String, Integer> playersInfo = new LinkedHashMap<>();
-        playersInfo.put("a1", 100);
-        playersInfo.put("b1", 200);
-        playersInfo.put("c1", 300);
+        ArrayList<PlayerInfo> playersInfo = new ArrayList<>();
+        playersInfo.add(new PlayerInfo("a1", 100));
+        playersInfo.add(new PlayerInfo("b1", 200));
+        playersInfo.add(new PlayerInfo("c1", 300));
+
+        playersInfo.forEach(playerInfo -> System.out.println(playerInfo.getId() + " " + playerInfo.getStack()));
 
         PokerAPI poker = new Poker();
-        poker.start(playersInfo, 200, "a1");
+        poker.start(playersInfo, 20);
+
+        poker.getPlayersInfo().forEach(playerInfo -> System.out.println(playerInfo.getId() + " " + playerInfo.getStack()));
+
+        assertEquals(2, poker.getPlayerCards("a1").size());
+        assertEquals(2, poker.getPlayerCards("b1").size());
+        assertEquals(2, poker.getPlayerCards("c1").size());
     }
 
 }
