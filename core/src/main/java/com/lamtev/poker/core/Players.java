@@ -30,6 +30,16 @@ public class Players implements Iterable<Player> {
         return players.size();
     }
 
+    public int activePlayersNumber() {
+        int activePlayersNumber = 0;
+        for (Player player : players) {
+            if (player.isActive()) {
+                activePlayersNumber++;
+            }
+        }
+        return activePlayersNumber;
+    }
+
     public boolean isEmpty() {
         return players.isEmpty();
     }
