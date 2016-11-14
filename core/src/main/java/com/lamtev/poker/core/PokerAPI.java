@@ -10,6 +10,7 @@ public interface PokerAPI {
     Cards getPlayerCards(String playerID);
     Cards getCommonCards();
     ArrayList<PlayerInfo> getPlayersInfo();
+
     void call() throws Exception;
     void raise(int additionalWager) throws Exception;
     void fold() throws Exception;

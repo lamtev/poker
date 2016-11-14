@@ -35,16 +35,14 @@ public final class Player {
 
     public void addCard(Card card) {
         if (cards.size() == 2) {
-            //TODO normal exception
-            throw new RuntimeException();
+            throw new RuntimeException("can't add more than 2 cards to player");
         }
         cards.add(card);
     }
 
     public void fold() {
         if (cards.isEmpty()) {
-            //TODO normal exception
-            throw new RuntimeException();
+            throw new RuntimeException("can't fold");
         }
         while (!cards.isEmpty()) {
             cards.pickUpTop();

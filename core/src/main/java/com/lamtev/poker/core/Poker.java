@@ -1,5 +1,9 @@
 package com.lamtev.poker.core;
 
+import com.lamtev.poker.core.poker_states.BlindsPokerState;
+import com.lamtev.poker.core.poker_states.PokerState;
+import com.lamtev.poker.core.poker_states.PreflopWageringPokerState;
+
 import java.util.ArrayList;
 
 public class Poker implements PokerAPI {
@@ -8,9 +12,7 @@ public class Poker implements PokerAPI {
     private Bank bank;
     private Cards commonCards;
     private Dealer dealer;
-    //TODO think about moving fields to state
     private PokerState state;
-    private int smallBlindSize;
 
     @Override
     public void start(ArrayList<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
@@ -23,15 +25,14 @@ public class Poker implements PokerAPI {
         bank = new Bank(players);
         commonCards = new Cards();
         dealer = new Dealer(players, commonCards);
-        this.smallBlindSize =  smallBlindSize;
-        state = new BlindsPokerState(this);
+        state = new BlindsPokerState(players, bank, smallBlindSize);
         setBlinds();
     }
 
     private void setBlinds() {
         state.setBlinds();
         //TODO think about: make instance of PokerState listener
-        state.nextState(() -> state = new PreflopWageringPokerState(Poker.this));
+        state.nextState(() -> state = new PreflopWageringPokerState(players, bank, dealer));
     }
 
     @Override
@@ -88,26 +89,6 @@ public class Poker implements PokerAPI {
     @Override
     public void check() throws Exception {
         state.check();
-    }
-
-    Players players() {
-        return players;
-    }
-
-    Cards commonCards() {
-        return commonCards;
-    }
-
-    Dealer dealer() {
-        return dealer;
-    }
-
-    Bank bank() {
-        return bank;
-    }
-
-    int smallBlindSize() {
-        return smallBlindSize;
     }
 
 }

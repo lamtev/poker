@@ -1,4 +1,7 @@
-package com.lamtev.poker.core;
+package com.lamtev.poker.core.poker_states;
+
+import com.lamtev.poker.core.Bank;
+import com.lamtev.poker.core.Players;
 
 public class BlindsPokerState implements PokerState {
 
@@ -6,10 +9,10 @@ public class BlindsPokerState implements PokerState {
     private Bank bank;
     private int smallBlindSize;
 
-    public BlindsPokerState(Poker poker) {
-        players = poker.players();
-        bank = poker.bank();
-        smallBlindSize = poker.smallBlindSize();
+    public BlindsPokerState(Players players, Bank bank, int smallBlindSize) {
+        this.players = players;
+        this.bank = bank;
+        this.smallBlindSize = smallBlindSize;
     }
 
     @Override

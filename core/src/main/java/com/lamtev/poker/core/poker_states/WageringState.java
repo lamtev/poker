@@ -1,13 +1,16 @@
-package com.lamtev.poker.core;
+package com.lamtev.poker.core.poker_states;
+
+import com.lamtev.poker.core.Bank;
+import com.lamtev.poker.core.Players;
 
 public abstract class WageringState implements PokerState {
 
     private Players players;
     private Bank bank;
 
-    public WageringState(Poker poker) {
-        this.players = poker.players();
-        this.bank = poker.bank();
+    public WageringState(Players players, Bank bank) {
+        this.players = players;
+        this.bank = bank;
     }
 
     @Override
