@@ -14,10 +14,6 @@ public class BlindsPokerState implements PokerState {
         this.smallBlindSize = smallBlindSize;
     }
 
-    public void nextState() {
-        poker.update((state) -> state = new PreflopWageringPokerState(poker));
-    }
-
     @Override
     public void setBlinds() {
         bank.acceptBlindWagers(smallBlindSize);
@@ -35,5 +31,9 @@ public class BlindsPokerState implements PokerState {
 
     @Override
     public void check() {}
+
+    private void nextState() {
+        poker.update((state) -> state = new PreflopWageringPokerState(poker));
+    }
 
 }

@@ -6,7 +6,6 @@ import com.lamtev.poker.core.Poker;
 
 abstract class WageringState implements PokerState {
 
-    private Poker poker;
     private Players players;
     private Bank bank;
     private int playerIndex;
@@ -14,7 +13,6 @@ abstract class WageringState implements PokerState {
     private int raises = 0;
 
     WageringState(Poker poker) {
-        this.poker = poker;
         this.players = poker.getPlayers();
         this.bank = poker.getBank();
         playerIndex = this instanceof PreflopWageringPokerState ? 2 : 0;
@@ -33,7 +31,7 @@ abstract class WageringState implements PokerState {
 
     @Override
     public void raise(int additionalWager) throws Exception {
-        moveValidator.validateRaise(playerIndex, raises);
+        moveValidator.validateRaise(raises);
         bank.acceptRaiseFromPlayer(additionalWager, playerIndex);
         changePlayerIndex();
         raises++;

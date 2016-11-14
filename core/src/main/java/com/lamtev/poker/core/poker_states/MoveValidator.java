@@ -4,7 +4,7 @@ import com.lamtev.poker.core.Bank;
 import com.lamtev.poker.core.Player;
 import com.lamtev.poker.core.Players;
 
-public class MoveValidator {
+class MoveValidator {
 
     private Players players;
     private Bank bank;
@@ -20,7 +20,7 @@ public class MoveValidator {
         }
     }
 
-    void validateRaise(int playerIndex, int raises) throws Exception {
+    void validateRaise(int raises) throws Exception {
         if ((players.activePlayersNumber() <= 2 || raises > 3) && players.activePlayersNumber() != 2) {
             throw new Exception("can't raise");
         }
