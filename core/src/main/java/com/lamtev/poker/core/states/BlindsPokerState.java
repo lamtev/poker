@@ -1,4 +1,4 @@
-package com.lamtev.poker.core.poker_states;
+package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.*;
 
@@ -33,7 +33,7 @@ public class BlindsPokerState implements PokerState {
     public void check() {}
 
     private void nextState() {
-        poker.update((state) -> state = new PreflopWageringPokerState(poker));
+        poker.update(() -> poker.setState(new PreflopWageringPokerState(poker)));
     }
 
 }

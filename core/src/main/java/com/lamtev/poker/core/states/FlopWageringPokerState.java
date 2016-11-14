@@ -1,4 +1,4 @@
-package com.lamtev.poker.core.poker_states;
+package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.Poker;
 

@@ -1,8 +1,8 @@
 package com.lamtev.poker.core;
 
-import com.lamtev.poker.core.poker_states.BlindsPokerState;
-import com.lamtev.poker.core.poker_states.OnNextStateListener;
-import com.lamtev.poker.core.poker_states.PokerState;
+import com.lamtev.poker.core.states.BlindsPokerState;
+import com.lamtev.poker.core.states.OnNextStateListener;
+import com.lamtev.poker.core.states.PokerState;
 
 import java.util.ArrayList;
 
@@ -85,9 +85,14 @@ public class Poker implements PokerAPI {
         state.check();
     }
 
-    public void update(OnNextStateListener onNextStateListener) {
-        onNextStateListener.nextState(state);
+    public void setState(PokerState newState) {
+        state = newState;
     }
+
+    public void update(OnNextStateListener onNextStateListener) {
+        onNextStateListener.nextState();
+    }
+
 
     public Players getPlayers() {
         return players;

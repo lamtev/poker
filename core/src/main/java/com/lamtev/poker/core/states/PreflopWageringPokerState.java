@@ -1,5 +1,6 @@
-package com.lamtev.poker.core.poker_states;
+package com.lamtev.poker.core.states;
 
+import com.lamtev.poker.core.Player;
 import com.lamtev.poker.core.Poker;
 
 class PreflopWageringPokerState extends WageringState {
@@ -29,16 +30,9 @@ class PreflopWageringPokerState extends WageringState {
     }
 
     @Override
-    public void raise(int additionalWager) throws Exception {
-        super.raise(additionalWager);
-        if (isTimeToNextState()) {
-            nextState();
-        }
-    }
-
-    @Override
     public void fold() {
         super.fold();
+        //TODO goToFinalState when 1 active player
         if (isTimeToNextState()) {
             nextState();
         }
@@ -53,11 +47,21 @@ class PreflopWageringPokerState extends WageringState {
     }
 
     private boolean isTimeToNextState() {
-        return System.currentTimeMillis() == 1111L;
+        //TODO isTimeToNextState
+        return arePlayersHaveSameWagers();// && other conditions;
+    }
+
+    private boolean arePlayersHaveSameWagers() {
+        for (Player player : poker.getPlayers()) {
+            if (player.getWager() != poker.getBank().getCurrentWager()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void nextState() {
-        poker.update((state) -> state = new FlopWageringPokerState(poker));
+        poker.update(() -> poker.setState(new FlopWageringPokerState(poker)));
     }
 
 }

@@ -1,4 +1,4 @@
-package com.lamtev.poker.core.poker_states;
+package com.lamtev.poker.core.states;
 
 public interface PokerState {
     void setBlinds();

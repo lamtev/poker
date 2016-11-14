@@ -19,7 +19,7 @@ public class PokerTest {
 
         playersInfo.forEach(playerInfo -> System.out.println(playerInfo.getId() + " " + playerInfo.getStack()));
 
-        PokerAPI poker = new Poker();
+        Poker poker = new Poker();
         poker.start(playersInfo, 20);
 
         poker.getPlayersInfo().forEach(playerInfo -> System.out.println(playerInfo.getId() + " " + playerInfo.getStack()));
@@ -27,6 +27,15 @@ public class PokerTest {
         assertEquals(2, poker.getPlayerCards("a1").size());
         assertEquals(2, poker.getPlayerCards("b1").size());
         assertEquals(2, poker.getPlayerCards("c1").size());
+
+        assertEquals(0, poker.getCommonCards().size());
+
+        poker.call();
+        poker.call();
+
+        System.out.println(poker.getState().getClass());
+
+        assertEquals(3, poker.getCommonCards().size());
     }
 
 }

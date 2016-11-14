@@ -1,12 +1,9 @@
-package com.lamtev.poker.core.poker_states;
+package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.Bank;
 import com.lamtev.poker.core.Player;
 import com.lamtev.poker.core.Players;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class MoveValidatorTest {
 
