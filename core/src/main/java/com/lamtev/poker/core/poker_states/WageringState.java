@@ -2,25 +2,23 @@ package com.lamtev.poker.core.poker_states;
 
 import com.lamtev.poker.core.Bank;
 import com.lamtev.poker.core.Players;
+import com.lamtev.poker.core.Poker;
 
-public abstract class WageringState implements PokerState {
+abstract class WageringState implements PokerState {
 
+    private Poker poker;
     private Players players;
     private Bank bank;
     private int playerIndex;
     private MoveValidator moveValidator;
     private int raises = 0;
 
-    public WageringState(Players players, Bank bank) {
-        this.players = players;
-        this.bank = bank;
+    WageringState(Poker poker) {
+        this.poker = poker;
+        this.players = poker.getPlayers();
+        this.bank = poker.getBank();
         playerIndex = this instanceof PreflopWageringPokerState ? 2 : 0;
         moveValidator = new MoveValidator(players, bank);
-    }
-
-    @Override
-    public void nextState(OnNextStateListener onNextStateListener) {
-        onNextStateListener.nextState();
     }
 
     @Override
@@ -55,7 +53,11 @@ public abstract class WageringState implements PokerState {
 
     private void changePlayerIndex() {
         playerIndex++;
-        playerIndex %= players.activePlayersNumber();
+        playerIndex %= players.size();
+        while (! players.get(playerIndex).isActive()) {
+            playerIndex++;
+            playerIndex %= players.size();
+        }
     }
 
 }

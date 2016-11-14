@@ -1,28 +1,27 @@
 package com.lamtev.poker.core.poker_states;
 
-import com.lamtev.poker.core.Bank;
-import com.lamtev.poker.core.Players;
+import com.lamtev.poker.core.*;
 
 public class BlindsPokerState implements PokerState {
 
-    private Players players;
+    private Poker poker;
     private Bank bank;
     private int smallBlindSize;
 
-    public BlindsPokerState(Players players, Bank bank, int smallBlindSize) {
-        this.players = players;
-        this.bank = bank;
+    public BlindsPokerState(Poker poker, int smallBlindSize) {
+        this.poker = poker;
+        this.bank = poker.getBank();
         this.smallBlindSize = smallBlindSize;
     }
 
-    @Override
-    public void nextState(OnNextStateListener onNextStateListener) {
-        onNextStateListener.nextState();
+    public void nextState() {
+        poker.update((state) -> state = new PreflopWageringPokerState(poker));
     }
 
     @Override
     public void setBlinds() {
         bank.acceptBlindWagers(smallBlindSize);
+        nextState();
     }
 
     @Override

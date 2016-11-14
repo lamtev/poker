@@ -1,8 +1,8 @@
 package com.lamtev.poker.core;
 
 import com.lamtev.poker.core.poker_states.BlindsPokerState;
+import com.lamtev.poker.core.poker_states.OnNextStateListener;
 import com.lamtev.poker.core.poker_states.PokerState;
-import com.lamtev.poker.core.poker_states.PreflopWageringPokerState;
 
 import java.util.ArrayList;
 
@@ -25,14 +25,8 @@ public class Poker implements PokerAPI {
         bank = new Bank(players);
         commonCards = new Cards();
         dealer = new Dealer(players, commonCards);
-        state = new BlindsPokerState(players, bank, smallBlindSize);
-        setBlinds();
-    }
-
-    private void setBlinds() {
+        state = new BlindsPokerState(this, smallBlindSize);
         state.setBlinds();
-        //TODO think about: make instance of PokerState listener
-        state.nextState(() -> state = new PreflopWageringPokerState(players, bank, dealer));
     }
 
     @Override
@@ -89,6 +83,26 @@ public class Poker implements PokerAPI {
     @Override
     public void check() throws Exception {
         state.check();
+    }
+
+    public void update(OnNextStateListener onNextStateListener) {
+        onNextStateListener.nextState(state);
+    }
+
+    public Players getPlayers() {
+        return players;
+    }
+
+    public Bank getBank() {
+        return bank;
+    }
+
+    public Dealer getDealer() {
+        return dealer;
+    }
+
+    public PokerState getState() {
+        return state;
     }
 
 }
