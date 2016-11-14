@@ -21,7 +21,7 @@ class MoveValidator {
     }
 
     void validateRaise(int raises) throws Exception {
-        if ((players.activePlayersNumber() <= 2 || raises > 3) && players.activePlayersNumber() != 2) {
+        if ((players.activePlayersNumber() <= 2 || raises >= 3) && players.activePlayersNumber() != 2) {
             throw new Exception("can't raise");
         }
     }
