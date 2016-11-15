@@ -3,7 +3,7 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.model.Bank;
 import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.model.Players;
-import com.lamtev.poker.core.model.Poker;
+import com.lamtev.poker.core.api.Poker;
 
 abstract class WageringState implements PokerState {
 

@@ -1,4 +1,4 @@
-package com.lamtev.poker.core.model;
+package com.lamtev.poker.core.util;
 
 public class PlayerInfo {
 

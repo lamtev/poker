@@ -1,7 +1,7 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.model.Bank;
-import com.lamtev.poker.core.model.Poker;
+import com.lamtev.poker.core.api.Poker;
 
 public class BlindsPokerState implements PokerState {
 

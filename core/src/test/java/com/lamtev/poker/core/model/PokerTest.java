@@ -1,5 +1,7 @@
 package com.lamtev.poker.core.model;
 
+import com.lamtev.poker.core.api.Poker;
+import com.lamtev.poker.core.util.PlayerInfo;
 import org.junit.Test;
 
 import java.util.*;
@@ -39,15 +41,14 @@ public class PokerTest {
         poker.check();
 
         System.out.println(poker.getState().getClass());
+        assertEquals(3, poker.getCommonCards().size());
 
-        poker.fold();
-        poker.fold();
-
-        //System.out.println(poker.getPlayers().activePlayersNumber());
+        poker.check();
+        poker.check();
+        poker.check();
 
         System.out.println(poker.getState().getClass());
-
-        assertEquals(3, poker.getCommonCards().size());
+        assertEquals(4, poker.getCommonCards().size());
     }
 
 }

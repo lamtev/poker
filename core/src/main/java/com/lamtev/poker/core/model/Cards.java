@@ -1,9 +1,9 @@
 package com.lamtev.poker.core.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
 
-public class Cards {
+public class Cards implements Iterable<Card> {
 
     protected List<Card> cards;
 
@@ -32,23 +32,32 @@ public class Cards {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof Cards) {
-            final Cards cards = (Cards) obj;
-            return this.cards.equals(cards.cards);
-        }
-        return false;
+    public void forEach(Consumer<? super Card> action) {
+        cards.forEach(action);
+    }
+
+    @Override
+    public Spliterator<Card> spliterator() {
+        return cards.spliterator();
+    }
+
+    @Override
+    public Iterator<Card> iterator() {
+        return cards.iterator();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Cards cards1 = (Cards) o;
+
+        return cards != null ? cards.equals(cards1.cards) : cards1.cards == null;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 29 * hash + cards.hashCode();
-        hash = 29 * hash + cards.hashCode();
-        return hash;
+        return cards != null ? cards.hashCode() : 0;
     }
-
 }

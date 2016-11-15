@@ -13,10 +13,6 @@ public final class Dealer {
         cardDeck.shuffle();
     }
 
-    public Cards getCardDeck() {
-        return cardDeck;
-    }
-
     public void makePreflop() {
         if (preflopHasAlreadyBeen()) {
             throw new RuntimeException("preflop has already been");
