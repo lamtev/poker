@@ -137,7 +137,7 @@ public class Poker implements PokerAPI {
         return dealer;
     }
 
-    public PokerState getState() {
+    PokerState getState() {
         return state;
     }
 

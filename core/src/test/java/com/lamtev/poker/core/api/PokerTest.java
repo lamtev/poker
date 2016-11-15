@@ -1,10 +1,9 @@
 package com.lamtev.poker.core.api;
 
-import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.util.PlayerInfo;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,15 +17,17 @@ public class PokerTest {
         playersInfo.add(new PlayerInfo("b1", 200));
         playersInfo.add(new PlayerInfo("c1", 300));
 
-        playersInfo.forEach(playerInfo -> System.out.println(playerInfo.getId() + " " + playerInfo.getStack()));
+        //playersInfo.forEach(playerInfo -> System.out.println(playerInfo.getId() + " " + playerInfo.getStack()));
 
         Poker poker = new Poker();
+
+        System.out.println(poker.getState().getClass());
 
         poker.start(playersInfo, 20);
 
         System.out.println(poker.getState().getClass());
 
-        poker.getPlayersInfo().forEach(playerInfo -> System.out.println(playerInfo.getId() + " " + playerInfo.getStack()));
+        //poker.getPlayersInfo().forEach(playerInfo -> System.out.println(playerInfo.getId() + " " + playerInfo.getStack()));
 
         assertEquals(2, poker.getPlayerCards("a1").size());
         assertEquals(2, poker.getPlayerCards("b1").size());
@@ -49,6 +50,19 @@ public class PokerTest {
 
         System.out.println(poker.getState().getClass());
         assertEquals(4, poker.getCommonCards().size());
+
+        poker.check();
+        poker.check();
+        poker.check();
+
+        System.out.println(poker.getState().getClass());
+        assertEquals(5, poker.getCommonCards().size());
+
+        poker.fold();
+        poker.fold();
+
+        System.out.println(poker.getState().getClass());
+
     }
 
 }
