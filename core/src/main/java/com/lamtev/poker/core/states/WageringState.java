@@ -1,9 +1,9 @@
 package com.lamtev.poker.core.states;
 
+import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.Bank;
 import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.model.Players;
-import com.lamtev.poker.core.api.Poker;
 
 abstract class WageringState implements PokerState {
 
@@ -24,7 +24,8 @@ abstract class WageringState implements PokerState {
     }
 
     @Override
-    public void setBlinds() {}
+    public void setBlinds() throws Exception {
+    }
 
     @Override
     public void call() throws Exception {
@@ -43,7 +44,7 @@ abstract class WageringState implements PokerState {
     }
 
     @Override
-    public void fold() {
+    public void fold() throws Exception {
         players.get(playerIndex).fold();
         changePlayerIndex();
         if (isOnlyOneActivePlayer()) {
@@ -75,7 +76,7 @@ abstract class WageringState implements PokerState {
     private void changePlayerIndex() {
         playerIndex++;
         playerIndex %= players.size();
-        while (! players.get(playerIndex).isActive()) {
+        while (!players.get(playerIndex).isActive()) {
             playerIndex++;
             playerIndex %= players.size();
         }

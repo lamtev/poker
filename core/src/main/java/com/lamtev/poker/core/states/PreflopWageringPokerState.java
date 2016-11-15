@@ -9,6 +9,7 @@ class PreflopWageringPokerState extends WageringState {
     PreflopWageringPokerState(Poker poker) {
         super(poker);
         this.poker = poker;
+        //TODO think about replacing line below by anonymous class or lambda
         poker.getDealer().makePreflop();
     }
 
@@ -21,7 +22,7 @@ class PreflopWageringPokerState extends WageringState {
     }
 
     @Override
-    public void fold() {
+    public void fold() throws Exception {
         super.fold();
         if (isTimeToNextState()) {
             nextState();

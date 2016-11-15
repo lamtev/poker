@@ -1,7 +1,7 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.model.Bank;
 import com.lamtev.poker.core.api.Poker;
+import com.lamtev.poker.core.model.Bank;
 
 public class BlindsPokerState implements PokerState {
 
@@ -16,22 +16,26 @@ public class BlindsPokerState implements PokerState {
     }
 
     @Override
-    public void setBlinds() {
+    public void setBlinds() throws Exception {
         bank.acceptBlindWagers(smallBlindSize);
         nextState();
     }
 
     @Override
-    public void call() {}
+    public void call() {
+    }
 
     @Override
-    public void raise(int additionalWager) {}
+    public void raise(int additionalWager) {
+    }
 
     @Override
-    public void fold() {}
+    public void fold() throws Exception {
+    }
 
     @Override
-    public void check() {}
+    public void check() {
+    }
 
     private void nextState() {
         poker.update(() -> poker.setState(new PreflopWageringPokerState(poker)));

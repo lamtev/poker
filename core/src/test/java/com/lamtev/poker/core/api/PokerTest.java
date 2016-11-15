@@ -1,4 +1,4 @@
-package com.lamtev.poker.core.model;
+package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.util.PlayerInfo;

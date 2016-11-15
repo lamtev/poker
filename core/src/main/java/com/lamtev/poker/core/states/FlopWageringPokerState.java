@@ -21,7 +21,7 @@ class FlopWageringPokerState extends WageringState {
     }
 
     @Override
-    public void fold() {
+    public void fold() throws Exception {
         super.fold();
         if (isTimeToNextState()) {
             nextState();

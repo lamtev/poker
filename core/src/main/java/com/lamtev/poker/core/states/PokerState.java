@@ -1,9 +1,13 @@
 package com.lamtev.poker.core.states;
 
 public interface PokerState {
-    void setBlinds();
+    void setBlinds() throws Exception;
+
     void call() throws Exception;
+
     void raise(int additionalWager) throws Exception;
-    void fold();
+
+    void fold() throws Exception;
+
     void check() throws Exception;
 }

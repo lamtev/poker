@@ -1,10 +1,10 @@
 package com.lamtev.poker.core.api;
 
-import com.lamtev.poker.core.api.PokerAPI;
 import com.lamtev.poker.core.model.*;
 import com.lamtev.poker.core.states.BlindsPokerState;
 import com.lamtev.poker.core.states.OnNextStateListener;
 import com.lamtev.poker.core.states.PokerState;
+import com.lamtev.poker.core.states.exceptions.GameHaveNotBeenStartedException;
 import com.lamtev.poker.core.util.PlayerInfo;
 
 import java.util.ArrayList;
@@ -16,6 +16,35 @@ public class Poker implements PokerAPI {
     private Cards commonCards;
     private Dealer dealer;
     private PokerState state;
+
+    public Poker() {
+        state = new PokerState() {
+            @Override
+            public void setBlinds() throws Exception {
+                throw new GameHaveNotBeenStartedException();
+            }
+
+            @Override
+            public void call() throws Exception {
+                throw new GameHaveNotBeenStartedException();
+            }
+
+            @Override
+            public void raise(int additionalWager) throws Exception {
+                throw new GameHaveNotBeenStartedException();
+            }
+
+            @Override
+            public void fold() throws Exception {
+                throw new GameHaveNotBeenStartedException();
+            }
+
+            @Override
+            public void check() throws Exception {
+                throw new GameHaveNotBeenStartedException();
+            }
+        };
+    }
 
     @Override
     public void start(ArrayList<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
@@ -93,9 +122,8 @@ public class Poker implements PokerAPI {
     }
 
     public void update(OnNextStateListener onNextStateListener) {
-        onNextStateListener.nextState();
+        onNextStateListener.onNextState();
     }
-
 
     public Players getPlayers() {
         return players;
