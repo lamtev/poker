@@ -1,4 +1,4 @@
-package com.lamtev.poker.core;
+package com.lamtev.poker.core.model;
 
 import java.util.Collections;
 import java.util.Date;

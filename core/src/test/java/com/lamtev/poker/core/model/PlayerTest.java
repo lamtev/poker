@@ -1,9 +1,9 @@
-package com.lamtev.poker.core;
+package com.lamtev.poker.core.model;
 
 import org.junit.Test;
 
-import static com.lamtev.poker.core.Rank.*;
-import static com.lamtev.poker.core.Suit.*;
+import static com.lamtev.poker.core.model.Rank.*;
+import static com.lamtev.poker.core.model.Suit.*;
 import static org.junit.Assert.assertEquals;
 
 public class PlayerTest {

@@ -1,4 +1,4 @@
-package com.lamtev.poker.core;
+package com.lamtev.poker.core.model;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -12,7 +12,6 @@ public class CardDeckTest extends CardsTest {
         assertEquals(card4, cardDeck.cardAt(2));
         assertEquals(card1, cardDeck.cardAt(51));
         assertEquals(card2, cardDeck.cardAt(52));
-
         assertEquals(cardDeck, cardDeck);
     }
 

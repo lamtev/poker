@@ -2,14 +2,14 @@ package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.model.Poker;
 
-class PreflopWageringPokerState extends WageringState {
+class TurnWageringPokerState extends WageringState {
 
     private Poker poker;
 
-    PreflopWageringPokerState(Poker poker) {
+    TurnWageringPokerState(Poker poker) {
         super(poker);
         this.poker = poker;
-        poker.getDealer().makePreflop();
+        poker.getDealer().makeTurn();
     }
 
     @Override
@@ -37,7 +37,7 @@ class PreflopWageringPokerState extends WageringState {
     }
 
     private void nextState() {
-        poker.update(() -> poker.setState(new FlopWageringPokerState(poker)));
+        poker.update(() -> poker.setState(new RiverWageringPokerState(poker)));
     }
 
 }

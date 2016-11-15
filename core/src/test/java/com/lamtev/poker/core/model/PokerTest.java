@@ -1,5 +1,4 @@
-package com.lamtev.poker.core;
-
+package com.lamtev.poker.core.model;
 
 import org.junit.Test;
 
@@ -20,7 +19,10 @@ public class PokerTest {
         playersInfo.forEach(playerInfo -> System.out.println(playerInfo.getId() + " " + playerInfo.getStack()));
 
         Poker poker = new Poker();
+
         poker.start(playersInfo, 20);
+
+        System.out.println(poker.getState().getClass());
 
         poker.getPlayersInfo().forEach(playerInfo -> System.out.println(playerInfo.getId() + " " + playerInfo.getStack()));
 
@@ -32,6 +34,16 @@ public class PokerTest {
 
         poker.call();
         poker.call();
+        poker.check();
+        poker.check();
+        poker.check();
+
+        System.out.println(poker.getState().getClass());
+
+        poker.fold();
+        poker.fold();
+
+        //System.out.println(poker.getPlayers().activePlayersNumber());
 
         System.out.println(poker.getState().getClass());
 

@@ -1,18 +1,22 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.Bank;
-import com.lamtev.poker.core.Players;
-import com.lamtev.poker.core.Poker;
+import com.lamtev.poker.core.model.Bank;
+import com.lamtev.poker.core.model.Player;
+import com.lamtev.poker.core.model.Players;
+import com.lamtev.poker.core.model.Poker;
 
 abstract class WageringState implements PokerState {
 
+    private Poker poker;
     private Players players;
     private Bank bank;
     private int playerIndex;
     private MoveValidator moveValidator;
     private int raises = 0;
+    private int continuousChecks = 0;
 
     WageringState(Poker poker) {
+        this.poker = poker;
         this.players = poker.getPlayers();
         this.bank = poker.getBank();
         playerIndex = this instanceof PreflopWageringPokerState ? 2 : 0;
@@ -35,18 +39,37 @@ abstract class WageringState implements PokerState {
         bank.acceptRaiseFromPlayer(additionalWager, playerIndex);
         changePlayerIndex();
         raises++;
+        continuousChecks = 0;
     }
 
     @Override
     public void fold() {
         players.get(playerIndex).fold();
         changePlayerIndex();
+        if (isOnlyOneActivePlayer()) {
+            finalState();
+        }
     }
 
     @Override
     public void check() throws Exception {
         moveValidator.validateCheck();
         changePlayerIndex();
+        continuousChecks++;
+    }
+
+    boolean isTimeToNextState() {
+        return arePlayersHaveSameWagers() && raises == 3 ||
+                continuousChecks == players.activePlayersNumber();
+    }
+
+    private boolean arePlayersHaveSameWagers() {
+        for (Player player : poker.getPlayers()) {
+            if (player.getWager() != bank.getCurrentWager()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void changePlayerIndex() {
@@ -56,6 +79,14 @@ abstract class WageringState implements PokerState {
             playerIndex++;
             playerIndex %= players.size();
         }
+    }
+
+    private boolean isOnlyOneActivePlayer() {
+        return players.activePlayersNumber() == 1;
+    }
+
+    private void finalState() {
+        poker.update(() -> poker.setState(new WinnersDeterminingPokerState(poker)));
     }
 
 }

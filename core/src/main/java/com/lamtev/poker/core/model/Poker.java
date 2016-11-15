@@ -1,5 +1,6 @@
-package com.lamtev.poker.core;
+package com.lamtev.poker.core.model;
 
+import com.lamtev.poker.core.api.PokerAPI;
 import com.lamtev.poker.core.states.BlindsPokerState;
 import com.lamtev.poker.core.states.OnNextStateListener;
 import com.lamtev.poker.core.states.PokerState;

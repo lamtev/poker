@@ -1,4 +1,4 @@
-package com.lamtev.poker.core;
+package com.lamtev.poker.core.model;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.Bank;
-import com.lamtev.poker.core.Player;
-import com.lamtev.poker.core.Players;
+import com.lamtev.poker.core.model.Bank;
+import com.lamtev.poker.core.model.Player;
+import com.lamtev.poker.core.model.Players;
 import org.junit.Test;
 
 public class MoveValidatorTest {

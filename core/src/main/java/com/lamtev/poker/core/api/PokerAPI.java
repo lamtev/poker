@@ -1,4 +1,7 @@
-package com.lamtev.poker.core;
+package com.lamtev.poker.core.api;
+
+import com.lamtev.poker.core.model.Cards;
+import com.lamtev.poker.core.model.PlayerInfo;
 
 import java.util.ArrayList;
 
@@ -10,7 +13,6 @@ public interface PokerAPI {
     Cards getPlayerCards(String playerID);
     Cards getCommonCards();
     ArrayList<PlayerInfo> getPlayersInfo();
-
     void call() throws Exception;
     void raise(int additionalWager) throws Exception;
     void fold() throws Exception;
