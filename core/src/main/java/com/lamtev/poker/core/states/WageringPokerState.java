@@ -84,7 +84,7 @@ abstract class WageringPokerState extends SettingsFinishedPokerState {
     }
 
     private void winnerDeterminingState() throws Exception {
-        setState(WinnersDeterminingPokerState.class);
+        setState(WinnersDeterminationPokerState.class);
     }
 
 }

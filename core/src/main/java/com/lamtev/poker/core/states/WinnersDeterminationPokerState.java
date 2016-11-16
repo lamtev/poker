@@ -10,10 +10,11 @@ import com.lamtev.poker.core.util.PlayerInfo;
 
 import java.util.ArrayList;
 
-class WinnersDeterminingPokerState extends SettingsFinishedPokerState {
+class WinnersDeterminationPokerState extends SettingsFinishedPokerState {
 
-    public WinnersDeterminingPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
+    public WinnersDeterminationPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
         super(poker, players, bank, dealer, commonCards);
+
     }
 
     @Override
