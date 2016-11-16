@@ -1,13 +1,10 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.model.Bank;
-import com.lamtev.poker.core.model.Player;
-import com.lamtev.poker.core.model.Players;
+import com.lamtev.poker.core.model.*;
 
-abstract class WageringState implements PokerState {
+abstract class WageringPokerState extends SettingsFinishedPokerState {
 
-    private Poker poker;
     private Players players;
     private Bank bank;
     private int playerIndex;
@@ -15,16 +12,12 @@ abstract class WageringState implements PokerState {
     private int raises = 0;
     private int continuousChecks = 0;
 
-    WageringState(Poker poker) {
-        this.poker = poker;
-        this.players = poker.getPlayers();
-        this.bank = poker.getBank();
+    WageringPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
+        super(poker, players, bank, dealer, commonCards);
+        this.players = players;
+        this.bank = bank;
         playerIndex = this instanceof PreflopWageringPokerState ? 2 : 0;
         moveValidator = new MoveValidator(players, bank);
-    }
-
-    @Override
-    public void setBlinds() throws Exception {
     }
 
     @Override
@@ -48,7 +41,7 @@ abstract class WageringState implements PokerState {
         players.get(playerIndex).fold();
         changePlayerIndex();
         if (isOnlyOneActivePlayer()) {
-            finalState();
+            winnerDeterminingState();
         }
     }
 
@@ -60,12 +53,12 @@ abstract class WageringState implements PokerState {
     }
 
     boolean isTimeToNextState() {
-        return arePlayersHaveSameWagers() && raises == 3 ||
+        return doPlayersHaveSameWagers() && raises == 3 ||
                 continuousChecks == players.activePlayersNumber();
     }
 
-    private boolean arePlayersHaveSameWagers() {
-        for (Player player : poker.getPlayers()) {
+    private boolean doPlayersHaveSameWagers() {
+        for (Player player : players) {
             if (player.getWager() != bank.getCurrentWager()) {
                 return false;
             }
@@ -86,8 +79,8 @@ abstract class WageringState implements PokerState {
         return players.activePlayersNumber() == 1;
     }
 
-    private void finalState() {
-        poker.update(() -> poker.setState(new WinnersDeterminingPokerState(poker)));
+    private void winnerDeterminingState() throws Exception {
+        setState(WinnersDeterminingPokerState.class);
     }
 
 }

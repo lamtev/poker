@@ -1,15 +1,16 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.Poker;
+import com.lamtev.poker.core.model.Bank;
+import com.lamtev.poker.core.model.Cards;
+import com.lamtev.poker.core.model.Dealer;
+import com.lamtev.poker.core.model.Players;
 
-class TurnWageringPokerState extends WageringState {
+class TurnWageringPokerState extends WageringPokerState {
 
-    private Poker poker;
-
-    TurnWageringPokerState(Poker poker) {
-        super(poker);
-        this.poker = poker;
-        poker.getDealer().makeTurn();
+    public TurnWageringPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
+        super(poker, players, bank, dealer, commonCards);
+        dealer.makeTurn();
     }
 
     @Override
@@ -36,8 +37,8 @@ class TurnWageringPokerState extends WageringState {
         }
     }
 
-    private void nextState() {
-        poker.update(() -> poker.setState(new RiverWageringPokerState(poker)));
+    private void nextState() throws Exception {
+        setState(RiverWageringPokerState.class);
     }
 
 }

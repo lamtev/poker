@@ -3,26 +3,48 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.Bank;
 import com.lamtev.poker.core.model.Cards;
+import com.lamtev.poker.core.model.Dealer;
 import com.lamtev.poker.core.model.Players;
 import com.lamtev.poker.core.states.exceptions.GameIsOverException;
+import com.lamtev.poker.core.util.PlayerInfo;
 
-class WinnersDeterminingPokerState implements PokerState {
+import java.util.ArrayList;
+
+class WinnersDeterminingPokerState extends SettingsFinishedPokerState {
 
     private Poker poker;
     private Players players;
     private Cards commonCards;
     private Bank bank;
 
-    WinnersDeterminingPokerState(Poker poker) {
+    public WinnersDeterminingPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
+        super(poker, players, bank, dealer, commonCards);
         this.poker = poker;
-        this.players = poker.getPlayers();
-        this.commonCards = poker.getCommonCards();
-        this.bank = poker.getBank();
+        this.players = players;
+        this.bank = bank;
+        this.commonCards = commonCards;
+
     }
 
     @Override
-    public void setBlinds() throws Exception {
+    public void setBlinds(int smallBlindSize) throws Exception {
         throw new GameIsOverException();
+    }
+
+    @Override
+    public Cards getPlayerCards(String playerID) throws Exception {
+        return players.get(playerID).getCards();
+    }
+
+    @Override
+    public ArrayList<PlayerInfo> getPlayersInfo() throws Exception {
+        return new ArrayList<PlayerInfo>() {{
+            players.forEach((player) -> {
+                String id = player.getId();
+                int stack = player.getStack();
+                add(new PlayerInfo(id, stack));
+            });
+        }};
     }
 
     @Override

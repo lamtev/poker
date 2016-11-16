@@ -17,21 +17,9 @@ public class PokerTest {
         playersInfo.add(new PlayerInfo("b1", 200));
         playersInfo.add(new PlayerInfo("c1", 300));
 
-        //playersInfo.forEach(playerInfo -> System.out.println(playerInfo.getId() + " " + playerInfo.getStack()));
-
-        Poker poker = new Poker();
+        Poker poker = new Poker(playersInfo, 20);
 
         System.out.println(poker.getState().getClass());
-
-        poker.start(playersInfo, 20);
-
-        System.out.println(poker.getState().getClass());
-
-        //poker.getPlayersInfo().forEach(playerInfo -> System.out.println(playerInfo.getId() + " " + playerInfo.getStack()));
-
-        assertEquals(2, poker.getPlayerCards("a1").size());
-        assertEquals(2, poker.getPlayerCards("b1").size());
-        assertEquals(2, poker.getPlayerCards("c1").size());
 
         assertEquals(0, poker.getCommonCards().size());
 

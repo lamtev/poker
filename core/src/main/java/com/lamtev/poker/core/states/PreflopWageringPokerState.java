@@ -1,16 +1,16 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.Poker;
+import com.lamtev.poker.core.model.Bank;
+import com.lamtev.poker.core.model.Cards;
+import com.lamtev.poker.core.model.Dealer;
+import com.lamtev.poker.core.model.Players;
 
-class PreflopWageringPokerState extends WageringState {
+class PreflopWageringPokerState extends WageringPokerState {
 
-    private Poker poker;
-
-    PreflopWageringPokerState(Poker poker) {
-        super(poker);
-        this.poker = poker;
-        //TODO think about replacing line below by anonymous class or lambda
-        poker.getDealer().makePreflop();
+    PreflopWageringPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
+        super(poker, players, bank, dealer, commonCards);
+        dealer.makePreflop();
     }
 
     @Override
@@ -37,8 +37,8 @@ class PreflopWageringPokerState extends WageringState {
         }
     }
 
-    private void nextState() {
-        poker.update(() -> poker.setState(new FlopWageringPokerState(poker)));
+    private void nextState() throws Exception {
+        setState(FlopWageringPokerState.class);
     }
 
 }
