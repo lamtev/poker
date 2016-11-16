@@ -22,7 +22,7 @@ public interface PokerState {
 
     Cards getCommonCards() throws Exception;
 
-    default ArrayList<PlayerInfo> getPlayersInfo() throws  Exception {
+    default ArrayList<PlayerInfo> getPlayersInfo() throws Exception {
         throw new Exception();
     }
 

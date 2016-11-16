@@ -1,15 +1,18 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.model.Bank;
+import com.lamtev.poker.core.model.Cards;
+import com.lamtev.poker.core.model.Dealer;
+import com.lamtev.poker.core.model.Players;
 
 abstract class SettingsFinishedPokerState implements PokerState {
 
-    private Poker poker;
-    private Players players;
-    private Bank bank;
-    private Dealer dealer;
-    private Cards commonCards;
+    protected Poker poker;
+    protected Players players;
+    protected Bank bank;
+    protected Dealer dealer;
+    protected Cards commonCards;
 
     SettingsFinishedPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
         this.poker = poker;
@@ -37,14 +40,6 @@ abstract class SettingsFinishedPokerState implements PokerState {
     @Override
     public Cards getCommonCards() throws Exception {
         return commonCards;
-    }
-
-    void setState(Class<? extends SettingsFinishedPokerState> className) throws Exception {
-        poker.setState(
-                className
-                        .getConstructor(Poker.class, Players.class, Bank.class, Dealer.class, Cards.class)
-                        .newInstance(poker, players, bank, dealer, commonCards)
-        );
     }
 
 }

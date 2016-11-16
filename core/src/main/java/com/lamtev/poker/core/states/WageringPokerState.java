@@ -5,8 +5,6 @@ import com.lamtev.poker.core.model.*;
 
 abstract class WageringPokerState extends SettingsFinishedPokerState {
 
-    private Players players;
-    private Bank bank;
     private int playerIndex;
     private MoveValidator moveValidator;
     private int raises = 0;
@@ -14,8 +12,6 @@ abstract class WageringPokerState extends SettingsFinishedPokerState {
 
     WageringPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
         super(poker, players, bank, dealer, commonCards);
-        this.players = players;
-        this.bank = bank;
         playerIndex = this instanceof PreflopWageringPokerState ? 2 : 0;
         moveValidator = new MoveValidator(players, bank);
     }
@@ -55,6 +51,14 @@ abstract class WageringPokerState extends SettingsFinishedPokerState {
     boolean isTimeToNextState() {
         return doPlayersHaveSameWagers() && raises == 3 ||
                 continuousChecks == players.activePlayersNumber();
+    }
+
+    void setState(Class<? extends SettingsFinishedPokerState> className) throws Exception {
+        poker.setState(
+                className
+                        .getConstructor(Poker.class, Players.class, Bank.class, Dealer.class, Cards.class)
+                        .newInstance(poker, players, bank, dealer, commonCards)
+        );
     }
 
     private boolean doPlayersHaveSameWagers() {

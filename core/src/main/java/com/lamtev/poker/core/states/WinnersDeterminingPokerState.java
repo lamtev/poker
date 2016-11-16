@@ -12,18 +12,8 @@ import java.util.ArrayList;
 
 class WinnersDeterminingPokerState extends SettingsFinishedPokerState {
 
-    private Poker poker;
-    private Players players;
-    private Cards commonCards;
-    private Bank bank;
-
     public WinnersDeterminingPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
         super(poker, players, bank, dealer, commonCards);
-        this.poker = poker;
-        this.players = players;
-        this.bank = bank;
-        this.commonCards = commonCards;
-
     }
 
     @Override
