@@ -10,6 +10,8 @@ import com.lamtev.poker.core.util.PlayerInfo;
 
 import java.util.ArrayList;
 
+//TODO extract ShowdownPokerState and GameIsOverPokerState from this class
+
 class WinnersDeterminationPokerState extends SettingsFinishedPokerState {
 
     public WinnersDeterminationPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
