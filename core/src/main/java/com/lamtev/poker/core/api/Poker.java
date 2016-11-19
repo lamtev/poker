@@ -5,15 +5,21 @@ import com.lamtev.poker.core.states.PokerState;
 import com.lamtev.poker.core.states.SettingsPokerState;
 import com.lamtev.poker.core.util.PlayerInfo;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Poker implements PokerAPI {
 
     private PokerState state;
 
-    public Poker(ArrayList<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
+    public Poker() throws Exception {
+        state = new SettingsPokerState();
+}
+
+    @Override
+    public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
         state = new SettingsPokerState(this, playersInfo);
-        state.setBlinds(smallBlindSize);
+        state.setUp(, smallBlindSize);
+
     }
 
     @Override
@@ -42,7 +48,7 @@ public class Poker implements PokerAPI {
     }
 
     @Override
-    public ArrayList<PlayerInfo> getPlayersInfo() throws Exception {
+    public List<PlayerInfo> getPlayersInfo() throws Exception {
         return state.getPlayersInfo();
     }
 

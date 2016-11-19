@@ -3,12 +3,16 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
 
-abstract class WageringPokerState extends SettingsFinishedPokerState {
+abstract class WageringPokerState extends ActionPokerState {
 
     private int playerIndex;
     private MoveValidator moveValidator;
     private int raises = 0;
     private int continuousChecks = 0;
+
+    WageringPokerState(ActionPokerState state) {
+        this(state.poker, state.players, state.bank, state.dealer, state.commonCards);
+    }
 
     WageringPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
         super(poker, players, bank, dealer, commonCards);
@@ -48,17 +52,14 @@ abstract class WageringPokerState extends SettingsFinishedPokerState {
         continuousChecks++;
     }
 
+    @Override
+    public Cards showDown() throws Exception {
+        throw new Exception("Can't show down when wagering");
+    }
+
     boolean isTimeToNextState() {
         return doPlayersHaveSameWagers() && raises == 3 ||
                 continuousChecks == players.activePlayersNumber();
-    }
-
-    void setState(Class<? extends SettingsFinishedPokerState> className) throws Exception {
-        poker.setState(
-                className
-                        .getConstructor(Poker.class, Players.class, Bank.class, Dealer.class, Cards.class)
-                        .newInstance(poker, players, bank, dealer, commonCards)
-        );
     }
 
     private boolean doPlayersHaveSameWagers() {
@@ -84,7 +85,7 @@ abstract class WageringPokerState extends SettingsFinishedPokerState {
     }
 
     private void winnerDeterminingState() throws Exception {
-        setState(WinnersDeterminationPokerState.class);
+        poker.setState(new GameIsOverPokerState(this));
     }
 
 }

@@ -6,36 +6,42 @@ import com.lamtev.poker.core.states.exceptions.GameHaveNotBeenStartedException;
 import com.lamtev.poker.core.util.PlayerInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SettingsPokerState implements PokerState {
 
+    private List<WageringEndListener> wageringEndListeners;
     private Poker poker;
     private Players players;
     private Bank bank;
     private Dealer dealer;
     private Cards commonCards;
 
-    public SettingsPokerState(Poker poker, ArrayList<PlayerInfo> playersInfo) {
+    public SettingsPokerState(Poker poker) {
+        wageringEndListeners = new ArrayList<>();
         this.poker = poker;
-        init(playersInfo);
-    }
-
-    private void init(ArrayList<PlayerInfo> playersInfo) {
-        players = new Players();
-        playersInfo.forEach((playerInfo) -> {
-            String id = playerInfo.getId();
-            int stack = playerInfo.getStack();
-            players.add(new Player(id, stack));
-        });
-        bank = new Bank(players);
-        commonCards = new Cards();
-        dealer = new Dealer(players, commonCards);
     }
 
     @Override
-    public void setBlinds(int smallBlindSize) throws Exception {
+    public void addWageringEndListener(WageringEndListener wageringEndListener) throws Exception {
+        wageringEndListeners.add(wageringEndListener);
+    }
+
+    @Override
+    public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
+        init(playersInfo);
         bank.acceptBlindWagers(smallBlindSize);
         poker.setState(new PreflopWageringPokerState(poker, players, bank, dealer, commonCards));
+    }
+
+    @Override
+    public Cards getPlayerCards(String playerID) throws Exception {
+        throw new GameHaveNotBeenStartedException();
+    }
+
+    @Override
+    public ArrayList<PlayerInfo> getPlayersInfo() throws Exception {
+        throw new GameHaveNotBeenStartedException();
     }
 
     @Override
@@ -77,4 +83,22 @@ public class SettingsPokerState implements PokerState {
     public void check() throws Exception {
         throw new GameHaveNotBeenStartedException();
     }
+
+    @Override
+    public Cards showDown() throws Exception {
+        throw new GameHaveNotBeenStartedException();
+    }
+
+    private void init(List<PlayerInfo> playersInfo) {
+        players = new Players();
+        playersInfo.forEach((playerInfo) -> {
+            String id = playerInfo.getId();
+            int stack = playerInfo.getStack();
+            players.add(new Player(id, stack));
+        });
+        bank = new Bank(players);
+        commonCards = new Cards();
+        dealer = new Dealer(players, commonCards);
+    }
+
 }

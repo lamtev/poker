@@ -1,32 +1,52 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.model.Bank;
 import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.model.Dealer;
-import com.lamtev.poker.core.model.Players;
 import com.lamtev.poker.core.states.exceptions.GameIsOverException;
 import com.lamtev.poker.core.util.PlayerInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 
-//TODO extract ShowdownPokerState and GameIsOverPokerState from this class
+class GameIsOverPokerState extends ActionPokerState {
 
-class WinnersDeterminationPokerState extends SettingsFinishedPokerState {
-
-    public WinnersDeterminationPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
-        super(poker, players, bank, dealer, commonCards);
+    GameIsOverPokerState(ActionPokerState state) {
+        super(state.poker, state.players, state.bank, state.dealer, state.commonCards);
 
     }
 
     @Override
-    public void setBlinds(int smallBlindSize) throws Exception {
+    public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
+        throw new GameIsOverException();
+    }
+
+    @Override
+    public void addWageringEndListener(WageringEndListener wageringEndListener) throws Exception {
+        throw new GameIsOverException();
+    }
+
+    @Override
+    public int getPlayerWager(String playerID) throws Exception {
+        throw new GameIsOverException();
+    }
+
+    @Override
+    public int getPlayerStack(String playerID) throws Exception {
+        throw new GameIsOverException();
+    }
+
+    @Override
+    public int getMoneyInBank() throws Exception {
+        throw new GameIsOverException();
+    }
+
+    @Override
+    public Cards getCommonCards() throws Exception {
         throw new GameIsOverException();
     }
 
     @Override
     public Cards getPlayerCards(String playerID) throws Exception {
-        return players.get(playerID).getCards();
+        throw new GameIsOverException();
     }
 
     @Override
@@ -60,4 +80,8 @@ class WinnersDeterminationPokerState extends SettingsFinishedPokerState {
         throw new GameIsOverException();
     }
 
+    @Override
+    public Cards showDown() throws Exception {
+        throw new GameIsOverException();
+    }
 }

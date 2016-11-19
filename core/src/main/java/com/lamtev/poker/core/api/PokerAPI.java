@@ -4,8 +4,11 @@ import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.util.PlayerInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface PokerAPI {
+    void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception;
+
     int getPlayerWager(String playerID) throws Exception;
 
     int getPlayerStack(String playerID) throws Exception;
@@ -16,7 +19,7 @@ public interface PokerAPI {
 
     Cards getCommonCards() throws Exception;
 
-    ArrayList<PlayerInfo> getPlayersInfo() throws Exception;
+    List<PlayerInfo> getPlayersInfo() throws Exception;
 
     void call() throws Exception;
 

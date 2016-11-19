@@ -4,11 +4,12 @@ import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.util.PlayerInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface PokerState {
-    default void setBlinds(int smallBlindSize) throws Exception {
-        throw new Exception();
-    }
+    void addWageringEndListener(WageringEndListener wageringEndListener) throws Exception;
+
+    void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception;
 
     int getPlayerWager(String playerID) throws Exception;
 
@@ -16,15 +17,11 @@ public interface PokerState {
 
     int getMoneyInBank() throws Exception;
 
-    default Cards getPlayerCards(String playerID) throws Exception {
-        throw new Exception();
-    }
+    Cards getPlayerCards(String playerID) throws Exception;
 
     Cards getCommonCards() throws Exception;
 
-    default ArrayList<PlayerInfo> getPlayersInfo() throws Exception {
-        throw new Exception();
-    }
+    ArrayList<PlayerInfo> getPlayersInfo() throws Exception;
 
     void call() throws Exception;
 
@@ -33,4 +30,6 @@ public interface PokerState {
     void fold() throws Exception;
 
     void check() throws Exception;
+
+    Cards showDown() throws Exception;
 }
