@@ -10,7 +10,8 @@ import java.util.List;
 
 class PreflopWageringPokerState extends WageringPokerState {
 
-    PreflopWageringPokerState(List<WageringEndListener> wageringEndListeners, Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
+    PreflopWageringPokerState(List<WageringEndListener> wageringEndListeners, Poker poker,
+                              Players players, Bank bank, Dealer dealer, Cards commonCards) {
         super(wageringEndListeners, poker, players, bank, dealer, commonCards);
         dealer.makePreflop();
     }
@@ -40,7 +41,7 @@ class PreflopWageringPokerState extends WageringPokerState {
     }
 
     private void nextState() throws Exception {
-        poker.setState(new FlopWageringPokerState(this));
+        setState(new FlopWageringPokerState(this));
     }
 
 }

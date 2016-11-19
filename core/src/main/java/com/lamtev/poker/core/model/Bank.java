@@ -30,22 +30,24 @@ public class Bank {
         currentWager = bigBlindSize;
     }
 
-    public void acceptCallFromPlayer(int playerPosition) throws Exception {
+    public void acceptCallFromPlayer(int playerIndex) throws Exception {
         //TODO throw exception when blinds not set
-        Player player = players.get(playerPosition);
-        int playerWager = player.getWager();
-        int moneyTakingFromPlayer = currentWager - playerWager;
+        Player player = players.get(playerIndex);
+        int moneyTakingFromPlayer = currentWager - player.getWager();
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
         this.money += player.takeMoney(moneyTakingFromPlayer);
     }
 
     public void acceptRaiseFromPlayer(int additionalWager, int playerIndex) throws Exception {
         Player player = players.get(playerIndex);
-        int playerWager = player.getWager();
-        int moneyTakingFromPlayer = currentWager + additionalWager - playerWager;
+        int moneyTakingFromPlayer = currentWager + additionalWager - player.getWager();
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
         this.money += player.takeMoney(moneyTakingFromPlayer);
         currentWager += additionalWager;
+    }
+
+    public void acceptAllInFromPlayer(int playerIndex) {
+        //TODO
     }
 
     private void validateTakingMoneyFromPlayer(Player player, int moneyTakingFromPlayer) throws Exception {

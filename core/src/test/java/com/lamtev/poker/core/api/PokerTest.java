@@ -4,28 +4,29 @@ import com.lamtev.poker.core.util.PlayerInfo;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class PokerTest {
 
     //TODO functional tests
-    @Test
-    public void test() throws Exception {
-        ArrayList<PlayerInfo> playersInfo = new ArrayList<>();
+
+    private List<PlayerInfo> generatePlayersInfo() {
+        List<PlayerInfo> playersInfo = new ArrayList<>();
         playersInfo.add(new PlayerInfo("a1", 100));
         playersInfo.add(new PlayerInfo("b1", 200));
         playersInfo.add(new PlayerInfo("c1", 300));
+        return playersInfo;
+    }
+
+    @Test
+    public void test() throws Exception {
 
         Poker poker = new Poker();
-
-        System.out.println(poker.getState().getClass());
-
-        poker.setUp(playersInfo, 30);
-
-        System.out.println(poker.getState().getClass());
-
-        //assertEquals(0, poker.getCommonCards().size());
+        assertEquals("SettingsPokerState", poker.getState().getClass().getSimpleName());
+        poker.setUp(generatePlayersInfo(), 30);
+        assertEquals("PreflopWageringPokerState", poker.getState().getClass().getSimpleName());
 
         poker.call();
         poker.call();
@@ -33,27 +34,27 @@ public class PokerTest {
         poker.check();
         poker.check();
 
-        System.out.println(poker.getState().getClass());
+        assertEquals("FlopWageringPokerState", poker.getState().getClass().getSimpleName());
         assertEquals(3, poker.getCommonCards().size());
 
         poker.check();
         poker.check();
         poker.check();
 
-        System.out.println(poker.getState().getClass());
+        assertEquals("TurnWageringPokerState", poker.getState().getClass().getSimpleName());
         assertEquals(4, poker.getCommonCards().size());
 
         poker.check();
         poker.check();
         poker.check();
 
-        System.out.println(poker.getState().getClass());
+        assertEquals("RiverWageringPokerState", poker.getState().getClass().getSimpleName());
         assertEquals(5, poker.getCommonCards().size());
 
         poker.fold();
         poker.fold();
 
-        System.out.println(poker.getState().getClass());
+        assertEquals("GameIsOverPokerState", poker.getState().getClass().getSimpleName());
 
     }
 

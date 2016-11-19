@@ -27,6 +27,8 @@ public interface PokerAPI {
 
     void raise(int additionalWager) throws Exception;
 
+    void allIn() throws Exception;
+
     void fold() throws Exception;
 
     void check() throws Exception;

@@ -26,6 +26,7 @@ public interface PokerState {
     void call() throws Exception;
 
     void raise(int additionalWager) throws Exception;
+    void allIn() throws Exception;
 
     void fold() throws Exception;
 

@@ -19,7 +19,8 @@ abstract class ActionPokerState implements PokerState {
     protected Dealer dealer;
     protected Cards commonCards;
 
-    ActionPokerState(List<WageringEndListener> wageringEndListeners, Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
+    ActionPokerState(List<WageringEndListener> wageringEndListeners, Poker poker,
+                     Players players, Bank bank, Dealer dealer, Cards commonCards) {
         this.wageringEndListeners = wageringEndListeners;
         this.poker = poker;
         this.players = players;
@@ -71,5 +72,4 @@ abstract class ActionPokerState implements PokerState {
     public Cards getCommonCards() throws Exception {
         return commonCards;
     }
-
 }

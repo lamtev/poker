@@ -71,6 +71,11 @@ class GameIsOverPokerState extends ActionPokerState {
     }
 
     @Override
+    public void allIn() throws Exception {
+        throw new GameIsOverException();
+    }
+
+    @Override
     public void fold() throws Exception {
         throw new GameIsOverException();
     }

@@ -11,12 +11,14 @@ abstract class WageringPokerState extends ActionPokerState {
     private MoveValidator moveValidator;
     private int raises = 0;
     private int continuousChecks = 0;
+    private int allIns = 0;
 
     WageringPokerState(ActionPokerState state) {
         this(state.wageringEndListeners, state.poker, state.players, state.bank, state.dealer, state.commonCards);
     }
 
-    WageringPokerState(List<WageringEndListener> wageringEndListeners, Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
+    WageringPokerState(List<WageringEndListener> wageringEndListeners, Poker poker,
+                       Players players, Bank bank, Dealer dealer, Cards commonCards) {
         super(wageringEndListeners, poker, players, bank, dealer, commonCards);
         playerIndex = this instanceof PreflopWageringPokerState ? 2 : 0;
         moveValidator = new MoveValidator(players, bank);
@@ -36,6 +38,13 @@ abstract class WageringPokerState extends ActionPokerState {
         changePlayerIndex();
         raises++;
         continuousChecks = 0;
+    }
+
+    @Override
+    public void allIn() throws Exception {
+        allIns++;
+        bank.acceptAllInFromPlayer(playerIndex);
+        changePlayerIndex();
     }
 
     @Override
@@ -61,13 +70,22 @@ abstract class WageringPokerState extends ActionPokerState {
 
     boolean isTimeToNextState() {
         return doPlayersHaveSameWagers() && raises == 3 ||
-                continuousChecks == players.activePlayersNumber();
+                continuousChecks == players.activePlayersNumber() ||
+                allIns == players.activePlayersNumber();
     }
+
+    void setState(PokerState newState) {
+        poker.setState(newState);
+        wageringEndListeners.forEach(WageringEndListener::onWageringEnd);
+    }
+
 
     private boolean doPlayersHaveSameWagers() {
         for (Player player : players) {
-            if (player.getWager() != bank.getCurrentWager()) {
-                return false;
+            if (player.isActive()) {
+                if (player.getWager() != bank.getCurrentWager()) {
+                    return false;
+                }
             }
         }
         return true;

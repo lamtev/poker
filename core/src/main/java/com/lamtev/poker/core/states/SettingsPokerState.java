@@ -75,6 +75,11 @@ public class SettingsPokerState implements PokerState {
     }
 
     @Override
+    public void allIn() throws Exception {
+        throw new GameHaveNotBeenStartedException();
+    }
+
+    @Override
     public void fold() throws Exception {
         throw new GameHaveNotBeenStartedException();
     }

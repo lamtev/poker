@@ -32,7 +32,7 @@ class FlopWageringPokerState extends WageringPokerState {
     }
 
     private void nextState() throws Exception {
-        poker.setState(new TurnWageringPokerState(this));
+        setState(new TurnWageringPokerState(this));
     }
 
 }

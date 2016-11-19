@@ -67,6 +67,11 @@ public class Poker implements PokerAPI {
     }
 
     @Override
+    public void allIn() throws Exception {
+
+    }
+
+    @Override
     public void fold() throws Exception {
         state.fold();
     }
