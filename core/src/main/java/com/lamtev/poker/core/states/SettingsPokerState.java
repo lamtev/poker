@@ -31,7 +31,7 @@ public class SettingsPokerState implements PokerState {
     public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
         init(playersInfo);
         bank.acceptBlindWagers(smallBlindSize);
-        poker.setState(new PreflopWageringPokerState(poker, players, bank, dealer, commonCards));
+        poker.setState(new PreflopWageringPokerState(wageringEndListeners, poker, players, bank, dealer, commonCards));
     }
 
     @Override

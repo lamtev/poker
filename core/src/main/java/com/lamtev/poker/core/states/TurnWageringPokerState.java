@@ -3,10 +3,9 @@ package com.lamtev.poker.core.states;
 class TurnWageringPokerState extends WageringPokerState {
 
     TurnWageringPokerState(ActionPokerState state) {
-        super(state.poker, state.players, state.bank, state.dealer, state.commonCards);
+        super(state);
         dealer.makeTurn();
     }
-
 
 
     @Override

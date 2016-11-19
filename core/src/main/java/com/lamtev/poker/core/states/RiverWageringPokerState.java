@@ -3,7 +3,7 @@ package com.lamtev.poker.core.states;
 class RiverWageringPokerState extends WageringPokerState {
 
     RiverWageringPokerState(ActionPokerState state) {
-        super(state.poker, state.players, state.bank, state.dealer, state.commonCards);
+        super(state);
         dealer.makeRiver();
     }
 

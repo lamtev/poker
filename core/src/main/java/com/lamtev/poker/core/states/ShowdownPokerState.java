@@ -5,7 +5,7 @@ import com.lamtev.poker.core.model.Cards;
 public class ShowdownPokerState extends ActionPokerState {
 
     ShowdownPokerState(ActionPokerState state) {
-        super(state.poker, state.players, state.bank, state.dealer, state.commonCards);
+        super(state);
     }
 
     @Override

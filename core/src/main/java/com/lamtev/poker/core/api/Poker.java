@@ -3,6 +3,7 @@ package com.lamtev.poker.core.api;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.PokerState;
 import com.lamtev.poker.core.states.SettingsPokerState;
+import com.lamtev.poker.core.states.WageringEndListener;
 import com.lamtev.poker.core.util.PlayerInfo;
 
 import java.util.List;
@@ -12,14 +13,17 @@ public class Poker implements PokerAPI {
     private PokerState state;
 
     public Poker() throws Exception {
-        state = new SettingsPokerState();
-}
+        state = new SettingsPokerState(this);
+    }
+
+    @Override
+    public void addWageringEndListener(WageringEndListener wageringEndListener) throws Exception {
+        state.addWageringEndListener(wageringEndListener);
+    }
 
     @Override
     public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
-        state = new SettingsPokerState(this, playersInfo);
-        state.setUp(, smallBlindSize);
-
+        state.setUp(playersInfo, smallBlindSize);
     }
 
     @Override
@@ -70,6 +74,11 @@ public class Poker implements PokerAPI {
     @Override
     public void check() throws Exception {
         state.check();
+    }
+
+    @Override
+    public Cards showDown() throws Exception {
+        return state.showDown();
     }
 
     public void setState(PokerState newState) {

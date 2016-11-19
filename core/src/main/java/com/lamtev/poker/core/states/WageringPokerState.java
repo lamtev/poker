@@ -3,6 +3,8 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
 
+import java.util.List;
+
 abstract class WageringPokerState extends ActionPokerState {
 
     private int playerIndex;
@@ -11,11 +13,11 @@ abstract class WageringPokerState extends ActionPokerState {
     private int continuousChecks = 0;
 
     WageringPokerState(ActionPokerState state) {
-        this(state.poker, state.players, state.bank, state.dealer, state.commonCards);
+        this(state.wageringEndListeners, state.poker, state.players, state.bank, state.dealer, state.commonCards);
     }
 
-    WageringPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
-        super(poker, players, bank, dealer, commonCards);
+    WageringPokerState(List<WageringEndListener> wageringEndListeners, Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
+        super(wageringEndListeners, poker, players, bank, dealer, commonCards);
         playerIndex = this instanceof PreflopWageringPokerState ? 2 : 0;
         moveValidator = new MoveValidator(players, bank);
     }

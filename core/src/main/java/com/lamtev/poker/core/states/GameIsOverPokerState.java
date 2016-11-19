@@ -10,7 +10,7 @@ import java.util.List;
 class GameIsOverPokerState extends ActionPokerState {
 
     GameIsOverPokerState(ActionPokerState state) {
-        super(state.poker, state.players, state.bank, state.dealer, state.commonCards);
+        super(state.wageringEndListeners, state.poker, state.players, state.bank, state.dealer, state.commonCards);
 
     }
 

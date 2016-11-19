@@ -1,12 +1,14 @@
 package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.model.Cards;
+import com.lamtev.poker.core.states.WageringEndListener;
 import com.lamtev.poker.core.util.PlayerInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface PokerAPI {
+    void addWageringEndListener(WageringEndListener wageringEndListener) throws Exception;
+
     void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception;
 
     int getPlayerWager(String playerID) throws Exception;
@@ -28,4 +30,6 @@ public interface PokerAPI {
     void fold() throws Exception;
 
     void check() throws Exception;
+
+    Cards showDown() throws Exception;
 }

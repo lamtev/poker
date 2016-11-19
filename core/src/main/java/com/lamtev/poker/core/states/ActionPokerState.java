@@ -12,18 +12,24 @@ import java.util.List;
 
 abstract class ActionPokerState implements PokerState {
 
+    protected List<WageringEndListener> wageringEndListeners;
     protected Poker poker;
     protected Players players;
     protected Bank bank;
     protected Dealer dealer;
     protected Cards commonCards;
 
-    ActionPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
+    ActionPokerState(List<WageringEndListener> wageringEndListeners, Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
+        this.wageringEndListeners = wageringEndListeners;
         this.poker = poker;
         this.players = players;
         this.bank = bank;
         this.dealer = dealer;
         this.commonCards = commonCards;
+    }
+
+    ActionPokerState(ActionPokerState state) {
+        this(state.wageringEndListeners, state.poker, state.players, state.bank, state.dealer, state.commonCards);
     }
 
     @Override

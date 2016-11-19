@@ -17,11 +17,15 @@ public class PokerTest {
         playersInfo.add(new PlayerInfo("b1", 200));
         playersInfo.add(new PlayerInfo("c1", 300));
 
-        Poker poker = new Poker(playersInfo, 20);
+        Poker poker = new Poker();
 
         System.out.println(poker.getState().getClass());
 
-        assertEquals(0, poker.getCommonCards().size());
+        poker.setUp(playersInfo, 30);
+
+        System.out.println(poker.getState().getClass());
+
+        //assertEquals(0, poker.getCommonCards().size());
 
         poker.call();
         poker.call();
