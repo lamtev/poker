@@ -12,6 +12,8 @@ public interface PokerState {
 
     int getPlayerWager(String playerID) throws Exception;
 
+    Cards getPlayerCards(String playerID) throws Exception;
+
     int getPlayerStack(String playerID) throws Exception;
 
     int getMoneyInBank() throws Exception;

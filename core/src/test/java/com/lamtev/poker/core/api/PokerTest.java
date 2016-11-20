@@ -37,6 +37,7 @@ public class PokerTest implements StateChangedListener {
 
         System.out.println(state);
         assertEquals("SettingsPokerState", poker.getState().getClass().getSimpleName());
+
         poker.setUp(generatePlayersInfo(), 30);
         System.out.println(state);
         assertEquals("PreflopWageringPokerState", poker.getState().getClass().getSimpleName());

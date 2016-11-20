@@ -17,7 +17,7 @@ class PreflopWageringPokerState extends WageringPokerState {
     @Override
     public void call() throws Exception {
         super.call();
-        if (isTimeToNextState()) {
+        if (preflopHasBeenFinished()) {
             nextState();
         }
     }
@@ -25,14 +25,9 @@ class PreflopWageringPokerState extends WageringPokerState {
     @Override
     public void fold() throws Exception {
         super.fold();
-        if (isTimeToNextState()) {
+        if (preflopHasBeenFinished()) {
             nextState();
         }
-    }
-
-    @Override
-    boolean isTimeToNextState() {
-        return preflopHasBeenFinished();
     }
 
     @Override

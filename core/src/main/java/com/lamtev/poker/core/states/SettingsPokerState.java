@@ -38,6 +38,11 @@ public class SettingsPokerState implements PokerState {
     }
 
     @Override
+    public Cards getPlayerCards(String playerID) throws Exception {
+        throw new GameHaveNotBeenStartedException();
+    }
+
+    @Override
     public int getPlayerStack(String playerID) throws Exception {
         throw new GameHaveNotBeenStartedException();
     }

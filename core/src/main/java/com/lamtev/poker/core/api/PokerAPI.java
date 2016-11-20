@@ -1,8 +1,8 @@
 package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.util.StateChangedListener;
 import com.lamtev.poker.core.util.PlayerInfo;
+import com.lamtev.poker.core.util.StateChangedListener;
 
 import java.util.List;
 //TODO javadoc
@@ -12,6 +12,8 @@ public interface PokerAPI {
     void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception;
 
     int getPlayerWager(String playerID) throws Exception;
+
+    Cards getPlayerCards(String playerID) throws Exception;
 
     int getPlayerStack(String playerID) throws Exception;
 

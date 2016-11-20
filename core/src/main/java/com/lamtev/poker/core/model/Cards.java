@@ -66,10 +66,13 @@ public class Cards implements Iterable<Card> {
 
     @Override
     public String toString() {
-        String s = "";
+        StringBuilder stringBuilder = new StringBuilder();
         for (Card card : cards) {
-            s += card.toString() + " ";
+            stringBuilder
+                    .append(card.toString())
+                    .append(" ");
         }
-        return s;
+
+        return stringBuilder.toString();
     }
 }

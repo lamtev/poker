@@ -10,7 +10,7 @@ class FlopWageringPokerState extends WageringPokerState {
     @Override
     public void call() throws Exception {
         super.call();
-        if (isTimeToNextState()) {
+        if (timeToNextState()) {
             nextState();
         }
     }
@@ -18,7 +18,7 @@ class FlopWageringPokerState extends WageringPokerState {
     @Override
     public void fold() throws Exception {
         super.fold();
-        if (isTimeToNextState()) {
+        if (timeToNextState()) {
             nextState();
         }
     }
@@ -26,7 +26,7 @@ class FlopWageringPokerState extends WageringPokerState {
     @Override
     public void check() throws Exception {
         super.check();
-        if (isTimeToNextState()) {
+        if (timeToNextState()) {
             nextState();
         }
     }

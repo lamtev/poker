@@ -49,7 +49,7 @@ class ShowdownPokerState extends ActionPokerState {
 
     @Override
     public Cards showDown() throws Exception {
-        showDowns++;
+        ++showDowns;
         if (timeToDetermineWinners()) {
             bank.giveMoneyToWinners(combinationAnalyser.determineWinners());
             poker.setState(new GameIsOverPokerState(this));

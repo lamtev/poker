@@ -73,7 +73,7 @@ abstract class WageringPokerState extends ActionPokerState {
     public void check() throws Exception {
         moveValidator.validateCheck(raisers.size());
         changePlayerIndex();
-        checks++;
+        ++checks;
     }
 
     @Override
@@ -90,7 +90,7 @@ abstract class WageringPokerState extends ActionPokerState {
         for (Player player : players) {
             if (player.isActive() && !allInners.contains(player) &&
                     player.getWager() == bank.getCurrentWager()) {
-                count++;
+                ++count;
             }
         }
         return count;
@@ -107,7 +107,7 @@ abstract class WageringPokerState extends ActionPokerState {
         poker.setState(new GameIsOverPokerState(this));
     }
 
-    boolean isTimeToNextState() {
+    boolean timeToNextState() {
         return checks == players.activePlayersNumber() ||
                 notAllInnersActivePlayersWithSameWagers() + allInners.size()
                         == players.activePlayersNumber() && raisers.size() > 0;
@@ -126,7 +126,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     int latestAggressorIndex() {
-        for (int i = raisers.size()-1; i >= 0; ++i) {
+        for (int i = raisers.size() - 1; i >= 0; ++i) {
             if (raisers.get(i).isActive()) {
                 return i;
             }

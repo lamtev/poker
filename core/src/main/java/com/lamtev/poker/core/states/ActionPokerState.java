@@ -45,6 +45,11 @@ abstract class ActionPokerState implements PokerState {
     }
 
     @Override
+    public Cards getPlayerCards(String playerID) throws Exception {
+        return players.get(playerID).getCards();
+    }
+
+    @Override
     public int getPlayerStack(String playerID) throws Exception {
         return players.get(playerID).getStack();
     }
@@ -60,10 +65,10 @@ abstract class ActionPokerState implements PokerState {
     }
 
     void changePlayerIndex() {
-        playerIndex++;
+        ++playerIndex;
         playerIndex %= players.size();
         while (!players.get(playerIndex).isActive()) {
-            playerIndex++;
+            ++playerIndex;
             playerIndex %= players.size();
         }
     }

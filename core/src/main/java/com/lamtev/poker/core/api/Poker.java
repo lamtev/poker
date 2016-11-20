@@ -3,8 +3,8 @@ package com.lamtev.poker.core.api;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.PokerState;
 import com.lamtev.poker.core.states.SettingsPokerState;
-import com.lamtev.poker.core.util.StateChangedListener;
 import com.lamtev.poker.core.util.PlayerInfo;
+import com.lamtev.poker.core.util.StateChangedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,11 @@ public class Poker implements PokerAPI {
     @Override
     public int getPlayerWager(String playerId) throws Exception {
         return state.getPlayerWager(playerId);
+    }
+
+    @Override
+    public Cards getPlayerCards(String playerID) throws Exception {
+        return state.getPlayerCards(playerID);
     }
 
     @Override
