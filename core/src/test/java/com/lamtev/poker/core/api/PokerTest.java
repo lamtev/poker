@@ -30,9 +30,6 @@ public class PokerTest {
 
         poker.call();
         poker.call();
-        poker.check();
-        poker.check();
-        poker.check();
 
         assertEquals("FlopWageringPokerState", poker.getState().getClass().getSimpleName());
         assertEquals(3, poker.getCommonCards().size());

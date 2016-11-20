@@ -37,7 +37,7 @@ public class BankTest {
         Bank bank = new Bank(players);
         bank.acceptBlindWagers(5);
         try {
-            bank.acceptCallFromPlayer(2);
+            bank.acceptCallFromPlayer(players.get(2));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -53,7 +53,7 @@ public class BankTest {
         Bank bank = new Bank(players);
         bank.acceptBlindWagers(5);
         try {
-            bank.acceptRaiseFromPlayer(30, 3);
+            bank.acceptRaiseFromPlayer(30, players.get(3));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -63,7 +63,7 @@ public class BankTest {
         assertEquals(40, bank.getCurrentWager());
 
         try {
-            bank.acceptRaiseFromPlayer(20, 4);
+            bank.acceptRaiseFromPlayer(20, players.get(4));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,7 +73,7 @@ public class BankTest {
         assertEquals(60, bank.getCurrentWager());
 
         try {
-            bank.acceptRaiseFromPlayer(30, 3);
+            bank.acceptRaiseFromPlayer(30, players.get(3));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,7 +90,7 @@ public class BankTest {
         Bank bank = new Bank(players);
         bank.acceptBlindWagers(5);
         try {
-            bank.acceptRaiseFromPlayer(30, 3);
+            bank.acceptRaiseFromPlayer(30, players.get(3));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -26,11 +26,9 @@ class MoveValidator {
         }
     }
 
-    void validateCheck() throws Exception {
-        for (Player player : players) {
-            if (player.getWager() != bank.getCurrentWager()) {
-                throw new Exception("can't check");
-            }
+    void validateCheck(int raises) throws Exception {
+        if (raises != 0) {
+            throw new Exception("can't check");
         }
     }
 

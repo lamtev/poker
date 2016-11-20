@@ -68,7 +68,7 @@ public class Poker implements PokerAPI {
 
     @Override
     public void allIn() throws Exception {
-
+        state.allIn();
     }
 
     @Override

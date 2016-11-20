@@ -33,11 +33,13 @@ class PreflopWageringPokerState extends WageringPokerState {
     }
 
     @Override
+    boolean isTimeToNextState() {
+        return preflopHasBeenFinished();
+    }
+
+    @Override
     public void check() throws Exception {
-        super.check();
-        if (isTimeToNextState()) {
-            nextState();
-        }
+        throw new Exception();
     }
 
     private void nextState() throws Exception {
