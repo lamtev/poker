@@ -1,7 +1,6 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.model.Players;
 
 //TODO
 class ShowdownPokerState extends ActionPokerState {
@@ -13,11 +12,6 @@ class ShowdownPokerState extends ActionPokerState {
         super(state);
         combinationAnalyser = new CombinationAnalyser(players, commonCards);
         playerIndex = latestAggressorIndex;
-    }
-
-    @Override
-    public Cards getPlayerCards(String playerID) throws Exception {
-        return players.get(playerID).getCards();
     }
 
     @Override
@@ -43,7 +37,7 @@ class ShowdownPokerState extends ActionPokerState {
         currentPlayer().fold();
         changePlayerIndex();
         if (timeToDetermineWinners()) {
-            bank.giveMoneyToWinners(determineWinners());
+            bank.giveMoneyToWinners(combinationAnalyser.determineWinners());
             poker.setState(new GameIsOverPokerState(this));
         }
     }
@@ -57,7 +51,7 @@ class ShowdownPokerState extends ActionPokerState {
     public Cards showDown() throws Exception {
         showDowns++;
         if (timeToDetermineWinners()) {
-            bank.giveMoneyToWinners(determineWinners());
+            bank.giveMoneyToWinners(combinationAnalyser.determineWinners());
             poker.setState(new GameIsOverPokerState(this));
         }
         Cards cards = currentPlayer().getCards();
@@ -67,16 +61,6 @@ class ShowdownPokerState extends ActionPokerState {
 
     private boolean timeToDetermineWinners() {
         return showDowns == players.activePlayersNumber();
-    }
-
-    private Players determineWinners() {
-        return new Players() {{
-           players.forEach(player -> {
-               if (player.isActive()) {
-                   add(player);
-               }
-           });
-        }};
     }
 
 }

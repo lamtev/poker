@@ -19,31 +19,6 @@ class GameIsOverPokerState extends ActionPokerState {
     }
 
     @Override
-    public int getPlayerWager(String playerID) throws Exception {
-        throw new GameIsOverException();
-    }
-
-    @Override
-    public int getPlayerStack(String playerID) throws Exception {
-        throw new GameIsOverException();
-    }
-
-    @Override
-    public int getMoneyInBank() throws Exception {
-        throw new GameIsOverException();
-    }
-
-//    @Override
-//    public Cards getCommonCards() throws Exception {
-//        throw new GameIsOverException();
-//    }
-
-    @Override
-    public Cards getPlayerCards(String playerID) throws Exception {
-        throw new GameIsOverException();
-    }
-
-    @Override
     public ArrayList<PlayerInfo> getPlayersInfo() throws Exception {
         return new ArrayList<PlayerInfo>() {{
             players.forEach((player) -> {

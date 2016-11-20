@@ -5,7 +5,6 @@ import com.lamtev.poker.core.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 abstract class WageringPokerState extends ActionPokerState {
 
@@ -127,15 +126,13 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     int latestAggressorIndex() {
-        ListIterator<Player> it = raisers.listIterator(raisers.size());
-        int i = 0;
-        while (it.hasPrevious()) {
-            if (it.previous().isActive()) {
+        for (int i = raisers.size()-1; i >= 0; ++i) {
+            if (raisers.get(i).isActive()) {
                 return i;
             }
-            ++i;
         }
-        i = 0;
+
+        int i = 0;
         for (Player player : players) {
             if (player.isActive()) {
                 return i;

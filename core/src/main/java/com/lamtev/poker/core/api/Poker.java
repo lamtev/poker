@@ -38,11 +38,6 @@ public class Poker implements PokerAPI {
     }
 
     @Override
-    public Cards getPlayerCards(String playerId) throws Exception {
-        return state.getPlayerCards(playerId);
-    }
-
-    @Override
     public Cards getCommonCards() throws Exception {
         return state.getCommonCards();
     }

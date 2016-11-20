@@ -5,7 +5,7 @@ import com.lamtev.poker.core.util.StateChangedListener;
 import com.lamtev.poker.core.util.PlayerInfo;
 
 import java.util.List;
-
+//TODO javadoc
 public interface PokerAPI {
     void addStateChangedListener(StateChangedListener stateChangedListener) throws Exception;
 
@@ -16,8 +16,6 @@ public interface PokerAPI {
     int getPlayerStack(String playerID) throws Exception;
 
     int getMoneyInBank() throws Exception;
-
-    Cards getPlayerCards(String playerID) throws Exception;
 
     Cards getCommonCards() throws Exception;
 

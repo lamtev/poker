@@ -35,13 +35,8 @@ abstract class ActionPokerState implements PokerState {
     }
 
     @Override
-    public Cards getPlayerCards(String playerID) throws Exception {
-        throw new Exception();
-    }
-
-    @Override
     public ArrayList<PlayerInfo> getPlayersInfo() throws Exception {
-        return null;
+        throw new Exception();
     }
 
     @Override

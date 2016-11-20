@@ -16,8 +16,6 @@ public interface PokerState {
 
     int getMoneyInBank() throws Exception;
 
-    Cards getPlayerCards(String playerID) throws Exception;
-
     Cards getCommonCards() throws Exception;
 
     ArrayList<PlayerInfo> getPlayersInfo() throws Exception;
