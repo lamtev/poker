@@ -14,8 +14,8 @@ class MoveValidator {
         this.bank = bank;
     }
 
-    void validateCall(int playerIndex) throws Exception {
-        if (players.get(playerIndex).getWager() >= bank.getCurrentWager()) {
+    void validateCall(Player player) throws Exception {
+        if (player.getWager() >= bank.getCurrentWager()) {
             throw new Exception("can't call");
         }
     }

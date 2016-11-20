@@ -14,10 +14,6 @@ abstract class WageringPokerState extends ActionPokerState {
     private int checks = 0;
     private List<Player> allInners = new ArrayList<>();
 
-    WageringPokerState(ActionPokerState state) {
-        this(state.wageringEndListeners, state.poker, state.players, state.bank, state.dealer, state.commonCards);
-    }
-
     WageringPokerState(List<WageringEndListener> wageringEndListeners, Poker poker,
                        Players players, Bank bank, Dealer dealer, Cards commonCards) {
         super(wageringEndListeners, poker, players, bank, dealer, commonCards);
@@ -25,9 +21,13 @@ abstract class WageringPokerState extends ActionPokerState {
         moveValidator = new MoveValidator(players, bank);
     }
 
+    WageringPokerState(ActionPokerState state) {
+        this(state.wageringEndListeners, state.poker, state.players, state.bank, state.dealer, state.commonCards);
+    }
+
     @Override
     public void call() throws Exception {
-        moveValidator.validateCall(playerIndex);
+        moveValidator.validateCall(currentPlayer());
         bank.acceptCallFromPlayer(currentPlayer());
         if (thisMoveIsAllIn()) {
             allInners.add(currentPlayer());
@@ -61,13 +61,9 @@ abstract class WageringPokerState extends ActionPokerState {
         }
     }
 
-    private Player currentPlayer() {
-        return players.get(playerIndex);
-    }
-
     @Override
     public void fold() throws Exception {
-        players.get(playerIndex).fold();
+        currentPlayer().fold();
         changePlayerIndex();
         if (isOnlyOneActivePlayer()) {
             winnerDeterminingState();
@@ -86,25 +82,8 @@ abstract class WageringPokerState extends ActionPokerState {
         throw new Exception("Can't show down when wagering");
     }
 
-    boolean isTimeToNextState() {
-//        System.out.println(this.getClass().getSimpleName());
-//        System.out.println("checks: " + checks);
-//        System.out.println("allInners: " + allInners.size());
-        return checks == players.activePlayersNumber() ||
-                notAllInnersActivePlayersWithSameWagers() + allInners.size() == players.activePlayersNumber() && raises > 0;
-    }
-
-    boolean preflopHasBeenFinished() {
-        return notAllInnersActivePlayersWithSameWagers() + allInners.size() == players.activePlayersNumber();
-    }
-
-    void setState(PokerState newState) {
-        wageringEndListeners.forEach(WageringEndListener::onWageringEnd);
-        if (allInners.size() != 0) {
-            poker.setState(new ShowdownPokerState(this));
-        } else {
-            poker.setState(newState);
-        }
+    private Player currentPlayer() {
+        return players.get(playerIndex);
     }
 
     private boolean thisMoveIsAllIn() {
@@ -137,6 +116,25 @@ abstract class WageringPokerState extends ActionPokerState {
 
     private void winnerDeterminingState() throws Exception {
         poker.setState(new GameIsOverPokerState(this));
+    }
+
+    boolean isTimeToNextState() {
+        return checks == players.activePlayersNumber() ||
+                notAllInnersActivePlayersWithSameWagers() + allInners.size()
+                        == players.activePlayersNumber() && raises > 0;
+    }
+
+    boolean preflopHasBeenFinished() {
+        return notAllInnersActivePlayersWithSameWagers() + allInners.size() == players.activePlayersNumber();
+    }
+
+    void setState(PokerState newState) {
+        wageringEndListeners.forEach(WageringEndListener::onWageringEnd);
+        if (allInners.size() != 0) {
+            poker.setState(new ShowdownPokerState(this));
+        } else {
+            poker.setState(newState);
+        }
     }
 
 }

@@ -62,4 +62,8 @@ public class Bank {
         this.money -= money;
     }
 
+    public void giveMoneyToWinners(Players winners) {
+
+    }
+
 }

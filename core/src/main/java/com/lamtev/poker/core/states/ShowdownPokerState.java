@@ -11,17 +11,17 @@ class ShowdownPokerState extends ActionPokerState {
 
     @Override
     public void call() throws Exception {
-
+        throw new Exception();
     }
 
     @Override
     public void raise(int additionalWager) throws Exception {
-
+        throw new Exception();
     }
 
     @Override
     public void allIn() throws Exception {
-
+        throw new Exception();
     }
 
     @Override
@@ -31,7 +31,7 @@ class ShowdownPokerState extends ActionPokerState {
 
     @Override
     public void check() throws Exception {
-
+        throw new Exception();
     }
 
     @Override

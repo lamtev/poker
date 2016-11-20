@@ -72,4 +72,5 @@ abstract class ActionPokerState implements PokerState {
     public Cards getCommonCards() throws Exception {
         return commonCards;
     }
+
 }
