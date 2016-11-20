@@ -1,10 +1,7 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.model.Bank;
-import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.model.Dealer;
-import com.lamtev.poker.core.model.Players;
+import com.lamtev.poker.core.model.*;
 import com.lamtev.poker.core.util.PlayerInfo;
 
 import java.util.ArrayList;
@@ -12,16 +9,15 @@ import java.util.List;
 
 abstract class ActionPokerState implements PokerState {
 
-    protected List<WageringEndListener> wageringEndListeners;
+    protected int playerIndex;
     protected Poker poker;
     protected Players players;
     protected Bank bank;
     protected Dealer dealer;
     protected Cards commonCards;
 
-    ActionPokerState(List<WageringEndListener> wageringEndListeners, Poker poker,
+    ActionPokerState(Poker poker,
                      Players players, Bank bank, Dealer dealer, Cards commonCards) {
-        this.wageringEndListeners = wageringEndListeners;
         this.poker = poker;
         this.players = players;
         this.bank = bank;
@@ -30,12 +26,7 @@ abstract class ActionPokerState implements PokerState {
     }
 
     ActionPokerState(ActionPokerState state) {
-        this(state.wageringEndListeners, state.poker, state.players, state.bank, state.dealer, state.commonCards);
-    }
-
-    @Override
-    public void addWageringEndListener(WageringEndListener wageringEndListener) throws Exception {
-        throw new Exception();
+        this(state.poker, state.players, state.bank, state.dealer, state.commonCards);
     }
 
     @Override
@@ -71,6 +62,19 @@ abstract class ActionPokerState implements PokerState {
     @Override
     public Cards getCommonCards() throws Exception {
         return commonCards;
+    }
+
+    void changePlayerIndex() {
+        playerIndex++;
+        playerIndex %= players.size();
+        while (!players.get(playerIndex).isActive()) {
+            playerIndex++;
+            playerIndex %= players.size();
+        }
+    }
+
+    Player currentPlayer() {
+        return players.get(playerIndex);
     }
 
 }

@@ -63,7 +63,11 @@ public class Bank {
     }
 
     public void giveMoneyToWinners(Players winners) {
-
+        if (winners.size() == 1) {
+            winners.get(0).addMoney(money);
+            money = 0;
+        }
+        //TODO
     }
 
 }

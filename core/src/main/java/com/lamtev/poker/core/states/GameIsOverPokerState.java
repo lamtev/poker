@@ -10,17 +10,11 @@ import java.util.List;
 class GameIsOverPokerState extends ActionPokerState {
 
     GameIsOverPokerState(ActionPokerState state) {
-        super(state.wageringEndListeners, state.poker, state.players, state.bank, state.dealer, state.commonCards);
-
+        super(state.poker, state.players, state.bank, state.dealer, state.commonCards);
     }
 
     @Override
     public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
-        throw new GameIsOverException();
-    }
-
-    @Override
-    public void addWageringEndListener(WageringEndListener wageringEndListener) throws Exception {
         throw new GameIsOverException();
     }
 
@@ -39,10 +33,10 @@ class GameIsOverPokerState extends ActionPokerState {
         throw new GameIsOverException();
     }
 
-    @Override
-    public Cards getCommonCards() throws Exception {
-        throw new GameIsOverException();
-    }
+//    @Override
+//    public Cards getCommonCards() throws Exception {
+//        throw new GameIsOverException();
+//    }
 
     @Override
     public Cards getPlayerCards(String playerID) throws Exception {

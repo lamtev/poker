@@ -6,13 +6,11 @@ import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.model.Dealer;
 import com.lamtev.poker.core.model.Players;
 
-import java.util.List;
-
 class PreflopWageringPokerState extends WageringPokerState {
 
-    PreflopWageringPokerState(List<WageringEndListener> wageringEndListeners, Poker poker,
+    PreflopWageringPokerState(Poker poker,
                               Players players, Bank bank, Dealer dealer, Cards commonCards) {
-        super(wageringEndListeners, poker, players, bank, dealer, commonCards);
+        super(poker, players, bank, dealer, commonCards);
         dealer.makePreflop();
     }
 

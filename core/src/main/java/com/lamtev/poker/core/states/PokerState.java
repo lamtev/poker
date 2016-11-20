@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface PokerState {
-    void addWageringEndListener(WageringEndListener wageringEndListener) throws Exception;
 
     void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception;
 
@@ -26,6 +25,7 @@ public interface PokerState {
     void call() throws Exception;
 
     void raise(int additionalWager) throws Exception;
+
     void allIn() throws Exception;
 
     void fold() throws Exception;

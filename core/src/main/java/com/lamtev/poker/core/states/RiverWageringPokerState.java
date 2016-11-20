@@ -32,7 +32,7 @@ class RiverWageringPokerState extends WageringPokerState {
     }
 
     private void nextState() throws Exception {
-        setState(new ShowdownPokerState(this));
+        setState(new ShowdownPokerState(this, latestAggressorIndex()));
     }
 
 }

@@ -3,26 +3,27 @@ package com.lamtev.poker.core.api;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.PokerState;
 import com.lamtev.poker.core.states.SettingsPokerState;
-import com.lamtev.poker.core.states.WageringEndListener;
+import com.lamtev.poker.core.util.StateChangedListener;
 import com.lamtev.poker.core.util.PlayerInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Poker implements PokerAPI {
 
-    private PokerState state;
-
-    public Poker() throws Exception {
-        state = new SettingsPokerState(this);
-    }
+    private PokerState state = new SettingsPokerState(this);
+    private List<StateChangedListener> stateChangedListeners = new ArrayList<>();
 
     @Override
-    public void addWageringEndListener(WageringEndListener wageringEndListener) throws Exception {
-        state.addWageringEndListener(wageringEndListener);
+    public void addStateChangedListener(StateChangedListener stateChangedListener) throws Exception {
+        stateChangedListeners.add(stateChangedListener);
     }
 
     @Override
     public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
+        if (stateChangedListeners.size() == 0) {
+            throw new Exception("You must add at least one StageChangedListener");
+        }
         state.setUp(playersInfo, smallBlindSize);
     }
 
@@ -88,6 +89,7 @@ public class Poker implements PokerAPI {
 
     public void setState(PokerState newState) {
         state = newState;
+        stateChangedListeners.forEach(listener -> listener.changeState(state.getClass().getSimpleName()));
     }
 
     PokerState getState() {

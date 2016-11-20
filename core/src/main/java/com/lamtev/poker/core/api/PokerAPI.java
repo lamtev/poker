@@ -1,13 +1,13 @@
 package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.states.WageringEndListener;
+import com.lamtev.poker.core.util.StateChangedListener;
 import com.lamtev.poker.core.util.PlayerInfo;
 
 import java.util.List;
 
 public interface PokerAPI {
-    void addWageringEndListener(WageringEndListener wageringEndListener) throws Exception;
+    void addStateChangedListener(StateChangedListener stateChangedListener) throws Exception;
 
     void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception;
 

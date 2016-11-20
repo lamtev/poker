@@ -63,4 +63,13 @@ public class Cards implements Iterable<Card> {
     public int hashCode() {
         return cards != null ? cards.hashCode() : 0;
     }
+
+    @Override
+    public String toString() {
+        String s = "";
+        for (Card card : cards) {
+            s += card.toString() + " ";
+        }
+        return s;
+    }
 }

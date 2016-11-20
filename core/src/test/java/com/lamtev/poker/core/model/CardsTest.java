@@ -5,7 +5,7 @@ import org.junit.Test;
 import static com.lamtev.poker.core.model.Rank.ACE;
 import static com.lamtev.poker.core.model.Rank.TWO;
 import static com.lamtev.poker.core.model.Suit.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class CardsTest {
 

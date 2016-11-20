@@ -36,4 +36,9 @@ public final class Card {
         result = 31 * result + suit.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return rank.toString() + "_" + suit.toString();
+    }
 }

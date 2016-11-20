@@ -2,7 +2,8 @@ package com.lamtev.poker.core.model;
 
 import org.junit.Test;
 
-import static com.lamtev.poker.core.model.Rank.*;
+import static com.lamtev.poker.core.model.Rank.ACE;
+import static com.lamtev.poker.core.model.Rank.FIVE;
 import static com.lamtev.poker.core.model.Suit.*;
 import static org.junit.Assert.assertEquals;
 

@@ -10,7 +10,6 @@ import java.util.List;
 
 public class SettingsPokerState implements PokerState {
 
-    private List<WageringEndListener> wageringEndListeners;
     private Poker poker;
     private Players players;
     private Bank bank;
@@ -18,20 +17,14 @@ public class SettingsPokerState implements PokerState {
     private Cards commonCards;
 
     public SettingsPokerState(Poker poker) {
-        wageringEndListeners = new ArrayList<>();
         this.poker = poker;
-    }
-
-    @Override
-    public void addWageringEndListener(WageringEndListener wageringEndListener) throws Exception {
-        wageringEndListeners.add(wageringEndListener);
     }
 
     @Override
     public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
         init(playersInfo);
         bank.acceptBlindWagers(smallBlindSize);
-        poker.setState(new PreflopWageringPokerState(wageringEndListeners, poker, players, bank, dealer, commonCards));
+        poker.setState(new PreflopWageringPokerState(poker, players, bank, dealer, commonCards));
     }
 
     @Override
