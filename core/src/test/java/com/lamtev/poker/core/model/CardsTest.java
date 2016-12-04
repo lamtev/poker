@@ -1,11 +1,11 @@
-package com.lamtev.poker.core;
+package com.lamtev.poker.core.model;
 
 import org.junit.Test;
 
-import static com.lamtev.poker.core.Rank.ACE;
-import static com.lamtev.poker.core.Rank.TWO;
-import static com.lamtev.poker.core.Suit.*;
-import static org.junit.Assert.*;
+import static com.lamtev.poker.core.model.Rank.ACE;
+import static com.lamtev.poker.core.model.Rank.TWO;
+import static com.lamtev.poker.core.model.Suit.*;
+import static org.junit.Assert.assertEquals;
 
 public class CardsTest {
 
