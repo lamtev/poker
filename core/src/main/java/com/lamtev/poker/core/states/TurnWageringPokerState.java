@@ -7,33 +7,10 @@ class TurnWageringPokerState extends WageringPokerState {
         dealer.makeTurn();
     }
 
-
-    @Override
-    public void call() throws Exception {
-        super.call();
+    protected void attemptNextState() throws Exception {
         if (timeToNextState()) {
-            nextState();
+            setState(new RiverWageringPokerState(this));
         }
-    }
-
-    @Override
-    public void fold() throws Exception {
-        super.fold();
-        if (timeToNextState()) {
-            nextState();
-        }
-    }
-
-    @Override
-    public void check() throws Exception {
-        super.check();
-        if (timeToNextState()) {
-            nextState();
-        }
-    }
-
-    private void nextState() throws Exception {
-        setState(new RiverWageringPokerState(this));
     }
 
 }
