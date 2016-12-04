@@ -1,9 +1,6 @@
 package com.lamtev.poker.core.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Cards implements Iterable<Card> {
@@ -32,6 +29,10 @@ public class Cards implements Iterable<Card> {
 
     public Card pickUpTop() {
         return cards.remove(size() - 1);
+    }
+
+    public void sort(Comparator<Card> c) {
+        cards.sort(c);
     }
 
     @Override

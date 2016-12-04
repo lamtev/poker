@@ -1,6 +1,9 @@
 package com.lamtev.poker.core.api;
 
+import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.model.CardDeck;
 import com.lamtev.poker.core.model.Cards;
+import com.lamtev.poker.core.model.Rank;
 import com.lamtev.poker.core.util.StateChangedListener;
 import com.lamtev.poker.core.util.PlayerInfo;
 import org.junit.Test;
@@ -22,6 +25,19 @@ public class PokerTest implements StateChangedListener {
         playersInfo.add(new PlayerInfo("b1", 200));
         playersInfo.add(new PlayerInfo("c1", 300));
         return playersInfo;
+    }
+
+    @Test
+    public void tst() {
+        for (Rank r : Rank.values()) {
+            System.out.println(r.ordinal());
+        }
+        Cards cardDeck = new CardDeck();
+        for (Card c : cardDeck) {
+            if (c.getRank().equals(Rank.ACE)) {
+                System.out.println(c);
+            }
+        }
     }
 
     @Override
