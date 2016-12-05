@@ -14,7 +14,7 @@ public class Flush implements PokerCombination {
         Suit suit = cards.cardAt(0).getSuit();
         int numberOfSameSuits = 1;
         for (Card card : cards) {
-            if (!card.getSuit().equals(suit)) {
+            if (card.getSuit().equals(suit)) {
                 ++numberOfSameSuits;
             }
         }
