@@ -6,11 +6,9 @@ import com.lamtev.poker.core.model.Cards;
 class ShowdownPokerState extends ActionPokerState {
 
     private int showDowns = 0;
-    private CombinationAnalyser combinationAnalyser;
 
     ShowdownPokerState(ActionPokerState state, int latestAggressorIndex) {
         super(state);
-        combinationAnalyser = new CombinationAnalyser(players, commonCards);
         playerIndex = latestAggressorIndex;
     }
 
@@ -37,7 +35,7 @@ class ShowdownPokerState extends ActionPokerState {
         currentPlayer().fold();
         changePlayerIndex();
         if (timeToDetermineWinners()) {
-            bank.giveMoneyToWinners(combinationAnalyser.determineWinners());
+            //bank.giveMoneyToWinners(combinationAnalyser.determineWinners());
             poker.setState(new GameIsOverPokerState(this));
         }
     }
@@ -51,7 +49,7 @@ class ShowdownPokerState extends ActionPokerState {
     public Cards showDown() throws Exception {
         ++showDowns;
         if (timeToDetermineWinners()) {
-            bank.giveMoneyToWinners(combinationAnalyser.determineWinners());
+            //bank.giveMoneyToWinners(combinationAnalyser.determineWinners());
             poker.setState(new GameIsOverPokerState(this));
         }
         Cards cards = currentPlayer().getCards();

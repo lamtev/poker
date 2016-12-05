@@ -5,6 +5,7 @@ import com.lamtev.poker.core.util.PlayerInfo;
 import com.lamtev.poker.core.util.StateChangedListener;
 
 import java.util.List;
+
 //TODO javadoc
 public interface PokerAPI {
     void addStateChangedListener(StateChangedListener stateChangedListener) throws Exception;

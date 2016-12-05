@@ -1,8 +1,10 @@
 package com.lamtev.poker.core.combinations;
 
 import com.lamtev.poker.core.model.Card;
-import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.model.Suit;
+
+import java.util.Comparator;
+import java.util.List;
 
 import static com.lamtev.poker.core.combinations.PokerCombination.Name.FLUSH;
 
@@ -10,15 +12,19 @@ public class Flush implements PokerCombination {
 
     private final Name NAME = FLUSH;
 
-    public static boolean isFlush(Cards cards) {
-        Suit suit = cards.cardAt(0).getSuit();
-        int numberOfSameSuits = 1;
-        for (Card card : cards) {
-            if (card.getSuit().equals(suit)) {
-                ++numberOfSameSuits;
+    public static boolean isFlush(List<Card> cards) {
+        Comparator<Card> comparatorByRank = Comparator.comparing(Card::getRank).reversed();
+        cards.sort(comparatorByRank);
+        for (int i = 0; i < cards.size(); ++i) {
+            int numberOfSameSuits = 1;
+            Suit suit = cards.get(i).getSuit();
+            for (int j = 0; j != i && j < cards.size(); ++j) {
+                if (cards.get(j).getSuit().equals(suit) && ++numberOfSameSuits == 5) {
+                    return true;
+                }
             }
         }
-        return numberOfSameSuits >= 5;
+        return false;
     }
 
     @Override
