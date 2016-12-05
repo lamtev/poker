@@ -15,28 +15,14 @@ class PreflopWageringPokerState extends WageringPokerState {
     }
 
     @Override
-    public void call() throws Exception {
-        super.call();
-        if (preflopHasBeenFinished()) {
-            nextState();
-        }
-    }
-
-    @Override
-    public void fold() throws Exception {
-        super.fold();
-        if (preflopHasBeenFinished()) {
-            nextState();
-        }
-    }
-
-    @Override
     public void check() throws Exception {
         throw new Exception();
     }
 
-    private void nextState() throws Exception {
-        setState(new FlopWageringPokerState(this));
+    public void attemptNextState() throws Exception {
+        if (preflopHasBeenFinished()) {
+            setState(new FlopWageringPokerState(this));
+        }
     }
 
 }

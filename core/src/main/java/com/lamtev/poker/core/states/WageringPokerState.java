@@ -32,6 +32,7 @@ abstract class WageringPokerState extends ActionPokerState {
             allInners.add(currentPlayer());
         }
         changePlayerIndex();
+        attemptNextState();
     }
 
     @Override
@@ -67,6 +68,7 @@ abstract class WageringPokerState extends ActionPokerState {
             gameIsOverState();
         }
         changePlayerIndex();
+        attemptNextState();
     }
 
     @Override
@@ -74,6 +76,7 @@ abstract class WageringPokerState extends ActionPokerState {
         moveValidator.validateCheck(raisers.size());
         changePlayerIndex();
         ++checks;
+        attemptNextState();
     }
 
     @Override
@@ -141,5 +144,7 @@ abstract class WageringPokerState extends ActionPokerState {
         }
         return -1;
     }
+
+    protected abstract void attemptNextState() throws Exception;
 
 }
