@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.lamtev.poker.core.combinations.Straight.isStraight;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class StraightTest {
 
@@ -36,6 +37,16 @@ public class StraightTest {
         cards.add(new Card(Rank.FOUR, Suit.CLOVERS));
         cards.add(new Card(Rank.TWO, Suit.TILES));
         assertTrue(isStraight(cards));
+    }
+
+    @Test
+    public void testIsStraight3() {
+        List<Card> cards = new ArrayList<>();
+        cards.add(new Card(Rank.ACE, Suit.CLOVERS));
+        cards.add(new Card(Rank.FIVE, Suit.CLOVERS));
+        cards.add(new Card(Rank.THREE, Suit.HEARTS));
+        cards.add(new Card(Rank.FOUR, Suit.CLOVERS));
+        assertFalse(isStraight(cards));
     }
 
 }

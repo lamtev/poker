@@ -17,5 +17,4 @@ public interface PokerCombination extends Comparable<PokerCombination> {
 
     Name getName();
 
-
 }
