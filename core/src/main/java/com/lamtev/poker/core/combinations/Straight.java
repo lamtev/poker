@@ -34,7 +34,7 @@ public class Straight implements PokerCombination {
     static boolean isStraightFromRank(List<Card> cards, Rank rank, Comparator<Card> comparatorByRank) {
         int numberOfSequentialRanks = 0;
         int highCardIndex = 0;
-        for (int i = rank.ordinal(); i >= rank.ordinal() - 4; --i) {
+        for (int i = rank.ordinal(); i >= - 1 && i >= rank.ordinal() - 4; --i) {
             int rankIndex = i == -1 ? Rank.ACE.ordinal() : i;
             Card card = new Card(Rank.values()[rankIndex], Suit.HEARTS);
             int keyIndex = Collections.binarySearch(cards, card, comparatorByRank);

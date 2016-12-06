@@ -6,9 +6,11 @@ import com.lamtev.poker.core.model.Suit;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.lamtev.poker.core.combinations.Straight.isStraight;
+import static com.lamtev.poker.core.combinations.Straight.isStraightFromRank;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -36,6 +38,7 @@ public class StraightTest {
         cards.add(new Card(Rank.THREE, Suit.HEARTS));
         cards.add(new Card(Rank.FOUR, Suit.CLOVERS));
         cards.add(new Card(Rank.TWO, Suit.TILES));
+        isStraightFromRank(cards, Rank.THREE, Comparator.comparing(Card::getRank).reversed());
         assertTrue(isStraight(cards));
     }
 

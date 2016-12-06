@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.lamtev.poker.core.combinations.PokerCombination.Name.ROYAL_FLUSH;
-import static com.lamtev.poker.core.combinations.StraightFlush.isStraightFlushFromRank;
+import static com.lamtev.poker.core.combinations.StraightFlush.isStraightFlush;
 
 public class RoyalFlush implements PokerCombination {
 
@@ -16,7 +16,7 @@ public class RoyalFlush implements PokerCombination {
     public static boolean isRoyalFlush(List<Card> cards) {
         Comparator<Card> comparatorByRank = Comparator.comparing(Card::getRank).reversed();
         cards.sort(comparatorByRank);
-        return isStraightFlushFromRank(cards, Rank.ACE, comparatorByRank);
+        return isStraightFlush(cards) && cards.get(0).getRank().equals(Rank.ACE);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class RoyalFlush implements PokerCombination {
 
     @Override
     public int compareTo(PokerCombination o) {
-        return 0;
+        return NAME.compareTo(o.getName());
     }
 
 }

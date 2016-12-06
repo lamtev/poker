@@ -2,13 +2,14 @@ package com.lamtev.poker.core.combinations;
 
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Rank;
+import com.lamtev.poker.core.model.Suit;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import static com.lamtev.poker.core.combinations.Flush.isFlush;
 import static com.lamtev.poker.core.combinations.PokerCombination.Name.STRAIGHT_FLUSH;
-import static com.lamtev.poker.core.combinations.Straight.isStraight;
 import static com.lamtev.poker.core.combinations.Straight.isStraightFromRank;
 
 public class StraightFlush implements PokerCombination {
@@ -23,17 +24,21 @@ public class StraightFlush implements PokerCombination {
 
     public static boolean isStraightFlush(List<Card> cards) {
         //TODO fix
-        boolean isFlush = isFlush(cards);
-        Card flushHighCard = cards.get(0);
-        boolean isStraight = isStraight(cards);
-        Card straightHighCard = cards.get(0);
-        return isFlush && isStraight && flushHighCard.equals(straightHighCard);
-    }
-
-
-    //TODO validate
-    static boolean isStraightFlushFromRank(List<Card> cards, Rank rank, Comparator<Card> comparatorByRank) {
-        return isStraightFromRank(cards, rank, comparatorByRank) && isFlush(cards);
+        Comparator<Card> comparatorByRank = Comparator.comparing(Card::getRank).reversed();
+        cards.sort(comparatorByRank);
+        for (int i = 0; i < cards.size(); ++i) {
+            int numberOfSameSuits = 1;
+            Suit suit = cards.get(i).getSuit();
+            for (int j = 0; j < cards.size(); ++j) {
+                if (j != i && cards.get(j).getSuit().equals(suit) && ++numberOfSameSuits == 5) {
+                    //TODO think about how to do it better
+                    if (isStraightFromRank(cards, cards.get(i).getRank(), comparatorByRank)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -43,6 +48,11 @@ public class StraightFlush implements PokerCombination {
 
     @Override
     public int compareTo(PokerCombination o) {
-        return 0;
+        int cmp = NAME.compareTo(o.getName());
+        if (cmp == 0) {
+            return highCardRank.compareTo(((StraightFlush) o).highCardRank);
+        } else {
+            return cmp;
+        }
     }
 }

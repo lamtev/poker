@@ -4,8 +4,8 @@ import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.CardDeck;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.model.Rank;
-import com.lamtev.poker.core.util.StateChangedListener;
 import com.lamtev.poker.core.util.PlayerInfo;
+import com.lamtev.poker.core.util.StateChangedListener;
 import org.junit.Test;
 
 import java.util.ArrayList;
