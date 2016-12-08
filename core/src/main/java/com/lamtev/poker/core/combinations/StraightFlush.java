@@ -4,11 +4,9 @@ import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Rank;
 import com.lamtev.poker.core.model.Suit;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.lamtev.poker.core.combinations.Flush.isFlush;
 import static com.lamtev.poker.core.combinations.PokerCombination.Name.STRAIGHT_FLUSH;
 import static com.lamtev.poker.core.combinations.Straight.isStraightFromRank;
 

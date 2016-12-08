@@ -16,6 +16,7 @@ public class RoyalFlushTest {
     @Test
     public void testIsRoyalFlush() {
         List<Card> cards = new ArrayList<>();
+        cards.add(new Card(Rank.NINE, Suit.CLOVERS));
         cards.add(new Card(Rank.ACE, Suit.CLOVERS));
         cards.add(new Card(Rank.KING, Suit.CLOVERS));
         cards.add(new Card(Rank.QUEEN, Suit.CLOVERS));
@@ -24,6 +25,8 @@ public class RoyalFlushTest {
         cards.add(new Card(Rank.TEN, Suit.CLOVERS));
         cards.add(new Card(Rank.TWO, Suit.HEARTS));
         assertTrue(isRoyalFlush(cards));
+        System.out.println(cards.get(0));
+
     }
 
 }

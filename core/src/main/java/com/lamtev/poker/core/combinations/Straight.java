@@ -46,6 +46,8 @@ public class Straight implements PokerCombination {
         if (numberOfSequentialRanks == 5) {
             //TODO think about how to do it better
             Collections.swap(cards, 0, highCardIndex);
+            cards.forEach(System.out::println);
+            System.out.println();
             return true;
         }
         return false;

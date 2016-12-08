@@ -37,4 +37,20 @@ public class StraightFlushTest {
         assertTrue(isStraightFlush(cards));
     }
 
+    @Test
+    public void testIsStraightFlush3() {
+        List<Card> cards = new ArrayList<>();
+        cards.add(new Card(Rank.NINE, Suit.CLOVERS));
+        cards.add(new Card(Rank.ACE, Suit.CLOVERS));
+        cards.add(new Card(Rank.KING, Suit.CLOVERS));
+        cards.add(new Card(Rank.QUEEN, Suit.CLOVERS));
+        cards.add(new Card(Rank.JACK, Suit.CLOVERS));
+        cards.add(new Card(Rank.ACE, Suit.PIKES));
+        cards.add(new Card(Rank.TEN, Suit.CLOVERS));
+        cards.add(new Card(Rank.TWO, Suit.HEARTS));
+        assertTrue(isStraightFlush(cards));
+        cards.forEach(System.out::println);
+
+    }
+
 }

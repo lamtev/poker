@@ -32,8 +32,10 @@ public class Flush implements PokerCombination {
         return false;
     }
 
-    public Flush(List<Card> cards) {
-        highCardRank = cards.get(0).getRank();
+
+
+    Flush(Rank highCardRank) {
+        this.highCardRank = highCardRank;
     }
 
     @Override
