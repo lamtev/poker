@@ -13,11 +13,11 @@ import static com.lamtev.poker.core.combinations.Straight.isStraightFromRank;
 public class StraightFlush implements PokerCombination {
 
     private final Name NAME = STRAIGHT_FLUSH;
-    private Rank highCardRank;
+    private final Rank highCardRank;
 
     //TODO think about combinations constructors!!!
-    public StraightFlush(List<Card> cards) {
-        highCardRank = cards.get(0).getRank();
+    public StraightFlush(Rank highCardRank) {
+        this.highCardRank = highCardRank;
     }
 
     public static boolean isStraightFlush(List<Card> cards) {

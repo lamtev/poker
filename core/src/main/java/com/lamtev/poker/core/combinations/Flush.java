@@ -13,7 +13,7 @@ import static com.lamtev.poker.core.combinations.PokerCombination.Name.FLUSH;
 public class Flush implements PokerCombination {
 
     private final Name NAME = FLUSH;
-    private Rank highCardRank;
+    private final Rank highCardRank;
 
     public static boolean isFlush(List<Card> cards) {
         Comparator<Card> comparatorByRank = Comparator.comparing(Card::getRank).reversed();
