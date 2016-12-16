@@ -33,7 +33,6 @@ public class Flush implements PokerCombination {
     }
 
 
-
     Flush(Rank highCardRank) {
         this.highCardRank = highCardRank;
     }

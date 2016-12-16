@@ -1,8 +1,6 @@
 package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.util.PlayerInfo;
-import com.lamtev.poker.core.util.StateChangedListener;
 
 import java.util.List;
 

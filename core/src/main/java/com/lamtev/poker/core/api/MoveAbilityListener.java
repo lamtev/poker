@@ -1,4 +1,4 @@
-package com.lamtev.poker.core.util;
+package com.lamtev.poker.core.api;
 
 //TODO javadoc
 public interface MoveAbilityListener {

@@ -1,9 +1,9 @@
 package com.lamtev.poker.core.states;
 
+import com.lamtev.poker.core.api.PlayerInfo;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
 import com.lamtev.poker.core.states.exceptions.GameHaveNotBeenStartedException;
-import com.lamtev.poker.core.util.PlayerInfo;
 
 import java.util.ArrayList;
 import java.util.List;

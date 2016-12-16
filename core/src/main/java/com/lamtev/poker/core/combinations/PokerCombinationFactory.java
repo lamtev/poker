@@ -1,7 +1,6 @@
 package com.lamtev.poker.core.combinations;
 
 import com.lamtev.poker.core.model.Card;
-import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.model.Rank;
 import com.lamtev.poker.core.model.Suit;
 
@@ -12,10 +11,10 @@ import java.util.List;
 
 public class PokerCombinationFactory {
 
-    private Cards commonCards;
-    private final static Comparator<Card> COMPARATOR_BY_RANK = Comparator.comparing(Card::getRank).reversed();
+    private List<Card> commonCards;
+    private final static Comparator<Card> REVERSED_COMPARATOR_BY_RANK = Comparator.comparing(Card::getRank).reversed();
 
-    public PokerCombinationFactory(Cards commonCards) {
+    public PokerCombinationFactory(List<Card> commonCards) {
         this.commonCards = commonCards;
     }
 
@@ -78,17 +77,21 @@ public class PokerCombinationFactory {
     }
 
     private PokerCombination parseFlush(List<Card> cards) {
-        cards.sort(COMPARATOR_BY_RANK);
-        for (int i = 0; i < cards.size(); ++i) {
-            int numberOfSameSuits = 0;
-            Suit suit = cards.get(i).getSuit();
-            for (Card card : cards) {
-                if (card.getSuit().equals(suit)) {
-                    //TODO think about how to do it better
-                    ++numberOfSameSuits;
-                }
-                if (numberOfSameSuits == 5) {
-                    return new Flush(cards.get(i).getRank());
+        for (int i = 0; i < 3; ++i) {
+            final Suit suit = cards.get(i).getSuit();
+            int numberOfSameSuits = 1;
+            for (int j = i + 1; j < cards.size(); ++j) {
+                if (cards.get(i).getSuit().equals(cards.get(j).getSuit()) && ++numberOfSameSuits == 5) {
+                    Rank highCardRank =
+                            Collections.max(cards, (c1, c2) -> {
+                                if (c1.getSuit() == suit && c1.getSuit() == c2.getSuit()) {
+                                    return c1.getRank().compareTo(c2.getRank());
+                                } else {
+                                    if (c1.getSuit() == suit) return 1;
+                                    else return -1;
+                                }
+                            }).getRank();
+                    return new Flush(highCardRank);
                 }
             }
         }
@@ -96,32 +99,32 @@ public class PokerCombinationFactory {
     }
 
     private PokerCombination parseStraight(List<Card> cards) {
-        cards.sort(COMPARATOR_BY_RANK);
+        //TODO fix bug!!!
+        cards.sort(REVERSED_COMPARATOR_BY_RANK);
         for (int i = Rank.ACE.ordinal(); i >= Rank.FIVE.ordinal(); --i) {
-            int numberOfSequentialRanks = 0;
-            int highCardIndex = 0;
             Rank rank = Rank.values()[i];
-            for (int j = rank.ordinal(); j >= - 1 && j >= rank.ordinal() - 4; --i) {
-                int rankIndex = j == -1 ? Rank.ACE.ordinal() : j;
-                Card keyCard = new Card(Rank.values()[rankIndex], Suit.HEARTS);
-                int keyIndex = Collections.binarySearch(cards, keyCard, COMPARATOR_BY_RANK);
-                if (keyIndex >= 0) {
-                    ++numberOfSequentialRanks;
-                    highCardIndex = numberOfSequentialRanks == 1 ? keyIndex : highCardIndex;
-                }
-            }
-            if (numberOfSequentialRanks == 5) {
-                //TODO think about how to do it better
-                return new Straight(cards.get(highCardIndex).getRank());
+            if (isStraightFromRank(cards, rank)) {
+                System.out.println(rank);
+                return new Straight(rank);
             }
         }
         return null;
     }
 
-
+    private boolean isStraightFromRank(List<Card> cards, Rank rank) {
+        for (int i = rank.ordinal(); i >= -1 && i > rank.ordinal() - 5; --i) {
+            int currentRankIndex = i == -1 ? Rank.ACE.ordinal() : i;
+            Card card = new Card(Rank.values()[currentRankIndex], Suit.HEARTS);
+            if (Collections.binarySearch(cards, card, REVERSED_COMPARATOR_BY_RANK) == -1) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private PokerCombination parseStraightFlush(List<Card> cards) {
         //TODO implement
+
         return null;
     }
 

@@ -1,7 +1,7 @@
 package com.lamtev.poker.core.states;
 
+import com.lamtev.poker.core.api.PlayerInfo;
 import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.util.PlayerInfo;
 
 import java.util.ArrayList;
 import java.util.List;

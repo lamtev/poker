@@ -2,9 +2,7 @@ package com.lamtev.poker.core.combinations;
 
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Rank;
-import com.lamtev.poker.core.model.Suit;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -35,15 +33,15 @@ public class Straight implements PokerCombination {
     static boolean isStraightFromRank(List<Card> cards, Rank rank, Comparator<Card> comparatorByRank) {
         int numberOfSequentialRanks = 0;
         int highCardIndex = 0;
-        for (int i = rank.ordinal(); i >= - 1 && i >= rank.ordinal() - 4; --i) {
-            int rankIndex = i == -1 ? Rank.ACE.ordinal() : i;
-            Card card = new Card(Rank.values()[rankIndex], Suit.HEARTS);
-            int keyIndex = Collections.binarySearch(cards, card, comparatorByRank);
-            if (keyIndex >= 0) {
-                ++numberOfSequentialRanks;
-                highCardIndex = numberOfSequentialRanks == 1 ? keyIndex : highCardIndex;
-            }
-        }
+//        for (int i = rank.ordinal(); i >= - 1 && i >= rank.ordinal() - 4; --i) {
+//            int rankIndex = i == -1 ? Rank.ACE.ordinal() : i;
+//            Card card = new Card(Rank.values()[rankIndex], Suit.HEARTS);
+//            int keyIndex = Collections.binarySearch(cards, card, comparatorByRank);
+//            if (keyIndex >= 0) {
+//                ++numberOfSequentialRanks;
+//                highCardIndex = numberOfSequentialRanks == 1 ? keyIndex : highCardIndex;
+//            }
+//        }
         if (numberOfSequentialRanks == 5) {
             //TODO think about how to do it better
             Collections.swap(cards, 0, highCardIndex);
