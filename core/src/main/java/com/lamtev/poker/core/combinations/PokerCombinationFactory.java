@@ -113,7 +113,6 @@ public class PokerCombinationFactory {
     }
 
     private PokerCombination parseStraightFlush(List<Card> cards) {
-        //TODO FIX BUG
         cards.sort(REVERSED_COMPARATOR_BY_RANK);
         for (int i = 0; i < 4; ++i) {
             int numberOfSameSuits = 1;
@@ -141,7 +140,18 @@ public class PokerCombinationFactory {
     }
 
     private PokerCombination parseRoyalFlush(List<Card> cards) {
-        //TODO implement
+        cards.sort(REVERSED_COMPARATOR_BY_RANK);
+        for (int i = 0; i < 4; ++i) {
+            int numberOfSameSuits = 1;
+            for (int j = 0; j < cards.size(); ++j) {
+                if (i != j && cards.get(i).getSuit().equals(cards.get(j).getSuit()) && ++numberOfSameSuits == 5) {
+                    final Rank highCardRank = cards.get(i).getRank();
+                    if (highCardRank == Rank.ACE && isStraightFromRank(cards, highCardRank)) {
+                        return new RoyalFlush();
+                    }
+                }
+            }
+        }
         return null;
     }
 

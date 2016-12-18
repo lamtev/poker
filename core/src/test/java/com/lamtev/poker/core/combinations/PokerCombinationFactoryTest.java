@@ -8,9 +8,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.lamtev.poker.core.combinations.PokerCombination.Name.FLUSH;
-import static com.lamtev.poker.core.combinations.PokerCombination.Name.STRAIGHT;
-import static com.lamtev.poker.core.combinations.PokerCombination.Name.STRAIGHT_FLUSH;
+import static com.lamtev.poker.core.combinations.PokerCombination.Name.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -147,6 +145,26 @@ public class PokerCombinationFactoryTest {
         PokerCombination straightFlush = pcf.createCombination(playerCards);
         assertEquals(STRAIGHT_FLUSH, straightFlush.getName());
         assertTrue(straightFlush.compareTo(new StraightFlush(Rank.EIGHT)) == 0);
+    }
+
+    @Test
+    public void testRoyalFlushCreation1() {
+        List<Card> commonCards = new ArrayList<Card>() {{
+            add(new Card(Rank.EIGHT, Suit.HEARTS));
+            add(new Card(Rank.NINE, Suit.HEARTS));
+            add(new Card(Rank.TEN, Suit.HEARTS));
+            add(new Card(Rank.JACK, Suit.HEARTS));
+            add(new Card(Rank.QUEEN, Suit.HEARTS));
+        }};
+        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        List<Card> playerCards = new ArrayList<Card>() {{
+            add(new Card(Rank.KING, Suit.HEARTS));
+            add(new Card(Rank.ACE, Suit.HEARTS));
+
+        }};
+        PokerCombination royalFlush = pcf.createCombination(playerCards);
+        assertEquals(ROYAL_FLUSH, royalFlush.getName());
+        assertTrue(royalFlush.compareTo(new RoyalFlush()) == 0);
     }
 
 }
