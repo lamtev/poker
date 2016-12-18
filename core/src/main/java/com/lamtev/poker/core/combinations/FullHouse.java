@@ -7,8 +7,8 @@ import static com.lamtev.poker.core.combinations.PokerCombination.Name.FULL_HOUS
 public class FullHouse implements PokerCombination {
 
     private final Name NAME = FULL_HOUSE;
-    private Rank threeOfAKindHighCardRank;
-    private Rank pairHighCardRank;
+    private final Rank threeOfAKindHighCardRank;
+    private final Rank pairHighCardRank;
 
     public FullHouse(Rank threeOfAKindHighCardRank, Rank pairHighCardRank) {
         this.threeOfAKindHighCardRank = threeOfAKindHighCardRank;

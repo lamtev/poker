@@ -23,6 +23,7 @@ public class PokerCombinationFactory {
         commonCards.forEach(cards::add);
         playerCards.forEach(cards::add);
 
+        cards.sort(REVERSED_COMPARATOR_BY_RANK);
         PokerCombination pokerCombination = parseRoyalFlush(cards);
         if (pokerCombination != null) {
             return pokerCombination;
@@ -102,7 +103,6 @@ public class PokerCombinationFactory {
     }
 
     private PokerCombination parseStraight(List<Card> cards) {
-        cards.sort(REVERSED_COMPARATOR_BY_RANK);
         for (int i = Rank.ACE.ordinal(); i >= Rank.FIVE.ordinal(); --i) {
             Rank rank = Rank.values()[i];
             if (isStraightFromRank(cards, rank)) {
@@ -124,7 +124,6 @@ public class PokerCombinationFactory {
     }
 
     private PokerCombination parseStraightFlush(List<Card> cards) {
-        cards.sort(REVERSED_COMPARATOR_BY_RANK);
         for (int i = 0; i < 4; ++i) {
             int numberOfSameSuits = 1;
             for (int j = 0; j < cards.size(); ++j) {
@@ -140,7 +139,6 @@ public class PokerCombinationFactory {
     }
 
     private PokerCombination parseRoyalFlush(List<Card> cards) {
-        cards.sort(REVERSED_COMPARATOR_BY_RANK);
         for (int i = 0; i < 4; ++i) {
             int numberOfSameSuits = 1;
             for (int j = 0; j < cards.size(); ++j) {
@@ -166,7 +164,14 @@ public class PokerCombinationFactory {
     }
 
     private PokerCombination parseThreeOfAKind(List<Card> cards) {
-        //TODO implement
+        for (int i = 0; i < 6; ++i) {
+            int numberOfSameRanks = 1;
+            for (int j = 0; j < cards.size(); ++j) {
+                if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++numberOfSameRanks == 3) {
+                    //TODO implement it
+                }
+            }
+        }
         return null;
     }
 

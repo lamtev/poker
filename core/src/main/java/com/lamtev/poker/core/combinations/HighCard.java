@@ -1,21 +1,18 @@
 package com.lamtev.poker.core.combinations;
 
-import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Rank;
-
-import java.util.List;
 
 import static com.lamtev.poker.core.combinations.PokerCombination.Name.HIGH_CARD;
 
 public class HighCard implements PokerCombination {
 
     private final Name NAME = HIGH_CARD;
-    private Rank highCardRank;
-    private Rank kicker;
+    private final Rank highCardRank;
+    private final Rank kicker;
 
-    public static boolean isHighCard(List<Card> cards) {
-        //TODO implement
-        return false;
+    public HighCard(Rank highCardRank, Rank kicker) {
+        this.highCardRank = highCardRank;
+        this.kicker = kicker;
     }
 
     @Override
