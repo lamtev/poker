@@ -90,6 +90,17 @@ public class PokerCombinationFactory {
         return null;
     }
 
+    private Rank determineRankOfHighCardWithThisSuit(List<Card> cards, Suit suit) {
+        return Collections.max(cards, (c1, c2) -> {
+            if (c1.getSuit() == suit && c1.getSuit() == c2.getSuit()) {
+                return c1.getRank().compareTo(c2.getRank());
+            } else {
+                if (c1.getSuit() == suit) return 1;
+                else return -1;
+            }
+        }).getRank();
+    }
+
     private PokerCombination parseStraight(List<Card> cards) {
         cards.sort(REVERSED_COMPARATOR_BY_RANK);
         for (int i = Rank.ACE.ordinal(); i >= Rank.FIVE.ordinal(); --i) {
@@ -126,17 +137,6 @@ public class PokerCombinationFactory {
             }
         }
         return null;
-    }
-
-    private Rank determineRankOfHighCardWithThisSuit(List<Card> cards, Suit suit) {
-        return Collections.max(cards, (c1, c2) -> {
-            if (c1.getSuit() == suit && c1.getSuit() == c2.getSuit()) {
-                return c1.getRank().compareTo(c2.getRank());
-            } else {
-                if (c1.getSuit() == suit) return 1;
-                else return -1;
-            }
-        }).getRank();
     }
 
     private PokerCombination parseRoyalFlush(List<Card> cards) {

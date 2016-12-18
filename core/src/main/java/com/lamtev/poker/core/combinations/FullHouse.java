@@ -1,20 +1,18 @@
 package com.lamtev.poker.core.combinations;
 
-import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Rank;
-
-import java.util.List;
 
 import static com.lamtev.poker.core.combinations.PokerCombination.Name.FULL_HOUSE;
 
 public class FullHouse implements PokerCombination {
 
     private final Name NAME = FULL_HOUSE;
-    private Rank ThreeOfAKindHighCardRank;
-    private Rank PairHighCardRank;
+    private Rank threeOfAKindHighCardRank;
+    private Rank pairHighCardRank;
 
-    public static boolean isFullHouse(List<Card> cards) {
-        return false;
+    public FullHouse(Rank threeOfAKindHighCardRank, Rank pairHighCardRank) {
+        this.threeOfAKindHighCardRank = threeOfAKindHighCardRank;
+        this.pairHighCardRank = pairHighCardRank;
     }
 
     @Override
@@ -24,7 +22,17 @@ public class FullHouse implements PokerCombination {
 
     @Override
     public int compareTo(PokerCombination o) {
-        //TODO implement
-        return 0;
+        int cmp1 = NAME.compareTo(o.getName());
+        if (cmp1 == 0) {
+            FullHouse fullHouse = (FullHouse) o;
+            int cmp2 = threeOfAKindHighCardRank.compareTo(fullHouse.threeOfAKindHighCardRank);
+            if (cmp2 == 0) {
+                return pairHighCardRank.compareTo(fullHouse.pairHighCardRank);
+            } else {
+                return cmp2;
+            }
+        } else {
+            return cmp1;
+        }
     }
 }
