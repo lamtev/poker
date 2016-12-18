@@ -104,7 +104,6 @@ public class PokerCombinationFactory {
         for (int i = Rank.ACE.ordinal(); i >= Rank.FIVE.ordinal(); --i) {
             Rank rank = Rank.values()[i];
             if (isStraightFromRank(cards, rank)) {
-                System.out.println(rank);
                 return new Straight(rank);
             }
         }
@@ -115,7 +114,7 @@ public class PokerCombinationFactory {
         for (int i = rank.ordinal(); i >= -1 && i > rank.ordinal() - 5; --i) {
             int currentRankIndex = i == -1 ? Rank.ACE.ordinal() : i;
             Card card = new Card(Rank.values()[currentRankIndex], Suit.HEARTS);
-            if (Collections.binarySearch(cards, card, REVERSED_COMPARATOR_BY_RANK) == -1) {
+            if (Collections.binarySearch(cards, card, REVERSED_COMPARATOR_BY_RANK) < 0) {
                 return false;
             }
         }

@@ -46,7 +46,7 @@ public class PokerCombinationFactoryTest {
         PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.FOUR, Suit.HEARTS));
-            add(new Card(Rank.QUEEN, Suit.PIKES));
+            add(new Card(Rank.QUEEN, Suit.HEARTS));
         }};
         PokerCombination flush = pcf.createCombination(playerCards);
         assertEquals(FLUSH, flush.getName());
