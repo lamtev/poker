@@ -59,7 +59,7 @@ public class PokerCombinationFactory {
             return pokerCombination;
         }
 
-        pokerCombination = parseTwoPairs(cards);
+        pokerCombination = parseTwoPairs(cards, playerCards);
         if (pokerCombination != null) {
             return pokerCombination;
         }
@@ -185,7 +185,7 @@ public class PokerCombinationFactory {
         return null;
     }
 
-    private PokerCombination parseTwoPairs(List<Card> cards) {
+    private PokerCombination parseTwoPairs(List<Card> cards, List<Card> playerCards) {
         //TODO implement
         return null;
     }
