@@ -11,8 +11,8 @@ import java.util.List;
 
 public class PokerCombinationFactory {
 
-    private List<Card> commonCards;
-    private final static Comparator<Card> REVERSED_COMPARATOR_BY_RANK = Comparator.comparing(Card::getRank).reversed();
+    private final List<Card> commonCards;
+    private final static Comparator<Card> COMPARATOR_BY_RANK = Comparator.comparing(Card::getRank);
 
     public PokerCombinationFactory(List<Card> commonCards) {
         this.commonCards = commonCards;
@@ -23,7 +23,7 @@ public class PokerCombinationFactory {
         commonCards.forEach(cards::add);
         playerCards.forEach(cards::add);
 
-        cards.sort(REVERSED_COMPARATOR_BY_RANK);
+        cards.sort(COMPARATOR_BY_RANK.reversed());
         PokerCombination pokerCombination = parseRoyalFlush(cards);
         if (pokerCombination != null) {
             return pokerCombination;
@@ -54,7 +54,7 @@ public class PokerCombinationFactory {
             return pokerCombination;
         }
 
-        pokerCombination = parseThreeOfAKind(cards);
+        pokerCombination = parseThreeOfAKind(cards, playerCards);
         if (pokerCombination != null) {
             return pokerCombination;
         }
@@ -116,7 +116,7 @@ public class PokerCombinationFactory {
         for (int i = rank.ordinal(); i >= -1 && i > rank.ordinal() - 5; --i) {
             int currentRankIndex = i == -1 ? Rank.ACE.ordinal() : i;
             final Card card = new Card(Rank.values()[currentRankIndex], Suit.HEARTS);
-            if (Collections.binarySearch(cards, card, REVERSED_COMPARATOR_BY_RANK) < 0) {
+            if (Collections.binarySearch(cards, card, COMPARATOR_BY_RANK.reversed()) < 0) {
                 return false;
             }
         }
@@ -163,12 +163,20 @@ public class PokerCombinationFactory {
         return null;
     }
 
-    private PokerCombination parseThreeOfAKind(List<Card> cards) {
+    private PokerCombination parseThreeOfAKind(List<Card> cards, List<Card> playerCards) {
         for (int i = 0; i < 6; ++i) {
             int numberOfSameRanks = 1;
             for (int j = 0; j < cards.size(); ++j) {
                 if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++numberOfSameRanks == 3) {
-                    //TODO implement it
+                    Rank kicker;
+                    int indexOfMax = playerCards.indexOf(Collections.max(playerCards, COMPARATOR_BY_RANK));
+                    if (playerCards.get(indexOfMax).getRank() != cards.get(i).getRank() ||
+                            playerCards.get((indexOfMax + 1) % 2).getRank() == cards.get(i).getRank()) {
+                        kicker = playerCards.get(indexOfMax).getRank();
+                    } else {
+                        kicker = playerCards.get((indexOfMax + 1) % 2).getRank();
+                    }
+                    return new ThreeOfAKind(cards.get(i).getRank(), kicker);
                 }
             }
         }

@@ -204,7 +204,7 @@ public class PokerCombinationFactoryTest {
         }};
         PokerCombination threeOfAKind = pcf.createCombination(playerCards);
         assertEquals(THREE_OF_A_KIND, threeOfAKind.getName());
-        assertTrue(threeOfAKind.compareTo(new ThreeOfAKind(Rank.JACK, null)) == 0);
+        assertTrue(threeOfAKind.compareTo(new ThreeOfAKind(Rank.JACK, Rank.JACK)) == 0);
     }
 
 }
