@@ -64,7 +64,7 @@ public class PokerCombinationFactory {
             return pokerCombination;
         }
 
-        pokerCombination = parsePair(cards);
+        pokerCombination = parsePair(cards, playerCards);
         if (pokerCombination != null) {
             return pokerCombination;
         }
@@ -163,6 +163,8 @@ public class PokerCombinationFactory {
         return null;
     }
 
+    //TODO remove code duplicate
+    //TODO increase code readability
     private PokerCombination parseThreeOfAKind(List<Card> cards, List<Card> playerCards) {
         for (int i = 0; i < 6; ++i) {
             int numberOfSameRanks = 1;
@@ -188,8 +190,25 @@ public class PokerCombinationFactory {
         return null;
     }
 
-    private PokerCombination parsePair(List<Card> cards) {
-        //TODO implement
+    //TODO remove code duplicate
+    //TODO increase code readability
+    private PokerCombination parsePair(List<Card> cards, List<Card> playerCards) {
+        for (int i = 0; i < 7; ++i) {
+            int numberOfSameRanks = 1;
+            for (int j = 0; j < cards.size(); ++j) {
+                if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++numberOfSameRanks == 2) {
+                    Rank kicker;
+                    int indexOfMax = playerCards.indexOf(Collections.max(playerCards, COMPARATOR_BY_RANK));
+                    if (playerCards.get(indexOfMax).getRank() != cards.get(i).getRank() ||
+                            playerCards.get((indexOfMax + 1) % 2).getRank() == cards.get(i).getRank()) {
+                        kicker = playerCards.get(indexOfMax).getRank();
+                    } else {
+                        kicker = playerCards.get((indexOfMax + 1) % 2).getRank();
+                    }
+                    return new Pair(cards.get(i).getRank(), kicker);
+                }
+            }
+        }
         return null;
     }
 
