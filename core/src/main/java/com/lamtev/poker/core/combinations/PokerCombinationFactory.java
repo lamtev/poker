@@ -168,8 +168,34 @@ public class PokerCombinationFactory {
         return null;
     }
 
+    //TODO remove code duplicate
+    //TODO increase code readability
     private PokerCombination parseFullHouse(List<Card> cards) {
-        //TODO implement
+        Rank threeOfAKindHighCardRank = null;
+        for (int i = 0; i < 6; ++i) {
+            int threeOfAKindNumberOfSameRanks = 1;
+            for (int j = 0; j < cards.size(); ++j) {
+                if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++threeOfAKindNumberOfSameRanks == 3) {
+                    threeOfAKindHighCardRank = cards.get(i).getRank();
+                    break;
+                }
+                if (threeOfAKindHighCardRank != null) {
+                    break;
+                }
+            }
+        }
+        if (threeOfAKindHighCardRank != null) {
+            for (int i = 0; i < 7; ++i) {
+                int pairNumberOfSameRanks = 1;
+                Rank pairHighCardRank;
+                for (int k = 0; k < cards.size(); ++k) {
+                    if (i != k && cards.get(i).getRank() != threeOfAKindHighCardRank && cards.get(i).getRank().equals(cards.get(k).getRank()) && ++pairNumberOfSameRanks == 2) {
+                        pairHighCardRank = cards.get(i).getRank();
+                        return new FullHouse(threeOfAKindHighCardRank, pairHighCardRank);
+                    }
+                }
+            }
+        }
         return null;
     }
 
