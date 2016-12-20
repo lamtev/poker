@@ -1,6 +1,7 @@
 package com.lamtev.poker.core.hands;
 
 import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.model.Rank;
 import com.lamtev.poker.core.model.Suit;
 
@@ -11,14 +12,14 @@ import java.util.List;
 
 public class PokerHandFactory {
 
-    private final List<Card> commonCards;
+    private final Cards commonCards;
     private final static Comparator<Card> COMPARATOR_BY_RANK = Comparator.comparing(Card::getRank);
 
-    public PokerHandFactory(List<Card> commonCards) {
+    public PokerHandFactory(Cards commonCards) {
         this.commonCards = commonCards;
     }
 
-    public PokerHand createCombination(List<Card> playerCards) {
+    public PokerHand createCombination(Cards playerCards) {
         List<Card> cards = new ArrayList<>();
         commonCards.forEach(cards::add);
         playerCards.forEach(cards::add);
@@ -70,11 +71,7 @@ public class PokerHandFactory {
         }
 
         pokerHand = parseHighCard(cards);
-        if (pokerHand != null) {
-            return pokerHand;
-        }
-
-        return null;
+        return pokerHand;
     }
 
     private PokerHand parseFlush(List<Card> cards) {
@@ -223,27 +220,12 @@ public class PokerHandFactory {
             int numberOfSameRanks = 1;
             for (int j = 0; j < cards.size(); ++j) {
                 if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++numberOfSameRanks == 3) {
-                    List<Rank> otherCardsRanks = determineRanksExceptThese(cards, cards.get(i).getRank()).subList(0, 1);
+                    List<Rank> otherCardsRanks = determineRanksExceptThese(cards, cards.get(i).getRank()).subList(0, 2);
                     return new ThreeOfAKind(cards.get(i).getRank(), otherCardsRanks);
                 }
             }
         }
         return null;
-    }
-
-    private Rank determineKicker(List<Card> playerCards, Rank... combinationHighCardRanks) {
-        int indexOfMax = playerCards.indexOf(Collections.max(playerCards, COMPARATOR_BY_RANK));
-        boolean maxHasNotSameRank = false;
-        boolean minHasSameRank = false;
-        for (Rank combinationHighCardRank : combinationHighCardRanks) {
-            maxHasNotSameRank = playerCards.get(indexOfMax).getRank() != combinationHighCardRank;
-            minHasSameRank = playerCards.get((indexOfMax + 1) % 2).getRank() == combinationHighCardRank;
-        }
-        if (maxHasNotSameRank || minHasSameRank) {
-            return playerCards.get(indexOfMax).getRank();
-        } else {
-            return playerCards.get((indexOfMax + 1) % 2).getRank();
-        }
     }
 
     //TODO remove code duplicate
@@ -285,7 +267,7 @@ public class PokerHandFactory {
             int numberOfSameRanks = 1;
             for (int j = 0; j < cards.size(); ++j) {
                 if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++numberOfSameRanks == 2) {
-                    List<Rank> otherCardsRanks = determineRanksExceptThese(cards, cards.get(i).getRank()).subList(0, 2);
+                    List<Rank> otherCardsRanks = determineRanksExceptThese(cards, cards.get(i).getRank()).subList(0, 3);
                     return new Pair(cards.get(i).getRank(), otherCardsRanks);
                 }
             }
@@ -294,7 +276,7 @@ public class PokerHandFactory {
     }
 
     private PokerHand parseHighCard(List<Card> cards) {
-        List<Rank> cardsRanks = determineRanksExceptThese(cards).subList(0, 4);
+        List<Rank> cardsRanks = determineRanksExceptThese(cards).subList(0, 5);
         return new HighCard(cardsRanks);
     }
 

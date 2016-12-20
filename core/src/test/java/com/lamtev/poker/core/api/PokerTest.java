@@ -1,5 +1,6 @@
 package com.lamtev.poker.core.api;
 
+import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.CardDeck;
 import com.lamtev.poker.core.model.Cards;
@@ -79,12 +80,12 @@ public class PokerTest implements StateChangedListener {
         assertEquals("ShowdownPokerState", poker.getState().getClass().getSimpleName());
 
 
-        Cards cards = poker.showDown();
+        PokerHand.Name hand = poker.showDown();
         poker.fold();
         poker.fold();
 
         System.out.println(state);
-        System.out.println(poker.getCommonCards().toString() + cards);
+        System.out.println(poker.getCommonCards().toString() + hand);
         assertEquals("GameIsOverPokerState", poker.getState().getClass().getSimpleName());
 
         System.out.println(poker.getPlayersInfo().get(0).getStack());

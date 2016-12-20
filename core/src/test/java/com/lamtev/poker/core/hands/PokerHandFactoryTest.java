@@ -1,6 +1,7 @@
 package com.lamtev.poker.core.hands;
 
 import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.model.Rank;
 import com.lamtev.poker.core.model.Suit;
 import org.junit.Test;
@@ -16,7 +17,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testFlushCreation1() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.ACE, Suit.TILES));
             add(new Card(Rank.KING, Suit.HEARTS));
             add(new Card(Rank.TEN, Suit.PIKES));
@@ -24,7 +25,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.FIVE, Suit.HEARTS));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.FOUR, Suit.HEARTS));
             add(new Card(Rank.EIGHT, Suit.HEARTS));
         }};
@@ -35,7 +36,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testFlushCreation2() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.JACK, Suit.HEARTS));
             add(new Card(Rank.ACE, Suit.TILES));
             add(new Card(Rank.TEN, Suit.PIKES));
@@ -43,7 +44,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.SEVEN, Suit.HEARTS));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.FOUR, Suit.HEARTS));
             add(new Card(Rank.QUEEN, Suit.HEARTS));
         }};
@@ -54,7 +55,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testStraightCreation1() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.JACK, Suit.HEARTS));
             add(new Card(Rank.ACE, Suit.TILES));
             add(new Card(Rank.TEN, Suit.PIKES));
@@ -62,7 +63,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.FOUR, Suit.HEARTS));
             add(new Card(Rank.QUEEN, Suit.HEARTS));
         }};
@@ -73,7 +74,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testStraightCreation2() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.THREE, Suit.HEARTS));
             add(new Card(Rank.ACE, Suit.TILES));
             add(new Card(Rank.FIVE, Suit.PIKES));
@@ -81,7 +82,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.FOUR, Suit.HEARTS));
             add(new Card(Rank.QUEEN, Suit.HEARTS));
         }};
@@ -92,7 +93,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testStraightFlushCreation1() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.THREE, Suit.PIKES));
             add(new Card(Rank.ACE, Suit.PIKES));
             add(new Card(Rank.FIVE, Suit.PIKES));
@@ -100,7 +101,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.FOUR, Suit.PIKES));
             add(new Card(Rank.QUEEN, Suit.HEARTS));
         }};
@@ -111,7 +112,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testStraightFlushCreation2() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.TEN, Suit.PIKES));
             add(new Card(Rank.ACE, Suit.TILES));
             add(new Card(Rank.JACK, Suit.PIKES));
@@ -119,7 +120,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.KING, Suit.PIKES));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.NINE, Suit.PIKES));
             add(new Card(Rank.QUEEN, Suit.PIKES));
         }};
@@ -130,7 +131,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testStraightFlushCreation3() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.TWO, Suit.PIKES));
             add(new Card(Rank.THREE, Suit.PIKES));
             add(new Card(Rank.FOUR, Suit.PIKES));
@@ -138,7 +139,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.SIX, Suit.PIKES));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.SEVEN, Suit.PIKES));
             add(new Card(Rank.EIGHT, Suit.PIKES));
         }};
@@ -149,7 +150,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testRoyalFlushCreation1() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.EIGHT, Suit.HEARTS));
             add(new Card(Rank.NINE, Suit.HEARTS));
             add(new Card(Rank.TEN, Suit.HEARTS));
@@ -157,7 +158,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.QUEEN, Suit.HEARTS));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.KING, Suit.HEARTS));
             add(new Card(Rank.ACE, Suit.HEARTS));
 
@@ -169,7 +170,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testThreeOfAKindCreation1() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.ACE, Suit.PIKES));
             add(new Card(Rank.NINE, Suit.TILES));
             add(new Card(Rank.TEN, Suit.HEARTS));
@@ -177,7 +178,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.ACE, Suit.CLOVERS));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.JACK, Suit.PIKES));
             add(new Card(Rank.ACE, Suit.HEARTS));
 
@@ -193,7 +194,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testThreeOfAKindCreation2() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.ACE, Suit.PIKES));
             add(new Card(Rank.JACK, Suit.TILES));
             add(new Card(Rank.TEN, Suit.HEARTS));
@@ -201,7 +202,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.THREE, Suit.CLOVERS));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.JACK, Suit.PIKES));
             add(new Card(Rank.JACK, Suit.HEARTS));
 
@@ -217,7 +218,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testPairCreation1() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.TEN, Suit.PIKES));
             add(new Card(Rank.NINE, Suit.TILES));
             add(new Card(Rank.EIGHT, Suit.HEARTS));
@@ -225,7 +226,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.ACE, Suit.CLOVERS));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.JACK, Suit.PIKES));
             add(new Card(Rank.ACE, Suit.HEARTS));
 
@@ -242,7 +243,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testPairCreation2() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.TEN, Suit.PIKES));
             add(new Card(Rank.FOUR, Suit.TILES));
             add(new Card(Rank.EIGHT, Suit.HEARTS));
@@ -250,7 +251,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.THREE, Suit.CLOVERS));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.JACK, Suit.PIKES));
             add(new Card(Rank.JACK, Suit.HEARTS));
         }};
@@ -266,7 +267,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testTwoPairsCreation1() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.TEN, Suit.PIKES));
             add(new Card(Rank.JACK, Suit.TILES));
             add(new Card(Rank.EIGHT, Suit.HEARTS));
@@ -274,7 +275,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.THREE, Suit.CLOVERS));
         }};
         PokerHandFactory phf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.TWO, Suit.PIKES));
             add(new Card(Rank.JACK, Suit.HEARTS));
         }};
@@ -285,7 +286,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testTwoPairsCreation2() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.TEN, Suit.PIKES));
             add(new Card(Rank.KING, Suit.TILES));
             add(new Card(Rank.TWO, Suit.HEARTS));
@@ -293,7 +294,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.NINE, Suit.CLOVERS));
         }};
         PokerHandFactory phf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.THREE, Suit.PIKES));
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
@@ -304,7 +305,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testFourOfAKindCreation1() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.TEN, Suit.PIKES));
             add(new Card(Rank.KING, Suit.TILES));
             add(new Card(Rank.TWO, Suit.HEARTS));
@@ -312,7 +313,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.TWO, Suit.CLOVERS));
         }};
         PokerHandFactory phf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.TWO, Suit.PIKES));
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
@@ -323,7 +324,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testFourOfAKindCreation2() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.FOUR, Suit.PIKES));
             add(new Card(Rank.ACE, Suit.TILES));
             add(new Card(Rank.FOUR, Suit.HEARTS));
@@ -331,7 +332,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.FOUR, Suit.CLOVERS));
         }};
         PokerHandFactory phf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.TWO, Suit.PIKES));
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
@@ -342,7 +343,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testFullHouseCreation1() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.FOUR, Suit.PIKES));
             add(new Card(Rank.KING, Suit.TILES));
             add(new Card(Rank.FOUR, Suit.HEARTS));
@@ -350,7 +351,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.TWO, Suit.CLOVERS));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.TWO, Suit.PIKES));
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
@@ -361,7 +362,7 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testFullHouseCreation2() {
-        List<Card> commonCards = new ArrayList<Card>() {{
+        Cards commonCards = new Cards() {{
             add(new Card(Rank.TWO, Suit.PIKES));
             add(new Card(Rank.FIVE, Suit.TILES));
             add(new Card(Rank.FIVE, Suit.HEARTS));
@@ -369,7 +370,7 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.THREE, Suit.CLOVERS));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        List<Card> playerCards = new ArrayList<Card>() {{
+        Cards playerCards = new Cards() {{
             add(new Card(Rank.FOUR, Suit.PIKES));
             add(new Card(Rank.FOUR, Suit.CLOVERS));
         }};

@@ -1,6 +1,7 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.Poker;
+import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.*;
 
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public Cards showDown() throws Exception {
+    public PokerHand.Name showDown() throws Exception {
         throw new Exception("Can't show down when wagering");
     }
 

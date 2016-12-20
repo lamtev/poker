@@ -1,5 +1,6 @@
 package com.lamtev.poker.core.api;
 
+import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.PokerState;
 import com.lamtev.poker.core.states.SettingsPokerState;
@@ -81,7 +82,7 @@ public class Poker implements PokerAPI {
     }
 
     @Override
-    public Cards showDown() throws Exception {
+    public PokerHand.Name showDown() throws Exception {
         return state.showDown();
     }
 

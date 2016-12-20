@@ -2,6 +2,7 @@ package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.PlayerInfo;
 import com.lamtev.poker.core.api.Poker;
+import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.*;
 import com.lamtev.poker.core.states.exceptions.GameHaveNotBeenStartedException;
 
@@ -83,7 +84,7 @@ public class SettingsPokerState implements PokerState {
     }
 
     @Override
-    public Cards showDown() throws Exception {
+    public PokerHand.Name showDown() throws Exception {
         throw new GameHaveNotBeenStartedException();
     }
 

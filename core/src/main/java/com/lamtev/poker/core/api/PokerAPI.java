@@ -1,5 +1,6 @@
 package com.lamtev.poker.core.api;
 
+import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Cards;
 
 import java.util.List;
@@ -32,5 +33,5 @@ public interface PokerAPI {
 
     void check() throws Exception;
 
-    Cards showDown() throws Exception;
+    PokerHand.Name showDown() throws Exception;
 }
