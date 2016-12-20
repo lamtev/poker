@@ -1,6 +1,13 @@
 package com.lamtev.poker.core.states;
 
+import com.lamtev.poker.core.hands.PokerHand;
+import com.lamtev.poker.core.hands.PokerHandFactory;
+import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
+import com.lamtev.poker.core.model.Players;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //TODO
 class ShowdownPokerState extends ActionPokerState {
@@ -45,16 +52,25 @@ class ShowdownPokerState extends ActionPokerState {
         throw new Exception();
     }
 
+    //TODO think about atuallity of wrappers for collections
     @Override
     public Cards showDown() throws Exception {
         ++showDowns;
         if (timeToDetermineWinners()) {
+
             //bank.giveMoneyToWinners(combinationAnalyser.determineWinners());
             poker.setState(new GameIsOverPokerState(this));
         }
-        Cards cards = currentPlayer().getCards();
+        Cards playerCards = currentPlayer().getCards();
+        List<Card> plyrCrds = new ArrayList<>();
+        playerCards.forEach(plyrCrds::add);
+        List<Card> cards = new ArrayList<>();
+        commonCards.forEach(cards::add);
+        PokerHandFactory phf = new PokerHandFactory(cards);
+        PokerHand pokerHand = phf.createCombination(plyrCrds);
+
         changePlayerIndex();
-        return cards;
+        return playerCards;
     }
 
     private boolean timeToDetermineWinners() {

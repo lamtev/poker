@@ -19,18 +19,6 @@ class GameIsOverPokerState extends ActionPokerState {
     }
 
     @Override
-    //TODO: Разве нельзя получать информацию об состоянии игроков во время игры?
-    public ArrayList<PlayerInfo> getPlayersInfo() throws Exception {
-        return new ArrayList<PlayerInfo>() {{
-            players.forEach((player) -> {
-                String id = player.getId();
-                int stack = player.getStack();
-                add(new PlayerInfo(id, stack));
-            });
-        }};
-    }
-
-    @Override
     public void call() throws Exception {
         throw new GameIsOverException();
     }

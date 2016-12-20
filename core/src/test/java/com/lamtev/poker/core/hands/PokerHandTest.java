@@ -47,4 +47,6 @@ public class PokerHandTest {
         assertTrue(new FullHouse(Rank.KING, Rank.ACE).compareTo(new FullHouse(Rank.ACE, Rank.KING)) < 0);
     }
 
+
+
 }

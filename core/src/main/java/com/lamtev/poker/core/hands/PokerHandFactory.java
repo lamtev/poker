@@ -18,7 +18,7 @@ public class PokerHandFactory {
         this.commonCards = commonCards;
     }
 
-    PokerHand createCombination(List<Card> playerCards) {
+    public PokerHand createCombination(List<Card> playerCards) {
         List<Card> cards = new ArrayList<>();
         commonCards.forEach(cards::add);
         playerCards.forEach(cards::add);

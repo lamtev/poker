@@ -31,10 +31,6 @@ public class Cards implements Iterable<Card> {
         return cards.remove(size() - 1);
     }
 
-    public void sort(Comparator<Card> c) {
-        cards.sort(c);
-    }
-
     @Override
     public void forEach(Consumer<? super Card> action) {
         cards.forEach(action);

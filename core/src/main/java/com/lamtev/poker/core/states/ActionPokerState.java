@@ -36,8 +36,13 @@ abstract class ActionPokerState implements PokerState {
 
     @Override
     public ArrayList<PlayerInfo> getPlayersInfo() throws Exception {
-        //TODO: Разве нельзя получать информацию об состоянии игроков во время игры?
-        throw new Exception();
+        return new ArrayList<PlayerInfo>() {{
+            players.forEach((player) -> {
+                String id = player.getId();
+                int stack = player.getStack();
+                add(new PlayerInfo(id, stack));
+            });
+        }};
     }
 
     @Override

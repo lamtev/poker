@@ -10,6 +10,7 @@ public class Bank {
     private int money = 0;
     private Players players;
     private int currentWager = 0;
+    private boolean blindsSet = false;
 
     public Bank(Players players) {
         this.players = players;
@@ -28,10 +29,13 @@ public class Bank {
         int bigBlindSize = 2 * smallBlindSize;
         money += players.get(BIG_BLIND_INDEX).takeMoney(bigBlindSize);
         currentWager = bigBlindSize;
+        blindsSet = true;
     }
 
     public void acceptCallFromPlayer(Player player) throws Exception {
-        //TODO throw exception when blinds not set
+        if (!blindsSet) {
+            throw new RuntimeException("Can't accept call from player when blinds not set");
+        }
         int moneyTakingFromPlayer = currentWager - player.getWager();
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
         this.money += player.takeMoney(moneyTakingFromPlayer);
