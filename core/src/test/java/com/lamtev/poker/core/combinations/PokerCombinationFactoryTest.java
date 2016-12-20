@@ -284,4 +284,42 @@ public class PokerCombinationFactoryTest {
         assertTrue(twoPairs.compareTo(new TwoPairs(Rank.KING, Rank.TWO, Rank.THREE)) == 0);
     }
 
+    @Test
+    public void testFourOfAKindCreation1() {
+        List<Card> commonCards = new ArrayList<Card>() {{
+            add(new Card(Rank.TEN, Suit.PIKES));
+            add(new Card(Rank.KING, Suit.TILES));
+            add(new Card(Rank.TWO, Suit.HEARTS));
+            add(new Card(Rank.TWO, Suit.TILES));
+            add(new Card(Rank.TWO, Suit.CLOVERS));
+        }};
+        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        List<Card> playerCards = new ArrayList<Card>() {{
+            add(new Card(Rank.TWO, Suit.PIKES));
+            add(new Card(Rank.KING, Suit.HEARTS));
+        }};
+        PokerCombination fourOfAKind = pcf.createCombination(playerCards);
+        assertEquals(FOUR_OF_A_KIND, fourOfAKind.getName());
+        assertTrue(fourOfAKind.compareTo(new FourOfAKind(Rank.TWO, Rank.KING)) == 0);
+    }
+
+    @Test
+    public void testFourOfAKindCreation2() {
+        List<Card> commonCards = new ArrayList<Card>() {{
+            add(new Card(Rank.FOUR, Suit.PIKES));
+            add(new Card(Rank.KING, Suit.TILES));
+            add(new Card(Rank.FOUR, Suit.HEARTS));
+            add(new Card(Rank.FOUR, Suit.TILES));
+            add(new Card(Rank.FOUR, Suit.CLOVERS));
+        }};
+        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        List<Card> playerCards = new ArrayList<Card>() {{
+            add(new Card(Rank.TWO, Suit.PIKES));
+            add(new Card(Rank.KING, Suit.HEARTS));
+        }};
+        PokerCombination fourOfAKind = pcf.createCombination(playerCards);
+        assertEquals(FOUR_OF_A_KIND, fourOfAKind.getName());
+        assertTrue(fourOfAKind.compareTo(new FourOfAKind(Rank.FOUR, Rank.KING)) == 0);
+    }
+
 }

@@ -34,7 +34,7 @@ public class PokerCombinationFactory {
             return pokerCombination;
         }
 
-        pokerCombination = parseFourOfAKind(cards);
+        pokerCombination = parseFourOfAKind(cards, playerCards);
         if (pokerCombination != null) {
             return pokerCombination;
         }
@@ -153,8 +153,18 @@ public class PokerCombinationFactory {
         return null;
     }
 
-    private PokerCombination parseFourOfAKind(List<Card> cards) {
-        //TODO implement
+    //TODO remove code duplicate
+    //TODO increase code readability
+    private PokerCombination parseFourOfAKind(List<Card> cards, List<Card> playerCards) {
+        for (int i = 0; i < 5; ++i) {
+            int numberOfSameRanks = 1;
+            for (int j = 0; j < cards.size(); ++j) {
+                if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++numberOfSameRanks == 4) {
+                    Rank kicker = determineKicker(playerCards, cards.get(i).getRank());
+                    return new FourOfAKind(cards.get(i).getRank(), kicker);
+                }
+            }
+        }
         return null;
     }
 
