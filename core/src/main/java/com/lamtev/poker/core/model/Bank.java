@@ -1,5 +1,9 @@
 package com.lamtev.poker.core.model;
 
+import com.lamtev.poker.core.hands.PokerHand;
+
+import java.util.Map;
+
 public class Bank {
 
     //TODO think about ALL IN
@@ -66,11 +70,13 @@ public class Bank {
         this.money -= money;
     }
 
-    public void giveMoneyToWinners(Players winners) {
-        if (winners.size() == 1) {
-            winners.get(0).addMoney(money);
-            money = 0;
-        }
+    public void giveMoneyToWinners(Map<String, PokerHand> winners) {
+        //winners.forEach();
+    }
+
+    public void giveMoneyToWinners(Player winner) {
+        winner.addMoney(money);
+        money = 0;
         //TODO
     }
 

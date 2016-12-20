@@ -2,12 +2,16 @@ package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.hands.PokerHandFactory;
-import com.lamtev.poker.core.model.Cards;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 //TODO
 class ShowdownPokerState extends ActionPokerState {
 
     private int showDowns = 0;
+    private Map<String, PokerHand> map = new TreeMap<>();
 
     ShowdownPokerState(ActionPokerState state, int latestAggressorIndex) {
         super(state);
@@ -37,7 +41,7 @@ class ShowdownPokerState extends ActionPokerState {
         currentPlayer().fold();
         changePlayerIndex();
         if (timeToDetermineWinners()) {
-            //bank.giveMoneyToWinners(combinationAnalyser.determineWinners());
+            //map.entrySet().stream()
             poker.setState(new GameIsOverPokerState(this));
         }
     }
@@ -51,15 +55,14 @@ class ShowdownPokerState extends ActionPokerState {
     @Override
     public PokerHand.Name showDown() throws Exception {
         ++showDowns;
+        PokerHandFactory phf = new PokerHandFactory(commonCards);
+        PokerHand pokerHand = phf.createCombination(currentPlayer().getCards());
+        map.put(currentPlayer().getId(), pokerHand);
         if (timeToDetermineWinners()) {
 
             //bank.giveMoneyToWinners(combinationAnalyser.determineWinners());
             poker.setState(new GameIsOverPokerState(this));
         }
-        Cards playerCards = currentPlayer().getCards();
-        PokerHandFactory phf = new PokerHandFactory(commonCards);
-        PokerHand pokerHand = phf.createCombination(playerCards);
-
         changePlayerIndex();
         return pokerHand.getName();
     }

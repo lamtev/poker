@@ -104,10 +104,9 @@ abstract class WageringPokerState extends ActionPokerState {
         return players.activePlayersNumber() == 1;
     }
 
+    //TODO think about legality
     private void gameIsOverState() throws Exception {
-        bank.giveMoneyToWinners(new Players() {{
-            add(currentPlayer());
-        }});
+        bank.giveMoneyToWinners(currentPlayer());
         poker.setState(new GameIsOverPokerState(this));
     }
 
