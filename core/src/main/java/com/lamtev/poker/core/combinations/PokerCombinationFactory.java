@@ -170,14 +170,7 @@ public class PokerCombinationFactory {
             int numberOfSameRanks = 1;
             for (int j = 0; j < cards.size(); ++j) {
                 if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++numberOfSameRanks == 3) {
-                    Rank kicker;
-                    int indexOfMax = playerCards.indexOf(Collections.max(playerCards, COMPARATOR_BY_RANK));
-                    if (playerCards.get(indexOfMax).getRank() != cards.get(i).getRank() ||
-                            playerCards.get((indexOfMax + 1) % 2).getRank() == cards.get(i).getRank()) {
-                        kicker = playerCards.get(indexOfMax).getRank();
-                    } else {
-                        kicker = playerCards.get((indexOfMax + 1) % 2).getRank();
-                    }
+                    Rank kicker = determineKicker(playerCards, cards.get(i).getRank());
                     return new ThreeOfAKind(cards.get(i).getRank(), kicker);
                 }
             }
@@ -185,8 +178,50 @@ public class PokerCombinationFactory {
         return null;
     }
 
+    private Rank determineKicker(List<Card> playerCards, Rank... combinationHighCardRanks) {
+        int indexOfMax = playerCards.indexOf(Collections.max(playerCards, COMPARATOR_BY_RANK));
+        boolean maxHasNotSameRank = false;
+        boolean minHasSameRank = false;
+        for (Rank combinationHighCardRank : combinationHighCardRanks) {
+            maxHasNotSameRank = playerCards.get(indexOfMax).getRank() != combinationHighCardRank;
+            minHasSameRank = playerCards.get((indexOfMax + 1) % 2).getRank() == combinationHighCardRank;
+        }
+        if (maxHasNotSameRank || minHasSameRank) {
+            return playerCards.get(indexOfMax).getRank();
+        } else {
+            return playerCards.get((indexOfMax + 1) % 2).getRank();
+        }
+    }
+
+    //TODO remove code duplicate
+    //TODO increase code readability
     private PokerCombination parseTwoPairs(List<Card> cards, List<Card> playerCards) {
-        //TODO implement
+        Rank firstPairHighCardRank = null;
+        for (int i = 0; i < 7; ++i) {
+            int firstPairNumberOfSameRanks = 1;
+            for (int j = 0; j < cards.size(); ++j) {
+                if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++firstPairNumberOfSameRanks == 2) {
+                    firstPairHighCardRank = cards.get(i).getRank();
+                    break;
+                }
+                if (firstPairHighCardRank != null) {
+                    break;
+                }
+            }
+        }
+        if (firstPairHighCardRank != null) {
+            for (int i = 0; i < 7; ++i) {
+                int secondPairNumberOfSameRanks = 1;
+                Rank secondPairHighCardRank;
+                for (int k = 0; k < cards.size(); ++k) {
+                    if (i != k && cards.get(i).getRank() != firstPairHighCardRank && cards.get(i).getRank().equals(cards.get(k).getRank()) && ++secondPairNumberOfSameRanks == 2) {
+                        secondPairHighCardRank = cards.get(i).getRank();
+                        Rank kicker = determineKicker(playerCards, firstPairHighCardRank, secondPairHighCardRank);
+                        return new TwoPairs(firstPairHighCardRank, secondPairHighCardRank, kicker);
+                    }
+                }
+            }
+        }
         return null;
     }
 
@@ -197,14 +232,7 @@ public class PokerCombinationFactory {
             int numberOfSameRanks = 1;
             for (int j = 0; j < cards.size(); ++j) {
                 if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++numberOfSameRanks == 2) {
-                    Rank kicker;
-                    int indexOfMax = playerCards.indexOf(Collections.max(playerCards, COMPARATOR_BY_RANK));
-                    if (playerCards.get(indexOfMax).getRank() != cards.get(i).getRank() ||
-                            playerCards.get((indexOfMax + 1) % 2).getRank() == cards.get(i).getRank()) {
-                        kicker = playerCards.get(indexOfMax).getRank();
-                    } else {
-                        kicker = playerCards.get((indexOfMax + 1) % 2).getRank();
-                    }
+                    Rank kicker = determineKicker(playerCards, cards.get(i).getRank());
                     return new Pair(cards.get(i).getRank(), kicker);
                 }
             }
