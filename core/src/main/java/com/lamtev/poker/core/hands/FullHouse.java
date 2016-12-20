@@ -1,10 +1,10 @@
-package com.lamtev.poker.core.combinations;
+package com.lamtev.poker.core.hands;
 
 import com.lamtev.poker.core.model.Rank;
 
-import static com.lamtev.poker.core.combinations.PokerCombination.Name.FULL_HOUSE;
+import static com.lamtev.poker.core.hands.PokerHand.Name.FULL_HOUSE;
 
-public class FullHouse implements PokerCombination {
+public class FullHouse implements PokerHand {
 
     private final Name NAME = FULL_HOUSE;
     private final Rank threeOfAKindHighCardRank;
@@ -21,7 +21,7 @@ public class FullHouse implements PokerCombination {
     }
 
     @Override
-    public int compareTo(PokerCombination o) {
+    public int compareTo(PokerHand o) {
         int cmp1 = NAME.compareTo(o.getName());
         if (cmp1 == 0) {
             FullHouse fullHouse = (FullHouse) o;

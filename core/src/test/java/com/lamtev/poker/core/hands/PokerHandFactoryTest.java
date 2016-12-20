@@ -1,4 +1,4 @@
-package com.lamtev.poker.core.combinations;
+package com.lamtev.poker.core.hands;
 
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Rank;
@@ -8,11 +8,11 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.lamtev.poker.core.combinations.PokerCombination.Name.*;
+import static com.lamtev.poker.core.hands.PokerHand.Name.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class PokerCombinationFactoryTest {
+public class PokerHandFactoryTest {
 
     @Test
     public void testFlushCreation1() {
@@ -23,12 +23,12 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.TWO, Suit.HEARTS));
             add(new Card(Rank.FIVE, Suit.HEARTS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.FOUR, Suit.HEARTS));
             add(new Card(Rank.EIGHT, Suit.HEARTS));
         }};
-        PokerCombination flush = pcf.createCombination(playerCards);
+        PokerHand flush = pcf.createCombination(playerCards);
         assertEquals(FLUSH, flush.getName());
         assertTrue(flush.compareTo(new Flush(Rank.KING)) == 0);
     }
@@ -42,12 +42,12 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.TWO, Suit.HEARTS));
             add(new Card(Rank.SEVEN, Suit.HEARTS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.FOUR, Suit.HEARTS));
             add(new Card(Rank.QUEEN, Suit.HEARTS));
         }};
-        PokerCombination flush = pcf.createCombination(playerCards);
+        PokerHand flush = pcf.createCombination(playerCards);
         assertEquals(FLUSH, flush.getName());
         assertTrue(flush.compareTo(new Flush(Rank.QUEEN)) == 0);
     }
@@ -61,12 +61,12 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.TWO, Suit.CLOVERS));
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.FOUR, Suit.HEARTS));
             add(new Card(Rank.QUEEN, Suit.HEARTS));
         }};
-        PokerCombination straight = pcf.createCombination(playerCards);
+        PokerHand straight = pcf.createCombination(playerCards);
         assertEquals(STRAIGHT, straight.getName());
         assertTrue(straight.compareTo(new Straight(Rank.ACE)) == 0);
     }
@@ -80,12 +80,12 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.TWO, Suit.CLOVERS));
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.FOUR, Suit.HEARTS));
             add(new Card(Rank.QUEEN, Suit.HEARTS));
         }};
-        PokerCombination straight = pcf.createCombination(playerCards);
+        PokerHand straight = pcf.createCombination(playerCards);
         assertEquals(STRAIGHT, straight.getName());
         assertTrue(straight.compareTo(new Straight(Rank.FIVE)) == 0);
     }
@@ -99,12 +99,12 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.TWO, Suit.PIKES));
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.FOUR, Suit.PIKES));
             add(new Card(Rank.QUEEN, Suit.HEARTS));
         }};
-        PokerCombination straightFlush = pcf.createCombination(playerCards);
+        PokerHand straightFlush = pcf.createCombination(playerCards);
         assertEquals(STRAIGHT_FLUSH, straightFlush.getName());
         assertTrue(straightFlush.compareTo(new StraightFlush(Rank.FIVE)) == 0);
     }
@@ -118,12 +118,12 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.TWO, Suit.CLOVERS));
             add(new Card(Rank.KING, Suit.PIKES));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.NINE, Suit.PIKES));
             add(new Card(Rank.QUEEN, Suit.PIKES));
         }};
-        PokerCombination straightFlush = pcf.createCombination(playerCards);
+        PokerHand straightFlush = pcf.createCombination(playerCards);
         assertEquals(STRAIGHT_FLUSH, straightFlush.getName());
         assertTrue(straightFlush.compareTo(new StraightFlush(Rank.KING)) == 0);
     }
@@ -137,12 +137,12 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.FIVE, Suit.PIKES));
             add(new Card(Rank.SIX, Suit.PIKES));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.SEVEN, Suit.PIKES));
             add(new Card(Rank.EIGHT, Suit.PIKES));
         }};
-        PokerCombination straightFlush = pcf.createCombination(playerCards);
+        PokerHand straightFlush = pcf.createCombination(playerCards);
         assertEquals(STRAIGHT_FLUSH, straightFlush.getName());
         assertTrue(straightFlush.compareTo(new StraightFlush(Rank.EIGHT)) == 0);
     }
@@ -156,13 +156,13 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.JACK, Suit.HEARTS));
             add(new Card(Rank.QUEEN, Suit.HEARTS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.KING, Suit.HEARTS));
             add(new Card(Rank.ACE, Suit.HEARTS));
 
         }};
-        PokerCombination royalFlush = pcf.createCombination(playerCards);
+        PokerHand royalFlush = pcf.createCombination(playerCards);
         assertEquals(ROYAL_FLUSH, royalFlush.getName());
         assertTrue(royalFlush.compareTo(new RoyalFlush()) == 0);
     }
@@ -176,15 +176,19 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.TWO, Suit.TILES));
             add(new Card(Rank.ACE, Suit.CLOVERS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.JACK, Suit.PIKES));
             add(new Card(Rank.ACE, Suit.HEARTS));
 
         }};
-        PokerCombination threeOfAKind = pcf.createCombination(playerCards);
+        PokerHand threeOfAKind = pcf.createCombination(playerCards);
         assertEquals(THREE_OF_A_KIND, threeOfAKind.getName());
-        assertTrue(threeOfAKind.compareTo(new ThreeOfAKind(Rank.ACE, Rank.JACK)) == 0);
+        List<Rank> otherCardsRanks= new ArrayList<Rank>() {{
+            add(Rank.JACK);
+            add(Rank.TEN);
+        }};
+        assertTrue(threeOfAKind.compareTo(new ThreeOfAKind(Rank.ACE, otherCardsRanks)) == 0);
     }
 
     @Test
@@ -196,15 +200,19 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.TWO, Suit.TILES));
             add(new Card(Rank.THREE, Suit.CLOVERS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.JACK, Suit.PIKES));
             add(new Card(Rank.JACK, Suit.HEARTS));
 
         }};
-        PokerCombination threeOfAKind = pcf.createCombination(playerCards);
+        PokerHand threeOfAKind = pcf.createCombination(playerCards);
         assertEquals(THREE_OF_A_KIND, threeOfAKind.getName());
-        assertTrue(threeOfAKind.compareTo(new ThreeOfAKind(Rank.JACK, Rank.JACK)) == 0);
+        List<Rank> otherCardsRanks= new ArrayList<Rank>() {{
+            add(Rank.ACE);
+            add(Rank.TEN);
+        }};
+        assertTrue(threeOfAKind.compareTo(new ThreeOfAKind(Rank.JACK, otherCardsRanks)) == 0);
     }
 
     @Test
@@ -216,15 +224,20 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.TWO, Suit.TILES));
             add(new Card(Rank.ACE, Suit.CLOVERS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.JACK, Suit.PIKES));
             add(new Card(Rank.ACE, Suit.HEARTS));
 
         }};
-        PokerCombination pair = pcf.createCombination(playerCards);
+        PokerHand pair = pcf.createCombination(playerCards);
         assertEquals(PAIR, pair.getName());
-        assertTrue(pair.compareTo(new Pair(Rank.ACE, Rank.JACK)) == 0);
+        List<Rank> otherCardsRanks= new ArrayList<Rank>() {{
+            add(Rank.JACK);
+            add(Rank.TEN);
+            add(Rank.NINE);
+        }};
+        assertTrue(pair.compareTo(new Pair(Rank.ACE, otherCardsRanks)) == 0);
     }
 
     @Test
@@ -236,14 +249,19 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.TWO, Suit.TILES));
             add(new Card(Rank.THREE, Suit.CLOVERS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.JACK, Suit.PIKES));
             add(new Card(Rank.JACK, Suit.HEARTS));
         }};
-        PokerCombination pair = pcf.createCombination(playerCards);
+        PokerHand pair = pcf.createCombination(playerCards);
         assertEquals(PAIR, pair.getName());
-        assertTrue(pair.compareTo(new Pair(Rank.JACK, Rank.JACK)) == 0);
+        List<Rank> otherCardsRanks= new ArrayList<Rank>() {{
+           add(Rank.TEN);
+           add(Rank.EIGHT);
+           add(Rank.FOUR);
+        }};
+        assertTrue(pair.compareTo(new Pair(Rank.JACK, otherCardsRanks)) == 0);
     }
 
     @Test
@@ -255,14 +273,14 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.TWO, Suit.TILES));
             add(new Card(Rank.THREE, Suit.CLOVERS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory phf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.TWO, Suit.PIKES));
             add(new Card(Rank.JACK, Suit.HEARTS));
         }};
-        PokerCombination twoPairs = pcf.createCombination(playerCards);
+        PokerHand twoPairs = phf.createCombination(playerCards);
         assertEquals(TWO_PAIRS, twoPairs.getName());
-        assertTrue(twoPairs.compareTo(new TwoPairs(Rank.JACK, Rank.TWO, Rank.JACK)) == 0);
+        assertTrue(twoPairs.compareTo(new TwoPairs(Rank.JACK, Rank.TWO, Rank.TEN)) == 0);
     }
 
     @Test
@@ -274,14 +292,14 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.TWO, Suit.TILES));
             add(new Card(Rank.NINE, Suit.CLOVERS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory phf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.THREE, Suit.PIKES));
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
-        PokerCombination twoPairs = pcf.createCombination(playerCards);
+        PokerHand twoPairs = phf.createCombination(playerCards);
         assertEquals(TWO_PAIRS, twoPairs.getName());
-        assertTrue(twoPairs.compareTo(new TwoPairs(Rank.KING, Rank.TWO, Rank.THREE)) == 0);
+        assertTrue(twoPairs.compareTo(new TwoPairs(Rank.KING, Rank.TWO, Rank.TEN)) == 0);
     }
 
     @Test
@@ -293,12 +311,12 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.TWO, Suit.TILES));
             add(new Card(Rank.TWO, Suit.CLOVERS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory phf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.TWO, Suit.PIKES));
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
-        PokerCombination fourOfAKind = pcf.createCombination(playerCards);
+        PokerHand fourOfAKind = phf.createCombination(playerCards);
         assertEquals(FOUR_OF_A_KIND, fourOfAKind.getName());
         assertTrue(fourOfAKind.compareTo(new FourOfAKind(Rank.TWO, Rank.KING)) == 0);
     }
@@ -307,19 +325,19 @@ public class PokerCombinationFactoryTest {
     public void testFourOfAKindCreation2() {
         List<Card> commonCards = new ArrayList<Card>() {{
             add(new Card(Rank.FOUR, Suit.PIKES));
-            add(new Card(Rank.KING, Suit.TILES));
+            add(new Card(Rank.ACE, Suit.TILES));
             add(new Card(Rank.FOUR, Suit.HEARTS));
             add(new Card(Rank.FOUR, Suit.TILES));
             add(new Card(Rank.FOUR, Suit.CLOVERS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory phf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.TWO, Suit.PIKES));
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
-        PokerCombination fourOfAKind = pcf.createCombination(playerCards);
+        PokerHand fourOfAKind = phf.createCombination(playerCards);
         assertEquals(FOUR_OF_A_KIND, fourOfAKind.getName());
-        assertTrue(fourOfAKind.compareTo(new FourOfAKind(Rank.FOUR, Rank.KING)) == 0);
+        assertTrue(fourOfAKind.compareTo(new FourOfAKind(Rank.FOUR, Rank.ACE)) == 0);
     }
 
     @Test
@@ -331,12 +349,12 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.FOUR, Suit.TILES));
             add(new Card(Rank.TWO, Suit.CLOVERS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.TWO, Suit.PIKES));
             add(new Card(Rank.KING, Suit.HEARTS));
         }};
-        PokerCombination fullHouse = pcf.createCombination(playerCards);
+        PokerHand fullHouse = pcf.createCombination(playerCards);
         assertEquals(FULL_HOUSE, fullHouse.getName());
         assertTrue(fullHouse.compareTo(new FullHouse(Rank.FOUR, Rank.KING)) == 0);
     }
@@ -350,12 +368,12 @@ public class PokerCombinationFactoryTest {
             add(new Card(Rank.FOUR, Suit.TILES));
             add(new Card(Rank.THREE, Suit.CLOVERS));
         }};
-        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        PokerHandFactory pcf = new PokerHandFactory(commonCards);
         List<Card> playerCards = new ArrayList<Card>() {{
             add(new Card(Rank.FOUR, Suit.PIKES));
             add(new Card(Rank.FOUR, Suit.CLOVERS));
         }};
-        PokerCombination fullHouse = pcf.createCombination(playerCards);
+        PokerHand fullHouse = pcf.createCombination(playerCards);
         assertEquals(FULL_HOUSE, fullHouse.getName());
         assertTrue(fullHouse.compareTo(new FullHouse(Rank.FOUR, Rank.FIVE)) == 0);
     }

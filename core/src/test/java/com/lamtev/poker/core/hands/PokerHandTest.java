@@ -1,11 +1,11 @@
-package com.lamtev.poker.core.combinations;
+package com.lamtev.poker.core.hands;
 
 import com.lamtev.poker.core.model.Rank;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public class PokerCombinationTest {
+public class PokerHandTest {
 
     @Test
     public void testComparisonBetweenFlushAndFlush() {
@@ -46,14 +46,5 @@ public class PokerCombinationTest {
         assertTrue(new FullHouse(Rank.ACE, Rank.KING).compareTo(new FullHouse(Rank.KING, Rank.ACE)) > 0);
         assertTrue(new FullHouse(Rank.KING, Rank.ACE).compareTo(new FullHouse(Rank.ACE, Rank.KING)) < 0);
     }
-
-    @Test
-    public void testComparisonBetweenThreeOfAKindAndThreeOfAKind() {
-        assertTrue(new ThreeOfAKind(Rank.ACE, Rank.FIVE).compareTo(new ThreeOfAKind(Rank.ACE, Rank.FIVE)) == 0);
-        assertTrue(new ThreeOfAKind(Rank.ACE, Rank.FIVE).compareTo(new ThreeOfAKind(Rank.ACE, Rank.FOUR)) > 0);
-        assertTrue(new ThreeOfAKind(Rank.ACE, Rank.FIVE).compareTo(new ThreeOfAKind(Rank.JACK, Rank.FIVE)) > 0);
-    }
-
-    //TODO add more test cases
 
 }

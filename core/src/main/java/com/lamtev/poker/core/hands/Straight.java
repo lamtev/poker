@@ -1,10 +1,10 @@
-package com.lamtev.poker.core.combinations;
+package com.lamtev.poker.core.hands;
 
 import com.lamtev.poker.core.model.Rank;
 
-import static com.lamtev.poker.core.combinations.PokerCombination.Name.STRAIGHT;
+import static com.lamtev.poker.core.hands.PokerHand.Name.STRAIGHT;
 
-public class Straight implements PokerCombination {
+public class Straight implements PokerHand {
 
     private final Name NAME = STRAIGHT;
     private final Rank highCardRank;
@@ -19,7 +19,7 @@ public class Straight implements PokerCombination {
     }
 
     @Override
-    public int compareTo(PokerCombination o) {
+    public int compareTo(PokerHand o) {
         int cmp = NAME.compareTo(o.getName());
         if (cmp == 0) {
             Straight straight = (Straight) o;

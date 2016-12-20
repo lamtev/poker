@@ -1,6 +1,6 @@
-package com.lamtev.poker.core.combinations;
+package com.lamtev.poker.core.hands;
 
-public interface PokerCombination extends Comparable<PokerCombination> {
+public interface PokerHand extends Comparable<PokerHand> {
 
     enum Name {
         HIGH_CARD,
