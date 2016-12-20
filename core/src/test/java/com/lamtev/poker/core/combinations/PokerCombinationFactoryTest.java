@@ -322,4 +322,42 @@ public class PokerCombinationFactoryTest {
         assertTrue(fourOfAKind.compareTo(new FourOfAKind(Rank.FOUR, Rank.KING)) == 0);
     }
 
+    @Test
+    public void testFullHouseCreation1() {
+        List<Card> commonCards = new ArrayList<Card>() {{
+            add(new Card(Rank.FOUR, Suit.PIKES));
+            add(new Card(Rank.KING, Suit.TILES));
+            add(new Card(Rank.FOUR, Suit.HEARTS));
+            add(new Card(Rank.FOUR, Suit.TILES));
+            add(new Card(Rank.TWO, Suit.CLOVERS));
+        }};
+        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        List<Card> playerCards = new ArrayList<Card>() {{
+            add(new Card(Rank.TWO, Suit.PIKES));
+            add(new Card(Rank.KING, Suit.HEARTS));
+        }};
+        PokerCombination fullHouse = pcf.createCombination(playerCards);
+        assertEquals(FULL_HOUSE, fullHouse.getName());
+        assertTrue(fullHouse.compareTo(new FullHouse(Rank.FOUR, Rank.KING)) == 0);
+    }
+
+    @Test
+    public void testFullHouseCreation2() {
+        List<Card> commonCards = new ArrayList<Card>() {{
+            add(new Card(Rank.TWO, Suit.PIKES));
+            add(new Card(Rank.FIVE, Suit.TILES));
+            add(new Card(Rank.FIVE, Suit.HEARTS));
+            add(new Card(Rank.FOUR, Suit.TILES));
+            add(new Card(Rank.THREE, Suit.CLOVERS));
+        }};
+        PokerCombinationFactory pcf = new PokerCombinationFactory(commonCards);
+        List<Card> playerCards = new ArrayList<Card>() {{
+            add(new Card(Rank.FOUR, Suit.PIKES));
+            add(new Card(Rank.FOUR, Suit.CLOVERS));
+        }};
+        PokerCombination fullHouse = pcf.createCombination(playerCards);
+        assertEquals(FULL_HOUSE, fullHouse.getName());
+        assertTrue(fullHouse.compareTo(new FullHouse(Rank.FOUR, Rank.FIVE)) == 0);
+    }
+
 }
