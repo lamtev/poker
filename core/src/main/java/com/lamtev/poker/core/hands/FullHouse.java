@@ -35,4 +35,24 @@ public class FullHouse implements PokerHand {
             return cmp1;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FullHouse)) return false;
+
+        FullHouse fullHouse = (FullHouse) o;
+
+        if (NAME != fullHouse.NAME) return false;
+        if (threeOfAKindHighCardRank != fullHouse.threeOfAKindHighCardRank) return false;
+        return pairHighCardRank == fullHouse.pairHighCardRank;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = NAME.hashCode();
+        result = 31 * result + (threeOfAKindHighCardRank != null ? threeOfAKindHighCardRank.hashCode() : 0);
+        result = 31 * result + (pairHighCardRank != null ? pairHighCardRank.hashCode() : 0);
+        return result;
+    }
 }

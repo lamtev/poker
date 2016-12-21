@@ -45,4 +45,24 @@ public class ThreeOfAKind implements PokerHand {
             return cmp1;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ThreeOfAKind)) return false;
+
+        ThreeOfAKind that = (ThreeOfAKind) o;
+
+        if (NAME != that.NAME) return false;
+        if (highCardRank != that.highCardRank) return false;
+        return otherCardsRanks != null ? otherCardsRanks.equals(that.otherCardsRanks) : that.otherCardsRanks == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = NAME.hashCode();
+        result = 31 * result + (highCardRank != null ? highCardRank.hashCode() : 0);
+        result = 31 * result + (otherCardsRanks != null ? otherCardsRanks.hashCode() : 0);
+        return result;
+    }
 }

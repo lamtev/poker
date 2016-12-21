@@ -42,4 +42,26 @@ public class TwoPairs implements PokerHand {
             return cmp1;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TwoPairs)) return false;
+
+        TwoPairs twoPairs = (TwoPairs) o;
+
+        if (NAME != twoPairs.NAME) return false;
+        if (firstPairHighCardRank != twoPairs.firstPairHighCardRank) return false;
+        if (secondPairHihCardRank != twoPairs.secondPairHihCardRank) return false;
+        return otherCardRank == twoPairs.otherCardRank;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = NAME.hashCode();
+        result = 31 * result + (firstPairHighCardRank != null ? firstPairHighCardRank.hashCode() : 0);
+        result = 31 * result + (secondPairHihCardRank != null ? secondPairHihCardRank.hashCode() : 0);
+        result = 31 * result + (otherCardRank != null ? otherCardRank.hashCode() : 0);
+        return result;
+    }
 }

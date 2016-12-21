@@ -2,7 +2,6 @@ package com.lamtev.poker.core.hands;
 
 import com.lamtev.poker.core.model.Rank;
 
-import javax.print.attribute.standard.MediaSize;
 import java.util.List;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.HIGH_CARD;
@@ -38,5 +37,23 @@ public class HighCard implements PokerHand {
         } else {
             return cmp;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HighCard)) return false;
+
+        HighCard highCard = (HighCard) o;
+
+        if (NAME != highCard.NAME) return false;
+        return cardsRanks != null ? cardsRanks.equals(highCard.cardsRanks) : highCard.cardsRanks == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = NAME.hashCode();
+        result = 31 * result + (cardsRanks != null ? cardsRanks.hashCode() : 0);
+        return result;
     }
 }

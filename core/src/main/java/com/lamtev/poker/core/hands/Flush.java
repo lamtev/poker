@@ -28,4 +28,21 @@ public class Flush implements PokerHand {
             return cmp;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Flush)) return false;
+
+        Flush flush = (Flush) o;
+
+        return NAME == flush.NAME && highCardRank == flush.highCardRank;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = NAME.hashCode();
+        result = 31 * result + (highCardRank != null ? highCardRank.hashCode() : 0);
+        return result;
+    }
 }

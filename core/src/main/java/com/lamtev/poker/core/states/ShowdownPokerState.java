@@ -1,16 +1,14 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.hands.PokerHandFactory;
 
 import java.util.*;
 
-//TODO
 class ShowdownPokerState extends ActionPokerState {
 
     private int showDowns = 0;
-    private Map<String, PokerHand> map = new TreeMap<>();
+    private Map<String, PokerHand> madeShowDown = new TreeMap<>();
 
     ShowdownPokerState(ActionPokerState state, int latestAggressorIndex) {
         super(state);
@@ -39,9 +37,7 @@ class ShowdownPokerState extends ActionPokerState {
         }
         currentPlayer().fold();
         changePlayerIndex();
-        if (timeToDetermineWinners()) {
-            poker.setState(new GameIsOverPokerState(this));
-        }
+        attemptDetermineWinners();
     }
 
     @Override
@@ -49,28 +45,33 @@ class ShowdownPokerState extends ActionPokerState {
         throw new Exception();
     }
 
-    //TODO think about actuality of wrappers for collections
     @Override
     public PokerHand.Name showDown() throws Exception {
         ++showDowns;
         PokerHandFactory phf = new PokerHandFactory(commonCards);
         PokerHand pokerHand = phf.createCombination(currentPlayer().getCards());
-        map.put(currentPlayer().getId(), pokerHand);
+        madeShowDown.put(currentPlayer().getId(), pokerHand);
+        attemptDetermineWinners();
+        changePlayerIndex();
+        return pokerHand.getName();
+    }
+
+    //TODO     add feature for action: not showDown and not fold
+    //TODO     When it would be added, if only one action player then state = ShowDown
+    //TODO     and player will have 2 variants: do this action or showDown
+
+    private void attemptDetermineWinners() {
         if (timeToDetermineWinners()) {
-            PokerHand maxPokerHand = Collections.max(map.values());
+            PokerHand maxPokerHand = Collections.max(madeShowDown.values());
             List<String> winners = new ArrayList<>();
-            map.entrySet().stream()
-                    .filter(e -> e.getValue().compareTo(maxPokerHand) == 0)
+            madeShowDown.entrySet().stream()
+                    .filter(e -> e.getValue().equals(maxPokerHand))
                     .forEach(e -> winners.add(e.getKey()));
             bank.giveMoneyToWinners(winners);
 
             poker.setState(new GameIsOverPokerState(this));
         }
-        changePlayerIndex();
-        return pokerHand.getName();
     }
-
-
 
     private boolean timeToDetermineWinners() {
         return showDowns == players.activePlayersNumber();

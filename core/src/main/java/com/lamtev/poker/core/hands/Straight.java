@@ -28,4 +28,22 @@ public class Straight implements PokerHand {
             return cmp;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Straight)) return false;
+
+        Straight straight = (Straight) o;
+
+        if (NAME != straight.NAME) return false;
+        return highCardRank == straight.highCardRank;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = NAME.hashCode();
+        result = 31 * result + (highCardRank != null ? highCardRank.hashCode() : 0);
+        return result;
+    }
 }

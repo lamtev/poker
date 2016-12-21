@@ -8,6 +8,7 @@ class FlopWageringPokerState extends WageringPokerState {
     }
 
     protected void attemptNextState() throws Exception {
+        super.attemptNextState();
         if (timeToNextState()) {
             setState(new TurnWageringPokerState(this));
         }

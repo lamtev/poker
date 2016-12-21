@@ -20,6 +20,7 @@ class PreflopWageringPokerState extends WageringPokerState {
     }
 
     public void attemptNextState() throws Exception {
+        super.attemptNextState();
         if (preflopHasBeenFinished()) {
             setState(new FlopWageringPokerState(this));
         }

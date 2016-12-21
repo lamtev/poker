@@ -8,6 +8,7 @@ class TurnWageringPokerState extends WageringPokerState {
     }
 
     protected void attemptNextState() throws Exception {
+        super.attemptNextState();
         if (timeToNextState()) {
             setState(new RiverWageringPokerState(this));
         }

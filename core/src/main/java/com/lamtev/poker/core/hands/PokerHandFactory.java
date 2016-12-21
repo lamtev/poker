@@ -136,7 +136,7 @@ public class PokerHandFactory {
     }
 
     //TODO think how to use stream here
-    private List<Rank> determineRanksExceptThese(List<Card> cards, Rank ... exceptedRanks) {
+    private List<Rank> determineRanksExceptThese(List<Card> cards, Rank... exceptedRanks) {
         List<Rank> ranks = new ArrayList<>();
         if (exceptedRanks == null) {
             cards.forEach(card -> ranks.add(card.getRank()));

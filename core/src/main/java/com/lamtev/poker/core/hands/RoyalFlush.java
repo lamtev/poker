@@ -16,4 +16,18 @@ public class RoyalFlush implements PokerHand {
         return NAME.compareTo(o.getName());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RoyalFlush)) return false;
+
+        RoyalFlush that = (RoyalFlush) o;
+
+        return NAME == that.NAME;
+    }
+
+    @Override
+    public int hashCode() {
+        return NAME.hashCode();
+    }
 }

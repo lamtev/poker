@@ -35,4 +35,23 @@ public class FourOfAKind implements PokerHand {
             return cmp1;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FourOfAKind)) return false;
+
+        FourOfAKind that = (FourOfAKind) o;
+
+        if (NAME != that.NAME) return false;
+        return highCardRank == that.highCardRank && otherCardRank == that.otherCardRank;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = NAME.hashCode();
+        result = 31 * result + (highCardRank != null ? highCardRank.hashCode() : 0);
+        result = 31 * result + (otherCardRank != null ? otherCardRank.hashCode() : 0);
+        return result;
+    }
 }

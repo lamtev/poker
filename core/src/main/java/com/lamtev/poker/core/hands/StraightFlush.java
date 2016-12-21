@@ -27,4 +27,22 @@ public class StraightFlush implements PokerHand {
             return cmp;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof StraightFlush)) return false;
+
+        StraightFlush that = (StraightFlush) o;
+
+        if (NAME != that.NAME) return false;
+        return highCardRank == that.highCardRank;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = NAME.hashCode();
+        result = 31 * result + (highCardRank != null ? highCardRank.hashCode() : 0);
+        return result;
+    }
 }

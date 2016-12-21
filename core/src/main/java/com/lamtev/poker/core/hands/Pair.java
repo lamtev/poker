@@ -22,7 +22,6 @@ public class Pair implements PokerHand {
         return NAME;
     }
 
-    //TODO test
     @Override
     public int compareTo(PokerHand o) {
         int cmp1 = NAME.compareTo(o.getName());
@@ -45,5 +44,25 @@ public class Pair implements PokerHand {
         } else {
             return cmp1;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Pair)) return false;
+
+        Pair pair = (Pair) o;
+
+        if (NAME != pair.NAME) return false;
+        if (highCardRank != pair.highCardRank) return false;
+        return otherCardsRanks != null ? otherCardsRanks.equals(pair.otherCardsRanks) : pair.otherCardsRanks == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = NAME.hashCode();
+        result = 31 * result + (highCardRank != null ? highCardRank.hashCode() : 0);
+        result = 31 * result + (otherCardsRanks != null ? otherCardsRanks.hashCode() : 0);
+        return result;
     }
 }

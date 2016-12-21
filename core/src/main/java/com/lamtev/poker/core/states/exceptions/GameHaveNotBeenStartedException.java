@@ -1,7 +1,6 @@
 package com.lamtev.poker.core.states.exceptions;
 
-// TODO: может быть вообще использовать стандартный IllegalStateException ? Или наследоваться от него?
-public class GameHaveNotBeenStartedException extends Exception {
+public class GameHaveNotBeenStartedException extends IllegalStateException {
 
     private static String MESSAGE = "Can't do action because game have not been started";
 

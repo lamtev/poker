@@ -73,9 +73,7 @@ public class Bank {
     }
 
     public void giveMoneyToWinners(Player winner) {
-        winner.addMoney(money);
-        money = 0;
-        //TODO
+        winner.addMoney(money = 0);
     }
 
 }
