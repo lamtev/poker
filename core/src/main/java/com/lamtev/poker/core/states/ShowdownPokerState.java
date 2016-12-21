@@ -1,11 +1,10 @@
 package com.lamtev.poker.core.states;
 
+import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.hands.PokerHandFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 //TODO
 class ShowdownPokerState extends ActionPokerState {
@@ -41,7 +40,6 @@ class ShowdownPokerState extends ActionPokerState {
         currentPlayer().fold();
         changePlayerIndex();
         if (timeToDetermineWinners()) {
-            //map.entrySet().stream()
             poker.setState(new GameIsOverPokerState(this));
         }
     }
@@ -59,13 +57,20 @@ class ShowdownPokerState extends ActionPokerState {
         PokerHand pokerHand = phf.createCombination(currentPlayer().getCards());
         map.put(currentPlayer().getId(), pokerHand);
         if (timeToDetermineWinners()) {
+            PokerHand maxPokerHand = Collections.max(map.values());
+            List<String> winners = new ArrayList<>();
+            map.entrySet().stream()
+                    .filter(e -> e.getValue().compareTo(maxPokerHand) == 0)
+                    .forEach(e -> winners.add(e.getKey()));
+            bank.giveMoneyToWinners(winners);
 
-            //bank.giveMoneyToWinners(combinationAnalyser.determineWinners());
             poker.setState(new GameIsOverPokerState(this));
         }
         changePlayerIndex();
         return pokerHand.getName();
     }
+
+
 
     private boolean timeToDetermineWinners() {
         return showDowns == players.activePlayersNumber();

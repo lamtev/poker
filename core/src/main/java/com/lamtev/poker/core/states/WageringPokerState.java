@@ -65,10 +65,12 @@ abstract class WageringPokerState extends ActionPokerState {
     @Override
     public void fold() throws Exception {
         currentPlayer().fold();
-        if (isOnlyOneActivePlayer()) {
-            gameIsOverState();
-        }
         changePlayerIndex();
+        if (isOnlyOneActivePlayer()) {
+            bank.giveMoneyToWinners(currentPlayer());
+            gameIsOverState();
+            return;
+        }
         attemptNextState();
     }
 
@@ -104,9 +106,7 @@ abstract class WageringPokerState extends ActionPokerState {
         return players.activePlayersNumber() == 1;
     }
 
-    //TODO think about legality
     private void gameIsOverState() throws Exception {
-        bank.giveMoneyToWinners(currentPlayer());
         poker.setState(new GameIsOverPokerState(this));
     }
 

@@ -1,8 +1,6 @@
 package com.lamtev.poker.core.model;
 
-import com.lamtev.poker.core.hands.PokerHand;
-
-import java.util.Map;
+import java.util.List;
 
 public class Bank {
 
@@ -70,8 +68,8 @@ public class Bank {
         this.money -= money;
     }
 
-    public void giveMoneyToWinners(Map<String, PokerHand> winners) {
-        //winners.forEach();
+    public void giveMoneyToWinners(List<String> winners) {
+        winners.forEach(winner -> players.get(winner).addMoney(money / winners.size()));
     }
 
     public void giveMoneyToWinners(Player winner) {
