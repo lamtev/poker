@@ -6,13 +6,13 @@ import java.util.List;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.THREE_OF_A_KIND;
 
-public class ThreeOfAKind implements PokerHand {
+class ThreeOfAKind implements PokerHand {
 
     private final Name NAME = THREE_OF_A_KIND;
     private final Rank highCardRank;
     private final List<Rank> otherCardsRanks;
 
-    public ThreeOfAKind(Rank highCardRank, List<Rank> otherCardsRanks) {
+    ThreeOfAKind(Rank highCardRank, List<Rank> otherCardsRanks) {
         this.highCardRank = highCardRank;
         this.otherCardsRanks = otherCardsRanks;
     }

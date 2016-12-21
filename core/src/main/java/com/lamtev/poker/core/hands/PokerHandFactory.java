@@ -276,7 +276,7 @@ public class PokerHandFactory {
     }
 
     private PokerHand parseHighCard(List<Card> cards) {
-        List<Rank> cardsRanks = determineRanksExceptThese(cards).subList(0, 5);
+        List<Rank> cardsRanks = determineRanksExceptThese(cards, null).subList(0, 5);
         return new HighCard(cardsRanks);
     }
 

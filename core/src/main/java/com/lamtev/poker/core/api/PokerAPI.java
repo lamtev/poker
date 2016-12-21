@@ -9,6 +9,10 @@ import java.util.List;
 public interface PokerAPI {
     void addStateChangedListener(StateChangedListener stateChangedListener) throws Exception;
 
+    void addGameIsOverListener(GameIsOverListener gameIsOverListener) throws Exception;
+
+    void addMoveAbilityListener(MoveAbilityListener moveAbilityListener) throws Exception;
+
     void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception;
 
     int getPlayerWager(String playerID) throws Exception;

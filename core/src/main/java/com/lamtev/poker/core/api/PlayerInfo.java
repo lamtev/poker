@@ -18,4 +18,8 @@ public class PlayerInfo {
         return stack;
     }
 
+    @Override
+    public String toString() {
+        return id + " " + stack;
+    }
 }

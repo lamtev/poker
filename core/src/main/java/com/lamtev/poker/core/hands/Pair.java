@@ -6,13 +6,13 @@ import java.util.List;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.PAIR;
 
-public class Pair implements PokerHand {
+class Pair implements PokerHand {
 
     private final Name NAME = PAIR;
     private final Rank highCardRank;
     private final List<Rank> otherCardsRanks;
 
-    public Pair(Rank highCardRank, List<Rank> otherCardsRanks) {
+    Pair(Rank highCardRank, List<Rank> otherCardsRanks) {
         this.highCardRank = highCardRank;
         this.otherCardsRanks = otherCardsRanks;
     }

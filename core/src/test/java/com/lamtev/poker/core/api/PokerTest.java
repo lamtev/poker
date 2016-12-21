@@ -12,11 +12,12 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class PokerTest implements StateChangedListener {
+public class PokerTest implements StateChangedListener, GameIsOverListener {
 
     //TODO functional tests
 
     private String state;
+    private List<PlayerInfo> playersInfo;
 
     private List<PlayerInfo> generatePlayersInfo() {
         List<PlayerInfo> playersInfo = new ArrayList<>();
@@ -40,6 +41,11 @@ public class PokerTest implements StateChangedListener {
     }
 
     @Override
+    public void updatePlayersInfo(List<PlayerInfo> playersInfo) {
+        this.playersInfo = playersInfo;
+    }
+
+    @Override
     public void changeState(String stateName) {
         this.state = stateName;
     }
@@ -49,19 +55,20 @@ public class PokerTest implements StateChangedListener {
 
         Poker poker = new Poker();
         poker.addStateChangedListener(this);
+        poker.addGameIsOverListener(this);
 
         System.out.println(state);
-        assertEquals("SettingsPokerState", poker.getState().getClass().getSimpleName());
+        assertEquals("SettingsPokerState", state);
 
         poker.setUp(generatePlayersInfo(), 30);
         System.out.println(state);
-        assertEquals("PreflopWageringPokerState", poker.getState().getClass().getSimpleName());
+        assertEquals("PreflopWageringPokerState", state);
 
         poker.call();
         poker.call();
 
         System.out.println(state);
-        assertEquals("FlopWageringPokerState", poker.getState().getClass().getSimpleName());
+        assertEquals("FlopWageringPokerState", state);
         assertEquals(3, poker.getCommonCards().size());
 
         poker.check();
@@ -69,7 +76,7 @@ public class PokerTest implements StateChangedListener {
         poker.check();
 
         System.out.println(state);
-        assertEquals("TurnWageringPokerState", poker.getState().getClass().getSimpleName());
+        assertEquals("TurnWageringPokerState", state);
         assertEquals(4, poker.getCommonCards().size());
 
         poker.raise(40);
@@ -77,7 +84,7 @@ public class PokerTest implements StateChangedListener {
         poker.call();
 
         System.out.println(state);
-        assertEquals("ShowdownPokerState", poker.getState().getClass().getSimpleName());
+        assertEquals("ShowdownPokerState", state);
 
 
         PokerHand.Name hand = poker.showDown();
@@ -86,7 +93,9 @@ public class PokerTest implements StateChangedListener {
 
         System.out.println(state);
         System.out.println(poker.getCommonCards().toString() + hand);
-        assertEquals("GameIsOverPokerState", poker.getState().getClass().getSimpleName());
+        assertEquals("GameIsOverPokerState", state);
+
+        playersInfo.forEach(System.out::println);
 
         System.out.println(poker.getPlayersInfo().get(0).getStack());
         System.out.println(poker.getPlayersInfo().get(1).getStack());

@@ -185,7 +185,7 @@ public class PokerHandFactoryTest {
         }};
         PokerHand threeOfAKind = pcf.createCombination(playerCards);
         assertEquals(THREE_OF_A_KIND, threeOfAKind.getName());
-        List<Rank> otherCardsRanks= new ArrayList<Rank>() {{
+        List<Rank> otherCardsRanks = new ArrayList<Rank>() {{
             add(Rank.JACK);
             add(Rank.TEN);
         }};
@@ -209,7 +209,7 @@ public class PokerHandFactoryTest {
         }};
         PokerHand threeOfAKind = pcf.createCombination(playerCards);
         assertEquals(THREE_OF_A_KIND, threeOfAKind.getName());
-        List<Rank> otherCardsRanks= new ArrayList<Rank>() {{
+        List<Rank> otherCardsRanks = new ArrayList<Rank>() {{
             add(Rank.ACE);
             add(Rank.TEN);
         }};
@@ -233,7 +233,7 @@ public class PokerHandFactoryTest {
         }};
         PokerHand pair = pcf.createCombination(playerCards);
         assertEquals(PAIR, pair.getName());
-        List<Rank> otherCardsRanks= new ArrayList<Rank>() {{
+        List<Rank> otherCardsRanks = new ArrayList<Rank>() {{
             add(Rank.JACK);
             add(Rank.TEN);
             add(Rank.NINE);
@@ -257,10 +257,10 @@ public class PokerHandFactoryTest {
         }};
         PokerHand pair = pcf.createCombination(playerCards);
         assertEquals(PAIR, pair.getName());
-        List<Rank> otherCardsRanks= new ArrayList<Rank>() {{
-           add(Rank.TEN);
-           add(Rank.EIGHT);
-           add(Rank.FOUR);
+        List<Rank> otherCardsRanks = new ArrayList<Rank>() {{
+            add(Rank.TEN);
+            add(Rank.EIGHT);
+            add(Rank.FOUR);
         }};
         assertTrue(pair.compareTo(new Pair(Rank.JACK, otherCardsRanks)) == 0);
     }

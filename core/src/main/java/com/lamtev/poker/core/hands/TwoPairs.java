@@ -4,14 +4,14 @@ import com.lamtev.poker.core.model.Rank;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.TWO_PAIRS;
 
-public class TwoPairs implements PokerHand {
+class TwoPairs implements PokerHand {
 
     private final Name NAME = TWO_PAIRS;
     private final Rank firstPairHighCardRank;
     private final Rank secondPairHihCardRank;
     private final Rank otherCardRank;
 
-    public TwoPairs(Rank firstPairHighCardRank, Rank secondPairHihCardRank, Rank otherCardRank) {
+    TwoPairs(Rank firstPairHighCardRank, Rank secondPairHihCardRank, Rank otherCardRank) {
         this.firstPairHighCardRank = firstPairHighCardRank;
         this.secondPairHihCardRank = secondPairHihCardRank;
         this.otherCardRank = otherCardRank;

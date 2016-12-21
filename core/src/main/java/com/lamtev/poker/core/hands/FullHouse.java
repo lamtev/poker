@@ -4,13 +4,13 @@ import com.lamtev.poker.core.model.Rank;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.FULL_HOUSE;
 
-public class FullHouse implements PokerHand {
+class FullHouse implements PokerHand {
 
     private final Name NAME = FULL_HOUSE;
     private final Rank threeOfAKindHighCardRank;
     private final Rank pairHighCardRank;
 
-    public FullHouse(Rank threeOfAKindHighCardRank, Rank pairHighCardRank) {
+    FullHouse(Rank threeOfAKindHighCardRank, Rank pairHighCardRank) {
         this.threeOfAKindHighCardRank = threeOfAKindHighCardRank;
         this.pairHighCardRank = pairHighCardRank;
     }

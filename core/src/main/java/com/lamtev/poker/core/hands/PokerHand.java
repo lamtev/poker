@@ -16,5 +16,5 @@ public interface PokerHand extends Comparable<PokerHand> {
     }
 
     Name getName();
-    
+
 }
