@@ -1,2 +1,4 @@
 rootProject.name = 'poker'
 include 'core'
+include 'desktop'
+
