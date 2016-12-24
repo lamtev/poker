@@ -17,7 +17,7 @@ class GameIsOverPokerState extends ActionPokerState {
     }
 
     @Override
-    public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
+    public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) {
         throw new GameIsOverException();
     }
 

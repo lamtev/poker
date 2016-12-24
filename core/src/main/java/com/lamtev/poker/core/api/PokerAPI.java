@@ -7,13 +7,13 @@ import java.util.List;
 
 //TODO javadoc
 public interface PokerAPI {
-    void addStateChangedListener(StateChangedListener stateChangedListener) throws Exception;
+    void addStateChangedListener(StateChangedListener stateChangedListener);
 
-    void addGameIsOverListener(GameIsOverListener gameIsOverListener) throws Exception;
+    void addGameIsOverListener(GameIsOverListener gameIsOverListener);
 
-    void addMoveAbilityListener(MoveAbilityListener moveAbilityListener) throws Exception;
+    void addMoveAbilityListener(MoveAbilityListener moveAbilityListener);
 
-    void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception;
+    void setUp(List<PlayerInfo> playersInfo, int smallBlindSize);
 
     int getPlayerWager(String playerID) throws Exception;
 

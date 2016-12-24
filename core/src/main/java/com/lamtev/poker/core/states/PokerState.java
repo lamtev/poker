@@ -9,8 +9,7 @@ import java.util.List;
 
 public interface PokerState {
 
-    void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception;
-
+    void setUp(List<PlayerInfo> playersInfo, int smallBlindSize);
     int getPlayerWager(String playerID) throws Exception;
 
     Cards getPlayerCards(String playerID) throws Exception;

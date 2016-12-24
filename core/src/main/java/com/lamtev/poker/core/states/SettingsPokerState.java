@@ -22,7 +22,7 @@ public class SettingsPokerState implements PokerState {
     }
 
     @Override
-    public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
+    public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) {
         init(playersInfo);
         bank.acceptBlindWagers(smallBlindSize);
         poker.setState(new PreflopWageringPokerState(poker, players, bank, dealer, commonCards));

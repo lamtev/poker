@@ -18,25 +18,25 @@ public class Poker implements PokerAPI {
     private boolean gameIsSetUp = false;
 
     @Override
-    public void addStateChangedListener(StateChangedListener stateChangedListener) throws Exception {
+    public void addStateChangedListener(StateChangedListener stateChangedListener) {
         stateChangedListeners.add(stateChangedListener);
         notifyStateChangedListeners();
     }
 
     @Override
-    public void addGameIsOverListener(GameIsOverListener gameIsOverListener) throws Exception {
+    public void addGameIsOverListener(GameIsOverListener gameIsOverListener) {
         gameIsOverListeners.add(gameIsOverListener);
     }
 
     @Override
-    public void addMoveAbilityListener(MoveAbilityListener moveAbilityListener) throws Exception {
+    public void addMoveAbilityListener(MoveAbilityListener moveAbilityListener) {
         moveAbilityListeners.add(moveAbilityListener);
     }
 
     @Override
-    public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) throws Exception {
+    public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) {
         if (stateChangedListeners.size() == 0 || gameIsOverListeners.size() == 0) {
-            throw new Exception("You must add at least one StageChangedListener and at least one GameIsOverListener");
+            throw new RuntimeException("You must add at least one StageChangedListener and at least one GameIsOverListener");
         }
         state.setUp(playersInfo, smallBlindSize);
         gameIsSetUp = true;

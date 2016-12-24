@@ -1,14 +1,12 @@
 package com.lamtev.poker.desktop;
 
-import javafx.application.Application;
-import javafx.geometry.Insets;
+import com.lamtev.poker.core.api.PlayerInfo;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -16,41 +14,52 @@ import java.util.List;
 
 public class Settings {
 
-    Stage primaryStage;
-    GridPane gp = new GridPane();
+    private PokerGame pokerGame;
+    private String playerNick;
+    private int numberOfOpponents;
+    private int playerStackSize;
 
-    public Settings(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+    public void setToStage(Stage primaryStage) {
+        FlowPane rootNode = new FlowPane(10, 10);
+        rootNode.setAlignment(Pos.CENTER);
+        rootNode.setOrientation(Orientation.VERTICAL);
+        Label typeYourNick = new Label("Type your nickname");
+        Label chooseNumberOfOpponents = new Label("Choose number of opponents");
+        Label choosePlayerStack = new Label("Choose player stack size");
+        TextField playerNick = new TextField("Player 1");
+        ChoiceBox<Integer> numbersOfOpponents = new ChoiceBox<>();
+        numbersOfOpponents.getItems().addAll(2, 3, 4, 5, 6);
+        numbersOfOpponents.setValue(2);
+        ChoiceBox<Integer> playerStackSizes = new ChoiceBox<>();
+        playerStackSizes.getItems().addAll(1000, 2000, 5000, 10000, 15000, 25000, 50000);
+        playerStackSizes.setValue(1000);
+        Button start = new Button("Start");
+        start.setOnAction(event -> {
+            System.out.println("Nickname: " + playerNick.getText());
+            System.out.println("Number of opponents: " + numbersOfOpponents.getValue());
+            System.out.println("Stack size: " + playerStackSizes.getValue());
+            this.playerNick = playerNick.getText();
+            this.numberOfOpponents = numbersOfOpponents.getValue();
+            this.playerStackSize = playerStackSizes.getValue();
+            pokerGame = new PokerGame(createPlayersInfo());
+            pokerGame.setToStage(primaryStage);
+        });
+        rootNode.getChildren().addAll(
+                typeYourNick, playerNick,
+                chooseNumberOfOpponents, numbersOfOpponents,
+                choosePlayerStack, playerStackSizes,
+                start
+        );
+        primaryStage.setScene(new Scene(rootNode, 1200, 720));
     }
 
-    public GridPane getGridPane() {
-
-        gp.setAlignment(Pos.CENTER);
-        gp.setHgap(10);
-        gp.setVgap(10);
-        gp.setPadding(new Insets(25, 25, 25, 25));
-        gp.add(new Label("Type number of competitors"), 0, 0);
-        ToggleGroup tg = new ToggleGroup();
-        List<RadioButton> radioButtons = new ArrayList<>();
-        for (int i = 3; i < 8; ++i) {
-            RadioButton rb = new RadioButton(((Integer) i).toString());
-            rb.setToggleGroup(tg);
-            radioButtons.add(rb);
-            gp.add(rb, 0, i-2);
+    public List<PlayerInfo> createPlayersInfo() {
+        List<PlayerInfo> playersInfo = new ArrayList<>();
+        playersInfo.add(new PlayerInfo(playerNick, playerStackSize));
+        for (int i = 0; i < numberOfOpponents; ++i) {
+            playersInfo.add(new PlayerInfo("Bot " + i, playerStackSize));
         }
-        Button submit = new Button("Submit");
-        submit.setOnAction(e -> radioButtons.forEach(rb -> {
-            if (rb.isSelected()) {
-                int numberOfCompetitors = Integer.parseInt(rb.getText());
-                TexasHoldemPoker thp = new TexasHoldemPoker(primaryStage);
-                gp = thp.getGridPane(numberOfCompetitors);
-                Scene scene = new Scene(gp, 1200, 720);
-                primaryStage.setScene(scene);
-                primaryStage.show();
-            }
-        }));
-        gp.add(submit, 0, 6);
-        return gp;
+        return playersInfo;
     }
 
 }
