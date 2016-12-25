@@ -1,6 +1,5 @@
 package com.lamtev.poker.core.api;
 
-import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Cards;
 
 import java.util.List;
@@ -11,7 +10,19 @@ public interface PokerAPI {
 
     void addGameIsOverListener(GameIsOverListener gameIsOverListener);
 
+    void addCurrentPlayerIdListener(CurrentPlayerListener currentPlayerListener);
+
+    void addCommunityCardsListener(CommunityCardsListener communityCardsListener);
+
+    void addWagerPlacedListener(WagerPlacedListener wagerPlacedListener);
+
+    void addPlayerFoldListener(PlayerFoldListener playerFoldListener);
+
     void addMoveAbilityListener(MoveAbilityListener moveAbilityListener);
+
+    void addPreflopMadeListener(PreflopMadeListener preflopMadeListener);
+
+    void addPlayerShowedDownListener(PlayerShowedDownListener playerShowedDownListener);
 
     void setUp(List<PlayerInfo> playersInfo, int smallBlindSize);
 
@@ -37,5 +48,5 @@ public interface PokerAPI {
 
     void check() throws Exception;
 
-    PokerHand.Name showDown() throws Exception;
+    void showDown() throws Exception;
 }

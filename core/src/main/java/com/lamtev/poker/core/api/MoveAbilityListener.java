@@ -2,15 +2,15 @@ package com.lamtev.poker.core.api;
 
 //TODO javadoc
 public interface MoveAbilityListener {
-    MoveAbilityListener setCallAbility(boolean flag);
+    void callAbilityChanged(boolean flag);
 
-    MoveAbilityListener setRaiseAbility(boolean flag);
+    void raiseAbilityChanged(boolean flag);
 
-    MoveAbilityListener setAllInAbility(boolean flag);
+    void allInAbilityChanged(boolean flag);
 
-    MoveAbilityListener setCheckAbility(boolean flag);
+    void checkAbilityChanged(boolean flag);
 
-    MoveAbilityListener setFoldAbility(boolean flag);
+    void foldAbilityChanged(boolean flag);
 
-    MoveAbilityListener setShowDownAbility(boolean flag);
+    void showDownAbilityChanged(boolean flag);
 }

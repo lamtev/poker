@@ -46,7 +46,6 @@ public class PokerGame implements StateChangedListener, GameIsOverListener {
         poker.addGameIsOverListener(this);
         smallBlindSize = playersInfo.get(0).getStack() / 100;
         poker.setUp(playersInfo, smallBlindSize);
-        //root.setGridLinesVisible(true);
         playersInfo.forEach(playerInfo -> {
             activePlayersList.getItems().add(new Label(playerInfo.getId() + ": " + playerInfo.getStack()));
             foldPlayersList.getItems().add(new Label(playerInfo.getId() + ": " + playerInfo.getStack()));
@@ -64,6 +63,7 @@ public class PokerGame implements StateChangedListener, GameIsOverListener {
         horizontalSeparator.setPrefWidth(1000);
         sb.getChildren().add(statusBar);
         sb.setAlignment(Pos.CENTER);
+        activePlayersList.setMouseTransparent(true);
 
         root.add(new Label("Active players:"), 0, 0, 1, 1);
         root.add(activePlayersList, 0, 1, 1, 3);
@@ -81,22 +81,42 @@ public class PokerGame implements StateChangedListener, GameIsOverListener {
         root.add(allIn, 9, 5, 1, 1);
         root.add(showDown, 10, 5, 1, 1);
 
-//        root.addRow(0, new Label("First name:"), new TextField());
-//        TextArea ta = new TextArea();
-//        ta.setPromptText("Enter smthg here");
-//        ta.setPrefColumnCount(10);
-//        ta.setPrefRowCount(3);
-//        root.add(ta, 0, 1, GridPane.REMAINING, 1);
+        call.setOnAction(event -> {
+            try {
+                poker.call();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        check.setOnAction(event -> {
+            try {
+                poker.check();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        fold.setOnAction(event -> {
+            try {
+                poker.fold();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
         primaryStage.setScene(new Scene(root, 1200, 720));
     }
 
+
     @Override
-    public void changeState(String stateName) {
+    public void stateChanged(String stateName) {
         this.stateName = stateName;
+        System.out.println(stateName);
     }
 
     @Override
-    public void updatePlayersInfo(List<PlayerInfo> playersInfo) {
+    public void gameIsOver(List<PlayerInfo> playersInfo) {
         this.playersInfo = playersInfo;
         poker = new Poker();
         poker.setUp(playersInfo, 1);

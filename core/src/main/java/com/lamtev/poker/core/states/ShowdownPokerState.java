@@ -13,6 +13,7 @@ class ShowdownPokerState extends ActionPokerState {
     ShowdownPokerState(ActionPokerState state, int latestAggressorIndex) {
         super(state);
         playerIndex = latestAggressorIndex;
+        poker.notifyCurrentPlayerListeners(players.get(playerIndex).getId());
     }
 
     @Override
@@ -36,6 +37,7 @@ class ShowdownPokerState extends ActionPokerState {
             throw new Exception("Can't fold when nobody did showDown");
         }
         currentPlayer().fold();
+        poker.notifyPlayerFoldListeners(currentPlayer().getId());
         changePlayerIndex();
         attemptDetermineWinners();
     }
@@ -46,14 +48,15 @@ class ShowdownPokerState extends ActionPokerState {
     }
 
     @Override
-    public PokerHand.Name showDown() throws Exception {
+    public void showDown() throws Exception {
         ++showDowns;
         PokerHandFactory phf = new PokerHandFactory(commonCards);
         PokerHand pokerHand = phf.createCombination(currentPlayer().getCards());
         madeShowDown.put(currentPlayer().getId(), pokerHand);
         attemptDetermineWinners();
+        poker.notifyPlayerShowedDownListeners(currentPlayer().getId(), pokerHand);
+        System.out.println("HERE : " + pokerHand.getName());
         changePlayerIndex();
-        return pokerHand.getName();
     }
 
     //TODO     add feature for action: not showDown and not fold

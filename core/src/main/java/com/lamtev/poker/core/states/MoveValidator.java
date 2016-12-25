@@ -14,6 +14,8 @@ class MoveValidator {
         this.bank = bank;
     }
 
+    //TODO validate allin
+
     void validateCall(Player player) throws Exception {
         if (player.getWager() >= bank.getCurrentWager()) {
             throw new Exception("can't call");

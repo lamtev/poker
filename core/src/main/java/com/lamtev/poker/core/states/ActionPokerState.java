@@ -16,8 +16,7 @@ abstract class ActionPokerState implements PokerState {
     protected Dealer dealer;
     protected Cards commonCards;
 
-    ActionPokerState(Poker poker,
-                     Players players, Bank bank, Dealer dealer, Cards commonCards) {
+    ActionPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
         this.poker = poker;
         this.players = players;
         this.bank = bank;
@@ -77,6 +76,7 @@ abstract class ActionPokerState implements PokerState {
             ++playerIndex;
             playerIndex %= players.size();
         }
+        poker.notifyCurrentPlayerListeners(players.get(playerIndex).getId());
     }
 
     Player currentPlayer() {

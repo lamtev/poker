@@ -1,7 +1,6 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.PlayerInfo;
-import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Cards;
 
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ import java.util.List;
 public interface PokerState {
 
     void setUp(List<PlayerInfo> playersInfo, int smallBlindSize);
+
     int getPlayerWager(String playerID) throws Exception;
 
     Cards getPlayerCards(String playerID) throws Exception;
@@ -32,5 +32,5 @@ public interface PokerState {
 
     void check() throws Exception;
 
-    PokerHand.Name showDown() throws Exception;
+    void showDown() throws Exception;
 }

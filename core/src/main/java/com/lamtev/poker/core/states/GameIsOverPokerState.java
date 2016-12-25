@@ -1,7 +1,6 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.PlayerInfo;
-import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.states.exceptions.GameIsOverException;
 
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ class GameIsOverPokerState extends ActionPokerState {
     }
 
     @Override
-    public PokerHand.Name showDown() throws Exception {
+    public void showDown() throws Exception {
         throw new GameIsOverException();
     }
 }

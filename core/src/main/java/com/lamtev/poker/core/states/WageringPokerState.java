@@ -1,7 +1,6 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.*;
 
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ abstract class WageringPokerState extends ActionPokerState {
                        Players players, Bank bank, Dealer dealer, Cards commonCards) {
         super(poker, players, bank, dealer, commonCards);
         playerIndex = this instanceof PreflopWageringPokerState ? 2 : 0;
+        poker.notifyCurrentPlayerListeners(players.get(playerIndex).getId());
         moveValidator = new MoveValidator(players, bank);
     }
 
@@ -32,6 +32,7 @@ abstract class WageringPokerState extends ActionPokerState {
         if (thisMoveIsAllIn()) {
             allInners.add(currentPlayer());
         }
+        wagerPlaced();
         changePlayerIndex();
         attemptNextState();
     }
@@ -44,6 +45,7 @@ abstract class WageringPokerState extends ActionPokerState {
             allInners.add(currentPlayer());
         }
         raisers.add(currentPlayer());
+        wagerPlaced();
         changePlayerIndex();
     }
 
@@ -58,6 +60,7 @@ abstract class WageringPokerState extends ActionPokerState {
         } else {
             bank.acceptAllInFromPlayer(currentPlayer());
             allInners.add(currentPlayer());
+            wagerPlaced();
             changePlayerIndex();
         }
     }
@@ -65,6 +68,7 @@ abstract class WageringPokerState extends ActionPokerState {
     @Override
     public void fold() throws Exception {
         currentPlayer().fold();
+        poker.notifyPlayerFoldListeners(currentPlayer().getId());
         changePlayerIndex();
         if (isOnlyOneActivePlayer()) {
             bank.giveMoneyToWinners(currentPlayer());
@@ -83,8 +87,16 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public PokerHand.Name showDown() throws Exception {
+    public void showDown() throws Exception {
         throw new Exception("Can't show down when wagering");
+    }
+
+    private void wagerPlaced() {
+        String playerId = currentPlayer().getId();
+        int stack = currentPlayer().getStack();
+        int wager = currentPlayer().getWager();
+        int bank = this.bank.getMoney();
+        poker.notifyWagerPlacedListeners(playerId, stack, wager, bank);
     }
 
     private boolean thisMoveIsAllIn() {
