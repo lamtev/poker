@@ -1,7 +1,5 @@
 package com.lamtev.poker.core.api;
 
-import com.lamtev.poker.core.model.Cards;
-
 import java.util.List;
 
 //TODO javadoc
@@ -25,18 +23,6 @@ public interface PokerAPI {
     void addPlayerShowedDownListener(PlayerShowedDownListener playerShowedDownListener);
 
     void setUp(List<PlayerInfo> playersInfo, int smallBlindSize);
-
-    int getPlayerWager(String playerID) throws Exception;
-
-    Cards getPlayerCards(String playerID) throws Exception;
-
-    int getPlayerStack(String playerID) throws Exception;
-
-    int getMoneyInBank() throws Exception;
-
-    Cards getCommonCards() throws Exception;
-
-    List<PlayerInfo> getPlayersInfo() throws Exception;
 
     void call() throws Exception;
 

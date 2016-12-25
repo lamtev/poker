@@ -90,42 +90,6 @@ public class Poker implements PokerAPI {
     }
 
     @Override
-    public int getPlayerWager(String playerId) throws Exception {
-        validateGameIsSetUp();
-        return state.getPlayerWager(playerId);
-    }
-
-    @Override
-    public Cards getPlayerCards(String playerID) throws Exception {
-        validateGameIsSetUp();
-        return state.getPlayerCards(playerID);
-    }
-
-    @Override
-    public int getPlayerStack(String playerId) throws Exception {
-        validateGameIsSetUp();
-        return state.getPlayerStack(playerId);
-    }
-
-    @Override
-    public Cards getCommonCards() throws Exception {
-        validateGameIsSetUp();
-        return state.getCommonCards();
-    }
-
-    @Override
-    public int getMoneyInBank() throws Exception {
-        validateGameIsSetUp();
-        return state.getMoneyInBank();
-    }
-
-    @Override
-    public List<PlayerInfo> getPlayersInfo() throws Exception {
-        validateGameIsSetUp();
-        return state.getPlayersInfo();
-    }
-
-    @Override
     public void call() throws Exception {
         validateGameIsSetUp();
         state.call();

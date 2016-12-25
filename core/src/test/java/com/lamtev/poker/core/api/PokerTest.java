@@ -95,10 +95,6 @@ public class PokerTest implements PlayerShowedDownListener, CommunityCardsListen
         assertEquals("GameIsOverPokerState", state);
 
         playersInfo.forEach(System.out::println);
-
-        System.out.println(poker.getPlayersInfo().get(0).getStack());
-        System.out.println(poker.getPlayersInfo().get(1).getStack());
-        System.out.println(poker.getPlayersInfo().get(2).getStack());
     }
 
     @Override

@@ -6,7 +6,6 @@ import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
 import com.lamtev.poker.core.states.exceptions.GameHaveNotBeenStartedException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SettingsPokerState implements PokerState {
@@ -39,36 +38,6 @@ public class SettingsPokerState implements PokerState {
         String bigBlindId = bigBlind.getId();
         PlayerMoney bigBlindMoney = new PlayerMoney(bigBlind.getStack(), bigBlind.getWager());
         poker.notifyWagerPlacedListeners(bigBlindId, bigBlindMoney, bank.getMoney());
-    }
-
-    @Override
-    public ArrayList<PlayerInfo> getPlayersInfo() throws GameHaveNotBeenStartedException {
-        throw new GameHaveNotBeenStartedException();
-    }
-
-    @Override
-    public int getPlayerWager(String playerID) throws GameHaveNotBeenStartedException {
-        throw new GameHaveNotBeenStartedException();
-    }
-
-    @Override
-    public Cards getPlayerCards(String playerID) throws GameHaveNotBeenStartedException {
-        throw new GameHaveNotBeenStartedException();
-    }
-
-    @Override
-    public int getPlayerStack(String playerID) throws GameHaveNotBeenStartedException {
-        throw new GameHaveNotBeenStartedException();
-    }
-
-    @Override
-    public int getMoneyInBank() throws GameHaveNotBeenStartedException {
-        throw new GameHaveNotBeenStartedException();
-    }
-
-    @Override
-    public Cards getCommonCards() throws GameHaveNotBeenStartedException {
-        throw new GameHaveNotBeenStartedException();
     }
 
     @Override
