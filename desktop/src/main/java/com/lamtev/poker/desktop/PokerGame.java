@@ -1,33 +1,40 @@
 package com.lamtev.poker.desktop;
 
 import com.lamtev.poker.core.api.*;
+import com.lamtev.poker.core.hands.PokerHand;
+import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.model.Cards;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Separator;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class PokerGame implements StateChangedListener, GameIsOverListener {
+public class PokerGame implements CommunityCardsListener, CurrentPlayerListener, GameIsOverListener, MoveAbilityListener, PlayerFoldListener, PlayerShowedDownListener, PreflopMadeListener, StateChangedListener, WagerPlacedListener {
 
     private List<PlayerInfo> playersInfo;
     private PokerAPI poker = new Poker();
     private String stateName;
     private int smallBlindSize;
+    private long bank;
+    private List<String> foldPlayersIds = new ArrayList<>();
+    private List<String> activePlayersIds = new ArrayList<>();
+    private String currentPlayerId;
+    private Map<String, PokerHand> hands = new HashMap<>();
+    private Map<String, Cards> playersCards = new HashMap<>();
+    private List<Card> communityCards = new ArrayList<>();
+    private Map<String, PlayerMoney> playersMoney = new HashMap<>();
 
     private GridPane root = new GridPane();
     private HBox sb = new HBox();
-    private Label statusBar = new Label("nothing happen");
-    private Label bank = new Label();
-    private Label nickName = new Label();
+    private Label statusBar = new Label("Welcome to Texas Hold'em Poker!!!");
+    private Label moneyInBankLabel = new Label();
+    private Label nickNameLabel = new Label();
     private ListView<Label> activePlayersList = new ListView<>();
     private ListView<Label> foldPlayersList = new ListView<>();
     private Button call = new Button("call");
@@ -41,25 +48,125 @@ public class PokerGame implements StateChangedListener, GameIsOverListener {
     private List<ImageView> communityCardsView = new ArrayList<>();
 
     public PokerGame(List<PlayerInfo> playersInfo) {
+        nickNameLabel.setText(playersInfo.get(0).getId());
+        setUpButtons();
         this.playersInfo = playersInfo;
         poker.addStateChangedListener(this);
         poker.addGameIsOverListener(this);
+        poker.addPlayerShowedDownListener(this);
+        poker.addCommunityCardsListener(this);
+        poker.addWagerPlacedListener(this);
+        poker.addPreflopMadeListener(this);
+        poker.addPlayerFoldListener(this);
+        poker.addCurrentPlayerIdListener(this);
+        poker.addMoveAbilityListener(this);
         smallBlindSize = playersInfo.get(0).getStack() / 100;
         poker.setUp(playersInfo, smallBlindSize);
-        playersInfo.forEach(playerInfo -> {
-            activePlayersList.getItems().add(new Label(playerInfo.getId() + ": " + playerInfo.getStack()));
-            foldPlayersList.getItems().add(new Label(playerInfo.getId() + ": " + playerInfo.getStack()));
+
+        playersInfo.forEach(playerInfo -> activePlayersIds.add(playerInfo.getId()));
+        playersInfo.subList(2, playersInfo.size()).forEach(
+                playerInfo -> playersMoney.put(playerInfo.getId(), new PlayerMoney(playerInfo.getStack(), 0))
+        );
+        updateActivePlayersList();
+    }
+
+    private void updateActivePlayersList() {
+        activePlayersList.getItems().clear();
+        activePlayersIds.forEach(id -> activePlayersList.getItems().add(new Label(id + ": " + playersMoney.get(id).getStack())));
+    }
+
+
+    private void setUpButtons() {
+        setUpCallButton();
+        setUpCheckButton();
+        setUpFoldButton();
+        setUpShowDownButton();
+        setUpRaiseButton();
+    }
+
+    private void setUpCallButton() {
+        call.setOnAction(event -> {
+            try {
+                String id = currentPlayerId;
+                poker.call();
+                statusBar.setText(id + " called");
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                statusBar.setText(e.getMessage());
+            }
+        });
+    }
+
+    private void setUpFoldButton() {
+        fold.setOnAction(event -> {
+            try {
+                String id = currentPlayerId;
+                poker.fold();
+                statusBar.setText(id + " fold");
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                statusBar.setText(e.getMessage());
+            }
+        });
+    }
+
+    private void setUpCheckButton() {
+        check.setOnAction(event -> {
+            try {
+                String id = currentPlayerId;
+                poker.check();
+                statusBar.setText(id + " checked");
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                statusBar.setText(e.getMessage());
+            }
+        });
+    }
+
+    private void setUpShowDownButton() {
+        showDown.setOnAction(event -> {
+            try {
+                poker.showDown();
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                statusBar.setText(e.getMessage());
+            }
+        });
+    }
+
+    private void setUpRaiseButton() {
+        raise.setOnAction(event -> {
+
+            TextInputDialog dialogWindow = new TextInputDialog("" + 50);
+            dialogWindow.setTitle("Raise");
+            dialogWindow.setContentText("Input additional wager:");
+
+            Optional<String> option = dialogWindow.showAndWait();
+            option.ifPresent(o -> {
+                try {
+                    String id = currentPlayerId;
+                    int additionalWager = Integer.parseInt(option.get());
+                    poker.raise(additionalWager);
+                    statusBar.setText(id + " raised by " + additionalWager);
+                } catch (NumberFormatException e) {
+                    statusBar.setText("You input not a number");
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    statusBar.setText(e.getMessage());
+                }
+            });
         });
     }
 
     public void setToStage(Stage primaryStage) {
         verticalSeparator.setPrefHeight(720);
-        try {
-            bank.setText("Bank: " + poker.getMoneyInBank());
-            nickName.setText(playersInfo.get(0).getId() + ": " + poker.getPlayerStack(playersInfo.get(0).getId()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        moneyInBankLabel.setText("Bank: " + bank);
+
         horizontalSeparator.setPrefWidth(1000);
         sb.getChildren().add(statusBar);
         sb.setAlignment(Pos.CENTER);
@@ -71,39 +178,20 @@ public class PokerGame implements StateChangedListener, GameIsOverListener {
         root.add(foldPlayersList, 0, 5, 1, 3);
         root.add(verticalSeparator, 1, 0, 1, GridPane.REMAINING);
         root.add(sb, 2, 0, GridPane.REMAINING, 1);
-        root.add(bank, 2, 1, GridPane.REMAINING, 1);
+        root.add(moneyInBankLabel, 2, 1, GridPane.REMAINING, 1);
         root.add(horizontalSeparator, 2, 3, GridPane.REMAINING, 1);
-        root.add(nickName, 2, 4, GridPane.REMAINING, 1);
+        root.add(nickNameLabel, 2, 4, GridPane.REMAINING, 1);
         root.add(call, 5, 5, 1, 1);
         root.add(fold, 6, 5, 1, 1);
         root.add(raise, 7, 5, 1, 1);
         root.add(check, 8, 5, 1, 1);
         root.add(allIn, 9, 5, 1, 1);
         root.add(showDown, 10, 5, 1, 1);
+        ImageView iv = new ImageView("https://lh3.googleusercontent.com/DKoidc0T3T1KvYC2stChcX9zwmjKj1pgmg3hXzGBDQXM8RG_7JjgiuS0CLOh8DUa7as=w300");
+        iv.setFitHeight(50);
+        iv.setFitWidth(50);
+        root.add(iv, 11, 5, 1, 1);
 
-        call.setOnAction(event -> {
-            try {
-                poker.call();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-        check.setOnAction(event -> {
-            try {
-                poker.check();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-        fold.setOnAction(event -> {
-            try {
-                poker.fold();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
 
         primaryStage.setScene(new Scene(root, 1200, 720));
     }
@@ -120,5 +208,75 @@ public class PokerGame implements StateChangedListener, GameIsOverListener {
         this.playersInfo = playersInfo;
         poker = new Poker();
         poker.setUp(playersInfo, 1);
+    }
+
+    @Override
+    public void playerFold(String foldPlayerId) {
+        //TODO add checking for Human-player fold
+        foldPlayersIds.add(foldPlayerId);
+        foldPlayersList.getItems().add(new Label(foldPlayerId));
+        activePlayersIds.remove(foldPlayersIds.get(foldPlayersIds.size() - 1));
+        updateActivePlayersList();
+    }
+
+    @Override
+    public void wagerPlaced(String playerId, PlayerMoney playerMoney, int bank) {
+        this.bank = bank;
+        playersMoney.put(playerId, playerMoney);
+        updateActivePlayersList();
+    }
+
+    @Override
+    public void currentPlayerChanged(String playerId) {
+        currentPlayerId = playerId;
+    }
+
+
+    @Override
+    public void playerShowedDown(String playerId, PokerHand hand) {
+        hands.put(playerId, hand);
+        statusBar.setText(playerId + " showed down: " + hand.getName());
+    }
+
+
+    @Override
+    public void preflopMade(Map<String, Cards> playerIdToCards) {
+        playersCards = playerIdToCards;
+    }
+
+    @Override
+    public void communityCardsAdded(List<Card> addedCommunityCards) {
+        communityCards.addAll(addedCommunityCards);
+        //TODO paint community cards
+    }
+
+    @Override
+    public void callAbilityChanged(boolean flag) {
+
+    }
+
+    @Override
+    public void raiseAbilityChanged(boolean flag) {
+
+    }
+
+    @Override
+    public void allInAbilityChanged(boolean flag) {
+
+    }
+
+    @Override
+    public void checkAbilityChanged(boolean flag) {
+
+    }
+
+    @Override
+    public void foldAbilityChanged(boolean flag) {
+
+    }
+
+    @Override
+    public void showDownAbilityChanged(boolean flag) {
+
     }
 }

@@ -53,10 +53,9 @@ class ShowdownPokerState extends ActionPokerState {
         PokerHandFactory phf = new PokerHandFactory(commonCards);
         PokerHand pokerHand = phf.createCombination(currentPlayer().getCards());
         madeShowDown.put(currentPlayer().getId(), pokerHand);
-        attemptDetermineWinners();
         poker.notifyPlayerShowedDownListeners(currentPlayer().getId(), pokerHand);
-        System.out.println("HERE : " + pokerHand.getName());
         changePlayerIndex();
+        attemptDetermineWinners();
     }
 
     //TODO     add feature for action: not showDown and not fold

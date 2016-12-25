@@ -102,12 +102,12 @@ public class PokerTest implements PlayerShowedDownListener, CommunityCardsListen
     }
 
     @Override
-    public void foldPlayerAdded(String foldPlayerId) {
+    public void playerFold(String foldPlayerId) {
 
     }
 
     @Override
-    public void dataChanged(String playerId, int stack, int wager, int bank) {
+    public void wagerPlaced(String playerId, PlayerMoney playerMoney, int bank) {
 
     }
 

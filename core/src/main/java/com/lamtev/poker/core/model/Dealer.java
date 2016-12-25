@@ -50,7 +50,8 @@ public final class Dealer {
 
     private boolean preflopHasAlreadyBeen() {
         for (Player player : players) {
-            if (player.getCards().size() != 2) {
+            //TODO may be fix bug adding isActive checking
+            if (player.isActive() && player.getCards().size() != 2) {
                 return false;
             }
         }

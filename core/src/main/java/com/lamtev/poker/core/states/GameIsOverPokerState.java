@@ -21,22 +21,22 @@ class GameIsOverPokerState extends ActionPokerState {
     }
 
     @Override
-    public void call() throws Exception {
+    public void call() throws GameIsOverException {
         throw new GameIsOverException();
     }
 
     @Override
-    public void raise(int additionalWager) throws Exception {
+    public void raise(int additionalWager) throws GameIsOverException {
         throw new GameIsOverException();
     }
 
     @Override
-    public void allIn() throws Exception {
+    public void allIn() throws GameIsOverException {
         throw new GameIsOverException();
     }
 
     @Override
-    public void fold() throws Exception {
+    public void fold() throws GameIsOverException {
         throw new GameIsOverException();
     }
 

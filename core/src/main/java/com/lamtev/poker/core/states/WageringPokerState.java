@@ -1,5 +1,6 @@
 package com.lamtev.poker.core.states;
 
+import com.lamtev.poker.core.api.PlayerMoney;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
 
@@ -96,7 +97,8 @@ abstract class WageringPokerState extends ActionPokerState {
         int stack = currentPlayer().getStack();
         int wager = currentPlayer().getWager();
         int bank = this.bank.getMoney();
-        poker.notifyWagerPlacedListeners(playerId, stack, wager, bank);
+        PlayerMoney playerMoney = new PlayerMoney(stack, wager);
+        poker.notifyWagerPlacedListeners(playerId, playerMoney, bank);
     }
 
     private boolean thisMoveIsAllIn() {

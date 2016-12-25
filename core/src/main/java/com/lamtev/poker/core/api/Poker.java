@@ -186,8 +186,8 @@ public class Poker implements PokerAPI {
         currentPlayerListeners.forEach(listener -> listener.currentPlayerChanged(id));
     }
 
-    public void notifyWagerPlacedListeners(String playerId, int stack, int wager, int bank) {
-        wagerPlacedListeners.forEach(listener -> listener.dataChanged(playerId, stack, wager, bank));
+    public void notifyWagerPlacedListeners(String playerId, PlayerMoney playerMoney, int bank) {
+        wagerPlacedListeners.forEach(listener -> listener.wagerPlaced(playerId, playerMoney, bank));
     }
 
     public void notifyPreflopMadeListeners(Map<String, Cards> playerIdToCards) {
@@ -195,7 +195,7 @@ public class Poker implements PokerAPI {
     }
 
     public void notifyPlayerFoldListeners(String id) {
-        playerFoldListeners.forEach(listener -> listener.foldPlayerAdded(id));
+        playerFoldListeners.forEach(listener -> listener.playerFold(id));
     }
 
     private void notifyStateChangedListeners() {

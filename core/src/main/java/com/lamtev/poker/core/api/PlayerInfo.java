@@ -2,8 +2,8 @@ package com.lamtev.poker.core.api;
 
 public class PlayerInfo {
 
-    private String id;
-    private int stack;
+    private final String id;
+    private final int stack;
 
     public PlayerInfo(String id, int stack) {
         this.id = id;
@@ -18,8 +18,4 @@ public class PlayerInfo {
         return stack;
     }
 
-    @Override
-    public String toString() {
-        return id + " " + stack;
-    }
 }
