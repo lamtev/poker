@@ -44,7 +44,7 @@ class ShowdownPokerState extends ActionPokerState {
 
     @Override
     public void check() throws Exception {
-        throw new Exception();
+        throw new Exception("Can't check when showDown poker state");
     }
 
     @Override

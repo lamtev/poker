@@ -45,12 +45,24 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     private Button showDown = new Button("show down");
     private Separator verticalSeparator = new Separator(Orientation.VERTICAL);
     private Separator horizontalSeparator = new Separator(Orientation.HORIZONTAL);
-    private List<ImageView> communityCardsView = new ArrayList<>();
 
     public PokerGame(List<PlayerInfo> playersInfo) {
+        this.playersInfo = playersInfo;
+        smallBlindSize = playersInfo.get(0).getStack() / 100;
+        setUpGame(playersInfo);
         nickNameLabel.setText(playersInfo.get(0).getId());
         setUpButtons();
-        this.playersInfo = playersInfo;
+
+
+        playersInfo.forEach(playerInfo -> activePlayersIds.add(playerInfo.getId()));
+        playersInfo.subList(2, playersInfo.size()).forEach(
+                playerInfo -> playersMoney.put(playerInfo.getId(), new PlayerMoney(playerInfo.getStack(), 0))
+        );
+        updateActivePlayersList();
+        updateBank();
+    }
+
+    private void setUpGame(List<PlayerInfo> playersInfo) {
         poker.addStateChangedListener(this);
         poker.addGameIsOverListener(this);
         poker.addPlayerShowedDownListener(this);
@@ -60,19 +72,18 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         poker.addPlayerFoldListener(this);
         poker.addCurrentPlayerIdListener(this);
         poker.addMoveAbilityListener(this);
-        smallBlindSize = playersInfo.get(0).getStack() / 100;
-        poker.setUp(playersInfo, smallBlindSize);
 
-        playersInfo.forEach(playerInfo -> activePlayersIds.add(playerInfo.getId()));
-        playersInfo.subList(2, playersInfo.size()).forEach(
-                playerInfo -> playersMoney.put(playerInfo.getId(), new PlayerMoney(playerInfo.getStack(), 0))
-        );
-        updateActivePlayersList();
+        poker.setUp(playersInfo, smallBlindSize);
     }
 
     private void updateActivePlayersList() {
         activePlayersList.getItems().clear();
-        activePlayersIds.forEach(id -> activePlayersList.getItems().add(new Label(id + ": " + playersMoney.get(id).getStack())));
+        activePlayersIds.forEach(id -> activePlayersList.getItems().add(
+                new Label(id + ": " +
+                        playersMoney.get(id).getStack() + " " +
+                        playersMoney.get(id).getWager())
+                )
+        );
     }
 
 
@@ -82,6 +93,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         setUpFoldButton();
         setUpShowDownButton();
         setUpRaiseButton();
+        setUpAllInButton();
     }
 
     private void setUpCallButton() {
@@ -90,6 +102,20 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                 String id = currentPlayerId;
                 poker.call();
                 statusBar.setText(id + " called");
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                statusBar.setText(e.getMessage());
+            }
+        });
+    }
+
+    private void setUpAllInButton() {
+        allIn.setOnAction(event -> {
+            try {
+                String id = currentPlayerId;
+                poker.allIn();
+                statusBar.setText(id + " all in");
             } catch (RuntimeException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -165,12 +191,11 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
 
     public void setToStage(Stage primaryStage) {
         verticalSeparator.setPrefHeight(720);
-        moneyInBankLabel.setText("Bank: " + bank);
-
         horizontalSeparator.setPrefWidth(1000);
         sb.getChildren().add(statusBar);
         sb.setAlignment(Pos.CENTER);
         activePlayersList.setMouseTransparent(true);
+        foldPlayersList.setMouseTransparent(true);
 
         root.add(new Label("Active players:"), 0, 0, 1, 1);
         root.add(activePlayersList, 0, 1, 1, 3);
@@ -206,8 +231,20 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     @Override
     public void gameIsOver(List<PlayerInfo> playersInfo) {
         this.playersInfo = playersInfo;
+        System.out.println(playersInfo.get(0));
+        System.out.println(playersInfo.get(1));
+        Collections.rotate(this.playersInfo, -1);
+        activePlayersIds.removeIf(activePlayerId -> playersMoney.get(activePlayerId).getStack() <= 0);
+        Collections.rotate(activePlayersIds, -1);
+        System.out.println(playersInfo.get(0));
+        System.out.println(playersInfo.get(1));
+        smallBlindSize += (smallBlindSize >> 1);
         poker = new Poker();
-        poker.setUp(playersInfo, 1);
+        setUpGame(new ArrayList<PlayerInfo>() {{
+            playersInfo.stream()
+                    .filter(playerInfo -> playerInfo.getStack() > 0)
+                    .forEach(this::add);
+        }});
     }
 
     @Override
@@ -224,6 +261,11 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         this.bank = bank;
         playersMoney.put(playerId, playerMoney);
         updateActivePlayersList();
+        updateBank();
+    }
+
+    private void updateBank() {
+        moneyInBankLabel.setText("Bank: " + bank);
     }
 
     @Override

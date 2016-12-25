@@ -275,6 +275,7 @@ public class PokerHandFactory {
         return null;
     }
 
+    //TODO think about the cause of IndexOutOfBoundsException when no null parameter in method below calling
     private PokerHand parseHighCard(List<Card> cards) {
         List<Rank> cardsRanks = determineRanksExceptThese(cards, null).subList(0, 5);
         return new HighCard(cardsRanks);

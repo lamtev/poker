@@ -29,7 +29,7 @@ abstract class ActionPokerState implements PokerState {
 
     @Override
     public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) {
-        throw new RuntimeException();
+        throw new RuntimeException("Can't setUp when action poker state");
     }
 
     void changePlayerIndex() {

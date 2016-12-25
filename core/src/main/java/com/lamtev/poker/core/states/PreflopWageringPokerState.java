@@ -26,6 +26,7 @@ class PreflopWageringPokerState extends WageringPokerState {
     }
 
     public void attemptNextState() throws Exception {
+        //TODO i think bug is here
         super.attemptNextState();
         if (preflopHasBeenFinished()) {
             setState(new FlopWageringPokerState(this));

@@ -161,6 +161,9 @@ abstract class WageringPokerState extends ActionPokerState {
 
     protected void attemptNextState() throws Exception {
         if (timeToNextState() && allInners.size() != 0) {
+            dealer.makeFlop();
+            dealer.makeTurn();
+            dealer.makeRiver();
             poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));
         }
     }
