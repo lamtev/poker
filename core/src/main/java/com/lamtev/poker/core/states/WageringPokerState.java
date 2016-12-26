@@ -131,6 +131,9 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     int latestAggressorIndex() {
+        if (raisers.size() == 0) {
+            return playerIndex;
+        }
         for (int i = raisers.size() - 1; i >= 0; ++i) {
             if (raisers.get(i).isActive()) {
                 return players.indexOf(raisers.get(i));

@@ -4,7 +4,6 @@ import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
-import javafx.application.Application;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,19 +18,16 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
 
     private Stage primaryStage;
 
-    private List<PlayerInfo> playersInfo;
-    private PokerAPI poker = new Poker();
+    private PokerAPI poker;
     private String stateName;
     private int smallBlindSize;
     private long bank;
-    private List<String> foldPlayersIds = new ArrayList<>();
-    private List<String> activePlayersIds = new ArrayList<>();
     private String currentPlayerId;
     private Map<String, PokerHand> hands = new HashMap<>();
-    private Map<String, Cards> playersCards = new HashMap<>();
     private List<Card> communityCards = new ArrayList<>();
-    private Map<String, PlayerMoney> playersMoney = new HashMap<>();
+    private Map<String, PlayerExpandedInfo> playersInfo = new LinkedHashMap<>();
 
+    private Label whoseTurn = new Label();
     private GridPane root = new GridPane();
     private HBox sb = new HBox();
     private Label statusBar = new Label("Welcome to Texas Hold'em Poker!!!");
@@ -49,54 +45,22 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     private Separator horizontalSeparator = new Separator(Orientation.HORIZONTAL);
 
     public PokerGame(List<PlayerInfo> playersInfo) {
-        this.playersInfo = playersInfo;
+        poker = new Poker();
         smallBlindSize = playersInfo.get(0).getStack() / 100;
+        playersInfo.forEach(
+                playerInfo -> this.playersInfo.put(
+                        playerInfo.getId(),
+                        new PlayerExpandedInfo(playerInfo.getStack(), 0, true)
+                )
+        );
         setUpGame(playersInfo);
         nickNameLabel.setText(playersInfo.get(0).getId());
         setUpButtons();
-
-
-        playersInfo.forEach(playerInfo -> activePlayersIds.add(playerInfo.getId()));
-        playersInfo.subList(2, playersInfo.size()).forEach(
-                playerInfo -> playersMoney.put(playerInfo.getId(), new PlayerMoney(playerInfo.getStack(), 0))
-        );
-        updateActivePlayersList();
-        updateBank();
     }
 
     @Override
     public void gameIsOver(List<PlayerInfo> playersInfo) {
-        foldPlayersIds.clear();
-        foldPlayersList.getItems().clear();
 
-        playersInfo.removeIf(playerInfo -> playerInfo.getStack() <= 0);
-        this.playersInfo = playersInfo;
-
-        playersInfo.forEach(playerInfo -> activePlayersIds.add(playerInfo.getId()));
-        if (playersInfo.size() == 1) {
-            Alert a = new Alert(Alert.AlertType.INFORMATION);
-            a.setTitle("Game is over");
-            a.setContentText(this.playersInfo.get(0).getId() + " won!");
-            a.showAndWait();
-            StartMenu sm = new StartMenu();
-            sm.setToStage(primaryStage);
-            return;
-        }
-        Collections.rotate(this.playersInfo, -1);
-        Collections.rotate(activePlayersIds, -1);
-        smallBlindSize += (smallBlindSize >> 1);
-        poker = new Poker();
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        setUpGame(new ArrayList<PlayerInfo>() {{
-            PokerGame.this.playersInfo.forEach(this::add);
-        }});
-
-        updateActivePlayersList();
-        updateBank();
     }
 
     private void setUpGame(List<PlayerInfo> playersInfo) {
@@ -109,18 +73,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         poker.addPlayerFoldListener(this);
         poker.addCurrentPlayerIdListener(this);
         poker.addMoveAbilityListener(this);
-
         poker.setUp(playersInfo, smallBlindSize);
-    }
-
-    private void updateActivePlayersList() {
-        activePlayersList.getItems().clear();
-        activePlayersIds.forEach(id -> activePlayersList.getItems().add(
-                new Label(id + ": " +
-                        playersMoney.get(id).getStack() + " " +
-                        playersMoney.get(id).getWager())
-                )
-        );
     }
 
 
@@ -235,10 +188,11 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         activePlayersList.setMouseTransparent(true);
         foldPlayersList.setMouseTransparent(true);
 
-        root.add(new Label("Active players:"), 0, 0, 1, 1);
-        root.add(activePlayersList, 0, 1, 1, 3);
-        root.add(new Label("Fold players:"), 0, 4, 1, 1);
-        root.add(foldPlayersList, 0, 5, 1, 3);
+        root.add(whoseTurn, 0, 0, 1, 1);
+        root.add(new Label("Active players:"), 0, 1, 1, 1);
+        root.add(activePlayersList, 0, 2, 1, 3);
+        root.add(new Label("Fold players:"), 0, 5, 1, 1);
+        root.add(foldPlayersList, 0, 6, 1, 3);
         root.add(verticalSeparator, 1, 0, 1, GridPane.REMAINING);
         root.add(sb, 2, 0, GridPane.REMAINING, 1);
         root.add(moneyInBankLabel, 2, 1, GridPane.REMAINING, 1);
@@ -266,32 +220,49 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         System.out.println(stateName);
     }
 
-
-
     @Override
     public void playerFold(String foldPlayerId) {
         //TODO add checking for Human-player fold
-        foldPlayersIds.add(foldPlayerId);
-        foldPlayersList.getItems().add(new Label(foldPlayerId));
-        activePlayersIds.remove(foldPlayersIds.get(foldPlayersIds.size() - 1));
-        updateActivePlayersList();
+        playersInfo.get(foldPlayerId).setActive(false);
+        updateActiveAndFoldPlayersLists();
     }
 
     @Override
     public void wagerPlaced(String playerId, PlayerMoney playerMoney, int bank) {
-        this.bank = bank;
-        playersMoney.put(playerId, playerMoney);
-        updateActivePlayersList();
-        updateBank();
+        int stack = playerMoney.getStack();
+        int wager = playerMoney.getWager();
+        playersInfo.get(playerId).setStack(stack);
+        playersInfo.get(playerId).setWager(wager);
+        updateBank(bank);
+        updateActiveAndFoldPlayersLists();
     }
 
-    private void updateBank() {
+    private void updateActiveAndFoldPlayersLists() {
+        activePlayersList.getItems().clear();
+        foldPlayersList.getItems().clear();
+        playersInfo.forEach((id, playerInfo) -> {
+            if (playerInfo.isActive()) {
+                activePlayersList.getItems().add(
+                        new Label(id + ": " + playerInfo.getStack() + " " + playerInfo.getWager())
+                );
+            } else {
+                foldPlayersList.getItems().add(
+                        new Label(id + ": " + playerInfo.getStack() + " " + playerInfo.getWager())
+                );
+            }
+        });
+
+    }
+
+    private void updateBank(int bank) {
         moneyInBankLabel.setText("Bank: " + bank);
+        this.bank = bank;
     }
 
     @Override
     public void currentPlayerChanged(String playerId) {
         currentPlayerId = playerId;
+        whoseTurn.setText("Whose turn: " + playerId);
     }
 
 
@@ -304,7 +275,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
 
     @Override
     public void preflopMade(Map<String, Cards> playerIdToCards) {
-        playersCards = playerIdToCards;
+        //TODO
     }
 
     @Override

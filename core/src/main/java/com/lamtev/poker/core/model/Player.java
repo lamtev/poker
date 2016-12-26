@@ -47,7 +47,6 @@ public final class Player {
         while (!cards.isEmpty()) {
             cards.pickUpTop();
         }
-        wager = 0;
         isActive = false;
     }
 

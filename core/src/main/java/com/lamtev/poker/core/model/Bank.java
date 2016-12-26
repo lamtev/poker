@@ -70,6 +70,7 @@ public class Bank {
 
     public void giveMoneyToWinners(List<String> winners) {
         winners.forEach(winner -> players.get(winner).addMoney(money / winners.size()));
+        money = 0;
     }
 
     public void giveMoneyToWinners(Player winner) {

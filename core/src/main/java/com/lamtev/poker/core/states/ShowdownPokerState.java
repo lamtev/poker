@@ -1,7 +1,9 @@
 package com.lamtev.poker.core.states;
 
+import com.lamtev.poker.core.api.PlayerMoney;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.hands.PokerHandFactory;
+import com.lamtev.poker.core.model.Player;
 
 import java.util.*;
 
@@ -65,12 +67,24 @@ class ShowdownPokerState extends ActionPokerState {
     private void attemptDetermineWinners() {
         if (timeToDetermineWinners()) {
             PokerHand maxPokerHand = Collections.max(madeShowDown.values());
-            List<String> winners = new ArrayList<>();
+            List<String> winnersIds = new ArrayList<>();
 
             madeShowDown.entrySet().stream()
                     .filter(e -> e.getValue().equals(maxPokerHand))
-                    .forEach(e -> winners.add(e.getKey()));
-            bank.giveMoneyToWinners(winners);
+                    .forEach(e -> winnersIds.add(e.getKey()));
+
+            bank.giveMoneyToWinners(winnersIds);
+
+            //TODO think about rename WagerPlacedListener
+            winnersIds.forEach(
+                    winnerId -> {
+                        Player winner = players.get(winnerId);
+                        poker.notifyWagerPlacedListeners(
+                                winnerId,
+                                new PlayerMoney(winner.getStack(), winner.getWager()),
+                                bank.getMoney()
+                        );
+                    });
 
             poker.setState(new GameIsOverPokerState(this));
         }
