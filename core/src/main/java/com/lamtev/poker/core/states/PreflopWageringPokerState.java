@@ -1,12 +1,11 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.model.Bank;
-import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.model.Dealer;
-import com.lamtev.poker.core.model.Players;
+import com.lamtev.poker.core.model.*;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 class PreflopWageringPokerState extends WageringPokerState {
@@ -31,6 +30,9 @@ class PreflopWageringPokerState extends WageringPokerState {
             dealer.makeFlop();
             dealer.makeTurn();
             dealer.makeRiver();
+            poker.notifyCommunityCardsListeners(new ArrayList<Card>() {{
+                commonCards.forEach(this::add);
+            }});
             poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));
         } else if (timeToNextState()) {
             poker.setState(new FlopWageringPokerState(this));

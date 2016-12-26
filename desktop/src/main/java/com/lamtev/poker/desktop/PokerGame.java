@@ -4,6 +4,7 @@ import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
+import com.lamtev.poker.core.states.exceptions.GameIsOverException;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -30,9 +31,10 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     private List<Card> communityCards = new ArrayList<>();
     private Map<String, PlayerExpandedInfo> playersInfo = new LinkedHashMap<>();
     private Map<String, Cards> playersCards = new LinkedHashMap<>();
+    private List<String> showedDown = new ArrayList<>();
 
+    HBox playersCardsViewHBox = new HBox();
     private HBox communityCardsView = new HBox();
-    private List<VBox> playersCardsView = new ArrayList<>();
     private Label whoseTurn = new Label();
     private GridPane root = new GridPane();
     private VBox sb = new VBox();
@@ -158,6 +160,8 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         showDown.setOnAction(event -> {
             try {
                 poker.showDown();
+            } catch (GameIsOverException e) {
+                statusBar.setText(e.getMessage());
             } catch (RuntimeException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -210,25 +214,12 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         root.add(sb, 2, 0, GridPane.REMAINING, 1);
         root.add(moneyInBankLabel, 2, 1, GridPane.REMAINING, 1);
         root.add(horizontalSeparator, 2, 3, GridPane.REMAINING, 1);
-//        for (int i = 0; i < 10; ++i) {
-//            root.add(new VBox(), 2+i, 31, GridPane.REMAINING, 10);
-//        }
-//        HBox buttons = new HBox();
-//        buttons.setAlignment(Pos.CENTER);
-//        buttons.setSpacing(50);
-//        buttons.getChildren().addAll(call, fold, raise, check, allIn, showDown);
-//        root.add(buttons, 2, 44, GridPane.REMAINING, 2);
-        root.add(call, 4, 44, 1, 1);
-        root.add(fold, 6, 44, 1, 1);
-        root.add(raise, 8, 44, 1, 1);
-        root.add(check, 10, 44, 1, 1);
-        root.add(allIn, 12, 44, 1, 1);
-        root.add(showDown, 14, 44, 1, 1);
-//        ImageView iv = new ImageView("https://lh3.googleusercontent.com/DKoidc0T3T1KvYC2stChcX9zwmjKj1pgmg3hXzGBDQXM8RG_7JjgiuS0CLOh8DUa7as=w300");
-//        iv.setFitHeight(50);
-//        iv.setFitWidth(50);
-//        root.add(iv, 11, 5, 1, 1);
 
+        HBox buttons = new HBox();
+        buttons.setAlignment(Pos.CENTER);
+        buttons.setSpacing(10);
+        buttons.getChildren().addAll(call, fold, raise, check, allIn, showDown);
+        root.add(buttons, 4, 44, GridPane.REMAINING, 1);
 
         primaryStage.setScene(new Scene(root, 1200, 720));
     }
@@ -245,6 +236,79 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         //TODO add checking for Human-player fold
         playersInfo.get(foldPlayerId).setActive(false);
         updateActiveAndFoldPlayersLists();
+//        playersCardsView.clear();
+//        playersCards.forEach((id, cards) -> {
+//
+//            VBox playerCardsView = new VBox();
+//            playerCardsView.setSpacing(10);
+//            playerCardsView.setAlignment(Pos.CENTER);
+//            playerCardsView.setPrefHeight(115);
+//            playerCardsView.getChildren().add(new Label(id));
+//            HBox cardsBox = new HBox();
+//            cardsBox.setAlignment(Pos.CENTER);
+//            cardsBox.setSpacing(1);
+//            cards.forEach(card -> {
+//                String path;
+//                if (playersInfo.get(id).isActive()) {
+//                    if (showedDown.contains(id)) {
+//                        path = "pics/" + card.toString() + ".png";
+//                    } else {
+//                        path = "pics/back_side2.png";
+//                    }
+//                    ImageView cardView = new ImageView(path);
+//                    cardView.setFitWidth(65);
+//                    cardView.setFitHeight(97.5);
+//                    cardsBox.getChildren().add(cardView);
+//                }
+//            });
+//            playerCardsView.getChildren().add(cardsBox);
+//            playersCardsView.add(playerCardsView);
+//        });
+//        playersCardsViewHBox.getChildren().clear();
+//        playersCardsViewHBox.setAlignment(Pos.CENTER);
+//        playersCardsViewHBox.setSpacing(5);
+//        playersCardsView.forEach(playersCardsViewHBox.getChildren()::add);
+//        root.add(playersCardsViewHBox, 2, 25, GridPane.REMAINING, 6);
+        updatePlayersCardsView();
+    }
+
+    private void updatePlayersCardsView() {
+        root.getChildren().remove(playersCardsViewHBox);
+        playersCardsViewHBox.getChildren().clear();
+
+        playersCardsViewHBox.setAlignment(Pos.CENTER);
+        playersCardsViewHBox.setSpacing(5);
+
+        playersInfo.forEach((id, info) -> {
+            if (info.isActive()) {
+                VBox playerIdAndCardsView = new VBox();
+                playerIdAndCardsView.setAlignment(Pos.CENTER);
+                playerIdAndCardsView.setSpacing(2);
+                playerIdAndCardsView.getChildren().add(new Label(id));
+
+                HBox playerCardsView = new HBox();
+                playerCardsView.setAlignment(Pos.CENTER);
+                playerCardsView.setSpacing(1);
+
+                playersCards.get(id).forEach(card -> {
+                    String pathToPic;
+                    if (id.equals(playerNick) || showedDown.contains(id)) {
+                        pathToPic = "pics/" + card.toString() + ".png";
+                    } else {
+                        pathToPic = "pics/back_side2.png";
+                    }
+                    ImageView cardView = new ImageView(pathToPic);
+                    cardView.setFitHeight(97.5);
+                    cardView.setFitWidth(65);
+                    playerCardsView.getChildren().add(cardView);
+                });
+
+                playerIdAndCardsView.getChildren().add(playerCardsView);
+
+                playersCardsViewHBox.getChildren().add(playerIdAndCardsView);
+            }
+        });
+        root.add(playersCardsViewHBox, 2, 25, GridPane.REMAINING, 6);
     }
 
     @Override
@@ -286,78 +350,88 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
 
+    //TODO duplicate
     @Override
     public void playerShowedDown(String playerId, PokerHand hand) {
         hands.put(playerId, hand);
+        showedDown.add(playerId);
 
         statusBar.setText(playerId + " showed down: " + hand.getName());
-
-        playersCardsView.clear();
-        playersCards.forEach((id, cards) -> {
-
-            VBox playerCardsView = new VBox();
-            playerCardsView.setSpacing(10);
-            playerCardsView.setAlignment(Pos.CENTER);
-            playerCardsView.setPrefHeight(115);
-            playerCardsView.getChildren().add(new Label(id));
-            HBox cardsBox = new HBox();
-            cardsBox.setAlignment(Pos.CENTER);
-            cardsBox.setSpacing(5);
-            cards.forEach(card -> {
-                String path;
-                if (id.equals(playerId)) {
-                    path = "pics/" + card.toString() + ".png";
-                } else {
-                    path = "pics/back_side2.png";
-                }
-                ImageView cardView = new ImageView(path);
-                cardView.setFitWidth(65);
-                cardView.setFitHeight(97.5);
-                cardsBox.getChildren().add(cardView);
-            });
-            playerCardsView.getChildren().add(cardsBox);
-            playersCardsView.add(playerCardsView);
-        });
-
-        int i = 2;
-        for (VBox vb : playersCardsView) {
-            root.add(vb, i += 2, 25, 2, 6);
-        }
+//        playersCardsView.clear();
+//        playersCards.forEach((id, cards) -> {
+//
+//            VBox playerCardsView = new VBox();
+//            playerCardsView.setSpacing(10);
+//            playerCardsView.setAlignment(Pos.CENTER);
+//            playerCardsView.setPrefHeight(115);
+//            playerCardsView.getChildren().add(new Label(id));
+//            HBox cardsBox = new HBox();
+//            cardsBox.setAlignment(Pos.CENTER);
+//            cardsBox.setSpacing(1);
+//            cards.forEach(card -> {
+//                String path;
+//                if (playersInfo.get(id).isActive()) {
+//                    if (showedDown.contains(id)) {
+//                        path = "pics/" + card.toString() + ".png";
+//                    } else {
+//                        path = "pics/back_side2.png";
+//                    }
+//                    ImageView cardView = new ImageView(path);
+//                    cardView.setFitWidth(65);
+//                    cardView.setFitHeight(97.5);
+//                    cardsBox.getChildren().add(cardView);
+//                }
+//            });
+//            playerCardsView.getChildren().add(cardsBox);
+//            playersCardsView.add(playerCardsView);
+//        });
+//        playersCardsViewHBox.getChildren().clear();
+//        playersCardsViewHBox.setAlignment(Pos.CENTER);
+//        playersCardsViewHBox.setSpacing(5);
+//        playersCardsView.forEach(playersCardsViewHBox.getChildren()::add);
+//        root.getChildren().remove(playersCardsViewHBox);
+//        root.add(playersCardsViewHBox, 2, 25, GridPane.REMAINING, 6);
+        updatePlayersCardsView();
     }
 
     @Override
     public void preflopMade(Map<String, Cards> playerIdToCards) {
         playersCards = playerIdToCards;
         //TODO paint players cards other side to up
-        playersCards.forEach((id, cards) -> {
-            VBox playerCardsView = new VBox();
-            playerCardsView.setSpacing(10);
-            playerCardsView.setAlignment(Pos.CENTER);
-            playerCardsView.setPrefHeight(115);
-            playerCardsView.getChildren().add(new Label(id));
-            HBox cardsBox = new HBox();
-            cardsBox.setAlignment(Pos.CENTER);
-            cardsBox.setSpacing(5);
-            cards.forEach(card -> {
-                String path;
-                if (id.equals(playerNick)) {
-                    path = "pics/" + card.toString() + ".png";
-                } else {
-                    path = "pics/back_side2.png";
-                }
-                ImageView cardView = new ImageView(path);
-                cardView.setFitWidth(65);
-                cardView.setFitHeight(97.5);
-                cardsBox.getChildren().add(cardView);
-            });
-            playerCardsView.getChildren().add(cardsBox);
-            playersCardsView.add(playerCardsView);
-        });
-        int i = 2;
-        for (VBox vb : playersCardsView) {
-            root.add(vb, i += 2, 25, 2, 6);
-        }
-
+//        playersCardsView.clear();
+//        playersCards.forEach((id, cards) -> {
+//            VBox playerCardsView = new VBox();
+//            playerCardsView.setSpacing(10);
+//            playerCardsView.setAlignment(Pos.CENTER);
+//            playerCardsView.setPrefHeight(115);
+//            playerCardsView.getChildren().add(new Label(id));
+//            HBox cardsBox = new HBox();
+//            cardsBox.setAlignment(Pos.CENTER);
+//            cardsBox.setSpacing(1);
+//            cards.forEach(card -> {
+//                String path;
+//                if (playersInfo.get(id).isActive()) {
+//                    if (id.equals(playerNick)) {
+//                        path = "pics/" + card.toString() + ".png";
+//                    } else {
+//                        path = "pics/back_side2.png";
+//                    }
+//                    ImageView cardView = new ImageView(path);
+//                    cardView.setFitWidth(65);
+//                    cardView.setFitHeight(97.5);
+//                    cardsBox.getChildren().add(cardView);
+//                }
+//            });
+//            playerCardsView.getChildren().add(cardsBox);
+//            playersCardsView.add(playerCardsView);
+//        });
+//        playersCardsViewHBox.getChildren().clear();
+//        playersCardsViewHBox.setAlignment(Pos.CENTER);
+//        playersCardsViewHBox.setSpacing(5);
+//        playersCardsView.forEach(playersCardsViewHBox.getChildren()::add);
+//        root.getChildren().remove(playersCardsViewHBox);
+//        root.add(playersCardsViewHBox, 2, 25, GridPane.REMAINING, 6);
+        updatePlayersCardsView();
     }
 
     @Override
@@ -365,6 +439,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         communityCards.addAll(addedCommunityCards);
         //TODO paint community cards
         communityCardsView.getChildren().clear();
+        communityCardsView.setAlignment(Pos.CENTER);
         communityCardsView.setSpacing(30);
         communityCards.forEach(card -> {
             ImageView cardView = new ImageView("pics/" + card.toString() + ".png");
