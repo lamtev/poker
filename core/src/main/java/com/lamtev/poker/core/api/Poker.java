@@ -150,6 +150,10 @@ public class Poker implements PokerAPI {
         currentPlayerListeners.forEach(listener -> listener.currentPlayerChanged(id));
     }
 
+    private void notifyStateChangedListeners() {
+        stateChangedListeners.forEach(listener -> listener.stateChanged(state.getClass().getSimpleName()));
+    }
+
     public void notifyWagerPlacedListeners(String playerId, PlayerMoney playerMoney, int bank) {
         wagerPlacedListeners.forEach(listener -> listener.wagerPlaced(playerId, playerMoney, bank));
     }
@@ -160,10 +164,6 @@ public class Poker implements PokerAPI {
 
     public void notifyPlayerFoldListeners(String id) {
         playerFoldListeners.forEach(listener -> listener.playerFold(id));
-    }
-
-    private void notifyStateChangedListeners() {
-        stateChangedListeners.forEach(listener -> listener.stateChanged(state.getClass().getSimpleName()));
     }
 
     private void validateGameIsSetUp() throws Exception {

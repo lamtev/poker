@@ -20,6 +20,8 @@ public class Settings {
     private String playerNick;
     private int numberOfOpponents;
     private int playerStackSize;
+    private List<AI> ais = new ArrayList<>();
+    List<PlayerInfo> playersInfo = new ArrayList<>();
 
     public void setToStage(Stage primaryStage) {
         FlowPane rootNode = new FlowPane(10, 10);
@@ -43,7 +45,8 @@ public class Settings {
             this.playerNick = playerNick.getText();
             this.numberOfOpponents = numbersOfOpponents.getValue();
             this.playerStackSize = playerStackSizes.getValue();
-            pokerGame = new PokerGame(createPlayersInfo());
+            createPlayersInfo();
+            pokerGame = new PokerGame(playersInfo, ais);
             pokerGame.setToStage(primaryStage);
         });
         rootNode.getChildren().addAll(
@@ -55,13 +58,13 @@ public class Settings {
         primaryStage.setScene(new Scene(rootNode, 1200, 720));
     }
 
-    public List<PlayerInfo> createPlayersInfo() {
-        List<PlayerInfo> playersInfo = new ArrayList<>();
+    public void createPlayersInfo() {
         playersInfo.add(new PlayerInfo(playerNick, playerStackSize));
         for (int i = 0; i < numberOfOpponents; ++i) {
-            playersInfo.add(new PlayerInfo("Bot " + i, playerStackSize));
+            String id = "Bot " + i;
+            playersInfo.add(new PlayerInfo(id, playerStackSize));
+            ais.add(new AI(id));
         }
-        return playersInfo;
     }
 
 }

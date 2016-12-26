@@ -5,7 +5,6 @@ import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.exceptions.GameIsOverException;
-import javafx.event.Event;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -33,6 +32,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     private Map<String, PlayerExpandedInfo> playersInfo = new LinkedHashMap<>();
     private Map<String, Cards> playersCards = new LinkedHashMap<>();
     private List<String> showedDown = new ArrayList<>();
+    private List<AI> ais;
 
     HBox playersCardsViewHBox = new HBox();
     private HBox communityCardsView = new HBox();
@@ -83,13 +83,41 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         primaryStage.setScene(new Scene(root, 1200, 720));
     }
 
-    public PokerGame(List<PlayerInfo> playersInfo) {
+    public PokerGame(List<PlayerInfo> playersInfo, List<AI> ais) {
+        this.ais = ais;
+        ais.forEach(ai -> ai.setPokerGame(this));
         playerNick = playersInfo.get(0).getId();
         nickNameLabel.setText(playersInfo.get(0).getId());
         smallBlindSize = playersInfo.get(0).getStack() / 100;
 
         startNewGame(playersInfo);
         setUpButtons();
+    }
+
+    public void doCall() {
+        call.fire();
+    }
+
+    public void doRaise(int additionalWager) {
+
+        raise.fire();
+    }
+
+    public void doCheck() {
+        check.fire();
+    }
+
+    public void doAllIn() {
+        allIn.fire();
+    }
+
+    public void doFold() {
+        System.out.println("fold will be fired");
+        fold.fire();
+    }
+
+    public void doShowDown() {
+
     }
 
     private void startNewGame(List<PlayerInfo> playersInfo) {
@@ -100,7 +128,6 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                         new PlayerExpandedInfo(playerInfo.getStack(), 0, true)
                 )
         );
-        Collections.rotate(playersInfo, -1);
         showedDown.clear();
         playersCards.clear();
         communityCards.clear();
@@ -111,6 +138,13 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
     private void setUpGame(List<PlayerInfo> playersInfo) {
+        ais.forEach(ai -> {
+            poker.addCurrentPlayerIdListener(ai);
+            poker.addStateChangedListener(ai);
+        });
+
+
+
         poker.addStateChangedListener(this);
         poker.addGameIsOverListener(this);
         poker.addPlayerShowedDownListener(this);
@@ -145,6 +179,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
             } catch (Exception e) {
                 statusBar.setText(e.getMessage());
             }
+            updateButtonsAbility();
         });
     }
 
@@ -323,12 +358,12 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
     private void updateButtonsAbility() {
-        updateButtonAbility(call);
-        updateButtonAbility(fold);
-        updateButtonAbility(raise);
-        updateButtonAbility(allIn);
-        updateButtonAbility(check);
-        updateButtonAbility(showDown);
+//        updateButtonAbility(call);
+//        updateButtonAbility(fold);
+//        updateButtonAbility(raise);
+//        updateButtonAbility(allIn);
+//        updateButtonAbility(check);
+//        updateButtonAbility(showDown);
 
     }
 
@@ -366,6 +401,8 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
             youWonWindow.showAndWait();
             return;
         }
+        smallBlindSize += (smallBlindSize >> 1);
+        Collections.rotate(playersInfo, -1);
         startNewGame(playersInfo);
     }
 
