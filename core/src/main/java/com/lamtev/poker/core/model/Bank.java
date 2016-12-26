@@ -59,10 +59,11 @@ public class Bank {
 
     private void validateTakingMoneyFromPlayer(Player player, int moneyTakingFromPlayer) throws Exception {
         if (player.getStack() < moneyTakingFromPlayer) {
-            throw new Exception();
+            throw new Exception("Can't raise by " + (moneyTakingFromPlayer - currentWager + player.getWager()));
         }
     }
 
+    //TODO think about remove this method
     public void giveMoneyToPlayer(int money, int playerPosition) {
         players.get(playerPosition).addMoney(money);
         this.money -= money;
