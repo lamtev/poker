@@ -26,12 +26,6 @@ public final class Dealer {
                 commonCards.add(cardDeck.pickUpTop());
             }
         } else {
-//            System.out.println(commonCards.size());
-//            players.forEach(player1 -> {
-//                if (player1.isActive()) {
-//                    System.out.println(player1.getId() + "  " + player1.getCards().size());
-//                }
-//            });
             throw new RuntimeException("can't make flop");
         }
 
@@ -50,7 +44,6 @@ public final class Dealer {
         if (isAbleToMakeRiver()) {
             commonCards.add(cardDeck.pickUpTop());
         } else {
-            //System.out.println(commonCards.size());
             throw new RuntimeException("can't make river");
         }
     }

@@ -15,15 +15,19 @@ class FlopWageringPokerState extends WageringPokerState {
         poker.notifyCommunityCardsListeners(addedCards);
     }
 
+    @Override
     protected void attemptNextState() throws Exception {
-        //super.attemptNextState();
         if (timeToShowDown()) {
+            //TODO think about how to dispose of code duplicates
             dealer.makeTurn();
             dealer.makeRiver();
-            setState(new ShowdownPokerState(this, latestAggressorIndex()));
-        }
-        else if (timeToNextState()) {
-            setState(new TurnWageringPokerState(this));
+            List<Card> addedCards = new ArrayList<>();
+            addedCards.add(commonCards.cardAt(4));
+            addedCards.add(commonCards.cardAt(5));
+            poker.notifyCommunityCardsListeners(addedCards);
+            poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));
+        } else if (timeToNextState()) {
+            poker.setState(new TurnWageringPokerState(this));
         }
     }
 

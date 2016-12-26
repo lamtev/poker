@@ -130,19 +130,6 @@ abstract class WageringPokerState extends ActionPokerState {
                         == players.activePlayersNumber() && raisers.size() > 0;
     }
 
-    boolean preflopWageringHasBeenFinished() {
-        return numberOfNotAllInnersActivePlayersWithSameWagers() + allInners.size() == players.activePlayersNumber();
-    }
-
-    void setState(PokerState newState) {
-//        if (allInners.size() != 0) {
-//            poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));
-//        } else {
-//            poker.setState(newState);
-//        }
-        poker.setState(newState);
-    }
-
     int latestAggressorIndex() {
         for (int i = raisers.size() - 1; i >= 0; ++i) {
             if (raisers.get(i).isActive()) {
@@ -164,6 +151,10 @@ abstract class WageringPokerState extends ActionPokerState {
 
     boolean timeToShowDown() {
         return timeToNextState() && allInners.size() != 0;
+    }
+
+    boolean preflopWageringHasBeenFinished() {
+        return numberOfNotAllInnersActivePlayersWithSameWagers() + allInners.size() == players.activePlayersNumber();
     }
 
 }

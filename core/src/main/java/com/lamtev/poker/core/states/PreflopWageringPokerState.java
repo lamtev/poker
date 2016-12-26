@@ -31,11 +31,9 @@ class PreflopWageringPokerState extends WageringPokerState {
             dealer.makeFlop();
             dealer.makeTurn();
             dealer.makeRiver();
-            setState(new ShowdownPokerState(this, latestAggressorIndex()));
-        }
-        // /*poker.*/setState(new ShowdownPokerState(this, latestAggressorIndex()));
-        else if (timeToNextState()) {
-            setState(new FlopWageringPokerState(this));
+            poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));
+        } else if (timeToNextState()) {
+            poker.setState(new FlopWageringPokerState(this));
         }
     }
 
