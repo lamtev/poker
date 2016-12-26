@@ -5,6 +5,7 @@ import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.exceptions.GameIsOverException;
+import javafx.event.Event;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -38,7 +39,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     private Label whoseTurn = new Label();
     private GridPane root = new GridPane();
     private VBox sb = new VBox();
-    private Label statusBar = new Label("Welcome to Texas Hold'em Poker!!!");
+    private Label statusBar = new Label();
     private Label moneyInBankLabel = new Label();
     private Label nickNameLabel = new Label();
     private ListView<Label> activePlayersList = new ListView<>();
@@ -52,24 +53,61 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     private Separator verticalSeparator = new Separator(Orientation.VERTICAL);
     private Separator horizontalSeparator = new Separator(Orientation.HORIZONTAL);
 
+    public void setToStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+        verticalSeparator.setPrefHeight(720);
+        horizontalSeparator.setPrefWidth(1000);
+        sb.getChildren().add(statusBar);
+        sb.setAlignment(Pos.CENTER);
+        activePlayersList.setMouseTransparent(true);
+        foldPlayersList.setMouseTransparent(true);
+
+        root.add(whoseTurn, 0, 0, 1, 1);
+        root.add(new Label("Active players:"), 0, 1, 1, 1);
+        root.add(activePlayersList, 0, 2, 1, 21);
+        root.add(new Label("Fold players:"), 0, 23, 1, 1);
+        root.add(foldPlayersList, 0, 24, 1, 21);
+        root.add(verticalSeparator, 1, 0, 1, GridPane.REMAINING);
+        root.add(sb, 2, 0, GridPane.REMAINING, 1);
+        root.add(moneyInBankLabel, 2, 1, GridPane.REMAINING, 1);
+        root.add(horizontalSeparator, 2, 3, GridPane.REMAINING, 1);
+
+        root.add(playersCardsViewHBox, 2, 25, GridPane.REMAINING, 6);
+
+        HBox buttons = new HBox();
+        buttons.setAlignment(Pos.CENTER);
+        buttons.setSpacing(10);
+        buttons.getChildren().addAll(call, fold, raise, check, allIn, showDown);
+        root.add(buttons, 4, 44, GridPane.REMAINING, 1);
+
+        primaryStage.setScene(new Scene(root, 1200, 720));
+    }
+
     public PokerGame(List<PlayerInfo> playersInfo) {
         playerNick = playersInfo.get(0).getId();
-        poker = new Poker();
+        nickNameLabel.setText(playersInfo.get(0).getId());
         smallBlindSize = playersInfo.get(0).getStack() / 100;
+
+        startNewGame(playersInfo);
+        setUpButtons();
+    }
+
+    private void startNewGame(List<PlayerInfo> playersInfo) {
+        statusBar.setText("Welcome to Texas Hold'em Poker!!!");
         playersInfo.forEach(
                 playerInfo -> this.playersInfo.put(
                         playerInfo.getId(),
                         new PlayerExpandedInfo(playerInfo.getStack(), 0, true)
                 )
         );
+        Collections.rotate(playersInfo, -1);
+        showedDown.clear();
+        playersCards.clear();
+        communityCards.clear();
+        hands.clear();
+        communityCardsView.getChildren().clear();
+        poker = new Poker();
         setUpGame(playersInfo);
-        nickNameLabel.setText(playersInfo.get(0).getId());
-        setUpButtons();
-    }
-
-    @Override
-    public void gameIsOver(List<PlayerInfo> playersInfo) {
-
     }
 
     private void setUpGame(List<PlayerInfo> playersInfo) {
@@ -122,6 +160,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
             } catch (Exception e) {
                 statusBar.setText(e.getMessage());
             }
+            updateButtonsAbility();
         });
     }
 
@@ -137,6 +176,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
             } catch (Exception e) {
                 statusBar.setText(e.getMessage());
             }
+            updateButtonsAbility();
         });
     }
 
@@ -152,6 +192,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
             } catch (Exception e) {
                 statusBar.setText(e.getMessage());
             }
+            updateButtonsAbility();
         });
     }
 
@@ -167,6 +208,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
             } catch (Exception e) {
                 statusBar.setText(e.getMessage());
             }
+            updateButtonsAbility();
         });
     }
 
@@ -193,39 +235,9 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                     statusBar.setText(e.getMessage());
                 }
             });
+            updateButtonsAbility();
         });
     }
-
-    public void setToStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        verticalSeparator.setPrefHeight(720);
-        horizontalSeparator.setPrefWidth(1000);
-        sb.getChildren().add(statusBar);
-        sb.setAlignment(Pos.CENTER);
-        activePlayersList.setMouseTransparent(true);
-        foldPlayersList.setMouseTransparent(true);
-
-        root.add(whoseTurn, 0, 0, 1, 1);
-        root.add(new Label("Active players:"), 0, 1, 1, 1);
-        root.add(activePlayersList, 0, 2, 1, 21);
-        root.add(new Label("Fold players:"), 0, 23, 1, 1);
-        root.add(foldPlayersList, 0, 24, 1, 21);
-        root.add(verticalSeparator, 1, 0, 1, GridPane.REMAINING);
-        root.add(sb, 2, 0, GridPane.REMAINING, 1);
-        root.add(moneyInBankLabel, 2, 1, GridPane.REMAINING, 1);
-        root.add(horizontalSeparator, 2, 3, GridPane.REMAINING, 1);
-
-        root.add(playersCardsViewHBox, 2, 25, GridPane.REMAINING, 6);
-
-        HBox buttons = new HBox();
-        buttons.setAlignment(Pos.CENTER);
-        buttons.setSpacing(10);
-        buttons.getChildren().addAll(call, fold, raise, check, allIn, showDown);
-        root.add(buttons, 4, 44, GridPane.REMAINING, 1);
-
-        primaryStage.setScene(new Scene(root, 1200, 720));
-    }
-
 
     @Override
     public void stateChanged(String stateName) {
@@ -242,7 +254,6 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
     private void updatePlayersCardsView() {
-        //root.getChildren().remove(playersCardsViewHBox);
         playersCardsViewHBox.getChildren().clear();
 
         playersCardsViewHBox.setAlignment(Pos.CENTER);
@@ -277,7 +288,6 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                 playersCardsViewHBox.getChildren().add(playerIdAndCardsView);
             }
         });
-        //root.add(playersCardsViewHBox, 2, 25, GridPane.REMAINING, 6);
     }
 
     @Override
@@ -310,6 +320,53 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     private void updateBank(int bank) {
         moneyInBankLabel.setText("Bank: " + bank);
         this.bank = bank;
+    }
+
+    private void updateButtonsAbility() {
+        updateButtonAbility(call);
+        updateButtonAbility(fold);
+        updateButtonAbility(raise);
+        updateButtonAbility(allIn);
+        updateButtonAbility(check);
+        updateButtonAbility(showDown);
+
+    }
+
+    private void updateButtonAbility(Button button) {
+        if (currentPlayerId.equals(playerNick)) {
+            button.setVisible(true);
+        } else {
+            button.setVisible(false);
+        }
+    }
+
+    @Override
+    public void gameIsOver(List<PlayerInfo> playersInfo) {
+        statusBar.setText("Game is over!");
+        if (this.playersInfo.get(playerNick).getStack() == 0) {
+            Alert gameIsOverWindow = new Alert(Alert.AlertType.INFORMATION);
+            gameIsOverWindow.setTitle("Game is over!!!");
+            gameIsOverWindow.setContentText("You lost all your money!!!");
+            gameIsOverWindow.setOnCloseRequest(event -> {
+                StartMenu sm = new StartMenu();
+                sm.setToStage(primaryStage);
+            });
+            gameIsOverWindow.showAndWait();
+            return;
+        }
+        playersInfo.removeIf(playerInfo -> playerInfo.getStack() <= 0);
+        if (playersInfo.size() == 1) {
+            Alert youWonWindow = new Alert(Alert.AlertType.INFORMATION);
+            youWonWindow.setTitle("You won!!!");
+            youWonWindow.setContentText("Congratulations!!!");
+            youWonWindow.setOnCloseRequest(event -> {
+                StartMenu sm = new StartMenu();
+                sm.setToStage(primaryStage);
+            });
+            youWonWindow.showAndWait();
+            return;
+        }
+        startNewGame(playersInfo);
     }
 
     @Override
