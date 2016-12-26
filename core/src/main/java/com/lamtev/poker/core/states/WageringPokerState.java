@@ -105,7 +105,7 @@ abstract class WageringPokerState extends ActionPokerState {
         return currentPlayer().getStack() == 0;
     }
 
-    private int notAllInnersActivePlayersWithSameWagers() {
+    private int numberOfNotAllInnersActivePlayersWithSameWagers() {
         int count = 0;
         for (Player player : players) {
             if (player.isActive() && !allInners.contains(player) &&
@@ -126,20 +126,21 @@ abstract class WageringPokerState extends ActionPokerState {
 
     boolean timeToNextState() {
         return checks == players.activePlayersNumber() ||
-                notAllInnersActivePlayersWithSameWagers() + allInners.size()
+                numberOfNotAllInnersActivePlayersWithSameWagers() + allInners.size()
                         == players.activePlayersNumber() && raisers.size() > 0;
     }
 
-    boolean preflopHasBeenFinished() {
-        return notAllInnersActivePlayersWithSameWagers() + allInners.size() == players.activePlayersNumber();
+    boolean preflopWageringHasBeenFinished() {
+        return numberOfNotAllInnersActivePlayersWithSameWagers() + allInners.size() == players.activePlayersNumber();
     }
 
     void setState(PokerState newState) {
-        if (allInners.size() != 0) {
-            poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));
-        } else {
-            poker.setState(newState);
-        }
+//        if (allInners.size() != 0) {
+//            poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));
+//        } else {
+//            poker.setState(newState);
+//        }
+        poker.setState(newState);
     }
 
     int latestAggressorIndex() {
@@ -159,13 +160,10 @@ abstract class WageringPokerState extends ActionPokerState {
         return -1;
     }
 
-    protected void attemptNextState() throws Exception {
-        if (timeToNextState() && allInners.size() != 0) {
-            dealer.makeFlop();
-            dealer.makeTurn();
-            dealer.makeRiver();
-            poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));
-        }
+    protected abstract void attemptNextState() throws Exception;
+
+    boolean timeToShowDown() {
+        return timeToNextState() && allInners.size() != 0;
     }
 
 }

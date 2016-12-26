@@ -25,12 +25,22 @@ class PreflopWageringPokerState extends WageringPokerState {
         throw new Exception("can't check");
     }
 
+    @Override
     public void attemptNextState() throws Exception {
-        //TODO i think bug is here
-        super.attemptNextState();
-        if (preflopHasBeenFinished()) {
+        if (timeToShowDown()) {
+            dealer.makeFlop();
+            dealer.makeTurn();
+            dealer.makeRiver();
+            setState(new ShowdownPokerState(this, latestAggressorIndex()));
+        }
+        // /*poker.*/setState(new ShowdownPokerState(this, latestAggressorIndex()));
+        else if (timeToNextState()) {
             setState(new FlopWageringPokerState(this));
         }
     }
 
+    @Override
+    boolean timeToNextState() {
+        return preflopWageringHasBeenFinished();
+    }
 }

@@ -16,8 +16,13 @@ class FlopWageringPokerState extends WageringPokerState {
     }
 
     protected void attemptNextState() throws Exception {
-        super.attemptNextState();
-        if (timeToNextState()) {
+        //super.attemptNextState();
+        if (timeToShowDown()) {
+            dealer.makeTurn();
+            dealer.makeRiver();
+            setState(new ShowdownPokerState(this, latestAggressorIndex()));
+        }
+        else if (timeToNextState()) {
             setState(new TurnWageringPokerState(this));
         }
     }

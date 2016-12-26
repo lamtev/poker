@@ -9,6 +9,7 @@ class TurnWageringPokerState extends WageringPokerState {
 
     TurnWageringPokerState(ActionPokerState state) {
         super(state);
+
         dealer.makeTurn();
         List<Card> addedCards = new ArrayList<>();
         addedCards.add(commonCards.cardAt(4));
@@ -16,8 +17,15 @@ class TurnWageringPokerState extends WageringPokerState {
     }
 
     protected void attemptNextState() throws Exception {
-        super.attemptNextState();
-        if (timeToNextState()) {
+        //super.attemptNextState();
+//        if (wasAllIn()) {
+//            return;
+//        }
+        if (timeToShowDown()) {
+            dealer.makeRiver();
+            setState(new ShowdownPokerState(this, latestAggressorIndex()));
+        }
+        else if (timeToNextState()) {
             setState(new RiverWageringPokerState(this));
         }
     }
