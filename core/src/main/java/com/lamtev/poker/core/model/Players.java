@@ -30,6 +30,10 @@ public class Players implements Iterable<Player> {
         return players.size();
     }
 
+    public int indexOf(Player player) {
+        return players.indexOf(player);
+    }
+
     public int activePlayersNumber() {
         int activePlayersNumber = 0;
         for (Player player : players) {

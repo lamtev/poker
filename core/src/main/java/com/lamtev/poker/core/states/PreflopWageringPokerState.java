@@ -31,6 +31,7 @@ class PreflopWageringPokerState extends WageringPokerState {
             dealer.makeFlop();
             dealer.makeTurn();
             dealer.makeRiver();
+            System.out.println("latest aggressor in preflop " + players.get(latestAggressorIndex()).getId());
             poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));
         } else if (timeToNextState()) {
             poker.setState(new FlopWageringPokerState(this));

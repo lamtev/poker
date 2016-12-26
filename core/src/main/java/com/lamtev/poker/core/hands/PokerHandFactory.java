@@ -20,9 +20,13 @@ public class PokerHandFactory {
     }
 
     public PokerHand createCombination(Cards playerCards) {
+        System.out.println("pl cards " + playerCards);
         List<Card> cards = new ArrayList<>();
         commonCards.forEach(cards::add);
         playerCards.forEach(cards::add);
+        System.out.println(commonCards);
+        System.out.println(playerCards);
+        System.out.println(cards);
 
         cards.sort(COMPARATOR_BY_RANK.reversed());
         PokerHand pokerHand = parseRoyalFlush(cards);

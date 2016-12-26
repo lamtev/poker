@@ -17,7 +17,7 @@ abstract class WageringPokerState extends ActionPokerState {
     WageringPokerState(Poker poker,
                        Players players, Bank bank, Dealer dealer, Cards commonCards) {
         super(poker, players, bank, dealer, commonCards);
-        playerIndex = this instanceof PreflopWageringPokerState ? 2 : 0;
+        playerIndex = this instanceof PreflopWageringPokerState ? players.size() > 2 ? 2 : 0 : 0;
         poker.notifyCurrentPlayerListeners(players.get(playerIndex).getId());
         moveValidator = new MoveValidator(players, bank);
     }
@@ -133,14 +133,14 @@ abstract class WageringPokerState extends ActionPokerState {
     int latestAggressorIndex() {
         for (int i = raisers.size() - 1; i >= 0; ++i) {
             if (raisers.get(i).isActive()) {
-                return i;
+                return players.indexOf(raisers.get(i));
             }
         }
 
         int i = 0;
         for (Player player : players) {
             if (player.isActive()) {
-                return i;
+                return players.indexOf(raisers.get(i));
             }
             ++i;
         }
