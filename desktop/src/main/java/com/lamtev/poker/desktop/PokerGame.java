@@ -94,6 +94,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
     private void setUpCallButton() {
+        call.setPrefSize(100, 50);
         call.setOnAction(event -> {
             try {
                 String id = currentPlayerId;
@@ -108,6 +109,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
     private void setUpAllInButton() {
+        allIn.setPrefSize(100, 50);
         allIn.setOnAction(event -> {
             try {
                 String id = currentPlayerId;
@@ -122,6 +124,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
     private void setUpFoldButton() {
+        fold.setPrefSize(100, 50);
         fold.setOnAction(event -> {
             try {
                 String id = currentPlayerId;
@@ -136,6 +139,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
     private void setUpCheckButton() {
+        check.setPrefSize(100, 50);
         check.setOnAction(event -> {
             try {
                 String id = currentPlayerId;
@@ -150,6 +154,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
     private void setUpShowDownButton() {
+        showDown.setPrefSize(100, 50);
         showDown.setOnAction(event -> {
             try {
                 poker.showDown();
@@ -162,6 +167,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
     private void setUpRaiseButton() {
+        raise.setPrefSize(100, 50);
         raise.setOnAction(event -> {
 
             TextInputDialog dialogWindow = new TextInputDialog("" + 50);
@@ -207,12 +213,17 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
 //        for (int i = 0; i < 10; ++i) {
 //            root.add(new VBox(), 2+i, 31, GridPane.REMAINING, 10);
 //        }
-        root.add(call, 5, 44, 1, 1);
+//        HBox buttons = new HBox();
+//        buttons.setAlignment(Pos.CENTER);
+//        buttons.setSpacing(50);
+//        buttons.getChildren().addAll(call, fold, raise, check, allIn, showDown);
+//        root.add(buttons, 2, 44, GridPane.REMAINING, 2);
+        root.add(call, 4, 44, 1, 1);
         root.add(fold, 6, 44, 1, 1);
-        root.add(raise, 7, 44, 1, 1);
-        root.add(check, 8, 44, 1, 1);
-        root.add(allIn, 9, 44, 1, 1);
-        root.add(showDown, 10, 44, 1, 1);
+        root.add(raise, 8, 44, 1, 1);
+        root.add(check, 10, 44, 1, 1);
+        root.add(allIn, 12, 44, 1, 1);
+        root.add(showDown, 14, 44, 1, 1);
 //        ImageView iv = new ImageView("https://lh3.googleusercontent.com/DKoidc0T3T1KvYC2stChcX9zwmjKj1pgmg3hXzGBDQXM8RG_7JjgiuS0CLOh8DUa7as=w300");
 //        iv.setFitHeight(50);
 //        iv.setFitWidth(50);
