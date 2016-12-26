@@ -8,8 +8,10 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -18,6 +20,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
 
     private Stage primaryStage;
 
+    private String playerNick;
     private PokerAPI poker;
     private String stateName;
     private int smallBlindSize;
@@ -26,10 +29,13 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     private Map<String, PokerHand> hands = new HashMap<>();
     private List<Card> communityCards = new ArrayList<>();
     private Map<String, PlayerExpandedInfo> playersInfo = new LinkedHashMap<>();
+    private Map<String, Cards> playersCards = new LinkedHashMap<>();
 
+    private HBox communityCardsView = new HBox();
+    private List<VBox> playersCardsView = new ArrayList<>();
     private Label whoseTurn = new Label();
     private GridPane root = new GridPane();
-    private HBox sb = new HBox();
+    private VBox sb = new VBox();
     private Label statusBar = new Label("Welcome to Texas Hold'em Poker!!!");
     private Label moneyInBankLabel = new Label();
     private Label nickNameLabel = new Label();
@@ -45,6 +51,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     private Separator horizontalSeparator = new Separator(Orientation.HORIZONTAL);
 
     public PokerGame(List<PlayerInfo> playersInfo) {
+        playerNick = playersInfo.get(0).getId();
         poker = new Poker();
         smallBlindSize = playersInfo.get(0).getStack() / 100;
         playersInfo.forEach(
@@ -190,20 +197,22 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
 
         root.add(whoseTurn, 0, 0, 1, 1);
         root.add(new Label("Active players:"), 0, 1, 1, 1);
-        root.add(activePlayersList, 0, 2, 1, 3);
-        root.add(new Label("Fold players:"), 0, 5, 1, 1);
-        root.add(foldPlayersList, 0, 6, 1, 3);
+        root.add(activePlayersList, 0, 2, 1, 21);
+        root.add(new Label("Fold players:"), 0, 23, 1, 1);
+        root.add(foldPlayersList, 0, 24, 1, 21);
         root.add(verticalSeparator, 1, 0, 1, GridPane.REMAINING);
         root.add(sb, 2, 0, GridPane.REMAINING, 1);
         root.add(moneyInBankLabel, 2, 1, GridPane.REMAINING, 1);
         root.add(horizontalSeparator, 2, 3, GridPane.REMAINING, 1);
-        root.add(nickNameLabel, 2, 4, GridPane.REMAINING, 1);
-        root.add(call, 5, 5, 1, 1);
-        root.add(fold, 6, 5, 1, 1);
-        root.add(raise, 7, 5, 1, 1);
-        root.add(check, 8, 5, 1, 1);
-        root.add(allIn, 9, 5, 1, 1);
-        root.add(showDown, 10, 5, 1, 1);
+//        for (int i = 0; i < 10; ++i) {
+//            root.add(new VBox(), 2+i, 31, GridPane.REMAINING, 10);
+//        }
+        root.add(call, 5, 44, 1, 1);
+        root.add(fold, 6, 44, 1, 1);
+        root.add(raise, 7, 44, 1, 1);
+        root.add(check, 8, 44, 1, 1);
+        root.add(allIn, 9, 44, 1, 1);
+        root.add(showDown, 10, 44, 1, 1);
 //        ImageView iv = new ImageView("https://lh3.googleusercontent.com/DKoidc0T3T1KvYC2stChcX9zwmjKj1pgmg3hXzGBDQXM8RG_7JjgiuS0CLOh8DUa7as=w300");
 //        iv.setFitHeight(50);
 //        iv.setFitWidth(50);
@@ -269,48 +278,120 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     @Override
     public void playerShowedDown(String playerId, PokerHand hand) {
         hands.put(playerId, hand);
-        statusBar.setText(playerId + " showed down: " + hand.getName());
-    }
 
+        statusBar.setText(playerId + " showed down: " + hand.getName());
+
+        playersCardsView.clear();
+        playersCards.forEach((id, cards) -> {
+
+            VBox playerCardsView = new VBox();
+            playerCardsView.setSpacing(10);
+            playerCardsView.setAlignment(Pos.CENTER);
+            playerCardsView.setPrefHeight(115);
+            playerCardsView.getChildren().add(new Label(id));
+            HBox cardsBox = new HBox();
+            cardsBox.setAlignment(Pos.CENTER);
+            cardsBox.setSpacing(5);
+            cards.forEach(card -> {
+                String path;
+                if (id.equals(playerId)) {
+                    path = "pics/" + card.toString() + ".png";
+                } else {
+                    path = "pics/back_side2.png";
+                }
+                ImageView cardView = new ImageView(path);
+                cardView.setFitWidth(65);
+                cardView.setFitHeight(97.5);
+                cardsBox.getChildren().add(cardView);
+            });
+            playerCardsView.getChildren().add(cardsBox);
+            playersCardsView.add(playerCardsView);
+        });
+
+        int i = 2;
+        for (VBox vb : playersCardsView) {
+            root.add(vb, i += 2, 25, 2, 6);
+        }
+    }
 
     @Override
     public void preflopMade(Map<String, Cards> playerIdToCards) {
-        //TODO
+        playersCards = playerIdToCards;
+        //TODO paint players cards other side to up
+        playersCards.forEach((id, cards) -> {
+            VBox playerCardsView = new VBox();
+            playerCardsView.setSpacing(10);
+            playerCardsView.setAlignment(Pos.CENTER);
+            playerCardsView.setPrefHeight(115);
+            playerCardsView.getChildren().add(new Label(id));
+            HBox cardsBox = new HBox();
+            cardsBox.setAlignment(Pos.CENTER);
+            cardsBox.setSpacing(5);
+            cards.forEach(card -> {
+                String path;
+                if (id.equals(playerNick)) {
+                    path = "pics/" + card.toString() + ".png";
+                } else {
+                    path = "pics/back_side2.png";
+                }
+                ImageView cardView = new ImageView(path);
+                cardView.setFitWidth(65);
+                cardView.setFitHeight(97.5);
+                cardsBox.getChildren().add(cardView);
+            });
+            playerCardsView.getChildren().add(cardsBox);
+            playersCardsView.add(playerCardsView);
+        });
+        int i = 2;
+        for (VBox vb : playersCardsView) {
+            root.add(vb, i += 2, 25, 2, 6);
+        }
+
     }
 
     @Override
     public void communityCardsAdded(List<Card> addedCommunityCards) {
         communityCards.addAll(addedCommunityCards);
         //TODO paint community cards
+        communityCardsView.getChildren().clear();
+        communityCardsView.setSpacing(30);
+        communityCards.forEach(card -> {
+            ImageView cardView = new ImageView("pics/" + card.toString() + ".png");
+            cardView.setFitHeight(230);
+            cardView.setFitWidth(150);
+            communityCardsView.getChildren().add(cardView);
+        });
+        root.getChildren().remove(communityCardsView);
+        root.add(communityCardsView, 2, 4, GridPane.REMAINING, 20);
     }
 
     @Override
     public void callAbilityChanged(boolean flag) {
-
+        //TODO implement
     }
 
     @Override
     public void raiseAbilityChanged(boolean flag) {
-
+        //TODO implement
     }
 
     @Override
     public void allInAbilityChanged(boolean flag) {
-
+        //TODO implement
     }
 
     @Override
     public void checkAbilityChanged(boolean flag) {
-
+        //TODO implement
     }
 
     @Override
     public void foldAbilityChanged(boolean flag) {
-
+        //TODO implement
     }
 
     @Override
     public void showDownAbilityChanged(boolean flag) {
-
+        //TODO implement
     }
 }

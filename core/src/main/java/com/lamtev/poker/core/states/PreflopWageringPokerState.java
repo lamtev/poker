@@ -6,7 +6,7 @@ import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.model.Dealer;
 import com.lamtev.poker.core.model.Players;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 class PreflopWageringPokerState extends WageringPokerState {
@@ -15,7 +15,7 @@ class PreflopWageringPokerState extends WageringPokerState {
                               Players players, Bank bank, Dealer dealer, Cards commonCards) {
         super(poker, players, bank, dealer, commonCards);
         dealer.makePreflop();
-        Map<String, Cards> playerIdToCards = new HashMap<>();
+        Map<String, Cards> playerIdToCards = new LinkedHashMap<>();
         players.forEach(player -> playerIdToCards.put(player.getId(), player.getCards()));
         poker.notifyPreflopMadeListeners(playerIdToCards);
     }
