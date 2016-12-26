@@ -12,10 +12,7 @@ class ShowdownPokerState extends ActionPokerState {
 
     ShowdownPokerState(ActionPokerState state, int latestAggressorIndex) {
         super(state);
-
-        System.out.println(commonCards.size());
         playerIndex = latestAggressorIndex;
-        System.out.println(players.get(playerIndex).getId() + " " + currentPlayer().getId());
         poker.notifyCurrentPlayerListeners(currentPlayer().getId());
     }
 
@@ -54,12 +51,6 @@ class ShowdownPokerState extends ActionPokerState {
     public void showDown() throws Exception {
         ++showDowns;
         PokerHandFactory phf = new PokerHandFactory(commonCards);
-        players.forEach(player -> {
-            if (player.isActive()) {
-                System.out.println(player.getId() + " " + player.getCards());
-            }
-        });
-        System.out.println(currentPlayer().getId() + " " + currentPlayer().getCards());
         PokerHand pokerHand = phf.createCombination(currentPlayer().getCards());
         madeShowDown.put(currentPlayer().getId(), pokerHand);
         poker.notifyPlayerShowedDownListeners(currentPlayer().getId(), pokerHand);
@@ -73,7 +64,6 @@ class ShowdownPokerState extends ActionPokerState {
 
     private void attemptDetermineWinners() {
         if (timeToDetermineWinners()) {
-            madeShowDown.forEach((k, v) -> System.out.println(k));
             PokerHand maxPokerHand = Collections.max(madeShowDown.values());
             List<String> winners = new ArrayList<>();
 

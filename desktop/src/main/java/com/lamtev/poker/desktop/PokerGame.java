@@ -4,11 +4,11 @@ import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
+import javafx.application.Application;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 import java.util.*;
 
 public class PokerGame implements CommunityCardsListener, CurrentPlayerListener, GameIsOverListener, MoveAbilityListener, PlayerFoldListener, PlayerShowedDownListener, PreflopMadeListener, StateChangedListener, WagerPlacedListener {
+
+    private Stage primaryStage;
 
     private List<PlayerInfo> playersInfo;
     private PokerAPI poker = new Poker();
@@ -58,6 +60,41 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         playersInfo.subList(2, playersInfo.size()).forEach(
                 playerInfo -> playersMoney.put(playerInfo.getId(), new PlayerMoney(playerInfo.getStack(), 0))
         );
+        updateActivePlayersList();
+        updateBank();
+    }
+
+    @Override
+    public void gameIsOver(List<PlayerInfo> playersInfo) {
+        foldPlayersIds.clear();
+        foldPlayersList.getItems().clear();
+
+        playersInfo.removeIf(playerInfo -> playerInfo.getStack() <= 0);
+        this.playersInfo = playersInfo;
+
+        playersInfo.forEach(playerInfo -> activePlayersIds.add(playerInfo.getId()));
+        if (playersInfo.size() == 1) {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setTitle("Game is over");
+            a.setContentText(this.playersInfo.get(0).getId() + " won!");
+            a.showAndWait();
+            StartMenu sm = new StartMenu();
+            sm.setToStage(primaryStage);
+            return;
+        }
+        Collections.rotate(this.playersInfo, -1);
+        Collections.rotate(activePlayersIds, -1);
+        smallBlindSize += (smallBlindSize >> 1);
+        poker = new Poker();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setUpGame(new ArrayList<PlayerInfo>() {{
+            PokerGame.this.playersInfo.forEach(this::add);
+        }});
+
         updateActivePlayersList();
         updateBank();
     }
@@ -190,6 +227,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
     public void setToStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
         verticalSeparator.setPrefHeight(720);
         horizontalSeparator.setPrefWidth(1000);
         sb.getChildren().add(statusBar);
@@ -212,10 +250,10 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         root.add(check, 8, 5, 1, 1);
         root.add(allIn, 9, 5, 1, 1);
         root.add(showDown, 10, 5, 1, 1);
-        ImageView iv = new ImageView("https://lh3.googleusercontent.com/DKoidc0T3T1KvYC2stChcX9zwmjKj1pgmg3hXzGBDQXM8RG_7JjgiuS0CLOh8DUa7as=w300");
-        iv.setFitHeight(50);
-        iv.setFitWidth(50);
-        root.add(iv, 11, 5, 1, 1);
+//        ImageView iv = new ImageView("https://lh3.googleusercontent.com/DKoidc0T3T1KvYC2stChcX9zwmjKj1pgmg3hXzGBDQXM8RG_7JjgiuS0CLOh8DUa7as=w300");
+//        iv.setFitHeight(50);
+//        iv.setFitWidth(50);
+//        root.add(iv, 11, 5, 1, 1);
 
 
         primaryStage.setScene(new Scene(root, 1200, 720));
@@ -228,24 +266,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         System.out.println(stateName);
     }
 
-    @Override
-    public void gameIsOver(List<PlayerInfo> playersInfo) {
-        this.playersInfo = playersInfo;
-        System.out.println(playersInfo.get(0));
-        System.out.println(playersInfo.get(1));
-        Collections.rotate(this.playersInfo, -1);
-        activePlayersIds.removeIf(activePlayerId -> playersMoney.get(activePlayerId).getStack() <= 0);
-        Collections.rotate(activePlayersIds, -1);
-        System.out.println(playersInfo.get(0));
-        System.out.println(playersInfo.get(1));
-        smallBlindSize += (smallBlindSize >> 1);
-        poker = new Poker();
-        setUpGame(new ArrayList<PlayerInfo>() {{
-            playersInfo.stream()
-                    .filter(playerInfo -> playerInfo.getStack() > 0)
-                    .forEach(this::add);
-        }});
-    }
+
 
     @Override
     public void playerFold(String foldPlayerId) {
