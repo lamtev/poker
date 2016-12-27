@@ -5,6 +5,8 @@ import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.exceptions.GameIsOverException;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,6 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.*;
 
@@ -99,8 +102,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
     public void doRaise(int additionalWager) {
-
-        raise.fire();
+        //raise.fire();
     }
 
     public void doCheck() {
@@ -117,11 +119,12 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
     public void doShowDown() {
-
+        showDown.fire();
     }
 
     private void startNewGame(List<PlayerInfo> playersInfo) {
         statusBar.setText("Welcome to Texas Hold'em Poker!!!");
+        this.playersInfo.clear();
         playersInfo.forEach(
                 playerInfo -> this.playersInfo.put(
                         playerInfo.getId(),
@@ -142,8 +145,6 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
             poker.addCurrentPlayerIdListener(ai);
             poker.addStateChangedListener(ai);
         });
-
-
 
         poker.addStateChangedListener(this);
         poker.addGameIsOverListener(this);
@@ -179,6 +180,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
             } catch (Exception e) {
                 statusBar.setText(e.getMessage());
             }
+            System.out.println(stateName);
             updateButtonsAbility();
         });
     }
@@ -195,6 +197,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
             } catch (Exception e) {
                 statusBar.setText(e.getMessage());
             }
+            System.out.println(stateName);
             updateButtonsAbility();
         });
     }
@@ -211,6 +214,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
             } catch (Exception e) {
                 statusBar.setText(e.getMessage());
             }
+            System.out.println(stateName);
             updateButtonsAbility();
         });
     }
@@ -227,6 +231,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
             } catch (Exception e) {
                 statusBar.setText(e.getMessage());
             }
+            System.out.println(stateName);
             updateButtonsAbility();
         });
     }
@@ -243,6 +248,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
             } catch (Exception e) {
                 statusBar.setText(e.getMessage());
             }
+            System.out.println(stateName);
             updateButtonsAbility();
         });
     }
@@ -270,6 +276,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                     statusBar.setText(e.getMessage());
                 }
             });
+            System.out.println(stateName);
             updateButtonsAbility();
         });
     }
@@ -321,6 +328,8 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                 playerIdAndCardsView.getChildren().add(playerCardsView);
 
                 playersCardsViewHBox.getChildren().add(playerIdAndCardsView);
+
+
             }
         });
     }
@@ -378,14 +387,19 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     @Override
     public void gameIsOver(List<PlayerInfo> playersInfo) {
         statusBar.setText("Game is over!");
+
         if (this.playersInfo.get(playerNick).getStack() == 0) {
             Alert gameIsOverWindow = new Alert(Alert.AlertType.INFORMATION);
             gameIsOverWindow.setTitle("Game is over!!!");
             gameIsOverWindow.setContentText("You lost all your money!!!");
-            gameIsOverWindow.setOnCloseRequest(event -> {
-                StartMenu sm = new StartMenu();
-                sm.setToStage(primaryStage);
-            });
+            Timeline timeline = new Timeline(new KeyFrame(
+                    Duration.millis(2500),
+                    ae -> gameIsOverWindow.setOnCloseRequest(event -> {
+                        StartMenu sm = new StartMenu();
+                        sm.setToStage(primaryStage);
+                    })
+            ));
+            timeline.play();
             gameIsOverWindow.showAndWait();
             return;
         }
@@ -394,16 +408,25 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
             Alert youWonWindow = new Alert(Alert.AlertType.INFORMATION);
             youWonWindow.setTitle("You won!!!");
             youWonWindow.setContentText("Congratulations!!!");
-            youWonWindow.setOnCloseRequest(event -> {
-                StartMenu sm = new StartMenu();
-                sm.setToStage(primaryStage);
-            });
+            Timeline timeline = new Timeline(new KeyFrame(
+                    Duration.millis(2500),
+                    ae -> youWonWindow.setOnCloseRequest(event -> {
+                        StartMenu sm = new StartMenu();
+                        sm.setToStage(primaryStage);
+                    })
+            ));
+            timeline.play();
             youWonWindow.showAndWait();
             return;
         }
+
         smallBlindSize += (smallBlindSize >> 1);
         Collections.rotate(playersInfo, -1);
-        startNewGame(playersInfo);
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.millis(2500),
+                ae -> startNewGame(playersInfo)
+        ));
+        timeline.play();
     }
 
     @Override

@@ -14,6 +14,22 @@ public class Bank {
     private int currentWager = 0;
     private boolean blindsSet = false;
 
+    public enum BlindsStatus {
+        USUAL_BLIND,
+        ALL_IN;
+
+        private int latestAggressorIndex;
+
+        public void setLatestAggressorIndex(int latestAggressorIndex) {
+            this.latestAggressorIndex = latestAggressorIndex;
+        }
+
+        public int getLatestAggressorIndex() {
+            return latestAggressorIndex;
+        }
+
+    }
+
     public Bank(Players players) {
         this.players = players;
     }
@@ -26,12 +42,30 @@ public class Bank {
         return currentWager;
     }
 
-    public void acceptBlindWagers(int smallBlindSize) {
-        money += players.get(SMALL_BLIND_INDEX).takeMoney(smallBlindSize);
+    public BlindsStatus acceptBlindWagers(int smallBlindSize) {
+        BlindsStatus blindsStatus = BlindsStatus.USUAL_BLIND;
+
+        Player smallBlind = players.get(SMALL_BLIND_INDEX);
+        if (smallBlind.getStack() <= smallBlindSize) {
+            acceptAllInFromPlayer(smallBlind);
+            blindsStatus = BlindsStatus.ALL_IN;
+            blindsStatus.setLatestAggressorIndex(SMALL_BLIND_INDEX);
+        } else {
+            money += smallBlind.takeMoney(smallBlindSize);
+        }
+
         int bigBlindSize = 2 * smallBlindSize;
-        money += players.get(BIG_BLIND_INDEX).takeMoney(bigBlindSize);
-        currentWager = bigBlindSize;
+        Player bigBlind = players.get(BIG_BLIND_INDEX);
+        if (bigBlind.getStack() <= bigBlindSize) {
+            acceptAllInFromPlayer(bigBlind);
+            blindsStatus = BlindsStatus.ALL_IN;
+            blindsStatus.setLatestAggressorIndex(BIG_BLIND_INDEX);
+        } else {
+            money += players.get(BIG_BLIND_INDEX).takeMoney(bigBlindSize);
+            currentWager = bigBlindSize;
+        }
         blindsSet = true;
+        return blindsStatus;
     }
 
     public void acceptCallFromPlayer(Player player) throws Exception {
@@ -59,7 +93,7 @@ public class Bank {
 
     private void validateTakingMoneyFromPlayer(Player player, int moneyTakingFromPlayer) throws Exception {
         if (player.getStack() < moneyTakingFromPlayer) {
-            throw new Exception("Can't raise by " + (moneyTakingFromPlayer - currentWager + player.getWager()));
+            throw new Exception("You have not got " + moneyTakingFromPlayer + ". Try to make allIn");
         }
     }
 

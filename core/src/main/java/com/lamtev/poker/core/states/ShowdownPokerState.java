@@ -1,16 +1,23 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.PlayerMoney;
+import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.hands.PokerHandFactory;
-import com.lamtev.poker.core.model.Player;
+import com.lamtev.poker.core.model.*;
 
 import java.util.*;
 
 class ShowdownPokerState extends ActionPokerState {
 
     private int showDowns = 0;
-    private Map<String, PokerHand> madeShowDown = new TreeMap<>();
+    private Map<String, PokerHand> madeShowDown = new LinkedHashMap<>();
+
+    ShowdownPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards, int latestAggressorIndex) {
+        super(poker, players, bank, dealer, commonCards);
+        playerIndex = latestAggressorIndex;
+    }
+
 
     ShowdownPokerState(ActionPokerState state, int latestAggressorIndex) {
         super(state);
