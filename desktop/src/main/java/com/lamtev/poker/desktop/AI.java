@@ -37,20 +37,21 @@ public class AI implements CurrentPlayerListener, StateChangedListener {
     @Override
     public void stateChanged(String stateName) {
         state = stateName;
-        doAction(currentPlayerId);
+        //doAction(currentPlayerId);
     }
 
     @Override
     public void currentPlayerChanged(String playerId) {
         currentPlayerId = playerId;
-        doAction(playerId);
+        //TODO a
+        //doAction(playerId);
     }
 
     private void doAction(String playerId) {
-        if (playerId != null && playerId.equals(id)) {
-
+        if (playerId.equals(id)) {
 
             try {
+                new Thread().join();
                 Timeline timeline = new Timeline(new KeyFrame(
                         Duration.millis(5000),
                         ae -> {
@@ -70,6 +71,7 @@ public class AI implements CurrentPlayerListener, StateChangedListener {
                 );
                 timeline.play();
             } catch (Exception e) {
+                doAction(id);
                 System.out.println(e.getMessage());
             }
         }

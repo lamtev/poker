@@ -28,7 +28,6 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     private PokerAPI poker;
     private String stateName;
     private int smallBlindSize;
-    private long bank;
     private String currentPlayerId;
     private Map<String, PokerHand> hands = new HashMap<>();
     private List<Card> communityCards = new ArrayList<>();
@@ -138,6 +137,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         communityCardsView.getChildren().clear();
         poker = new Poker();
         setUpGame(playersInfo);
+        updateButtonsAbility();
     }
 
     private void setUpGame(List<PlayerInfo> playersInfo) {
@@ -363,10 +363,10 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
 
     private void updateBank(int bank) {
         moneyInBankLabel.setText("Bank: " + bank);
-        this.bank = bank;
     }
 
     private void updateButtonsAbility() {
+        //TODO a
 //        updateButtonAbility(call);
 //        updateButtonAbility(fold);
 //        updateButtonAbility(raise);
@@ -400,6 +400,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                     })
             ));
             timeline.play();
+            //if (!timeline.isAutoReverse())
             gameIsOverWindow.showAndWait();
             return;
         }
