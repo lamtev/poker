@@ -2,7 +2,6 @@ package com.lamtev.poker.core.api;
 
 import java.util.List;
 
-//TODO javadoc
 public interface PokerAPI {
     void addStateChangedListener(StateChangedListener stateChangedListener);
 
