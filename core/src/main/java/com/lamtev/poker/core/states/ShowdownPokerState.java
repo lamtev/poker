@@ -19,7 +19,6 @@ class ShowdownPokerState extends ActionPokerState {
         poker.notifyCurrentPlayerListeners(currentPlayer().getId());
     }
 
-
     ShowdownPokerState(ActionPokerState state, int latestAggressorIndex) {
         super(state);
         playerIndex = latestAggressorIndex;
