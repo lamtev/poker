@@ -11,7 +11,6 @@ abstract class WageringPokerState extends ActionPokerState {
 
     private MoveValidator moveValidator;
     private int checks = 0;
-    private List<Player> allInners = new ArrayList<>();
     private List<Player> raisers = new ArrayList<>();
 
     WageringPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards, int bigBlindIndex) {
@@ -32,9 +31,6 @@ abstract class WageringPokerState extends ActionPokerState {
     public void call() throws Exception {
         moveValidator.validateCall(currentPlayer());
         bank.acceptCallFromPlayer(currentPlayer());
-        if (thisBetIsAllIn()) {
-            allInners.add(currentPlayer());
-        }
         wagerPlaced();
         changePlayerIndex();
         attemptNextState();
@@ -44,9 +40,6 @@ abstract class WageringPokerState extends ActionPokerState {
     public void raise(int additionalWager) throws Exception {
         moveValidator.validateRaise(raisers.size());
         bank.acceptRaiseFromPlayer(additionalWager, currentPlayer());
-        if (thisBetIsAllIn()) {
-            allInners.add(currentPlayer());
-        }
         raisers.add(currentPlayer());
         wagerPlaced();
         changePlayerIndex();
@@ -58,13 +51,14 @@ abstract class WageringPokerState extends ActionPokerState {
 
         if (additionalWager == 0) {
             call();
+            System.out.println("call");
         } else if (additionalWager > 0) {
             raise(additionalWager);
         } else {
             bank.acceptAllInFromPlayer(currentPlayer());
-            allInners.add(currentPlayer());
             wagerPlaced();
             changePlayerIndex();
+            attemptNextState();
         }
     }
 
@@ -103,14 +97,10 @@ abstract class WageringPokerState extends ActionPokerState {
         poker.notifyWagerPlacedListeners(playerId, playerMoney, bank);
     }
 
-    private boolean thisBetIsAllIn() {
-        return currentPlayer().getStack() == 0;
-    }
-
     private int numberOfNotAllInnersActivePlayersWithSameWagers() {
         int count = 0;
         for (Player player : players) {
-            if (player.isActive() && !allInners.contains(player) &&
+            if (player.isActive() && !bank.getAllInners().contains(player) &&
                     player.getWager() == bank.getCurrentWager()) {
                 ++count;
             }
@@ -128,7 +118,7 @@ abstract class WageringPokerState extends ActionPokerState {
 
     boolean timeToNextState() {
         return checks == players.activePlayersNumber() ||
-                numberOfNotAllInnersActivePlayersWithSameWagers() + allInners.size()
+                numberOfNotAllInnersActivePlayersWithSameWagers() + bank.getAllInners().size()
                         == players.activePlayersNumber() && raisers.size() > 0;
     }
 
@@ -155,14 +145,14 @@ abstract class WageringPokerState extends ActionPokerState {
     protected abstract void attemptNextState() throws Exception;
 
     boolean timeToShowDown() {
-        return timeToNextState() && allInners.size() != 0;
+        return timeToNextState() && bank.getAllInners().size() != 0;
     }
 
     boolean preflopWageringHasBeenFinished() {
-        return numberOfNotAllInnersActivePlayersWithSameWagers() + allInners.size() == players.activePlayersNumber();
+        return numberOfNotAllInnersActivePlayersWithSameWagers() + bank.getAllInners().size() == players.activePlayersNumber();
     }
 
-    void determinePlayerIndex(int bigBlindIndex) {
+    private void determinePlayerIndex(int bigBlindIndex) {
         playerIndex = bigBlindIndex;
         changePlayerIndex();
     }

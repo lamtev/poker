@@ -1,5 +1,6 @@
 package com.lamtev.poker.core.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class Bank {
@@ -11,7 +12,7 @@ public final class Bank {
     private int currentWager = 0;
     private boolean blindsSet = false;
     private BlindsStatus blindsStatus = BlindsStatus.USUAL_BLIND;
-    //private List<Player> allInners = new ArrayList<>();
+    private List<Player> allInners = new ArrayList<>();
 
     //TODO
     public enum BlindsStatus {
@@ -42,6 +43,10 @@ public final class Bank {
         return currentWager;
     }
 
+    public List<Player> getAllInners() {
+        return allInners;
+    }
+
     public BlindsStatus acceptBlindWagers(Player smallBlind, Player bigBlind, int smallBlindSize) {
 
         acceptBlindWager(smallBlind, smallBlindSize);
@@ -57,18 +62,24 @@ public final class Bank {
         int moneyTakingFromPlayer = currentWager - player.getWager();
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
         this.money += player.takeMoney(moneyTakingFromPlayer);
+        if (thisBetIsAllIn(player)) {
+            allInners.add(player);
+        }
     }
 
     public void acceptRaiseFromPlayer(int additionalWager, Player player) throws Exception {
         int moneyTakingFromPlayer = currentWager + additionalWager - player.getWager();
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
         this.money += player.takeMoney(moneyTakingFromPlayer);
+        if (thisBetIsAllIn(player)) {
+            allInners.add(player);
+        }
         currentWager += additionalWager;
     }
 
     public void acceptAllInFromPlayer(Player player) {
-        this.money += player.getStack();
-        //allInners.add(player);
+        this.money += player.takeMoney(player.getStack());
+        allInners.add(player);
         if (player.getWager() > currentWager) {
             currentWager = player.getWager();
         }
@@ -83,9 +94,9 @@ public final class Bank {
         winner.addMoney(money = 0);
     }
 
-//    private boolean thisBetIsAllIn(Player player) {
-//        return player.getStack() == 0;
-//    }
+    private boolean thisBetIsAllIn(Player player) {
+        return player.getStack() == 0;
+    }
 
     private void acceptBlindWager(Player blind, int wager) {
         if (blind.getStack() <= wager) {
