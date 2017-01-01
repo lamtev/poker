@@ -9,9 +9,9 @@ import java.util.Map;
 
 class PreflopWageringPokerState extends WageringPokerState {
 
-    PreflopWageringPokerState(Poker poker,
-                              Players players, Bank bank, Dealer dealer, Cards commonCards) {
-        super(poker, players, bank, dealer, commonCards);
+    PreflopWageringPokerState(Poker poker, Players players, Bank bank,
+                              Dealer dealer, Cards commonCards, int bigBlindIndex) {
+        super(poker, players, bank, dealer, commonCards, bigBlindIndex);
         dealer.makePreflop();
         Map<String, Cards> playerIdToCards = new LinkedHashMap<>();
         players.forEach(player -> playerIdToCards.put(player.getId(), player.getCards()));

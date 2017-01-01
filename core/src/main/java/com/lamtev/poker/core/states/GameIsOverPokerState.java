@@ -1,6 +1,6 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.api.PlayerInfo;
+import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.states.exceptions.GameIsOverException;
 
 import java.util.ArrayList;
@@ -10,13 +10,13 @@ class GameIsOverPokerState extends ActionPokerState {
 
     GameIsOverPokerState(ActionPokerState state) {
         super(state.poker, state.players, state.bank, state.dealer, state.commonCards);
-        poker.notifyGameIsOverListeners(new ArrayList<PlayerInfo>() {{
-            players.forEach(player -> add(new PlayerInfo(player.getId(), player.getStack())));
+        poker.notifyGameIsOverListeners(new ArrayList<PlayerIdStack>() {{
+            players.forEach(player -> add(new PlayerIdStack(player.getId(), player.getStack())));
         }});
     }
 
     @Override
-    public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) {
+    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize) {
         throw new GameIsOverException();
     }
 

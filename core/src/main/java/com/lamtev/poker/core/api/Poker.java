@@ -73,11 +73,11 @@ public class Poker implements PokerAPI {
     }
 
     @Override
-    public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) {
+    public void setUp(List<PlayerIdStack> playersStacks, String smallBlindId, String bigBlindId, int smallBlindSize) {
         if (!allListenersAdded()) {
             throw new RuntimeException("You must add at least one of each listeners");
         }
-        state.setUp(playersInfo, smallBlindSize);
+        state.setUp(playersStacks, smallBlindId, bigBlindId, smallBlindSize);
         gameIsSetUp = true;
     }
 
@@ -130,7 +130,7 @@ public class Poker implements PokerAPI {
         notifyStateChangedListeners();
     }
 
-    public void notifyGameIsOverListeners(List<PlayerInfo> playersInfo) {
+    public void notifyGameIsOverListeners(List<PlayerIdStack> playersInfo) {
         gameIsOverListeners.forEach(listener -> listener.gameIsOver(playersInfo));
     }
 

@@ -1,6 +1,6 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.api.PlayerInfo;
+import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
 
@@ -8,12 +8,22 @@ import java.util.List;
 
 abstract class ActionPokerState implements PokerState {
 
+    protected int bigBlindIndex;
     protected int playerIndex;
     protected Poker poker;
     protected Players players;
     protected Bank bank;
     protected Dealer dealer;
     protected Cards commonCards;
+
+    ActionPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards, int bigBlindIndex) {
+        this(poker, players, bank, dealer, commonCards);
+        this.bigBlindIndex = bigBlindIndex;
+    }
+
+    ActionPokerState(ActionPokerState state) {
+        this(state.poker, state.players, state.bank, state.dealer, state.commonCards, state.bigBlindIndex);
+    }
 
     ActionPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
         this.poker = poker;
@@ -23,12 +33,8 @@ abstract class ActionPokerState implements PokerState {
         this.commonCards = commonCards;
     }
 
-    ActionPokerState(ActionPokerState state) {
-        this(state.poker, state.players, state.bank, state.dealer, state.commonCards);
-    }
-
     @Override
-    public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) {
+    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize) {
         throw new RuntimeException("Can't setUp when action poker state");
     }
 

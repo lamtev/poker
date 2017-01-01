@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class Players implements Iterable<Player> {
+public final class Players implements Iterable<Player> {
 
     private List<Player> players = new ArrayList<>();
 
@@ -34,6 +34,7 @@ public class Players implements Iterable<Player> {
         return players.indexOf(player);
     }
 
+    //TODO make it O(1)
     public int activePlayersNumber() {
         int activePlayersNumber = 0;
         for (Player player : players) {

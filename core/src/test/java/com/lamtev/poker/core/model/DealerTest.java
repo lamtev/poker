@@ -7,11 +7,11 @@ import static org.junit.Assert.assertEquals;
 public class DealerTest {
 
     private Players generatePlayers() {
-        return new Players() {{
-            for (int i = 0; i < 5; ++i) {
-                add(new Player("pro", 100));
-            }
-        }};
+        Players players = new Players();
+        for (int i = 0; i < 5; ++i) {
+            players.add(new Player("pro", 100));
+        }
+        return players;
     }
 
     private Dealer generateDealer() {

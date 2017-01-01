@@ -1,12 +1,12 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.api.PlayerInfo;
+import com.lamtev.poker.core.api.PlayerIdStack;
 
 import java.util.List;
 
 public interface PokerState {
 
-    void setUp(List<PlayerInfo> playersInfo, int smallBlindSize);
+    void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize);
 
     void call() throws Exception;
 

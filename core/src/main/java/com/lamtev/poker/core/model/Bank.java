@@ -2,18 +2,18 @@ package com.lamtev.poker.core.model;
 
 import java.util.List;
 
-public class Bank {
+public final class Bank {
 
     //TODO think about ALL IN
-
-    private static final int SMALL_BLIND_INDEX = 0;
-    private static final int BIG_BLIND_INDEX = 1;
 
     private int money = 0;
     private Players players;
     private int currentWager = 0;
     private boolean blindsSet = false;
+    private BlindsStatus blindsStatus = BlindsStatus.USUAL_BLIND;
+    //private List<Player> allInners = new ArrayList<>();
 
+    //TODO
     public enum BlindsStatus {
         USUAL_BLIND,
         ALL_IN;
@@ -42,28 +42,10 @@ public class Bank {
         return currentWager;
     }
 
-    public BlindsStatus acceptBlindWagers(int smallBlindSize) {
-        BlindsStatus blindsStatus = BlindsStatus.USUAL_BLIND;
+    public BlindsStatus acceptBlindWagers(Player smallBlind, Player bigBlind, int smallBlindSize) {
 
-        Player smallBlind = players.get(SMALL_BLIND_INDEX);
-        if (smallBlind.getStack() <= smallBlindSize) {
-            acceptAllInFromPlayer(smallBlind);
-            blindsStatus = BlindsStatus.ALL_IN;
-            blindsStatus.setLatestAggressorIndex(SMALL_BLIND_INDEX);
-        } else {
-            money += smallBlind.takeMoney(smallBlindSize);
-        }
-
-        int bigBlindSize = 2 * smallBlindSize;
-        Player bigBlind = players.get(BIG_BLIND_INDEX);
-        if (bigBlind.getStack() <= bigBlindSize) {
-            acceptAllInFromPlayer(bigBlind);
-            blindsStatus = BlindsStatus.ALL_IN;
-            blindsStatus.setLatestAggressorIndex(BIG_BLIND_INDEX);
-        } else {
-            money += players.get(BIG_BLIND_INDEX).takeMoney(bigBlindSize);
-            currentWager = bigBlindSize;
-        }
+        acceptBlindWager(smallBlind, smallBlindSize);
+        acceptBlindWager(bigBlind, smallBlindSize * 2);
         blindsSet = true;
         return blindsStatus;
     }
@@ -86,21 +68,10 @@ public class Bank {
 
     public void acceptAllInFromPlayer(Player player) {
         this.money += player.getStack();
+        //allInners.add(player);
         if (player.getWager() > currentWager) {
             currentWager = player.getWager();
         }
-    }
-
-    private void validateTakingMoneyFromPlayer(Player player, int moneyTakingFromPlayer) throws Exception {
-        if (player.getStack() < moneyTakingFromPlayer) {
-            throw new Exception("You have not got " + moneyTakingFromPlayer + ". Try to make allIn");
-        }
-    }
-
-    //TODO think about remove this method
-    public void giveMoneyToPlayer(int money, int playerPosition) {
-        players.get(playerPosition).addMoney(money);
-        this.money -= money;
     }
 
     public void giveMoneyToWinners(List<String> winners) {
@@ -110,6 +81,27 @@ public class Bank {
 
     public void giveMoneyToWinners(Player winner) {
         winner.addMoney(money = 0);
+    }
+
+//    private boolean thisBetIsAllIn(Player player) {
+//        return player.getStack() == 0;
+//    }
+
+    private void acceptBlindWager(Player blind, int wager) {
+        if (blind.getStack() <= wager) {
+            acceptAllInFromPlayer(blind);
+            blindsStatus = BlindsStatus.ALL_IN;
+            blindsStatus.setLatestAggressorIndex(players.indexOf(blind));
+        } else {
+            money += blind.takeMoney(wager);
+            currentWager = wager;
+        }
+    }
+
+    private void validateTakingMoneyFromPlayer(Player player, int moneyTakingFromPlayer) throws Exception {
+        if (player.getStack() < moneyTakingFromPlayer) {
+            throw new Exception("You have not got " + moneyTakingFromPlayer + ". Try to make allIn");
+        }
     }
 
 }

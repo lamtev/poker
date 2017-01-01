@@ -13,7 +13,8 @@ class ShowdownPokerState extends ActionPokerState {
     private int showDowns = 0;
     private Map<String, PokerHand> madeShowDown = new LinkedHashMap<>();
 
-    ShowdownPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards, int latestAggressorIndex) {
+    ShowdownPokerState(Poker poker, Players players, Bank bank,
+                       Dealer dealer, Cards commonCards, int latestAggressorIndex) {
         super(poker, players, bank, dealer, commonCards);
         playerIndex = latestAggressorIndex;
         poker.notifyCurrentPlayerListeners(currentPlayer().getId());

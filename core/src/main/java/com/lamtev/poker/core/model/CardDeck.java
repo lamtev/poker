@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Random;
 
-public class CardDeck extends Cards {
+public final class CardDeck extends Cards {
 
     public CardDeck() {
         super();

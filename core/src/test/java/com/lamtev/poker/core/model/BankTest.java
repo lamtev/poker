@@ -7,13 +7,13 @@ import static org.junit.Assert.assertEquals;
 public class BankTest {
 
     private Players generatePlayers() {
-        return new Players() {{
-            add(new Player("a", 100));
-            add(new Player("b", 200));
-            add(new Player("c", 150));
-            add(new Player("d", 300));
-            add(new Player("e", 250));
-        }};
+        Players players = new Players();
+        players.add(new Player("a", 100));
+        players.add(new Player("b", 200));
+        players.add(new Player("c", 150));
+        players.add(new Player("d", 300));
+        players.add(new Player("e", 250));
+        return players;
     }
 
     //TODO add cases for exceptions
@@ -22,7 +22,7 @@ public class BankTest {
     public void testAcceptBlindWagers() {
         Players players = generatePlayers();
         Bank bank = new Bank(players);
-        bank.acceptBlindWagers(5);
+        bank.acceptBlindWagers(players.get(0), players.get(1), 5);
         assertEquals(5, players.get(0).getWager());
         assertEquals(95, players.get(0).getStack());
         assertEquals(10, players.get(1).getWager());
@@ -35,7 +35,7 @@ public class BankTest {
     public void testAcceptCallFromPlayer() {
         Players players = generatePlayers();
         Bank bank = new Bank(players);
-        bank.acceptBlindWagers(5);
+        bank.acceptBlindWagers(players.get(0), players.get(1), 5);
         try {
             bank.acceptCallFromPlayer(players.get(2));
         } catch (Exception e) {
@@ -51,7 +51,7 @@ public class BankTest {
     public void testAcceptRaiseFromPlayer() {
         Players players = generatePlayers();
         Bank bank = new Bank(players);
-        bank.acceptBlindWagers(5);
+        bank.acceptBlindWagers(players.get(0), players.get(1), 5);
         try {
             bank.acceptRaiseFromPlayer(30, players.get(3));
         } catch (Exception e) {
@@ -82,25 +82,6 @@ public class BankTest {
         assertEquals(165, bank.getMoney());
         assertEquals(90, bank.getCurrentWager());
 
-    }
-
-    @Test
-    public void testGiveMoneyToPlayer() {
-        Players players = generatePlayers();
-        Bank bank = new Bank(players);
-        bank.acceptBlindWagers(5);
-        try {
-            bank.acceptRaiseFromPlayer(30, players.get(3));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        bank.giveMoneyToPlayer(25, 0);
-        assertEquals(120, players.get(0).getStack());
-        assertEquals(30, bank.getMoney());
-
-        bank.giveMoneyToPlayer(15, 3);
-        assertEquals(275, players.get(3).getStack());
-        assertEquals(15, bank.getMoney());
     }
 
 }

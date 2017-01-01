@@ -85,14 +85,15 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         primaryStage.setScene(new Scene(root, 1200, 720));
     }
 
-    public PokerGame(List<PlayerInfo> playersInfo, List<AI> ais) {
+    public PokerGame(List<PlayerIdStack> playersInfo, List<AI> ais) {
         this.ais = ais;
         ais.forEach(ai -> ai.setPokerGame(this));
         playerNick = playersInfo.get(0).getId();
         nickNameLabel.setText(playersInfo.get(0).getId());
         smallBlindSize = playersInfo.get(0).getStack() / 100;
-
-        startNewGame(playersInfo);
+        String smallBlindId = playersInfo.get(0).getId();
+        String bigBlindId = playersInfo.get(1).getId();
+        startNewGame(playersInfo, smallBlindId, bigBlindId);
         setUpButtons();
     }
 
@@ -121,7 +122,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         showDown.fire();
     }
 
-    private void startNewGame(List<PlayerInfo> playersInfo) {
+    private void startNewGame(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId) {
         statusBar.setText("Welcome to Texas Hold'em Poker!!!");
         this.playersInfo.clear();
         playersInfo.forEach(
@@ -136,11 +137,11 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         hands.clear();
         communityCardsView.getChildren().clear();
         poker = new Poker();
-        setUpGame(playersInfo);
+        setUpGame(playersInfo, smallBlindId, bigBlindId);
         updateButtonsAbility();
     }
 
-    private void setUpGame(List<PlayerInfo> playersInfo) {
+    private void setUpGame(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId) {
         ais.forEach(ai -> {
             poker.addCurrentPlayerIdListener(ai);
             poker.addStateChangedListener(ai);
@@ -155,7 +156,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         poker.addPlayerFoldListener(this);
         poker.addCurrentPlayerIdListener(this);
         poker.addMoveAbilityListener(this);
-        poker.setUp(playersInfo, smallBlindSize);
+        poker.setUp(playersInfo, smallBlindId, bigBlindId, smallBlindSize);
     }
 
 
@@ -385,7 +386,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     }
 
     @Override
-    public void gameIsOver(List<PlayerInfo> playersInfo) {
+    public void gameIsOver(List<PlayerIdStack> playersInfo) {
         statusBar.setText("Game is over!");
 
         if (this.playersInfo.get(playerNick).getStack() == 0) {
@@ -422,10 +423,12 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         }
 
         smallBlindSize += (smallBlindSize >> 1);
-        Collections.rotate(playersInfo, -1);
+        List<PlayerIdStack> list = new ArrayList<>(playersInfo);
+        Collections.copy(list, playersInfo);
+        Collections.rotate(list, -1);
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(2500),
-                ae -> startNewGame(playersInfo)
+                ae -> startNewGame(playersInfo, list.get(0).getId(), list.get(1).getId())
         ));
         timeline.play();
     }

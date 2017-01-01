@@ -14,23 +14,25 @@ abstract class WageringPokerState extends ActionPokerState {
     private List<Player> allInners = new ArrayList<>();
     private List<Player> raisers = new ArrayList<>();
 
-    WageringPokerState(Poker poker,
-                       Players players, Bank bank, Dealer dealer, Cards commonCards) {
-        super(poker, players, bank, dealer, commonCards);
-        playerIndex = this instanceof PreflopWageringPokerState ? players.size() > 2 ? 2 : 0 : 0;
-        poker.notifyCurrentPlayerListeners(players.get(playerIndex).getId());
+    WageringPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards, int bigBlindIndex) {
+        super(poker, players, bank, dealer, commonCards, bigBlindIndex);
+        determinePlayerIndex(bigBlindIndex);
+        poker.notifyCurrentPlayerListeners(currentPlayer().getId());
         moveValidator = new MoveValidator(players, bank);
     }
 
     WageringPokerState(ActionPokerState state) {
-        this(state.poker, state.players, state.bank, state.dealer, state.commonCards);
+        super(state);
+        determinePlayerIndex(bigBlindIndex);
+        poker.notifyCurrentPlayerListeners(currentPlayer().getId());
+        moveValidator = new MoveValidator(players, bank);
     }
 
     @Override
     public void call() throws Exception {
         moveValidator.validateCall(currentPlayer());
         bank.acceptCallFromPlayer(currentPlayer());
-        if (thisMoveIsAllIn()) {
+        if (thisBetIsAllIn()) {
             allInners.add(currentPlayer());
         }
         wagerPlaced();
@@ -42,7 +44,7 @@ abstract class WageringPokerState extends ActionPokerState {
     public void raise(int additionalWager) throws Exception {
         moveValidator.validateRaise(raisers.size());
         bank.acceptRaiseFromPlayer(additionalWager, currentPlayer());
-        if (thisMoveIsAllIn()) {
+        if (thisBetIsAllIn()) {
             allInners.add(currentPlayer());
         }
         raisers.add(currentPlayer());
@@ -101,7 +103,7 @@ abstract class WageringPokerState extends ActionPokerState {
         poker.notifyWagerPlacedListeners(playerId, playerMoney, bank);
     }
 
-    private boolean thisMoveIsAllIn() {
+    private boolean thisBetIsAllIn() {
         return currentPlayer().getStack() == 0;
     }
 
@@ -158,6 +160,11 @@ abstract class WageringPokerState extends ActionPokerState {
 
     boolean preflopWageringHasBeenFinished() {
         return numberOfNotAllInnersActivePlayersWithSameWagers() + allInners.size() == players.activePlayersNumber();
+    }
+
+    void determinePlayerIndex(int bigBlindIndex) {
+        playerIndex = bigBlindIndex;
+        changePlayerIndex();
     }
 
 }

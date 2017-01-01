@@ -1,6 +1,6 @@
 package com.lamtev.poker.desktop;
 
-import com.lamtev.poker.core.api.PlayerInfo;
+import com.lamtev.poker.core.api.PlayerIdStack;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -21,7 +21,7 @@ public class Settings {
     private int numberOfOpponents;
     private int playerStackSize;
     private List<AI> ais = new ArrayList<>();
-    List<PlayerInfo> playersInfo = new ArrayList<>();
+    List<PlayerIdStack> playersInfo = new ArrayList<>();
 
     public void setToStage(Stage primaryStage) {
         FlowPane rootNode = new FlowPane(10, 10);
@@ -59,10 +59,10 @@ public class Settings {
     }
 
     public void createPlayersInfo() {
-        playersInfo.add(new PlayerInfo(playerNick, playerStackSize));
+        playersInfo.add(new PlayerIdStack(playerNick, playerStackSize));
         for (int i = 0; i < numberOfOpponents; ++i) {
             String id = "Bot " + i;
-            playersInfo.add(new PlayerInfo(id, playerStackSize));
+            playersInfo.add(new PlayerIdStack(id, playerStackSize));
             ais.add(new AI(id));
         }
     }

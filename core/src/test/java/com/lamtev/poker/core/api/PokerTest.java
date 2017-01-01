@@ -17,22 +17,22 @@ public class PokerTest implements PlayerShowedDownListener, CommunityCardsListen
     //TODO functional tests
 
     private String state;
-    private List<PlayerInfo> playersInfo;
+    private List<PlayerIdStack> playersInfo;
     private List<Card> communityCards = new ArrayList<>();
     private Map<String, PokerHand> hands = new HashMap<>();
     private String currentPlayerId;
     private Map<String, Cards> playersCards = new HashMap<>();
 
-    private List<PlayerInfo> generatePlayersInfo() {
-        List<PlayerInfo> playersInfo = new ArrayList<>();
-        playersInfo.add(new PlayerInfo("a1", 100));
-        playersInfo.add(new PlayerInfo("b1", 200));
-        playersInfo.add(new PlayerInfo("c1", 300));
+    private List<PlayerIdStack> generatePlayersInfo() {
+        List<PlayerIdStack> playersInfo = new ArrayList<>();
+        playersInfo.add(new PlayerIdStack("a1", 100));
+        playersInfo.add(new PlayerIdStack("b1", 200));
+        playersInfo.add(new PlayerIdStack("c1", 300));
         return playersInfo;
     }
 
     @Override
-    public void gameIsOver(List<PlayerInfo> playersInfo) {
+    public void gameIsOver(List<PlayerIdStack> playersInfo) {
         this.playersInfo = playersInfo;
     }
 
@@ -58,7 +58,7 @@ public class PokerTest implements PlayerShowedDownListener, CommunityCardsListen
         System.out.println(state);
         assertEquals("SettingsPokerState", state);
 
-        poker.setUp(generatePlayersInfo(), 30);
+        poker.setUp(generatePlayersInfo(), "a1", "b1", 30);
         System.out.println(state);
         assertEquals("PreflopWageringPokerState", state);
 

@@ -1,11 +1,11 @@
 package com.lamtev.poker.core.api;
 
-public class PlayerInfo {
+public class PlayerIdStack {
 
     private final String id;
     private final int stack;
 
-    public PlayerInfo(String id, int stack) {
+    public PlayerIdStack(String id, int stack) {
         this.id = id;
         this.stack = stack;
     }

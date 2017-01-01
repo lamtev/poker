@@ -1,6 +1,6 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.api.PlayerInfo;
+import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.PlayerMoney;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
@@ -17,7 +17,7 @@ public class SettingsPokerState implements PokerState {
     private Players players;
     private Bank bank;
     private Dealer dealer;
-    private Cards commonCards;
+    private Cards communityCards;
     private Player smallBlind;
     private Player bigBlind;
 
@@ -26,11 +26,11 @@ public class SettingsPokerState implements PokerState {
     }
 
     @Override
-    public void setUp(List<PlayerInfo> playersInfo, int smallBlindSize) {
-        init(playersInfo);
-        Bank.BlindsStatus blindsStatus = bank.acceptBlindWagers(smallBlindSize);
+    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize) {
+        init(playersInfo, smallBlindId, bigBlindId);
+        Bank.BlindsStatus blindsStatus = bank.acceptBlindWagers(smallBlind, bigBlind, smallBlindSize);
+        notifyWagerPlacedListeners();
         nextState(blindsStatus);
-
     }
 
     @Override
@@ -54,7 +54,7 @@ public class SettingsPokerState implements PokerState {
     }
 
     @Override
-    public void check() throws Exception {
+    public void check() throws GameHaveNotBeenStartedException {
         throw new GameHaveNotBeenStartedException();
     }
 
@@ -63,39 +63,18 @@ public class SettingsPokerState implements PokerState {
         throw new GameHaveNotBeenStartedException();
     }
 
-    private void init(List<PlayerInfo> playersInfo) {
+    private void init(List<PlayerIdStack> playersIdsStacks, String smallBlindId, String bigBlindId) {
         players = new Players();
-        playersInfo.forEach((playerInfo) -> {
-            String id = playerInfo.getId();
-            int stack = playerInfo.getStack();
+        playersIdsStacks.forEach(playerIdStack -> {
+            String id = playerIdStack.getId();
+            int stack = playerIdStack.getStack();
             players.add(new Player(id, stack));
         });
         bank = new Bank(players);
-        commonCards = new Cards();
-        dealer = new Dealer(players, commonCards);
-        smallBlind = players.get(0);
-        bigBlind = players.get(1);
-    }
-
-    private void nextState(Bank.BlindsStatus blindsStatus) {
-        switch (blindsStatus) {
-            case ALL_IN:
-                dealer.makePreflop();
-                Map<String, Cards> playerIdToCards = new LinkedHashMap<>();
-                players.forEach(player -> playerIdToCards.put(player.getId(), player.getCards()));
-                poker.notifyPreflopMadeListeners(playerIdToCards);
-                dealer.makeFlop();
-                dealer.makeTurn();
-                dealer.makeRiver();
-                poker.notifyCommunityCardsListeners(new ArrayList<Card>() {{
-                    commonCards.forEach(this::add);
-                }});
-                poker.setState(new ShowdownPokerState(poker, players, bank, dealer, commonCards, blindsStatus.getLatestAggressorIndex()));
-                break;
-            default:
-                notifyWagerPlacedListeners();
-                poker.setState(new PreflopWageringPokerState(poker, players, bank, dealer, commonCards));
-        }
+        communityCards = new Cards();
+        dealer = new Dealer(players, communityCards);
+        smallBlind = players.get(smallBlindId);
+        bigBlind = players.get(bigBlindId);
     }
 
     private void notifyWagerPlacedListeners() {
@@ -106,6 +85,27 @@ public class SettingsPokerState implements PokerState {
         String bigBlindId = bigBlind.getId();
         PlayerMoney bigBlindMoney = new PlayerMoney(bigBlind.getStack(), bigBlind.getWager());
         poker.notifyWagerPlacedListeners(bigBlindId, bigBlindMoney, bank.getMoney());
+    }
+
+    private void nextState(Bank.BlindsStatus blindsStatus) {
+        switch (blindsStatus) {
+            case ALL_IN:
+                dealer.makePreflop();
+                Map<String, Cards> playersIdsCards = new LinkedHashMap<>();
+                players.forEach(player -> playersIdsCards.put(player.getId(), player.getCards()));
+                poker.notifyPreflopMadeListeners(playersIdsCards);
+                dealer.makeFlop();
+                dealer.makeTurn();
+                dealer.makeRiver();
+                poker.notifyCommunityCardsListeners(new ArrayList<Card>() {{
+                    communityCards.forEach(this::add);
+                }});
+                poker.setState(new ShowdownPokerState(poker, players, bank, dealer, communityCards, blindsStatus.getLatestAggressorIndex()));
+                break;
+            default:
+                int bigBlindIndex = players.indexOf(bigBlind);
+                poker.setState(new PreflopWageringPokerState(poker, players, bank, dealer, communityCards, bigBlindIndex));
+        }
     }
 
 }

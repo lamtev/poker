@@ -8,13 +8,14 @@ import org.junit.Test;
 public class MoveValidatorTest {
 
     private Players generatePlayers() {
-        return new Players() {{
-            add(new Player("a", 200));
-            add(new Player("b", 200));
-            add(new Player("c", 200));
-            add(new Player("d", 200));
-            add(new Player("e", 200));
-        }};
+        Players players = new Players();
+        players.add(new Player("a", 200));
+        players.add(new Player("b", 200));
+        players.add(new Player("c", 200));
+        players.add(new Player("d", 200));
+        players.add(new Player("e", 200));
+
+        return players;
     }
 
     @Test(expected = Exception.class)
