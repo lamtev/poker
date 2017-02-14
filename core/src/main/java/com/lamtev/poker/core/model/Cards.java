@@ -32,7 +32,7 @@ public class Cards implements Iterable<Card> {
 
     public Card pickUpTop() {
         return cards.remove(size() - 1);
-    }
+    }     //TODO возможно очередь подойдёт лучше
 
     @Override
     public void forEach(Consumer<? super Card> action) {

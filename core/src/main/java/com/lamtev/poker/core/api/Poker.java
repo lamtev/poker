@@ -14,6 +14,9 @@ public class Poker implements PokerAPI {
 
     private PokerState state = new SettingsPokerState(this);
     //TODO think about what is better: many listeners or one
+
+    //TODO если ты хочешь сделать одного общего слушателя, то всё равно необходимо будет оставить каждого по отдельности, т.к. могут появится классы, которые будут вешаться на отдельные события
+
     private List<StateChangedListener> stateChangedListeners = new ArrayList<>();
     private List<GameIsOverListener> gameIsOverListeners = new ArrayList<>();
     private List<MoveAbilityListener> moveAbilityListeners = new ArrayList<>();
@@ -42,6 +45,7 @@ public class Poker implements PokerAPI {
         currentPlayerListeners.add(currentPlayerListener);
     }
 
+    //TODO здесь не понятно на какое событие вешается listener, событие по-моему это действие, как вариант переименовать метод или добавить комментарий(возможно я просто не вижу очевидного)
     @Override
     public void addCommunityCardsListener(CommunityCardsListener communityCardsListener) {
         communityCardsListeners.add(communityCardsListener);
@@ -62,6 +66,7 @@ public class Poker implements PokerAPI {
         playerFoldListeners.add(playerFoldListener);
     }
 
+    //TODO у меня не хорошо с английским, но я бы перевёл как "возможность ходить", не вижу здесь события (т.е. по-моему странно использовать данный шаблон, если у тебя нет события), решение как и в предыдущем случае
     @Override
     public void addMoveAbilityListener(MoveAbilityListener moveAbilityListener) {
         moveAbilityListeners.add(moveAbilityListener);
@@ -75,7 +80,7 @@ public class Poker implements PokerAPI {
     @Override
     public void setUp(List<PlayerIdStack> playersStacks, String smallBlindId, String bigBlindId, int smallBlindSize) {
         if (!allListenersAdded()) {
-            throw new RuntimeException("You must add at least one of each listeners");
+            throw new RuntimeException("You must add at least one of each listeners");   //TODO спорный момент, почему ты хочешь чтобы следили за всем? Если ты не хочешь случайно что-то упустить, то сделай метод добавить листенером на все события (возможное решение)
         }
         state.setUp(playersStacks, smallBlindId, bigBlindId, smallBlindSize);
         gameIsSetUp = true;
@@ -86,7 +91,7 @@ public class Poker implements PokerAPI {
                 communityCardsListeners.size() != 0 && currentPlayerListeners.size() != 0 &&
                 moveAbilityListeners.size() != 0 && playerFoldListeners.size() != 0 &&
                 preflopMadeListeners.size() != 0 && wagerPlacedListeners.size() != 0 &&
-                playerShowedDownListeners.size() != 0;
+                playerShowedDownListeners.size() != 0;           //TODO их можно перемножить и в итоге сравнить с 0 один раз (всего лишь альтернатива)
     }
 
     @Override
