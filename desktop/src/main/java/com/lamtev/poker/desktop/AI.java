@@ -51,7 +51,6 @@ public class AI implements CurrentPlayerListener, StateChangedListener {
         if (playerId.equals(id)) {
 
             try {
-                //new Thread().join();
                 Timeline timeline = new Timeline(new KeyFrame(
                         Duration.millis(5000),
                         ae -> {

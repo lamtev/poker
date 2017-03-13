@@ -392,7 +392,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         if (this.playersInfo.get(playerNick).getStack() == 0) {
             Alert gameIsOverWindow = new Alert(Alert.AlertType.INFORMATION);
             gameIsOverWindow.setTitle("Game is over!!!");
-            gameIsOverWindow.setContentText("You lost all your money!!!");
+            gameIsOverWindow.setContentText("You have lost all your money!!!");
             Timeline timeline = new Timeline(new KeyFrame(
                     Duration.millis(2500),
                     ae -> gameIsOverWindow.setOnCloseRequest(event -> {
