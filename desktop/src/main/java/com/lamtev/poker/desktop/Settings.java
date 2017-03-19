@@ -20,7 +20,6 @@ public class Settings {
     private String playerNick;
     private int numberOfOpponents;
     private int playerStackSize;
-    private List<AI> ais = new ArrayList<>();
     List<PlayerIdStack> playersInfo = new ArrayList<>();
 
     public void setToStage(Stage primaryStage) {
@@ -46,7 +45,7 @@ public class Settings {
             this.numberOfOpponents = numbersOfOpponents.getValue();
             this.playerStackSize = playerStackSizes.getValue();
             createPlayersInfo();
-            pokerGame = new PokerGame(playersInfo, ais);
+            pokerGame = new PokerGame(playersInfo);
             pokerGame.setToStage(primaryStage);
         });
         rootNode.getChildren().addAll(
@@ -63,7 +62,6 @@ public class Settings {
         for (int i = 0; i < numberOfOpponents; ++i) {
             String id = "Bot " + i;
             playersInfo.add(new PlayerIdStack(id, playerStackSize));
-            ais.add(new AI(id));
         }
     }
 

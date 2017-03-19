@@ -135,11 +135,13 @@ abstract class WageringPokerState extends ActionPokerState {
         int i = 0;
         for (Player player : players) {
             if (player.isActive()) {
-                return players.indexOf(raisers.get(i));   //TODO если ты всё равно используешь i, то есть ли смысл применять foreach ?
+                return players.indexOf(raisers.get(i));
+                //TODO если ты всё равно используешь i, то есть ли смысл применять foreach ?
             }
             ++i;
         }
-        return -1;  //TODO такие методы стоит документировать(описать возвращяемые значения), не очевидно значение -1
+        //TODO такие методы стоит документировать(описать возвращяемые значения), не очевидно значение -1
+        return -1;
     }
 
     protected abstract void attemptNextState() throws Exception;

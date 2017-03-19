@@ -12,7 +12,7 @@ class FlopWageringPokerState extends WageringPokerState {
         dealer.makeFlop();
         List<Card> addedCards = new ArrayList<>();
         commonCards.forEach(addedCards::add);
-        poker.notifyCommunityCardsListeners(addedCards);
+        poker.notifyCommunityCardsChangedListeners(addedCards);
     }
 
     @Override
@@ -24,7 +24,7 @@ class FlopWageringPokerState extends WageringPokerState {
             List<Card> addedCards = new ArrayList<>();
             addedCards.add(commonCards.cardAt(4));
             addedCards.add(commonCards.cardAt(5));
-            poker.notifyCommunityCardsListeners(addedCards);
+            poker.notifyCommunityCardsChangedListeners(addedCards);
             poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));
         } else if (timeToNextState()) {
             poker.setState(new TurnWageringPokerState(this));

@@ -12,7 +12,7 @@ class TurnWageringPokerState extends WageringPokerState {
         dealer.makeTurn();
         List<Card> addedCards = new ArrayList<>();
         addedCards.add(commonCards.cardAt(4));
-        poker.notifyCommunityCardsListeners(addedCards);
+        poker.notifyCommunityCardsChangedListeners(addedCards);
     }
 
     @Override
@@ -22,7 +22,7 @@ class TurnWageringPokerState extends WageringPokerState {
             dealer.makeRiver();
             List<Card> addedCards = new ArrayList<>();
             addedCards.add(commonCards.cardAt(5));
-            poker.notifyCommunityCardsListeners(addedCards);
+            poker.notifyCommunityCardsChangedListeners(addedCards);
             poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));
         } else if (timeToNextState()) {
             poker.setState(new RiverWageringPokerState(this));

@@ -42,12 +42,13 @@ class HighCard implements PokerHand {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        if (o == null) return false;
         if (!(o instanceof HighCard)) return false;
 
         HighCard highCard = (HighCard) o;
 
         if (NAME != highCard.NAME) return false;
-        return cardsRanks != null ? cardsRanks.equals(highCard.cardsRanks) : highCard.cardsRanks == null;
+        return cardsRanks != null && cardsRanks.equals(highCard.cardsRanks);
     }
 
     @Override

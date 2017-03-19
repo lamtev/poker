@@ -1,4 +1,4 @@
-package com.lamtev.poker.core.api;
+package com.lamtev.poker.core.event_listeners;
 
 import com.lamtev.poker.core.model.Cards;
 

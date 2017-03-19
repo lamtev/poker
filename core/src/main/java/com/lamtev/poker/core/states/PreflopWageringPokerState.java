@@ -29,7 +29,7 @@ class PreflopWageringPokerState extends WageringPokerState {
             dealer.makeFlop();
             dealer.makeTurn();
             dealer.makeRiver();
-            poker.notifyCommunityCardsListeners(new ArrayList<Card>() {{
+            poker.notifyCommunityCardsChangedListeners(new ArrayList<Card>() {{
                 commonCards.forEach(this::add);
             }});
             poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));

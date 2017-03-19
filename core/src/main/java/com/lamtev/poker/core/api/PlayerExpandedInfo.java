@@ -26,8 +26,9 @@ public class PlayerExpandedInfo {
 
     public void setStack(int stack) {
         this.stack = stack;
-    }   //TODO зачем делать поля приватными, а потом создавать set-методы на них?
-                                                              //TODO можно выделить общую часть с классом PlayerMoney
+    }
+
+    //TODO можно выделить общую часть с классом PlayerMoney
     public void setWager(int wager) {
         this.wager = wager;
     }
