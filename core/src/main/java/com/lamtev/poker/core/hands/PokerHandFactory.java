@@ -74,50 +74,19 @@ public class PokerHandFactory {
         return pokerHand;
     }
 
-    private PokerHand parseFlush(List<Card> cards) {
-        for (int i = 0; i < 3; ++i) {
-            final Suit suit = cards.get(i).getSuit();
+    private PokerHand parseRoyalFlush(List<Card> cards) {
+        for (int i = 0; i < 4; ++i) {
             int numberOfSameSuits = 1;
-            for (int j = i + 1; j < cards.size(); ++j) {
-                if (cards.get(i).getSuit().equals(cards.get(j).getSuit()) && ++numberOfSameSuits == 5) {
-                    final Rank highCardRank = determineRankOfHighCardWithThisSuit(cards, suit);
-                    return new Flush(highCardRank);
+            for (int j = 0; j < cards.size(); ++j) {
+                if (i != j && cards.get(i).getSuit().equals(cards.get(j).getSuit()) && ++numberOfSameSuits == 5) {
+                    final Rank highCardRank = cards.get(i).getRank();
+                    if (highCardRank == Rank.ACE && isStraightFromRank(cards, highCardRank)) {
+                        return new RoyalFlush();
+                    }
                 }
             }
         }
         return null;
-    }
-
-    private Rank determineRankOfHighCardWithThisSuit(List<Card> cards, Suit suit) {
-        return Collections.max(cards, (c1, c2) -> {
-            if (c1.getSuit() == suit && c1.getSuit() == c2.getSuit()) {
-                return c1.getRank().compareTo(c2.getRank());
-            } else {
-                if (c1.getSuit() == suit) return 1;
-                else return -1;
-            }
-        }).getRank();
-    }
-
-    private PokerHand parseStraight(List<Card> cards) {
-        for (int i = Rank.ACE.ordinal(); i >= Rank.FIVE.ordinal(); --i) {
-            Rank rank = Rank.values()[i];
-            if (isStraightFromRank(cards, rank)) {
-                return new Straight(rank);
-            }
-        }
-        return null;
-    }
-
-    private boolean isStraightFromRank(List<Card> cards, Rank rank) {
-        for (int i = rank.ordinal(); i >= -1 && i > rank.ordinal() - 5; --i) {
-            int currentRankIndex = i == -1 ? Rank.ACE.ordinal() : i;
-            final Card card = new Card(Rank.values()[currentRankIndex], Suit.HEARTS);
-            if (Collections.binarySearch(cards, card, COMPARATOR_BY_RANK.reversed()) < 0) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private PokerHand parseStraightFlush(List<Card> cards) {
@@ -128,38 +97,6 @@ public class PokerHandFactory {
                     final Rank highCardRank = cards.get(i).getRank();
                     if (isStraightFromRank(cards, highCardRank)) {
                         return new StraightFlush(highCardRank);
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    //TODO think how to use stream here
-    private List<Rank> determineRanksExceptThese(List<Card> cards, Rank... exceptedRanks) {
-        List<Rank> ranks = new ArrayList<>();
-        if (exceptedRanks == null) {
-            cards.forEach(card -> ranks.add(card.getRank()));
-        } else {
-            for (Rank rank : exceptedRanks) {
-                cards.forEach(card -> {
-                    if (card.getRank() != rank) {
-                        ranks.add(card.getRank());
-                    }
-                });
-            }
-        }
-        return ranks;
-    }
-
-    private PokerHand parseRoyalFlush(List<Card> cards) {
-        for (int i = 0; i < 4; ++i) {
-            int numberOfSameSuits = 1;
-            for (int j = 0; j < cards.size(); ++j) {
-                if (i != j && cards.get(i).getSuit().equals(cards.get(j).getSuit()) && ++numberOfSameSuits == 5) {
-                    final Rank highCardRank = cards.get(i).getRank();
-                    if (highCardRank == Rank.ACE && isStraightFromRank(cards, highCardRank)) {
-                        return new RoyalFlush();
                     }
                 }
             }
@@ -208,6 +145,30 @@ public class PokerHandFactory {
                         return new FullHouse(threeOfAKindHighCardRank, pairHighCardRank);
                     }
                 }
+            }
+        }
+        return null;
+    }
+
+    private PokerHand parseFlush(List<Card> cards) {
+        for (int i = 0; i < 3; ++i) {
+            final Suit suit = cards.get(i).getSuit();
+            int numberOfSameSuits = 1;
+            for (int j = i + 1; j < cards.size(); ++j) {
+                if (cards.get(i).getSuit().equals(cards.get(j).getSuit()) && ++numberOfSameSuits == 5) {
+                    final Rank highCardRank = determineRankOfHighCardWithThisSuit(cards, suit);
+                    return new Flush(highCardRank);
+                }
+            }
+        }
+        return null;
+    }
+
+    private PokerHand parseStraight(List<Card> cards) {
+        for (int i = Rank.ACE.ordinal(); i >= Rank.FIVE.ordinal(); --i) {
+            Rank rank = Rank.values()[i];
+            if (isStraightFromRank(cards, rank)) {
+                return new Straight(rank);
             }
         }
         return null;
@@ -275,10 +236,49 @@ public class PokerHandFactory {
         return null;
     }
 
-    //TODO think about the cause of IndexOutOfBoundsException when no null parameter in method below calling
     private PokerHand parseHighCard(List<Card> cards) {
-        List<Rank> cardsRanks = determineRanksExceptThese(cards, null).subList(0, 5);
+        List<Rank> cardsRanks = determineRanksExceptThese(cards).subList(0, 5);
         return new HighCard(cardsRanks);
     }
+
+    private boolean isStraightFromRank(List<Card> cards, Rank rank) {
+        for (int i = rank.ordinal(); i >= -1 && i > rank.ordinal() - 5; --i) {
+            int currentRankIndex = i == -1 ? Rank.ACE.ordinal() : i;
+            final Card card = new Card(Rank.values()[currentRankIndex], Suit.HEARTS);
+            if (Collections.binarySearch(cards, card, COMPARATOR_BY_RANK.reversed()) < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Rank determineRankOfHighCardWithThisSuit(List<Card> cards, Suit suit) {
+        return Collections.max(cards, (c1, c2) -> {
+            if (c1.getSuit() == suit && c1.getSuit() == c2.getSuit()) {
+                return c1.getRank().compareTo(c2.getRank());
+            } else {
+                if (c1.getSuit() == suit) return 1;
+                else return -1;
+            }
+        }).getRank();
+    }
+
+    //TODO think how to use stream here
+    private List<Rank> determineRanksExceptThese(List<Card> cards, Rank... exceptedRanks) {
+        List<Rank> ranks = new ArrayList<>();
+        if (exceptedRanks == null || exceptedRanks.length == 0) {
+            cards.forEach(card -> ranks.add(card.getRank()));
+        } else {
+            for (Rank rank : exceptedRanks) {
+                cards.forEach(card -> {
+                    if (card.getRank() != rank) {
+                        ranks.add(card.getRank());
+                    }
+                });
+            }
+        }
+        return ranks;
+    }
+
 
 }

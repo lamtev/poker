@@ -386,15 +386,15 @@ public class PokerHandFactoryTest {
             add(new Card(Rank.FOUR, Suit.TILES));
             add(new Card(Rank.EIGHT, Suit.HEARTS));
             add(new Card(Rank.TWO, Suit.TILES));
-            add(new Card(Rank.THREE, Suit.CLOVERS));
+            add(new Card(Rank.SIX, Suit.CLOVERS));
         }};
         PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(Rank.JACK, Suit.PIKES));
+        Cards playerCards1 = new Cards() {{
+            add(new Card(Rank.KING, Suit.PIKES));
             add(new Card(Rank.JACK, Suit.HEARTS));
         }};
-        PokerHand pair = pcf.createCombination(playerCards);
-        assertEquals(PAIR, pair.getName());
+        PokerHand highCard1 = pcf.createCombination(playerCards1);
+        assertEquals(HIGH_CARD, highCard1.getName());
     }
 
 }
