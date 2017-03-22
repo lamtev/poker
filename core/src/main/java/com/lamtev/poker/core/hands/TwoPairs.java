@@ -7,13 +7,13 @@ import static com.lamtev.poker.core.hands.PokerHand.Name.TWO_PAIRS;
 class TwoPairs implements PokerHand {
 
     private final Name NAME = TWO_PAIRS;
-    private final Rank firstPairHighCardRank;
-    private final Rank secondPairHihCardRank;
+    private final Rank firstPairRank;
+    private final Rank secondPairRank;
     private final Rank otherCardRank;
 
-    TwoPairs(Rank firstPairHighCardRank, Rank secondPairHihCardRank, Rank otherCardRank) {
-        this.firstPairHighCardRank = firstPairHighCardRank;
-        this.secondPairHihCardRank = secondPairHihCardRank;
+    TwoPairs(Rank firstPairRank, Rank secondPairRank, Rank otherCardRank) {
+        this.firstPairRank = firstPairRank;
+        this.secondPairRank = secondPairRank;
         this.otherCardRank = otherCardRank;
     }
 
@@ -27,9 +27,9 @@ class TwoPairs implements PokerHand {
         int cmp1 = NAME.compareTo(o.getName());
         if (cmp1 == 0) {
             TwoPairs twoPairs = (TwoPairs) o;
-            int cmp2 = firstPairHighCardRank.compareTo(twoPairs.firstPairHighCardRank);
+            int cmp2 = firstPairRank.compareTo(twoPairs.firstPairRank);
             if (cmp2 == 0) {
-                int cmp3 = secondPairHihCardRank.compareTo(twoPairs.secondPairHihCardRank);
+                int cmp3 = secondPairRank.compareTo(twoPairs.secondPairRank);
                 if (cmp3 == 0) {
                     return otherCardRank.compareTo(twoPairs.otherCardRank);
                 } else {
@@ -51,16 +51,16 @@ class TwoPairs implements PokerHand {
         TwoPairs twoPairs = (TwoPairs) o;
 
         if (NAME != twoPairs.NAME) return false;
-        if (firstPairHighCardRank != twoPairs.firstPairHighCardRank) return false;
-        if (secondPairHihCardRank != twoPairs.secondPairHihCardRank) return false;
+        if (firstPairRank != twoPairs.firstPairRank) return false;
+        if (secondPairRank != twoPairs.secondPairRank) return false;
         return otherCardRank == twoPairs.otherCardRank;
     }
 
     @Override
     public int hashCode() {
         int result = NAME.hashCode();
-        result = 31 * result + (firstPairHighCardRank != null ? firstPairHighCardRank.hashCode() : 0);
-        result = 31 * result + (secondPairHihCardRank != null ? secondPairHihCardRank.hashCode() : 0);
+        result = 31 * result + (firstPairRank != null ? firstPairRank.hashCode() : 0);
+        result = 31 * result + (secondPairRank != null ? secondPairRank.hashCode() : 0);
         result = 31 * result + (otherCardRank != null ? otherCardRank.hashCode() : 0);
         return result;
     }

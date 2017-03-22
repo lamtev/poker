@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class PokerTest implements PlayerShowedDownListener, CommunityCardsListener, CurrentPlayerListener, GameIsOverListener, MoveAbilityListener, PlayerFoldListener, PreflopMadeListener, StateChangedListener, WagerPlacedListener {
+public class PokerTest implements PokerEventListener {
 
     //TODO functional tests
 
@@ -32,7 +32,7 @@ public class PokerTest implements PlayerShowedDownListener, CommunityCardsListen
     }
 
     @Override
-    public void gameIsOver(List<PlayerIdStack> playersInfo) {
+    public void gameOver(List<PlayerIdStack> playersInfo) {
         this.playersInfo = playersInfo;
     }
 
@@ -45,15 +45,7 @@ public class PokerTest implements PlayerShowedDownListener, CommunityCardsListen
     public void test() throws Exception {
 
         Poker poker = new Poker();
-        poker.addCommunityCardsListener(this);
-        poker.addCurrentPlayerIdListener(this);
-        poker.addMoveAbilityListener(this);
-        poker.addPlayerFoldListener(this);
-        poker.addPreflopMadeListener(this);
-        poker.addStateChangedListener(this);
-        poker.addGameIsOverListener(this);
-        poker.addWagerPlacedListener(this);
-        poker.addPlayerShowedDownListener(this);
+        poker.subscribe(this);
 
         System.out.println(state);
         assertEquals("SettingsPokerState", state);

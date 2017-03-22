@@ -30,9 +30,10 @@ public class Cards implements Iterable<Card> {
         cards.add(card);
     }
 
+    //TODO возможно очередь подойдёт лучше
     public Card pickUpTop() {
         return cards.remove(size() - 1);
-    }     //TODO возможно очередь подойдёт лучше
+    }
 
     @Override
     public void forEach(Consumer<? super Card> action) {

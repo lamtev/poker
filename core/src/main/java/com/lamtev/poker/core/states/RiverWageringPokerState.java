@@ -12,7 +12,7 @@ class RiverWageringPokerState extends WageringPokerState {
         dealer.makeRiver();
         List<Card> addedCards = new ArrayList<>();
         addedCards.add(commonCards.cardAt(5));
-        poker.notifyCommunityCardsListeners(addedCards);
+        poker.notifyCommunityCardsChangedListeners(addedCards);
     }
 
     @Override

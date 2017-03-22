@@ -4,7 +4,7 @@ import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.states.exceptions.GameIsOverException;
+import com.lamtev.poker.core.states.exceptions.GameOverException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Orientation;
@@ -20,7 +20,7 @@ import javafx.util.Duration;
 
 import java.util.*;
 
-public class PokerGame implements CommunityCardsListener, CurrentPlayerListener, GameIsOverListener, MoveAbilityListener, PlayerFoldListener, PlayerShowedDownListener, PreflopMadeListener, StateChangedListener, WagerPlacedListener {
+public class PokerGame implements PokerEventListener {
 
     private Stage primaryStage;
 
@@ -29,21 +29,18 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     private String stateName;
     private int smallBlindSize;
     private String currentPlayerId;
-    private Map<String, PokerHand> hands = new HashMap<>();
     private List<Card> communityCards = new ArrayList<>();
     private Map<String, PlayerExpandedInfo> playersInfo = new LinkedHashMap<>();
     private Map<String, Cards> playersCards = new LinkedHashMap<>();
     private List<String> showedDown = new ArrayList<>();
-    private List<AI> ais;
 
-    HBox playersCardsViewHBox = new HBox();
+    private HBox playersCardsViewHBox = new HBox();
     private HBox communityCardsView = new HBox();
     private Label whoseTurn = new Label();
     private GridPane root = new GridPane();
     private VBox sb = new VBox();
     private Label statusBar = new Label();
     private Label moneyInBankLabel = new Label();
-    private Label nickNameLabel = new Label();
     private ListView<Label> activePlayersList = new ListView<>();
     private ListView<Label> foldPlayersList = new ListView<>();
     private Button call = new Button("call");
@@ -55,7 +52,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     private Separator verticalSeparator = new Separator(Orientation.VERTICAL);
     private Separator horizontalSeparator = new Separator(Orientation.HORIZONTAL);
 
-    public void setToStage(Stage primaryStage) {
+    void setToStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
         verticalSeparator.setPrefHeight(720);
         horizontalSeparator.setPrefWidth(1000);
@@ -85,41 +82,15 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         primaryStage.setScene(new Scene(root, 1200, 720));
     }
 
-    public PokerGame(List<PlayerIdStack> playersInfo, List<AI> ais) {
-        this.ais = ais;
-        ais.forEach(ai -> ai.setPokerGame(this));
+    PokerGame(List<PlayerIdStack> playersInfo) {
         playerNick = playersInfo.get(0).getId();
+        Label nickNameLabel = new Label();
         nickNameLabel.setText(playersInfo.get(0).getId());
         smallBlindSize = playersInfo.get(0).getStack() / 100;
         String smallBlindId = playersInfo.get(0).getId();
         String bigBlindId = playersInfo.get(1).getId();
         startNewGame(playersInfo, smallBlindId, bigBlindId);
         setUpButtons();
-    }
-
-    public void doCall() {
-        call.fire();
-    }
-
-    public void doRaise(int additionalWager) {
-        //raise.fire();
-    }
-
-    public void doCheck() {
-        check.fire();
-    }
-
-    public void doAllIn() {
-        allIn.fire();
-    }
-
-    public void doFold() {
-        System.out.println("fold will be fired");
-        fold.fire();
-    }
-
-    public void doShowDown() {
-        showDown.fire();
     }
 
     private void startNewGame(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId) {
@@ -134,31 +105,15 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         showedDown.clear();
         playersCards.clear();
         communityCards.clear();
-        hands.clear();
         communityCardsView.getChildren().clear();
         poker = new Poker();
         setUpGame(playersInfo, smallBlindId, bigBlindId);
-        updateButtonsAbility();
     }
 
     private void setUpGame(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId) {
-        ais.forEach(ai -> {
-            poker.addCurrentPlayerIdListener(ai);
-            poker.addStateChangedListener(ai);
-        });
-
-        poker.addStateChangedListener(this);
-        poker.addGameIsOverListener(this);
-        poker.addPlayerShowedDownListener(this);
-        poker.addCommunityCardsListener(this);
-        poker.addWagerPlacedListener(this);
-        poker.addPreflopMadeListener(this);
-        poker.addPlayerFoldListener(this);
-        poker.addCurrentPlayerIdListener(this);
-        poker.addMoveAbilityListener(this);
+        poker.subscribe(this);
         poker.setUp(playersInfo, smallBlindId, bigBlindId, smallBlindSize);
     }
-
 
     private void setUpButtons() {
         setUpCallButton();
@@ -182,7 +137,6 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                 statusBar.setText(e.getMessage());
             }
             System.out.println(stateName);
-            updateButtonsAbility();
         });
     }
 
@@ -199,7 +153,6 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                 statusBar.setText(e.getMessage());
             }
             System.out.println(stateName);
-            updateButtonsAbility();
         });
     }
 
@@ -216,7 +169,6 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                 statusBar.setText(e.getMessage());
             }
             System.out.println(stateName);
-            updateButtonsAbility();
         });
     }
 
@@ -233,7 +185,6 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                 statusBar.setText(e.getMessage());
             }
             System.out.println(stateName);
-            updateButtonsAbility();
         });
     }
 
@@ -242,7 +193,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         showDown.setOnAction(event -> {
             try {
                 poker.showDown();
-            } catch (GameIsOverException e) {
+            } catch (GameOverException e) {
                 statusBar.setText(e.getMessage());
             } catch (RuntimeException e) {
                 e.printStackTrace();
@@ -250,7 +201,6 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                 statusBar.setText(e.getMessage());
             }
             System.out.println(stateName);
-            updateButtonsAbility();
         });
     }
 
@@ -278,7 +228,7 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                 }
             });
             System.out.println(stateName);
-            updateButtonsAbility();
+
         });
     }
 
@@ -366,27 +316,8 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
         moneyInBankLabel.setText("Bank: " + bank);
     }
 
-    private void updateButtonsAbility() {
-        //TODO a
-//        updateButtonAbility(call);
-//        updateButtonAbility(fold);
-//        updateButtonAbility(raise);
-//        updateButtonAbility(allIn);
-//        updateButtonAbility(check);
-//        updateButtonAbility(showDown);
-
-    }
-
-    private void updateButtonAbility(Button button) {
-        if (currentPlayerId.equals(playerNick)) {
-            button.setVisible(true);
-        } else {
-            button.setVisible(false);
-        }
-    }
-
     @Override
-    public void gameIsOver(List<PlayerIdStack> playersInfo) {
+    public void gameOver(List<PlayerIdStack> playersInfo) {
         statusBar.setText("Game is over!");
 
         if (this.playersInfo.get(playerNick).getStack() == 0) {
@@ -401,7 +332,6 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
                     })
             ));
             timeline.play();
-            //if (!timeline.isAutoReverse())
             gameIsOverWindow.showAndWait();
             return;
         }
@@ -443,7 +373,6 @@ public class PokerGame implements CommunityCardsListener, CurrentPlayerListener,
     //TODO duplicate
     @Override
     public void playerShowedDown(String playerId, PokerHand hand) {
-        hands.put(playerId, hand);
         showedDown.add(playerId);
 
         statusBar.setText(playerId + " showed down: " + hand.getName());

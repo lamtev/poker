@@ -1,13 +1,12 @@
 package com.lamtev.poker.core.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public final class Players implements Iterable<Player> {
 
     private List<Player> players = new ArrayList<>();
+//    private Queue<Player> playrs = new LinkedList<>();
 
     public void add(Player player) {
         players.add(player);

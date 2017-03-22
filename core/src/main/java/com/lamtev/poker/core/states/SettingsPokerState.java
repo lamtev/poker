@@ -97,7 +97,7 @@ public class SettingsPokerState implements PokerState {
                 dealer.makeFlop();
                 dealer.makeTurn();
                 dealer.makeRiver();
-                poker.notifyCommunityCardsListeners(new ArrayList<Card>() {{
+                poker.notifyCommunityCardsChangedListeners(new ArrayList<Card>() {{
                     communityCards.forEach(this::add);
                 }});
                 poker.setState(new ShowdownPokerState(poker, players, bank, dealer, communityCards, blindsStatus.getLatestAggressorIndex()));

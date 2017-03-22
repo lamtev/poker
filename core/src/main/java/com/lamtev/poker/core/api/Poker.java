@@ -1,5 +1,6 @@
 package com.lamtev.poker.core.api;
 
+import com.lamtev.poker.core.event_listeners.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
@@ -13,85 +14,27 @@ import java.util.Map;
 public class Poker implements PokerAPI {
 
     private PokerState state = new SettingsPokerState(this);
-    //TODO think about what is better: many listeners or one
-
-    //TODO если ты хочешь сделать одного общего слушателя, то всё равно необходимо будет оставить каждого по отдельности, т.к. могут появится классы, которые будут вешаться на отдельные события
 
     private List<StateChangedListener> stateChangedListeners = new ArrayList<>();
-    private List<GameIsOverListener> gameIsOverListeners = new ArrayList<>();
+    private List<GameOverListener> gameOverListeners = new ArrayList<>();
     private List<MoveAbilityListener> moveAbilityListeners = new ArrayList<>();
-    private List<CurrentPlayerListener> currentPlayerListeners = new ArrayList<>();
-    private List<CommunityCardsListener> communityCardsListeners = new ArrayList<>();
+    private List<CurrentPlayerChangedListener> currentPlayerChangedListeners = new ArrayList<>();
+    private List<CommunityCardsAddedListener> communityCardsAddedListeners = new ArrayList<>();
     private List<WagerPlacedListener> wagerPlacedListeners = new ArrayList<>();
     private List<PlayerFoldListener> playerFoldListeners = new ArrayList<>();
     private List<PreflopMadeListener> preflopMadeListeners = new ArrayList<>();
     private List<PlayerShowedDownListener> playerShowedDownListeners = new ArrayList<>();
 
     private boolean gameIsSetUp = false;
-
-    @Override
-    public void addStateChangedListener(StateChangedListener stateChangedListener) {
-        stateChangedListeners.add(stateChangedListener);
-        notifyStateChangedListeners();
-    }
-
-    @Override
-    public void addGameIsOverListener(GameIsOverListener gameIsOverListener) {
-        gameIsOverListeners.add(gameIsOverListener);
-    }
-
-    @Override
-    public void addCurrentPlayerIdListener(CurrentPlayerListener currentPlayerListener) {
-        currentPlayerListeners.add(currentPlayerListener);
-    }
-
-    //TODO здесь не понятно на какое событие вешается listener, событие по-моему это действие, как вариант переименовать метод или добавить комментарий(возможно я просто не вижу очевидного)
-    @Override
-    public void addCommunityCardsListener(CommunityCardsListener communityCardsListener) {
-        communityCardsListeners.add(communityCardsListener);
-    }
-
-    @Override
-    public void addPlayerShowedDownListener(PlayerShowedDownListener playerShowedDownListener) {
-        playerShowedDownListeners.add(playerShowedDownListener);
-    }
-
-    @Override
-    public void addWagerPlacedListener(WagerPlacedListener wagerPlacedListener) {
-        wagerPlacedListeners.add(wagerPlacedListener);
-    }
-
-    @Override
-    public void addPlayerFoldListener(PlayerFoldListener playerFoldListener) {
-        playerFoldListeners.add(playerFoldListener);
-    }
-
-    //TODO у меня не хорошо с английским, но я бы перевёл как "возможность ходить", не вижу здесь события (т.е. по-моему странно использовать данный шаблон, если у тебя нет события), решение как и в предыдущем случае
-    @Override
-    public void addMoveAbilityListener(MoveAbilityListener moveAbilityListener) {
-        moveAbilityListeners.add(moveAbilityListener);
-    }
-
-    @Override
-    public void addPreflopMadeListener(PreflopMadeListener preflopMadeListener) {
-        preflopMadeListeners.add(preflopMadeListener);
-    }
+    private boolean listenersAdded = false;
 
     @Override
     public void setUp(List<PlayerIdStack> playersStacks, String smallBlindId, String bigBlindId, int smallBlindSize) {
-        if (!allListenersAdded()) {
-            throw new RuntimeException("You must add at least one of each listeners");   //TODO спорный момент, почему ты хочешь чтобы следили за всем? Если ты не хочешь случайно что-то упустить, то сделай метод добавить листенером на все события (возможное решение)
+        if (!listenersAdded) {
+            throw new RuntimeException("You must subscribe");
         }
         state.setUp(playersStacks, smallBlindId, bigBlindId, smallBlindSize);
         gameIsSetUp = true;
-    }
-
-    private boolean allListenersAdded() {
-        return stateChangedListeners.size() != 0 && gameIsOverListeners.size() != 0 &&
-                communityCardsListeners.size() != 0 && currentPlayerListeners.size() != 0 &&
-                moveAbilityListeners.size() != 0 && playerFoldListeners.size() != 0 &&
-                preflopMadeListeners.size() != 0 && wagerPlacedListeners.size() != 0 &&
-                playerShowedDownListeners.size() != 0;           //TODO их можно перемножить и в итоге сравнить с 0 один раз (всего лишь альтернатива)
     }
 
     @Override
@@ -130,13 +73,27 @@ public class Poker implements PokerAPI {
         state.showDown();
     }
 
+    @Override
+    public void subscribe(PokerEventListener pokerEventListener) {
+        addCommunityCardsChangedListener(pokerEventListener);
+        addCurrentPlayerChangedListener(pokerEventListener);
+        addGameIsOverListener(pokerEventListener);
+        addMoveAbilityListener(pokerEventListener);
+        addPlayerFoldListener(pokerEventListener);
+        addPlayerShowedDownListener(pokerEventListener);
+        addPreflopMadeListener(pokerEventListener);
+        addStateChangedListener(pokerEventListener);
+        addWagerPlacedListener(pokerEventListener);
+        listenersAdded = true;
+    }
+
     public void setState(PokerState newState) {
         state = newState;
         notifyStateChangedListeners();
     }
 
-    public void notifyGameIsOverListeners(List<PlayerIdStack> playersInfo) {
-        gameIsOverListeners.forEach(listener -> listener.gameIsOver(playersInfo));
+    public void notifyGameOverListeners(List<PlayerIdStack> playersInfo) {
+        gameOverListeners.forEach(listener -> listener.gameOver(playersInfo));
     }
 
     public void notifyPlayerShowedDownListeners(String playerId, PokerHand hand) {
@@ -147,12 +104,12 @@ public class Poker implements PokerAPI {
         //TODO implement
     }
 
-    public void notifyCommunityCardsListeners(List<Card> addedCards) {
-        communityCardsListeners.forEach(listener -> listener.communityCardsAdded(addedCards));
+    public void notifyCommunityCardsChangedListeners(List<Card> addedCards) {
+        communityCardsAddedListeners.forEach(listener -> listener.communityCardsAdded(addedCards));
     }
 
-    public void notifyCurrentPlayerListeners(String id) {
-        currentPlayerListeners.forEach(listener -> listener.currentPlayerChanged(id));
+    public void notifyCurrentPlayerChangedListeners(String id) {
+        currentPlayerChangedListeners.forEach(listener -> listener.currentPlayerChanged(id));
     }
 
     private void notifyStateChangedListeners() {
@@ -175,6 +132,49 @@ public class Poker implements PokerAPI {
         if (!gameIsSetUp) {
             throw new Exception("Game is not set up");
         }
+    }
+
+    private void addStateChangedListener(StateChangedListener stateChangedListener) {
+        stateChangedListeners.add(stateChangedListener);
+        notifyStateChangedListeners();
+    }
+
+    private void addGameIsOverListener(GameOverListener gameOverListener) {
+        gameOverListeners.add(gameOverListener);
+    }
+
+    private void addCurrentPlayerChangedListener(CurrentPlayerChangedListener currentPlayerChangedListener) {
+        currentPlayerChangedListeners.add(currentPlayerChangedListener);
+    }
+
+
+    private void addCommunityCardsChangedListener(CommunityCardsAddedListener communityCardsAddedListener) {
+        communityCardsAddedListeners.add(communityCardsAddedListener);
+    }
+
+
+    private void addPlayerShowedDownListener(PlayerShowedDownListener playerShowedDownListener) {
+        playerShowedDownListeners.add(playerShowedDownListener);
+    }
+
+
+    private void addWagerPlacedListener(WagerPlacedListener wagerPlacedListener) {
+        wagerPlacedListeners.add(wagerPlacedListener);
+    }
+
+
+    private void addPlayerFoldListener(PlayerFoldListener playerFoldListener) {
+        playerFoldListeners.add(playerFoldListener);
+    }
+
+
+    private void addMoveAbilityListener(MoveAbilityListener moveAbilityListener) {
+        moveAbilityListeners.add(moveAbilityListener);
+    }
+
+
+    private void addPreflopMadeListener(PreflopMadeListener preflopMadeListener) {
+        preflopMadeListeners.add(preflopMadeListener);
     }
 
 }
