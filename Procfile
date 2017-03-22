@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/poker-webserver-helloworld-0.0.1.jar
+web: java -Dserver.port=$PORT -jar webserver/build/libs/poker-webserver-helloworld-0.0.1.jar
