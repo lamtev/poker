@@ -60,4 +60,8 @@ public final class Player {
         return money;
     }
 
+    public boolean madeAllin() {
+        return stack == 0;
+    }
+
 }

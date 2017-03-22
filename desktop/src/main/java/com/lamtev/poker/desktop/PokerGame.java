@@ -4,7 +4,7 @@ import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.states.exceptions.GameIsOverException;
+import com.lamtev.poker.core.states.exceptions.GameOverException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Orientation;
@@ -193,7 +193,7 @@ public class PokerGame implements PokerEventListener {
         showDown.setOnAction(event -> {
             try {
                 poker.showDown();
-            } catch (GameIsOverException e) {
+            } catch (GameOverException e) {
                 statusBar.setText(e.getMessage());
             } catch (RuntimeException e) {
                 e.printStackTrace();
