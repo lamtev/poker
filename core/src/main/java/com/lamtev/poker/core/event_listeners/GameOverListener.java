@@ -4,6 +4,6 @@ import com.lamtev.poker.core.api.PlayerIdStack;
 
 import java.util.List;
 
-public interface GameIsOverListener {
-    void gameIsOver(List<PlayerIdStack> playersInfo);
+public interface GameOverListener {
+    void gameOver(List<PlayerIdStack> playersInfo);
 }

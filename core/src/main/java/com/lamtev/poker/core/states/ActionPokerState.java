@@ -45,7 +45,7 @@ abstract class ActionPokerState implements PokerState {
             ++playerIndex;
             playerIndex %= players.size();
         }
-        poker.notifyCurrentPlayerListeners(players.get(playerIndex).getId());
+        poker.notifyCurrentPlayerChangedListeners(players.get(playerIndex).getId());
     }
 
     Player currentPlayer() {

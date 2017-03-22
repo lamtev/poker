@@ -16,14 +16,14 @@ abstract class WageringPokerState extends ActionPokerState {
     WageringPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards, int bigBlindIndex) {
         super(poker, players, bank, dealer, commonCards, bigBlindIndex);
         determinePlayerIndex(bigBlindIndex);
-        poker.notifyCurrentPlayerListeners(currentPlayer().getId());
+        poker.notifyCurrentPlayerChangedListeners(currentPlayer().getId());
         moveValidator = new MoveValidator(players, bank);
     }
 
     WageringPokerState(ActionPokerState state) {
         super(state);
         determinePlayerIndex(bigBlindIndex);
-        poker.notifyCurrentPlayerListeners(currentPlayer().getId());
+        poker.notifyCurrentPlayerChangedListeners(currentPlayer().getId());
         moveValidator = new MoveValidator(players, bank);
     }
 
@@ -51,7 +51,6 @@ abstract class WageringPokerState extends ActionPokerState {
 
         if (additionalWager == 0) {
             call();
-            System.out.println("call");
         } else if (additionalWager > 0) {
             raise(additionalWager);
         } else {

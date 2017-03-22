@@ -16,21 +16,22 @@ public class Poker implements PokerAPI {
     private PokerState state = new SettingsPokerState(this);
 
     private List<StateChangedListener> stateChangedListeners = new ArrayList<>();
-    private List<GameIsOverListener> gameIsOverListeners = new ArrayList<>();
+    private List<GameOverListener> gameOverListeners = new ArrayList<>();
     private List<MoveAbilityListener> moveAbilityListeners = new ArrayList<>();
-    private List<CurrentPlayerListener> currentPlayerListeners = new ArrayList<>();
-    private List<CommunityCardsListener> communityCardsListeners = new ArrayList<>();
+    private List<CurrentPlayerChangedListener> currentPlayerChangedListeners = new ArrayList<>();
+    private List<CommunityCardsAddedListener> communityCardsAddedListeners = new ArrayList<>();
     private List<WagerPlacedListener> wagerPlacedListeners = new ArrayList<>();
     private List<PlayerFoldListener> playerFoldListeners = new ArrayList<>();
     private List<PreflopMadeListener> preflopMadeListeners = new ArrayList<>();
     private List<PlayerShowedDownListener> playerShowedDownListeners = new ArrayList<>();
 
     private boolean gameIsSetUp = false;
+    private boolean listenersAdded = false;
 
     @Override
     public void setUp(List<PlayerIdStack> playersStacks, String smallBlindId, String bigBlindId, int smallBlindSize) {
-        if (!allListenersAdded()) {
-            throw new RuntimeException("You must add at least one of each listeners");
+        if (!listenersAdded) {
+            throw new RuntimeException("You must subscribe");
         }
         state.setUp(playersStacks, smallBlindId, bigBlindId, smallBlindSize);
         gameIsSetUp = true;
@@ -83,14 +84,7 @@ public class Poker implements PokerAPI {
         addPreflopMadeListener(pokerEventListener);
         addStateChangedListener(pokerEventListener);
         addWagerPlacedListener(pokerEventListener);
-    }
-
-    private boolean allListenersAdded() {
-        return stateChangedListeners.size() != 0 && gameIsOverListeners.size() != 0 &&
-                communityCardsListeners.size() != 0 && currentPlayerListeners.size() != 0 &&
-                moveAbilityListeners.size() != 0 && playerFoldListeners.size() != 0 &&
-                preflopMadeListeners.size() != 0 && wagerPlacedListeners.size() != 0 &&
-                playerShowedDownListeners.size() != 0;
+        listenersAdded = true;
     }
 
     public void setState(PokerState newState) {
@@ -98,8 +92,8 @@ public class Poker implements PokerAPI {
         notifyStateChangedListeners();
     }
 
-    public void notifyGameIsOverListeners(List<PlayerIdStack> playersInfo) {
-        gameIsOverListeners.forEach(listener -> listener.gameIsOver(playersInfo));
+    public void notifyGameOverListeners(List<PlayerIdStack> playersInfo) {
+        gameOverListeners.forEach(listener -> listener.gameOver(playersInfo));
     }
 
     public void notifyPlayerShowedDownListeners(String playerId, PokerHand hand) {
@@ -111,11 +105,11 @@ public class Poker implements PokerAPI {
     }
 
     public void notifyCommunityCardsChangedListeners(List<Card> addedCards) {
-        communityCardsListeners.forEach(listener -> listener.communityCardsAdded(addedCards));
+        communityCardsAddedListeners.forEach(listener -> listener.communityCardsAdded(addedCards));
     }
 
-    public void notifyCurrentPlayerListeners(String id) {
-        currentPlayerListeners.forEach(listener -> listener.currentPlayerChanged(id));
+    public void notifyCurrentPlayerChangedListeners(String id) {
+        currentPlayerChangedListeners.forEach(listener -> listener.currentPlayerChanged(id));
     }
 
     private void notifyStateChangedListeners() {
@@ -145,17 +139,17 @@ public class Poker implements PokerAPI {
         notifyStateChangedListeners();
     }
 
-    private void addGameIsOverListener(GameIsOverListener gameIsOverListener) {
-        gameIsOverListeners.add(gameIsOverListener);
+    private void addGameIsOverListener(GameOverListener gameOverListener) {
+        gameOverListeners.add(gameOverListener);
     }
 
-    private void addCurrentPlayerChangedListener(CurrentPlayerListener currentPlayerListener) {
-        currentPlayerListeners.add(currentPlayerListener);
+    private void addCurrentPlayerChangedListener(CurrentPlayerChangedListener currentPlayerChangedListener) {
+        currentPlayerChangedListeners.add(currentPlayerChangedListener);
     }
 
 
-    private void addCommunityCardsChangedListener(CommunityCardsListener communityCardsListener) {
-        communityCardsListeners.add(communityCardsListener);
+    private void addCommunityCardsChangedListener(CommunityCardsAddedListener communityCardsAddedListener) {
+        communityCardsAddedListeners.add(communityCardsAddedListener);
     }
 
 

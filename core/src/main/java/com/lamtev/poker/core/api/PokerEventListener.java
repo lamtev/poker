@@ -10,9 +10,9 @@ import java.util.Map;
 
 public interface PokerEventListener extends
         //TODO may be all listeners should be inlined into this
-        CommunityCardsListener,
-        CurrentPlayerListener,
-        GameIsOverListener,
+        CommunityCardsAddedListener,
+        CurrentPlayerChangedListener,
+        GameOverListener,
         MoveAbilityListener,
         PlayerFoldListener,
         PlayerShowedDownListener,
@@ -35,7 +35,7 @@ public interface PokerEventListener extends
     void callAbilityChanged(boolean flag);
 
     @Override
-    void gameIsOver(List<PlayerIdStack> playersInfo);
+    void gameOver(List<PlayerIdStack> playersInfo);
 
     @Override
     void playerShowedDown(String playerId, PokerHand hand);

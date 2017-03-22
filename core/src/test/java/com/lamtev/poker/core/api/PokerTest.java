@@ -32,7 +32,7 @@ public class PokerTest implements PokerEventListener {
     }
 
     @Override
-    public void gameIsOver(List<PlayerIdStack> playersInfo) {
+    public void gameOver(List<PlayerIdStack> playersInfo) {
         this.playersInfo = playersInfo;
     }
 

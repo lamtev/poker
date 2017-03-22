@@ -1,5 +1,5 @@
 package com.lamtev.poker.core.event_listeners;
 
-public interface CurrentPlayerListener {
+public interface CurrentPlayerChangedListener {
     void currentPlayerChanged(String playerId);
 }

@@ -10,7 +10,7 @@ class GameIsOverPokerState extends ActionPokerState {
 
     GameIsOverPokerState(ActionPokerState state) {
         super(state.poker, state.players, state.bank, state.dealer, state.commonCards);
-        poker.notifyGameIsOverListeners(new ArrayList<PlayerIdStack>() {{
+        poker.notifyGameOverListeners(new ArrayList<PlayerIdStack>() {{
             players.forEach(player -> add(new PlayerIdStack(player.getId(), player.getStack())));
         }});
     }
