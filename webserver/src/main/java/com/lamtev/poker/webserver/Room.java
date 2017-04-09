@@ -1,24 +1,24 @@
-package com.lamtev.poker.webserver.hello;
+package com.lamtev.poker.webserver;
 
 public class Room {
 
-    private String id;
+    private final String id;
     private int playersNumber;
-    private long stack;
-    private boolean isFree = true;
+    private int stack;
+    private boolean free;
 
-    public Room(String id, int playersNumber, long stack) {
+    private Game game = new Game();
+
+    public Room(String id, int playersNumber, int stack, boolean free) {
+
         this.id = id;
         this.playersNumber = playersNumber;
         this.stack = stack;
+        this.free = free;
     }
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public int getPlayersNumber() {
@@ -29,19 +29,28 @@ public class Room {
         this.playersNumber = playersNumber;
     }
 
-    public long getStack() {
+    public int getStack() {
         return stack;
     }
 
-    public void setStack(long stack) {
+    public void setStack(int stack) {
         this.stack = stack;
     }
 
     public boolean isFree() {
-        return isFree;
+        return free;
     }
 
     public void setFree(boolean free) {
-        isFree = free;
+        this.free = free;
     }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
 }

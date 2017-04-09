@@ -11,12 +11,15 @@ apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
 jar {
-    baseName = 'poker-webserver-helloworld'
+    baseName = 'poker-webserver'
     version =  '0.0.1'
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    //compile 'org.mongodb:mongodb-driver:3.3.0'
+    //compile 'org.mongodb:mongo-java-driver:3.3.0'
     compile project(':core')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
