@@ -1,5 +1,8 @@
 package com.lamtev.poker.webserver;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties({"game"})
 public class Room {
 
     private final String id;

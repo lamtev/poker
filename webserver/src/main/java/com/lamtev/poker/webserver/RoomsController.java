@@ -4,14 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -19,7 +18,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RequestMapping("/rooms")
 public class RoomsController {
 
-    private static final String JSON = "application/json";
     private final Map<String, Room> rooms;
     private final Gson gson;
 
@@ -29,26 +27,30 @@ public class RoomsController {
         this.gson = gson;
     }
 
-    @RequestMapping(method = GET, produces = JSON)
-    public ResponseEntity<String> getRooms() {
-        //FIXME
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(NO_CONTENT)
+    public Error resourceNotFound(ResourceNotFoundException e) {
+        String resource = e.getMessage();
+        return new Error(2, resource + " not found");
+    }
+
+    @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE)
+    public Collection<Room> getRooms() {
         if (rooms == null || rooms.size() == 0) {
-            return new ResponseEntity<>("{}", NO_CONTENT);
+            throw new ResourceNotFoundException("Rooms");
         }
-        return new ResponseEntity<>(gson.toJson(rooms.values()), OK);
+        return rooms.values();
     }
 
-    @RequestMapping(value = "{id}", method = GET, produces = JSON)
-    public ResponseEntity<String> getRoom(@PathVariable String id) {
-        //FIXME
+    @RequestMapping(value = "{id}", method = GET, produces = APPLICATION_JSON_VALUE)
+    public Room getRoom(@PathVariable String id) {
         if (rooms == null || !rooms.containsKey(id)) {
-            return new ResponseEntity<>("{}", NO_CONTENT);
+            throw new ResourceNotFoundException("Room with " + id);
         }
-        return new ResponseEntity<>(gson.toJson(rooms.get(id)), OK);
-
+        return rooms.get(id);
     }
 
-    @RequestMapping(method = POST, consumes = JSON, produces = JSON)
+    @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createRoom(@RequestBody String body) {
         try {
             Room room = gson.fromJson(body, Room.class);
@@ -64,7 +66,7 @@ public class RoomsController {
 
     }
 
-    @RequestMapping(value = "{id}", method = POST, consumes = JSON, produces = JSON)
+    @RequestMapping(value = "{id}", method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateRoom(@PathVariable String id,
                                              @RequestBody String body) {
         //TODO
@@ -75,7 +77,7 @@ public class RoomsController {
         private String name;
     }
 
-    @RequestMapping(value = "{id}/start", method = POST, produces = JSON)
+    @RequestMapping(value = "{id}/start", method = POST, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> start(@PathVariable String id,
                                         @RequestBody String body) {
         Room room = rooms.get(id);
