@@ -59,7 +59,7 @@ public class RoomsController {
             }
             room.setGame(new Game());
             rooms.put(room.getId(), room);
-            return new ResponseEntity<>(body, OK);
+            return new ResponseEntity<>(body, CREATED);
         } catch (JsonSyntaxException e) {
             return new ResponseEntity<>(BAD_REQUEST);
         }
@@ -69,23 +69,21 @@ public class RoomsController {
     @RequestMapping(value = "{id}", method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateRoom(@PathVariable String id,
                                              @RequestBody String body) {
-        //TODO
+        //TODO if not free -> no access to update and visit
         return new ResponseEntity<>(OK);
-    }
-
-    private class NameHolder {
-        private String name;
     }
 
     @RequestMapping(value = "{id}/start", method = POST, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> start(@PathVariable String id,
-                                        @RequestBody String body) {
+    public Room start(@PathVariable String id,
+                      @RequestParam(value = "name") String name) {
         Room room = rooms.get(id);
+        if (!room.isFree()) {
+            //TODO
+        }
         Game game = room.getGame();
-
-        NameHolder nameHolder = gson.fromJson(body, NameHolder.class);
-        game.start(nameHolder.name, room.getPlayersNumber(), room.getStack());
-        return new ResponseEntity<>(OK);
+        game.start(name, room.getPlayersNumber(), room.getStack());
+        room.setFree(false);
+        return room;
     }
 
 }

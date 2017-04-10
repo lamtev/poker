@@ -7,15 +7,17 @@ import com.lamtev.poker.core.model.Cards;
 
 import java.util.*;
 
+import static com.lamtev.poker.webserver.Util.names;
+
 public class Game implements PokerEventListener {
 
     private PokerAPI poker = new Poker();
     private List<Card> communityCards = new ArrayList<>();
     private Map<String, PlayerExpandedInfo> playersInfo = new LinkedHashMap<>();
     private Map<String, Cards> playersCards = new LinkedHashMap<>();
-    private static final List<String> names = Arrays.asList(
-            "Anna", "Arina", "Katya", "Vova", "Zhenya", "Zlatan", "Keanu",
-            "Wayne", "Tereza", "George", "Max", "Vika", "Mel", "Donald");
+    private String currentPlayerId;
+    private String currentStateName;
+    private int bank;
 
     public void start(String humanId, int playersNumber, int stack) {
         poker.subscribe(this);
@@ -29,24 +31,36 @@ public class Game implements PokerEventListener {
         poker.setUp(playersStacks, playersStacks.get(0).getId(), playersStacks.get(1).getId(), stack / 1000);
     }
 
+    public Map<String, PlayerExpandedInfo> getPlayersInfo() {
+        return playersInfo;
+    }
+
     @Override
     public void playerFold(String foldPlayerId) {
 
     }
 
+    public int getBank() {
+        return bank;
+    }
+
     @Override
     public void wagerPlaced(String playerId, PlayerMoney playerMoney, int bank) {
+        PlayerExpandedInfo playerInfo = this.playersInfo.get(playerId);
+        playerInfo.setStack(playerMoney.getStack());
+        playerInfo.setWager(playerMoney.getWager());
+        this.bank = bank;
 
     }
 
     @Override
     public void stateChanged(String stateName) {
-
+        currentStateName = stateName;
     }
 
     @Override
     public void currentPlayerChanged(String playerId) {
-
+        currentPlayerId = playerId;
     }
 
     @Override
@@ -87,6 +101,14 @@ public class Game implements PokerEventListener {
     @Override
     public void checkAbilityChanged(boolean flag) {
 
+    }
+
+    public String getCurrentPlayerId() {
+        return currentPlayerId;
+    }
+
+    public String getCurrentStateName() {
+        return currentStateName;
     }
 
     @Override
