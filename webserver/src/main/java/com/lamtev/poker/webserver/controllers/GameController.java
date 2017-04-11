@@ -34,9 +34,8 @@ public class GameController extends AbstractController {
 
     @RequestMapping(value = "{id}/short-info", method = GET, produces = APPLICATION_JSON_VALUE)
     public String getInfo(@PathVariable String id) {
-        if (rooms == null || !rooms.containsKey(id)) {
-
-        }
+        checkRoomsExistence();
+        checkRoomExistence(id);
         Room room = rooms.get(id);
         GameAPI game = room.getGame();
         JsonObject jsonObject = new JsonObject();
@@ -52,7 +51,6 @@ public class GameController extends AbstractController {
         checkRoomsExistence();
         checkRoomExistence(id);
         Room room = rooms.get(id);
-        String player = room.getGame().getCurrentPlayerId();
         room.getGame().call();
         //TODO
     }
