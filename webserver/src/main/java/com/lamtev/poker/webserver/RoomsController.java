@@ -38,7 +38,7 @@ public class RoomsController {
     @RequestMapping(value = "{id}", method = GET, produces = APPLICATION_JSON_VALUE)
     public Room getRoom(@PathVariable String id) {
         if (rooms == null || !rooms.containsKey(id)) {
-            throw new ResourceNotFoundException("Room with " + id);
+            throw new ResourceNotFoundException("Room with id " + id);
         }
         return rooms.get(id);
     }

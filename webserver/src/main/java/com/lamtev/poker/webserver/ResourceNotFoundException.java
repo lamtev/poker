@@ -9,8 +9,9 @@ public class ResourceNotFoundException extends RuntimeException {
         this.resource = resource;
     }
 
+    @Override
     public String getMessage() {
-        return resource;
+        return resource + " not found";
     }
 
 }
