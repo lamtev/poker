@@ -30,6 +30,10 @@ public class Poker implements PokerAPI {
 
     @Override
     public void setUp(List<PlayerIdStack> playersStacks, String smallBlindId, String bigBlindId, int smallBlindSize) {
+        if (playersStacks.size() < 2) {
+            //TODO
+            throw new RuntimeException("There must be at least 2 players");
+        }
         if (!listenersAdded) {
             throw new RuntimeException("You must subscribe");
         }

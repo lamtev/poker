@@ -22,11 +22,12 @@ public class Game implements PokerEventListener, GameAPI {
     @Override
     public void start(String humanId, int playersNumber, int stack) {
         poker.subscribe(this);
-        Collections.shuffle(names);
         final int numberOfBots = playersNumber - 1;
-        List<String> bots = names.subList(0, numberOfBots);
-        bots.forEach(bot -> playersInfo.put(bot, new PlayerExpandedInfo(stack, 0, true)));
-        playersInfo.put(humanId, new PlayerExpandedInfo(stack, 0, true));
+        List<String> players = names(numberOfBots);
+        //TODO check name existence
+        players.add(humanId);
+        Collections.shuffle(players);
+        players.forEach(player -> playersInfo.put(player, new PlayerExpandedInfo(stack, 0, true)));
         List<PlayerIdStack> playersStacks = new ArrayList<>();
         playersInfo.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getStack())));
         poker.setUp(playersStacks, playersStacks.get(0).getId(), playersStacks.get(1).getId(), stack / 1000);

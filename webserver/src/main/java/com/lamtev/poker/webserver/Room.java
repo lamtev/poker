@@ -1,27 +1,37 @@
 package com.lamtev.poker.webserver;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@JsonIgnoreProperties("game")
 public class Room {
 
-    private final String id;
+    private String id;
     private int playersNumber;
     private int stack;
     private boolean free;
-
+    @JsonIgnore
     private GameAPI game = new Game();
 
-    public Room(String id, int playersNumber, int stack, boolean free) {
+    public Room() {
 
+    }
+
+    public Room(String id, int playersNumber, int stack, boolean free) {
         this.id = id;
         this.playersNumber = playersNumber;
         this.stack = stack;
         this.free = free;
     }
 
+    public boolean hasUninitializedFields() {
+        return !isValid() || !free;
+    }
+
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public int getPlayersNumber() {
@@ -46,6 +56,16 @@ public class Room {
 
     public void setFree(boolean free) {
         this.free = free;
+    }
+
+    @JsonIgnore
+    public boolean isValid() {
+        return id != null && !id.isEmpty() && playersNumber > 1 && stack > 0;
+    }
+
+    @JsonIgnore
+    public boolean isNotFree() {
+        return !free;
     }
 
     public GameAPI getGame() {
