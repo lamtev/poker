@@ -1,8 +1,8 @@
 package com.lamtev.poker.webserver.controllers;
 
 import com.google.gson.Gson;
-import com.lamtev.poker.webserver.controllers.exceptions.ResourceNotFoundException;
 import com.lamtev.poker.webserver.Room;
+import com.lamtev.poker.webserver.controllers.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 

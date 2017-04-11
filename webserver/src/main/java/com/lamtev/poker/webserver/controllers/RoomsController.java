@@ -1,7 +1,9 @@
 package com.lamtev.poker.webserver.controllers;
 
 import com.google.gson.Gson;
-import com.lamtev.poker.webserver.*;
+import com.lamtev.poker.webserver.Game;
+import com.lamtev.poker.webserver.GameAPI;
+import com.lamtev.poker.webserver.Room;
 import com.lamtev.poker.webserver.controllers.exceptions.RequestBodyHasUnsuitableFormatException;
 import com.lamtev.poker.webserver.controllers.exceptions.ResourceAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;

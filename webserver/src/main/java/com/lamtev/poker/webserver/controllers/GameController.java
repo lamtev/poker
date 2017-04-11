@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.ACCEPTED;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -28,12 +29,17 @@ public class GameController extends AbstractController {
     }
 
     @RequestMapping(value = "{id}/players", method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
     public Map<String, PlayerExpandedInfo> getPlayers(@PathVariable String id) {
+        checkRoomsExistence();
+        checkRoomExistence(id);
         return rooms.get(id).getGame().getPlayersInfo();
     }
 
     @RequestMapping(value = "{id}/short-info", method = GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
     public String getInfo(@PathVariable String id) {
+        //TODO
         checkRoomsExistence();
         checkRoomExistence(id);
         Room room = rooms.get(id);
