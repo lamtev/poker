@@ -27,18 +27,18 @@ class ShowdownPokerState extends ActionPokerState {
     }
 
     @Override
-    public void call() throws Exception {
-        throw new Exception();
+    public void call() throws IllegalStateException {
+        throw new IllegalStateException();
     }
 
     @Override
-    public void raise(int additionalWager) throws Exception {
-        throw new Exception();
+    public void raise(int additionalWager) throws IllegalStateException {
+        throw new IllegalStateException();
     }
 
     @Override
-    public void allIn() throws Exception {
-        throw new Exception();
+    public void allIn() throws IllegalStateException {
+        throw new IllegalStateException();
     }
 
     @Override
@@ -53,8 +53,8 @@ class ShowdownPokerState extends ActionPokerState {
     }
 
     @Override
-    public void check() throws Exception {
-        throw new Exception("Can't check when showDown poker state");
+    public void check() throws IllegalStateException {
+        throw new IllegalStateException("Can't check when showDown poker state");
     }
 
     @Override

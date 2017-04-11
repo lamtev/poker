@@ -34,17 +34,17 @@ public class SettingsPokerState implements PokerState {
     }
 
     @Override
-    public void call() throws GameHaveNotBeenStartedException {
+    public void call() throws Exception {
         throw new GameHaveNotBeenStartedException();
     }
 
     @Override
-    public void raise(int additionalWager) throws GameHaveNotBeenStartedException {
+    public void raise(int additionalWager) throws Exception {
         throw new GameHaveNotBeenStartedException();
     }
 
     @Override
-    public void allIn() throws GameHaveNotBeenStartedException {
+    public void allIn() throws Exception {
         throw new GameHaveNotBeenStartedException();
     }
 
@@ -54,7 +54,7 @@ public class SettingsPokerState implements PokerState {
     }
 
     @Override
-    public void check() throws GameHaveNotBeenStartedException {
+    public void check() throws Exception {
         throw new GameHaveNotBeenStartedException();
     }
 

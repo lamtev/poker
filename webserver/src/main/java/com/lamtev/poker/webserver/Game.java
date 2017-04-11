@@ -9,7 +9,7 @@ import java.util.*;
 
 import static com.lamtev.poker.webserver.Util.names;
 
-public class Game implements PokerEventListener {
+public class Game implements PokerEventListener, GameAPI {
 
     private PokerAPI poker = new Poker();
     private List<Card> communityCards = new ArrayList<>();
@@ -19,6 +19,7 @@ public class Game implements PokerEventListener {
     private String currentStateName;
     private int bank;
 
+    @Override
     public void start(String humanId, int playersNumber, int stack) {
         poker.subscribe(this);
         Collections.shuffle(names);
@@ -31,6 +32,7 @@ public class Game implements PokerEventListener {
         poker.setUp(playersStacks, playersStacks.get(0).getId(), playersStacks.get(1).getId(), stack / 1000);
     }
 
+    @Override
     public Map<String, PlayerExpandedInfo> getPlayersInfo() {
         return playersInfo;
     }
@@ -40,6 +42,7 @@ public class Game implements PokerEventListener {
 
     }
 
+    @Override
     public int getBank() {
         return bank;
     }
@@ -103,10 +106,12 @@ public class Game implements PokerEventListener {
 
     }
 
+    @Override
     public String getCurrentPlayerId() {
         return currentPlayerId;
     }
 
+    @Override
     public String getCurrentStateName() {
         return currentStateName;
     }
@@ -119,6 +124,36 @@ public class Game implements PokerEventListener {
     @Override
     public void showDownAbilityChanged(boolean flag) {
 
+    }
+
+    @Override
+    public void call() throws Exception {
+        poker.call();
+    }
+
+    @Override
+    public void raise(int additionalWager) throws Exception {
+        poker.raise(additionalWager);
+    }
+
+    @Override
+    public void allIn() throws Exception {
+        poker.allIn();
+    }
+
+    @Override
+    public void fold() throws Exception {
+        poker.fold();
+    }
+
+    @Override
+    public void check() throws Exception {
+        poker.check();
+    }
+
+    @Override
+    public void showDown() throws Exception {
+        poker.showDown();
     }
 
 }

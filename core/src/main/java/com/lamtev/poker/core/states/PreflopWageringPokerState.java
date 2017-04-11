@@ -20,7 +20,7 @@ class PreflopWageringPokerState extends WageringPokerState {
 
     @Override
     public void check() throws Exception {
-        throw new Exception("can't check");
+        throw new IllegalStateException("can't check");
     }
 
     @Override

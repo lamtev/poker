@@ -10,7 +10,7 @@ public class Room {
     private int stack;
     private boolean free;
 
-    private Game game = new Game();
+    private GameAPI game = new Game();
 
     public Room(String id, int playersNumber, int stack, boolean free) {
 
@@ -48,11 +48,11 @@ public class Room {
         this.free = free;
     }
 
-    public Game getGame() {
+    public GameAPI getGame() {
         return game;
     }
 
-    public void setGame(Game game) {
+    public void setGame(GameAPI game) {
         this.game = game;
     }
 

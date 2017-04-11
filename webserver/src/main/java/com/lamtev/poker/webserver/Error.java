@@ -2,16 +2,10 @@ package com.lamtev.poker.webserver;
 
 public class Error {
 
-    private int code;
-    private String message;
+    private final String message;
 
-    public Error(int code, String message) {
-        this.code = code;
+    public Error(String message) {
         this.message = message;
-    }
-
-    public int getCode() {
-        return code;
     }
 
     public String getMessage() {

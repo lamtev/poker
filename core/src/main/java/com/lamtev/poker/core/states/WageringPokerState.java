@@ -50,9 +50,17 @@ abstract class WageringPokerState extends ActionPokerState {
         int additionalWager = currentPlayer().getStack() - (bank.getCurrentWager() - currentPlayer().getWager());
 
         if (additionalWager == 0) {
-            call();
+            try {
+                call();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else if (additionalWager > 0) {
-            raise(additionalWager);
+            try {
+                raise(additionalWager);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             bank.acceptAllInFromPlayer(currentPlayer());
             wagerPlaced();

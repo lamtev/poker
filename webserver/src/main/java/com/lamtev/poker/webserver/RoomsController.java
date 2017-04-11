@@ -27,13 +27,6 @@ public class RoomsController {
         this.gson = gson;
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(NO_CONTENT)
-    public Error resourceNotFound(ResourceNotFoundException e) {
-        String resource = e.getMessage();
-        return new Error(2, resource + " not found");
-    }
-
     @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE)
     public Collection<Room> getRooms() {
         if (rooms == null || rooms.size() == 0) {
@@ -51,17 +44,23 @@ public class RoomsController {
     }
 
     @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createRoom(@RequestBody String body) {
+    public ResponseEntity<?> createRoom(@RequestBody String body) {
         try {
             Room room = gson.fromJson(body, Room.class);
             if (rooms.containsKey(room.getId())) {
-                return new ResponseEntity<>(CONFLICT);
+                return new ResponseEntity<>(
+                        new Error("Room with the same id already exists"),
+                        CONFLICT
+                );
             }
             room.setGame(new Game());
             rooms.put(room.getId(), room);
             return new ResponseEntity<>(body, CREATED);
         } catch (JsonSyntaxException e) {
-            return new ResponseEntity<>(BAD_REQUEST);
+            return new ResponseEntity<>(
+                    new Error("Invalid json syntax: " + e.getMessage()),
+                    BAD_REQUEST
+            );
         }
 
     }
@@ -74,16 +73,16 @@ public class RoomsController {
     }
 
     @RequestMapping(value = "{id}/start", method = POST, produces = APPLICATION_JSON_VALUE)
-    public Room start(@PathVariable String id,
-                      @RequestParam(value = "name") String name) {
+    public ResponseEntity<?> start(@PathVariable String id,
+                                   @RequestParam(value = "name") String name) {
         Room room = rooms.get(id);
         if (!room.isFree()) {
-            //TODO
+            return new ResponseEntity<>(new Error("Room is not free"), CONFLICT);
         }
-        Game game = room.getGame();
+        GameAPI game = room.getGame();
         game.start(name, room.getPlayersNumber(), room.getStack());
         room.setFree(false);
-        return room;
+        return new ResponseEntity<>(room, ACCEPTED);
     }
 
 }
