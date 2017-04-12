@@ -49,6 +49,17 @@ public class RoomsControllerTest {
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code", is(404)))
+                .andExpect(jsonPath("$.message", is("Rooms not found")));
+
+        mockMvc.perform(post("/rooms")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(roomJson()));
+
+        mockMvc.perform(get("/rooms/xyz"))
+                .andDo(print())
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code", is(404)))
                 .andExpect(jsonPath("$.message", is("Room with id xyz not found")));
     }
 

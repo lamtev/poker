@@ -35,6 +35,7 @@ public final class RoomsController extends AbstractController {
 
     @RequestMapping(value = "{id}", method = GET, produces = APPLICATION_JSON_VALUE)
     public Room getRoom(@PathVariable String id) {
+        checkRoomsExistence();
         checkRoomExistence(id);
         return rooms.get(id);
     }
@@ -54,21 +55,21 @@ public final class RoomsController extends AbstractController {
 
     }
 
-    @RequestMapping(value = "{id}", method = PUT, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "{id}", method = PUT, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(CREATED)
     public Room updateRoom(@PathVariable String id,
-                           @RequestBody Room roomDiff) {
+                           @RequestBody Room newRoom) {
         checkRoomsExistence();
         checkRoomExistence(id);
         Room room = rooms.get(id);
         checkRoomFreedom(room);
-        if (roomDiff.getId() != null && !roomDiff.getId().isEmpty()) {
-            room.setId(roomDiff.getId());
-        }
-        if (roomDiff.getPlayersNumber() > 0) {
-            room.setPlayersNumber(roomDiff.getPlayersNumber());
-        }
-        if (roomDiff.getStack() > 0) {
-            room.setStack(roomDiff.getStack());
+        String newId = newRoom.getId();
+        int newPlayersNumber = newRoom.getPlayersNumber();
+        int newStack = newRoom.getStack();
+        if (newId != null && !newId.isEmpty() && newPlayersNumber > 1 && newStack > 1) {
+            room.setId(newId);
+            room.setPlayersNumber(newPlayersNumber);
+            room.setStack(newStack);
         }
         return room;
     }
