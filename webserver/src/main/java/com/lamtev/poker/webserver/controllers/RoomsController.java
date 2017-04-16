@@ -15,7 +15,6 @@ import java.util.Map;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/rooms")
@@ -26,21 +25,20 @@ public final class RoomsController extends AbstractController {
         super(rooms, gson);
     }
 
-    @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE)
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
     public Collection<Room> getRooms() {
         checkRoomsExistence();
         return rooms.values();
     }
 
-
-    @RequestMapping(value = "{id}", method = GET, produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}", produces = APPLICATION_JSON_VALUE)
     public Room getRoom(@PathVariable String id) {
         checkRoomsExistence();
         checkRoomExistence(id);
         return rooms.get(id);
     }
 
-    @RequestMapping(method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
     public Room createRoom(@RequestBody Room room) {
         if (room.hasUninitializedFields()) {
@@ -55,7 +53,7 @@ public final class RoomsController extends AbstractController {
 
     }
 
-    @RequestMapping(value = "{id}", method = PUT, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PutMapping(value = "{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
     public Room updateRoom(@PathVariable String id,
                            @RequestBody Room newRoom) {
@@ -74,7 +72,7 @@ public final class RoomsController extends AbstractController {
         return room;
     }
 
-    @RequestMapping(value = "{id}/start", method = POST, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "{id}/start", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(ACCEPTED)
     public Room start(@PathVariable String id,
                       @RequestParam(value = "name") String name) {

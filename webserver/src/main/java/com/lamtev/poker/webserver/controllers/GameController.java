@@ -6,18 +6,13 @@ import com.lamtev.poker.core.api.PlayerExpandedInfo;
 import com.lamtev.poker.webserver.GameAPI;
 import com.lamtev.poker.webserver.Room;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/rooms")
@@ -28,7 +23,7 @@ public class GameController extends AbstractController {
         super(rooms, gson);
     }
 
-    @RequestMapping(value = "{id}/players", method = GET, produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}/players", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public Map<String, PlayerExpandedInfo> getPlayers(@PathVariable String id) {
         checkRoomsExistence();
@@ -36,7 +31,7 @@ public class GameController extends AbstractController {
         return rooms.get(id).getGame().getPlayersInfo();
     }
 
-    @RequestMapping(value = "{id}/short-info", method = GET, produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}/short-info", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public String getInfo(@PathVariable String id) {
         //TODO
@@ -51,7 +46,7 @@ public class GameController extends AbstractController {
         return jsonObject.toString();
     }
 
-    @RequestMapping(value = "{id}/call", method = POST, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "{id}/call", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(ACCEPTED)
     public void call(@PathVariable String id) throws Exception {
         checkRoomsExistence();
