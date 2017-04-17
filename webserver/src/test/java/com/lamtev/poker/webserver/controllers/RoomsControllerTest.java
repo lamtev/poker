@@ -9,10 +9,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-
+import static com.lamtev.poker.webserver.controllers.Util.roomJson;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
@@ -27,23 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 public class RoomsControllerTest {
 
-    private static String ROOM_JSON;
-
     @Autowired
     private MockMvc mockMvc;
-
-    private static String roomJson() {
-        if (ROOM_JSON == null) {
-            try {
-                ROOM_JSON = new Scanner(
-                        new File("src/test/resources/room.json"), "UTF-8"
-                ).useDelimiter("\\Z").next();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        return ROOM_JSON;
-    }
 
     @Test
     public void testGetNonexistentRooms() throws Exception {
@@ -122,18 +104,6 @@ public class RoomsControllerTest {
                 .andExpect(jsonPath("$.playersNumber", is(6)))
                 .andExpect(jsonPath("$.stack", is(25000)))
                 .andExpect(jsonPath("$.free", is(false)));
-    }
-
-    @Test
-    public void testGetPlayersWhenStarted() throws Exception {
-        mockMvc.perform(post("/rooms")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(roomJson()));
-
-        mockMvc.perform(get("/rooms/xxx/players"))
-                .andDo(print())
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
     }
 
 }
