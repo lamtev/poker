@@ -34,9 +34,9 @@ abstract class ActionPokerState extends AbstractPokerState {
         this.commonCards = commonCards;
     }
 
-    //TODO remove GameOverException from signature
     @Override
-    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize) throws IllegalStateException, GameOverException {
+    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize)
+            throws IllegalStateException, GameOverException {
         throw new IllegalStateException("Can't setUp when" + toString());
     }
 

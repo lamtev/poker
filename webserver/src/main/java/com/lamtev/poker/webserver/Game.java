@@ -4,6 +4,7 @@ import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
+import com.lamtev.poker.core.states.exceptions.GameOverException;
 
 import java.util.*;
 
@@ -30,7 +31,11 @@ public class Game implements PokerEventListener, GameAPI {
         players.forEach(player -> playersInfo.put(player, new PlayerExpandedInfo(stack, 0, true)));
         List<PlayerIdStack> playersStacks = new ArrayList<>();
         playersInfo.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getStack())));
-        poker.setUp(playersStacks, playersStacks.get(0).getId(), playersStacks.get(1).getId(), stack / 1000);
+        try {
+            poker.setUp(playersStacks, playersStacks.get(0).getId(), playersStacks.get(1).getId(), stack / 1000);
+        } catch (GameOverException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
