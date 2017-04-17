@@ -32,6 +32,19 @@ public class RoomsControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private static String roomJson() {
+        if (ROOM_JSON == null) {
+            try {
+                ROOM_JSON = new Scanner(
+                        new File("src/test/resources/room.json"), "UTF-8"
+                ).useDelimiter("\\Z").next();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return ROOM_JSON;
+    }
+
     @Test
     public void testGetNonexistentRooms() throws Exception {
         mockMvc.perform(get("/rooms"))
@@ -121,17 +134,6 @@ public class RoomsControllerTest {
                 .andDo(print())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
-    }
-
-    private static String roomJson() {
-        if (ROOM_JSON == null) {
-            try {
-                ROOM_JSON = new Scanner(new File("src/test/resources/room.json")).useDelimiter("\\Z").next();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        return ROOM_JSON;
     }
 
 }

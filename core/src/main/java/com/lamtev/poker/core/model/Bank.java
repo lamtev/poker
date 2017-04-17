@@ -9,7 +9,7 @@ public final class Bank {
 
     //TODO side pots
 
-    private class Pot {
+    private static class Pot {
         private int money;
         private int wager;
         private Set<Player> applicants = new HashSet<>();
