@@ -20,12 +20,12 @@ class PreflopWageringPokerState extends WageringPokerState {
     }
 
     @Override
-    public void check() throws Exception {
+    public void check() throws ForbiddenMoveException {
         throw new ForbiddenMoveException("Check", toString());
     }
 
     @Override
-    public void attemptNextState() throws Exception {
+    public void attemptNextState() {
         if (timeToShowDown()) {
             dealer.makeFlop();
             dealer.makeTurn();

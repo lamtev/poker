@@ -54,9 +54,9 @@ public class PokerHandTest {
     @Test
     public void testComparisonBetweenTwoThreeOfAKinds() {
         List<Rank> ranks = new ArrayList<Rank>() {{
-           add(TEN);
-           add(SEVEN);
-           add(TWO);
+            add(TEN);
+            add(SEVEN);
+            add(TWO);
         }};
         assertTrue(new ThreeOfAKind(QUEEN, ranks.subList(0, 2))
                 .compareTo(new ThreeOfAKind(QUEEN, ranks.subList(1, 3))) > 0);

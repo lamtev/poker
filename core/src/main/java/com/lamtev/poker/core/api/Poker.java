@@ -6,6 +6,7 @@ import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.PokerState;
 import com.lamtev.poker.core.states.SettingsPokerState;
+import com.lamtev.poker.core.states.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,8 @@ public class Poker implements PokerAPI {
     private boolean listenersAdded = false;
 
     @Override
-    public void setUp(List<PlayerIdStack> playersStacks, String smallBlindId, String bigBlindId, int smallBlindSize) {
+    public void setUp(List<PlayerIdStack> playersStacks, String smallBlindId, String bigBlindId, int smallBlindSize)
+            throws GameOverException {
         if (playersStacks.size() < 2) {
             //TODO
             throw new RuntimeException("There must be at least 2 players");
@@ -42,19 +44,33 @@ public class Poker implements PokerAPI {
     }
 
     @Override
-    public void call() throws Exception {
+    public void call() throws
+            ForbiddenMoveException,
+            GameHaveNotBeenStartedException,
+            IsNotEnoughMoneyException,
+            GameOverException,
+            UnavailableMoveException {
         validateGameIsSetUp();
         state.call();
     }
 
     @Override
-    public void raise(int additionalWager) throws Exception {
+    public void raise(int additionalWager) throws
+            ForbiddenMoveException,
+            GameHaveNotBeenStartedException,
+            IsNotEnoughMoneyException,
+            GameOverException,
+            UnavailableMoveException {
         validateGameIsSetUp();
         state.raise(additionalWager);
     }
 
     @Override
-    public void allIn() throws Exception {
+    public void allIn() throws
+            ForbiddenMoveException,
+            GameHaveNotBeenStartedException,
+            GameOverException,
+            UnavailableMoveException {
         validateGameIsSetUp();
         state.allIn();
     }
@@ -66,13 +82,20 @@ public class Poker implements PokerAPI {
     }
 
     @Override
-    public void check() throws Exception {
+    public void check() throws
+            ForbiddenMoveException,
+            GameHaveNotBeenStartedException,
+            GameOverException,
+            UnavailableMoveException {
         validateGameIsSetUp();
         state.check();
     }
 
     @Override
-    public void showDown() throws Exception {
+    public void showDown() throws
+            ForbiddenMoveException,
+            GameHaveNotBeenStartedException,
+            GameOverException {
         validateGameIsSetUp();
         state.showDown();
     }
@@ -132,9 +155,9 @@ public class Poker implements PokerAPI {
         playerFoldListeners.forEach(listener -> listener.playerFold(id));
     }
 
-    private void validateGameIsSetUp() throws Exception {
+    private void validateGameIsSetUp() {
         if (!gameIsSetUp) {
-            throw new Exception("Game is not set up");
+            throw new RuntimeException("Game is not set up");
         }
     }
 

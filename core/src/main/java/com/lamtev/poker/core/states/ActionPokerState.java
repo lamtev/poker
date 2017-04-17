@@ -3,6 +3,7 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.states.exceptions.GameOverException;
 
 import java.util.List;
 
@@ -33,9 +34,10 @@ abstract class ActionPokerState extends AbstractPokerState {
         this.commonCards = commonCards;
     }
 
+    //TODO remove GameOverException from signature
     @Override
-    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize) {
-        throw new IllegalStateException("Can't setUp when" + this.getClass().getSimpleName());
+    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize) throws IllegalStateException, GameOverException {
+        throw new IllegalStateException("Can't setUp when" + toString());
     }
 
     void changePlayerIndex() {

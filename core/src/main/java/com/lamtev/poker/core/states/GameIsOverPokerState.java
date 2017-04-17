@@ -16,22 +16,22 @@ class GameIsOverPokerState extends ActionPokerState {
     }
 
     @Override
-    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize) {
+    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize) throws GameOverException {
         throw new GameOverException();
     }
 
     @Override
-    public void call() throws Exception {
+    public void call() throws GameOverException {
         throw new GameOverException();
     }
 
     @Override
-    public void raise(int additionalWager) throws Exception {
+    public void raise(int additionalWager) throws GameOverException {
         throw new GameOverException();
     }
 
     @Override
-    public void allIn() throws Exception {
+    public void allIn() throws GameOverException {
         throw new GameOverException();
     }
 
@@ -41,12 +41,12 @@ class GameIsOverPokerState extends ActionPokerState {
     }
 
     @Override
-    public void check() throws Exception {
+    public void check() throws GameOverException {
         throw new GameOverException();
     }
 
     @Override
-    public void showDown() throws Exception {
+    public void showDown() throws GameOverException {
         throw new GameOverException();
     }
 }

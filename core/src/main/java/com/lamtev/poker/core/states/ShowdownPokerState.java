@@ -59,7 +59,7 @@ class ShowdownPokerState extends ActionPokerState {
     }
 
     @Override
-    public void showDown() throws Exception {
+    public void showDown() {
         ++showDowns;
         PokerHandFactory phf = new PokerHandFactory(commonCards);
         PokerHand pokerHand = phf.createCombination(currentPlayer().getCards());

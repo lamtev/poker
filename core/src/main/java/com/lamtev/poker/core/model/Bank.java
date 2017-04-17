@@ -1,5 +1,7 @@
 package com.lamtev.poker.core.model;
 
+import com.lamtev.poker.core.states.exceptions.IsNotEnoughMoneyException;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -61,9 +63,9 @@ public final class Bank {
         return blindsStatus;
     }
 
-    public void acceptCallFromPlayer(Player player) throws Exception {
+    public void acceptCallFromPlayer(Player player) throws IsNotEnoughMoneyException {
         if (!blindsSet) {
-            throw new RuntimeException("Can't accept call from player when blinds not set");
+            throw new RuntimeException("Can't accept call from player when blinds are not set");
         }
         int moneyTakingFromPlayer = mainPot.wager - player.getWager();
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
@@ -74,7 +76,7 @@ public final class Bank {
         }
     }
 
-    public void acceptRaiseFromPlayer(int additionalWager, Player player) throws Exception {
+    public void acceptRaiseFromPlayer(int additionalWager, Player player) throws IsNotEnoughMoneyException {
         int moneyTakingFromPlayer = mainPot.wager + additionalWager - player.getWager();
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
         mainPot.money += player.takeMoney(moneyTakingFromPlayer);
@@ -118,9 +120,9 @@ public final class Bank {
         }
     }
 
-    private void validateTakingMoneyFromPlayer(Player player, int moneyTakingFromPlayer) throws Exception {
+    private void validateTakingMoneyFromPlayer(Player player, int moneyTakingFromPlayer) throws IsNotEnoughMoneyException {
         if (player.getStack() < moneyTakingFromPlayer) {
-            throw new Exception("You have not got " + moneyTakingFromPlayer + ". Try to make allIn");
+            throw new IsNotEnoughMoneyException("Try to make allIn");
         }
     }
 
