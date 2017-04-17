@@ -53,7 +53,15 @@ public class GameController extends AbstractController {
         checkRoomExistence(id);
         Room room = rooms.get(id);
         room.getGame().call();
-        //TODO
+    }
+
+    @PostMapping(value = "{id}/check", produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(ACCEPTED)
+    public void check(@PathVariable String id) throws Exception {
+        checkRoomsExistence();
+        checkRoomExistence(id);
+        Room room = rooms.get(id);
+        room.getGame().check();
     }
 
 }

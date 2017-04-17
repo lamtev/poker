@@ -1,9 +1,9 @@
 package com.lamtev.poker.webserver.exception_handlers;
 
+import com.lamtev.poker.core.states.exceptions.GameOverException;
 import com.lamtev.poker.webserver.controllers.exceptions.RequestBodyHasUnsuitableFormatException;
 import com.lamtev.poker.webserver.controllers.exceptions.ResourceAlreadyExistsException;
 import com.lamtev.poker.webserver.controllers.exceptions.ResourceNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
-public class RoomsControllerExceptionHandler {
+public class RoomsControllerExceptionHandler extends AbstractExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(NOT_FOUND)
@@ -37,8 +37,11 @@ public class RoomsControllerExceptionHandler {
         return message(CONFLICT, e);
     }
 
-    private ResponseMessage message(HttpStatus status, Exception e) {
-        return new ResponseMessage(status.value(), e.getMessage());
+    //TODO replace BAD_REQUEST by better status
+    @ExceptionHandler(GameOverException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ResponseMessage gameOver(GameOverException e) {
+        return message(BAD_REQUEST, e);
     }
 
 }

@@ -75,7 +75,7 @@ public final class RoomsController extends AbstractController {
     @PostMapping(value = "{id}/start", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(ACCEPTED)
     public Room start(@PathVariable String id,
-                      @RequestParam(value = "name") String name) {
+                      @RequestParam(value = "name") String name) throws Exception {
         checkRoomsExistence();
         checkRoomExistence(id);
         Room room = rooms.get(id);
