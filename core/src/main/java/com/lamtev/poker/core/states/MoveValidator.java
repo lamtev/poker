@@ -3,6 +3,8 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.model.Bank;
 import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.model.Players;
+import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
+import com.lamtev.poker.core.states.exceptions.UnavailableMoveException;
 
 class MoveValidator {
 
@@ -18,19 +20,19 @@ class MoveValidator {
 
     void validateCall(Player player) throws Exception {
         if (player.getWager() >= bank.getCurrentWager()) {
-            throw new Exception("can't call");
+            throw new UnavailableMoveException("Call");
         }
     }
 
     void validateRaise(int raises) throws Exception {
         if ((players.activePlayersNumber() <= 2 || raises >= 3) && players.activePlayersNumber() != 2) {
-            throw new Exception("can't raise");
+            throw new UnavailableMoveException("Raise");
         }
     }
 
     void validateCheck(int raises) throws Exception {
         if (raises != 0) {
-            throw new Exception("can't check");
+            throw new UnavailableMoveException("Check");
         }
     }
 

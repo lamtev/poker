@@ -19,4 +19,5 @@ public interface PokerState {
     void check() throws Exception;
 
     void showDown() throws Exception;
+
 }

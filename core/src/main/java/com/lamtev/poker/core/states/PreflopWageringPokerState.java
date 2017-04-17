@@ -2,6 +2,7 @@ package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -20,7 +21,7 @@ class PreflopWageringPokerState extends WageringPokerState {
 
     @Override
     public void check() throws Exception {
-        throw new IllegalStateException("can't check");
+        throw new ForbiddenMoveException("Check", toString());
     }
 
     @Override

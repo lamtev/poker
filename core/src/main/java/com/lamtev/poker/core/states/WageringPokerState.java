@@ -3,6 +3,7 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.api.PlayerMoney;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,8 +92,8 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void showDown() throws Exception {
-        throw new Exception("Can't show down when wagering");
+    public void showDown() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Show down", toString());
     }
 
     private void wagerPlaced() {

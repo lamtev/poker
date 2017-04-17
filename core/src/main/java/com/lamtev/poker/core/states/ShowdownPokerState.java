@@ -5,6 +5,7 @@ import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.hands.PokerHandFactory;
 import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 
 import java.util.*;
 
@@ -27,18 +28,18 @@ class ShowdownPokerState extends ActionPokerState {
     }
 
     @Override
-    public void call() throws IllegalStateException {
-        throw new IllegalStateException();
+    public void call() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Call", toString());
     }
 
     @Override
-    public void raise(int additionalWager) throws IllegalStateException {
-        throw new IllegalStateException();
+    public void raise(int additionalWager) throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Raise", toString());
     }
 
     @Override
-    public void allIn() throws IllegalStateException {
-        throw new IllegalStateException();
+    public void allIn() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("All in", toString());
     }
 
     @Override
@@ -53,8 +54,8 @@ class ShowdownPokerState extends ActionPokerState {
     }
 
     @Override
-    public void check() throws IllegalStateException {
-        throw new IllegalStateException("Can't check when showDown poker state");
+    public void check() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Check", toString());
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SettingsPokerState implements PokerState {
+public class SettingsPokerState extends AbstractPokerState {
 
     private Poker poker;
     private Players players;
@@ -34,17 +34,17 @@ public class SettingsPokerState implements PokerState {
     }
 
     @Override
-    public void call() throws Exception {
+    public void call() throws GameHaveNotBeenStartedException {
         throw new GameHaveNotBeenStartedException();
     }
 
     @Override
-    public void raise(int additionalWager) throws Exception {
+    public void raise(int additionalWager) throws GameHaveNotBeenStartedException {
         throw new GameHaveNotBeenStartedException();
     }
 
     @Override
-    public void allIn() throws Exception {
+    public void allIn() throws GameHaveNotBeenStartedException {
         throw new GameHaveNotBeenStartedException();
     }
 
@@ -54,7 +54,7 @@ public class SettingsPokerState implements PokerState {
     }
 
     @Override
-    public void check() throws Exception {
+    public void check() throws GameHaveNotBeenStartedException {
         throw new GameHaveNotBeenStartedException();
     }
 

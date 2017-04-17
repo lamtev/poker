@@ -6,7 +6,7 @@ import com.lamtev.poker.core.model.*;
 
 import java.util.List;
 
-abstract class ActionPokerState implements PokerState {
+abstract class ActionPokerState extends AbstractPokerState {
 
     protected int bigBlindIndex;
     protected int playerIndex;
@@ -35,7 +35,7 @@ abstract class ActionPokerState implements PokerState {
 
     @Override
     public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize) {
-        throw new RuntimeException("Can't setUp when action poker state");
+        throw new IllegalStateException("Can't setUp when" + this.getClass().getSimpleName());
     }
 
     void changePlayerIndex() {
