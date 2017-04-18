@@ -27,13 +27,13 @@ public final class RoomsController extends AbstractController {
     }
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public Collection<Room> rooms() {
+    public Collection<Room> rooms() throws Exception {
         makeSureThatRoomsExist();
         return rooms.values();
     }
 
     @GetMapping(value = "{id}", produces = APPLICATION_JSON_VALUE)
-    public Room room(@PathVariable String id) {
+    public Room room(@PathVariable String id) throws Exception {
         makeSureThatRoomsExist();
         makeSureThatRoomExists(id);
         return rooms.get(id);

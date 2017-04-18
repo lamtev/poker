@@ -21,13 +21,13 @@ public abstract class AbstractController {
         this.gson = gson;
     }
 
-    void makeSureThatRoomExists(String id) {
+    void makeSureThatRoomExists(String id) throws ResourceNotFoundException {
         if (rooms == null || !rooms.containsKey(id)) {
             throw new ResourceNotFoundException("Room with id " + id);
         }
     }
 
-    void makeSureThatRoomsExist() {
+    void makeSureThatRoomsExist() throws ResourceNotFoundException {
         if (rooms == null || rooms.size() == 0) {
             throw new ResourceNotFoundException("Rooms");
         }

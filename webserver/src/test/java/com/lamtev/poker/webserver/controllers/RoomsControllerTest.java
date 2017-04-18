@@ -11,15 +11,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.lamtev.poker.webserver.controllers.Util.invalidRoomJson;
-import static com.lamtev.poker.webserver.controllers.Util.updatedValidRoomJson;
-import static com.lamtev.poker.webserver.controllers.Util.validRoomJson;
+import static com.lamtev.poker.webserver.controllers.Util.*;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -52,10 +48,7 @@ public class RoomsControllerTest {
                 .andExpect(jsonPath("$.message",
                         is(new ResourceNotFoundException("Rooms").getMessage())));
 
-        mockMvc.perform(post("/rooms")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(validRoomJson()))
-                .andDo(print());
+        createValidRoom();
 
         mockMvc.perform(get("/rooms/xyz"))
                 .andDo(print())
@@ -81,7 +74,7 @@ public class RoomsControllerTest {
     }
 
     @Test
-    public void testCreateRoomUnsuccessfully() throws Exception {
+    public void testCreateInvalidRoom() throws Exception {
         mockMvc.perform(post("/rooms")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(invalidRoomJson()))
@@ -95,10 +88,7 @@ public class RoomsControllerTest {
 
     @Test
     public void testUpdateRoom() throws Exception {
-        mockMvc.perform(post("/rooms")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(validRoomJson()))
-                .andDo(print());
+        createValidRoom();
 
         mockMvc.perform(put("/rooms/xxx")
                 .contentType(APPLICATION_JSON_UTF8)
@@ -114,10 +104,7 @@ public class RoomsControllerTest {
 
     @Test
     public void testUpdateRoomUnsuccessfully() throws Exception {
-        mockMvc.perform(post("/rooms")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(validRoomJson()))
-                .andDo(print());
+        createValidRoom();
 
         mockMvc.perform(post("/rooms/xxx/start")
                 .param("name", "Anton"))
@@ -135,10 +122,7 @@ public class RoomsControllerTest {
 
     @Test
     public void testGetExistentRoom() throws Exception {
-        mockMvc.perform(post("/rooms")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(validRoomJson()))
-                .andDo(print());
+        createValidRoom();
 
         mockMvc.perform(get("/rooms/xxx"))
                 .andDo(print())
@@ -152,9 +136,7 @@ public class RoomsControllerTest {
 
     @Test
     public void testStartWhenUnavailable() throws Exception {
-        mockMvc.perform(post("/rooms")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(validRoomJson()));
+        createValidRoom();
 
         mockMvc.perform(post("/rooms/xxx/start")
                 .param("name", "Anton"))
@@ -171,15 +153,19 @@ public class RoomsControllerTest {
 
     @Test
     public void testStartWhenAvailable() throws Exception {
-        mockMvc.perform(post("/rooms")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(validRoomJson()))
-                .andDo(print());
+        createValidRoom();
 
         mockMvc.perform(post("/rooms/xxx/start")
                 .param("name", "Anton"))
                 .andDo(print())
                 .andExpect(status().isAccepted());
+    }
+
+    private void createValidRoom() throws Exception {
+        mockMvc.perform(post("/rooms")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(validRoomJson()))
+                .andDo(print());
     }
 
 }
