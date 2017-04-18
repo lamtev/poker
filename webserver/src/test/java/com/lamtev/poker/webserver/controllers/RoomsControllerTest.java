@@ -86,11 +86,10 @@ public class RoomsControllerTest {
                 .andExpect(jsonPath("$.playersNumber", is(6)))
                 .andExpect(jsonPath("$.stack", is(25000)))
                 .andExpect(jsonPath("$.free", is(true)));
-
     }
 
     @Test
-    public void testStart() throws Exception {
+    public void testStartWhenUnavailable() throws Exception {
         mockMvc.perform(post("/rooms")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(roomJson()));
@@ -98,12 +97,27 @@ public class RoomsControllerTest {
         mockMvc.perform(post("/rooms/xxx/start")
                 .param("name", "Anton"))
                 .andDo(print())
-                .andExpect(status().isAccepted())
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.id", is("xxx")))
-                .andExpect(jsonPath("$.playersNumber", is(6)))
-                .andExpect(jsonPath("$.stack", is(25000)))
-                .andExpect(jsonPath("$.free", is(false)));
+                .andExpect(status().isAccepted());
+
+        mockMvc.perform(post("/rooms/xxx/start")
+                .param("name", "User"))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code", is(409)))
+                .andExpect(jsonPath("$.message",
+                        is("Can't start game because it has already been started")));
+    }
+
+    @Test
+    public void testStartWhenAvailable() throws Exception {
+        mockMvc.perform(post("/rooms")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(roomJson()));
+
+        mockMvc.perform(post("/rooms/xxx/start")
+                .param("name", "Anton"))
+                .andDo(print())
+                .andExpect(status().isAccepted());
     }
 
 }

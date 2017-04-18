@@ -5,6 +5,7 @@ import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 import com.lamtev.poker.core.states.exceptions.IsNotEnoughMoneyException;
+import com.lamtev.poker.core.states.exceptions.NotPositiveWagerException;
 import com.lamtev.poker.core.states.exceptions.UnavailableMoveException;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void raise(int additionalWager) throws UnavailableMoveException, IsNotEnoughMoneyException {
+    public void raise(int additionalWager) throws UnavailableMoveException, IsNotEnoughMoneyException, NotPositiveWagerException {
         moveValidator.validateRaise(raisers.size());
         bank.acceptRaiseFromPlayer(additionalWager, currentPlayer());
         raisers.add(currentPlayer());

@@ -1,6 +1,7 @@
 package com.lamtev.poker.core.model;
 
 import com.lamtev.poker.core.states.exceptions.IsNotEnoughMoneyException;
+import com.lamtev.poker.core.states.exceptions.NotPositiveWagerException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -76,7 +77,11 @@ public final class Bank {
         }
     }
 
-    public void acceptRaiseFromPlayer(int additionalWager, Player player) throws IsNotEnoughMoneyException {
+    public void acceptRaiseFromPlayer(int additionalWager, Player player) throws
+            IsNotEnoughMoneyException, NotPositiveWagerException {
+        if (additionalWager <= 0) {
+            throw new NotPositiveWagerException();
+        }
         int moneyTakingFromPlayer = mainPot.wager + additionalWager - player.getWager();
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
         mainPot.money += player.takeMoney(moneyTakingFromPlayer);

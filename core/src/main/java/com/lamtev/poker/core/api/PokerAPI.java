@@ -24,6 +24,7 @@ public interface PokerAPI {
             ForbiddenMoveException,
             UnavailableMoveException,
             IsNotEnoughMoneyException,
+            NotPositiveWagerException,
             GameOverException;
 
     void allIn() throws

@@ -23,6 +23,7 @@ public interface PokerState {
             ForbiddenMoveException,
             UnavailableMoveException,
             IsNotEnoughMoneyException,
+            NotPositiveWagerException,
             GameOverException;
 
     void allIn() throws

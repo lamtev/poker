@@ -2,6 +2,7 @@ package com.lamtev.poker.webserver.exception_handlers;
 
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 import com.lamtev.poker.core.states.exceptions.IsNotEnoughMoneyException;
+import com.lamtev.poker.core.states.exceptions.NotPositiveWagerException;
 import com.lamtev.poker.core.states.exceptions.UnavailableMoveException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -29,6 +30,12 @@ public class GameControllerExceptionHandler extends AbstractExceptionHandler {
     @ExceptionHandler(IsNotEnoughMoneyException.class)
     @ResponseStatus(FORBIDDEN)
     public ResponseMessage isNotEnoughMoney(IsNotEnoughMoneyException e) {
+        return message(FORBIDDEN, e);
+    }
+
+    @ExceptionHandler(NotPositiveWagerException.class)
+    @ResponseStatus(FORBIDDEN)
+    public ResponseMessage notPositiveWager(NotPositiveWagerException e) {
         return message(FORBIDDEN, e);
     }
 

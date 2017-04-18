@@ -74,7 +74,7 @@ public final class RoomsController extends AbstractController {
 
     @PostMapping(value = "{id}/start", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(ACCEPTED)
-    public Room start(@PathVariable String id,
+    public void start(@PathVariable String id,
                       @RequestParam(value = "name") String name) throws Exception {
         checkRoomsExistence();
         checkRoomExistence(id);
@@ -83,7 +83,6 @@ public final class RoomsController extends AbstractController {
         GameAPI game = room.getGame();
         game.start(name, room.getPlayersNumber(), room.getStack());
         room.setFree(false);
-        return room;
     }
 
 }

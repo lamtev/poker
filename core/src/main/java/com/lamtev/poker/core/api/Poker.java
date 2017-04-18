@@ -59,6 +59,7 @@ public class Poker implements PokerAPI {
             ForbiddenMoveException,
             GameHaveNotBeenStartedException,
             IsNotEnoughMoneyException,
+            NotPositiveWagerException,
             GameOverException,
             UnavailableMoveException {
         validateGameIsSetUp();
