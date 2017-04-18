@@ -49,7 +49,7 @@ public class Poker implements PokerAPI {
             GameHaveNotBeenStartedException,
             IsNotEnoughMoneyException,
             GameOverException,
-            UnavailableMoveException {
+            UnallowableMoveException {
         validateGameIsSetUp();
         state.call();
     }
@@ -61,7 +61,7 @@ public class Poker implements PokerAPI {
             IsNotEnoughMoneyException,
             NotPositiveWagerException,
             GameOverException,
-            UnavailableMoveException {
+            UnallowableMoveException {
         validateGameIsSetUp();
         state.raise(additionalWager);
     }
@@ -71,7 +71,7 @@ public class Poker implements PokerAPI {
             ForbiddenMoveException,
             GameHaveNotBeenStartedException,
             GameOverException,
-            UnavailableMoveException {
+            UnallowableMoveException {
         validateGameIsSetUp();
         state.allIn();
     }
@@ -87,7 +87,7 @@ public class Poker implements PokerAPI {
             ForbiddenMoveException,
             GameHaveNotBeenStartedException,
             GameOverException,
-            UnavailableMoveException {
+            UnallowableMoveException {
         validateGameIsSetUp();
         state.check();
     }

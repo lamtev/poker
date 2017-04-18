@@ -2,13 +2,10 @@ package com.lamtev.poker.webserver.controllers.exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
 
-    public ResourceNotFoundException(String resource) {
-        super(resource);
-    }
+    private static final String NOT_FOUND = " not found";
 
-    @Override
-    public String getMessage() {
-        return super.getMessage() + " not found";
+    public ResourceNotFoundException(String resource) {
+        super(resource + NOT_FOUND);
     }
 
 }

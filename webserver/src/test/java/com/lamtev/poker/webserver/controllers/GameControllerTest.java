@@ -9,7 +9,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.lamtev.poker.webserver.controllers.Util.roomJson;
+import static com.lamtev.poker.webserver.controllers.Util.validRoomJson;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
@@ -32,7 +32,7 @@ public class GameControllerTest {
     public void testGetPlayersWhenStarted() throws Exception {
         mockMvc.perform(post("/rooms")
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(roomJson()));
+                .content(validRoomJson()));
 
         mockMvc.perform(post("/rooms/xxx/start")
                 .param("name", "Anton"));
@@ -41,9 +41,9 @@ public class GameControllerTest {
                 .andDo(print())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.*.wager", hasItems(0, 25, 50)))
-                .andExpect(jsonPath("$.*.stack", hasItems(25000, 24975, 24950)))
-                .andExpect(jsonPath("$.*.active", hasItem(true)));
+                .andExpect(jsonPath("$.[*].*.wager", hasItems(0, 25, 50)))
+                .andExpect(jsonPath("$.[*].*.stack", hasItems(25000, 24975, 24950)))
+                .andExpect(jsonPath("$.[*].*.active", hasItem(true)));
     }
 
 }

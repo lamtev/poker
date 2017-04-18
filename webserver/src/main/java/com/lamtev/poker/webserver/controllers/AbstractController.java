@@ -21,21 +21,15 @@ public abstract class AbstractController {
         this.gson = gson;
     }
 
-    void checkRoomExistence(String id) {
+    void makeSureThatRoomExists(String id) {
         if (rooms == null || !rooms.containsKey(id)) {
             throw new ResourceNotFoundException("Room with id " + id);
         }
     }
 
-    void checkRoomsExistence() {
+    void makeSureThatRoomsExist() {
         if (rooms == null || rooms.size() == 0) {
             throw new ResourceNotFoundException("Rooms");
-        }
-    }
-
-    void checkRoomFreedom(Room room) {
-        if (room.isNotFree()) {
-            throw new IllegalStateException("Can't start game because it has already been started");
         }
     }
 

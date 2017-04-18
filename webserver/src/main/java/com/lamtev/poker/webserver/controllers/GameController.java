@@ -5,9 +5,11 @@ import com.google.gson.JsonObject;
 import com.lamtev.poker.core.api.PlayerExpandedInfo;
 import com.lamtev.poker.webserver.GameAPI;
 import com.lamtev.poker.webserver.Room;
+import com.lamtev.poker.webserver.controllers.exceptions.RoomStateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.ACCEPTED;
@@ -25,19 +27,21 @@ public class GameController extends AbstractController {
 
     @GetMapping(value = "{id}/players", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public Map<String, PlayerExpandedInfo> getPlayers(@PathVariable String id) {
-        checkRoomsExistence();
-        checkRoomExistence(id);
+    public List<Map.Entry<String, PlayerExpandedInfo>> getPlayers(@PathVariable String id) throws Exception {
+        makeSureThatRoomsExist();
+        makeSureThatRoomExists(id);
+        Room room = rooms.get(id);
+        makeSureThatRoomIsTaken(room, "There isn't players info because game have not been started");
         return rooms.get(id).getGame().getPlayersInfo();
     }
 
     @GetMapping(value = "{id}/short-info", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public String getInfo(@PathVariable String id) {
-        //TODO
-        checkRoomsExistence();
-        checkRoomExistence(id);
+    public String shortInfo(@PathVariable String id) throws RoomStateException {
+        makeSureThatRoomsExist();
+        makeSureThatRoomExists(id);
         Room room = rooms.get(id);
+        makeSureThatRoomIsTaken(room, "There isn't info because game have not been started");
         GameAPI game = room.getGame();
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("state", game.getCurrentStateName());
@@ -49,18 +53,20 @@ public class GameController extends AbstractController {
     @PostMapping(value = "{id}/call", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(ACCEPTED)
     public void call(@PathVariable String id) throws Exception {
-        checkRoomsExistence();
-        checkRoomExistence(id);
+        makeSureThatRoomsExist();
+        makeSureThatRoomExists(id);
         Room room = rooms.get(id);
+        makeSureThatRoomIsTaken(room, "Can not call because game have not been started");
         room.getGame().call();
     }
 
     @PostMapping(value = "{id}/check", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(ACCEPTED)
     public void check(@PathVariable String id) throws Exception {
-        checkRoomsExistence();
-        checkRoomExistence(id);
+        makeSureThatRoomsExist();
+        makeSureThatRoomExists(id);
         Room room = rooms.get(id);
+        makeSureThatRoomIsTaken(room, "Can not check because game have not been started");
         room.getGame().check();
     }
 
@@ -68,10 +74,17 @@ public class GameController extends AbstractController {
     @ResponseStatus(ACCEPTED)
     public void raise(@PathVariable String id,
                       @RequestParam(value = "additionalWager") int additionalWager) throws Exception {
-        checkRoomsExistence();
-        checkRoomExistence(id);
+        makeSureThatRoomsExist();
+        makeSureThatRoomExists(id);
         Room room = rooms.get(id);
+        makeSureThatRoomIsTaken(room, "Can not raise because game have not been started");
         room.getGame().raise(additionalWager);
+    }
+
+    private void makeSureThatRoomIsTaken(Room room, String message) throws RoomStateException {
+        if (room.isFree()) {
+            throw new RoomStateException("free", message);
+        }
     }
 
 }

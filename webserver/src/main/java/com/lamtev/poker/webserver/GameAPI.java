@@ -9,9 +9,11 @@ import java.util.Map;
 public interface GameAPI {
     void start(String humanId, int playersNumber, int stack) throws Exception;
 
-    Map<String, PlayerExpandedInfo> getPlayersInfo();
+    List<Map.Entry<String, PlayerExpandedInfo>> getPlayersInfo();
 
     int getBank();
+
+    int getWager();
 
     String getCurrentPlayerId();
 

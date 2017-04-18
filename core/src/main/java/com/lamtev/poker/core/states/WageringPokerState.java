@@ -6,7 +6,7 @@ import com.lamtev.poker.core.model.*;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 import com.lamtev.poker.core.states.exceptions.IsNotEnoughMoneyException;
 import com.lamtev.poker.core.states.exceptions.NotPositiveWagerException;
-import com.lamtev.poker.core.states.exceptions.UnavailableMoveException;
+import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void call() throws UnavailableMoveException, IsNotEnoughMoneyException {
+    public void call() throws UnallowableMoveException, IsNotEnoughMoneyException {
         moveValidator.validateCall(currentPlayer());
         bank.acceptCallFromPlayer(currentPlayer());
         wagerPlaced();
@@ -41,7 +41,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void raise(int additionalWager) throws UnavailableMoveException, IsNotEnoughMoneyException, NotPositiveWagerException {
+    public void raise(int additionalWager) throws UnallowableMoveException, IsNotEnoughMoneyException, NotPositiveWagerException {
         moveValidator.validateRaise(raisers.size());
         bank.acceptRaiseFromPlayer(additionalWager, currentPlayer());
         raisers.add(currentPlayer());
@@ -50,7 +50,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void allIn() throws UnavailableMoveException {
+    public void allIn() throws UnallowableMoveException {
         //FIXME
         //TODO what for catches?
         int additionalWager = currentPlayer().getStack() - (bank.getCurrentWager() - currentPlayer().getWager());
@@ -89,7 +89,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void check() throws ForbiddenMoveException, UnavailableMoveException {
+    public void check() throws ForbiddenMoveException, UnallowableMoveException {
         moveValidator.validateCheck(raisers.size());
         changePlayerIndex();
         ++checks;

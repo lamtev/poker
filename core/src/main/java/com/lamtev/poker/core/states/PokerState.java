@@ -14,14 +14,14 @@ public interface PokerState {
     void call() throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
-            UnavailableMoveException,
+            UnallowableMoveException,
             IsNotEnoughMoneyException,
             GameOverException;
 
     void raise(int additionalWager) throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
-            UnavailableMoveException,
+            UnallowableMoveException,
             IsNotEnoughMoneyException,
             NotPositiveWagerException,
             GameOverException;
@@ -29,7 +29,7 @@ public interface PokerState {
     void allIn() throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
-            UnavailableMoveException,
+            UnallowableMoveException,
             GameOverException;
 
     void fold() throws Exception;
@@ -37,7 +37,7 @@ public interface PokerState {
     void check() throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
-            UnavailableMoveException,
+            UnallowableMoveException,
             GameOverException;
 
     void showDown() throws

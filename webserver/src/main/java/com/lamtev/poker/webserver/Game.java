@@ -65,8 +65,8 @@ public class Game implements PokerEventListener, GameAPI {
     }
 
     @Override
-    public Map<String, PlayerExpandedInfo> getPlayersInfo() {
-        return playersInfo;
+    public List<Map.Entry<String, PlayerExpandedInfo>> getPlayersInfo() {
+        return new ArrayList<>(playersInfo.entrySet());
     }
 
     @Override
@@ -82,6 +82,11 @@ public class Game implements PokerEventListener, GameAPI {
     @Override
     public int getBank() {
         return bank;
+    }
+
+    @Override
+    public int getWager() {
+        return 0;
     }
 
     @Override

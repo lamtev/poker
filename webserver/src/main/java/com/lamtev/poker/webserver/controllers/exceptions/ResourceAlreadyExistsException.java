@@ -1,13 +1,11 @@
 package com.lamtev.poker.webserver.controllers.exceptions;
 
-public class ResourceAlreadyExistsException extends RuntimeException {
+public class ResourceAlreadyExistsException extends Exception {
+
+    private static final String ALREADY_EXISTS = " already exists";
 
     public ResourceAlreadyExistsException(String resource) {
-        super(resource);
+        super(resource + ALREADY_EXISTS);
     }
 
-    @Override
-    public String getMessage() {
-        return super.getMessage() + " already exists";
-    }
 }

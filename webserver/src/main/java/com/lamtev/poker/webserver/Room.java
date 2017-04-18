@@ -60,11 +60,11 @@ public class Room {
 
     @JsonIgnore
     public boolean isValid() {
-        return id != null && !id.isEmpty() && playersNumber > 1 && stack > 0;
+        return id != null && !id.isEmpty() && playersNumber > 1 && stack > 99;
     }
 
     @JsonIgnore
-    public boolean isNotFree() {
+    public boolean isTaken() {
         return !free;
     }
 

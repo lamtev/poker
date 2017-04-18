@@ -31,12 +31,6 @@ public class RoomsControllerExceptionHandler extends AbstractExceptionHandler {
         return message(UNPROCESSABLE_ENTITY, e);
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    @ResponseStatus(CONFLICT)
-    public ResponseMessage illegalState(IllegalStateException e) {
-        return message(CONFLICT, e);
-    }
-
     //TODO replace BAD_REQUEST by better status
     @ExceptionHandler(GameOverException.class)
     @ResponseStatus(BAD_REQUEST)
