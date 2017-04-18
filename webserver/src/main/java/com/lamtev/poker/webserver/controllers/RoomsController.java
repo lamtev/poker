@@ -64,7 +64,7 @@ public final class RoomsController extends AbstractController {
         return room;
     }
 
-    @PostMapping(value = "{id}/start", produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "{id}/start")
     @ResponseStatus(ACCEPTED)
     public void start(@PathVariable String id,
                       @RequestParam(value = "name") String name) throws Exception {
