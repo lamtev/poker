@@ -19,6 +19,7 @@ public class Game implements PokerEventListener, GameAPI {
     private String currentPlayerId;
     private String currentStateName;
     private int bank;
+    private int smallBlindSize;
 
     @Override
     public void start(String humanId, int playersNumber, int stack) throws GameOverException {
@@ -31,7 +32,8 @@ public class Game implements PokerEventListener, GameAPI {
         players.forEach(player -> playersInfo.put(player, new PlayerExpandedInfo(stack, 0, true)));
         List<PlayerIdStack> playersStacks = new ArrayList<>();
         playersInfo.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getStack())));
-        poker.setUp(playersStacks, playersStacks.get(0).getId(), playersStacks.get(1).getId(), stack / 1000);
+        smallBlindSize = stack / 1000;
+        poker.setUp(playersStacks, playersStacks.get(0).getId(), playersStacks.get(1).getId(), smallBlindSize);
     }
 
     @Override
@@ -103,7 +105,8 @@ public class Game implements PokerEventListener, GameAPI {
 
     @Override
     public void playerFold(String foldPlayerId) {
-
+        //TODO
+        playersInfo.get(foldPlayerId).setActive(false);
     }
 
     @Override
@@ -112,11 +115,11 @@ public class Game implements PokerEventListener, GameAPI {
         playerInfo.setStack(playerMoney.getStack());
         playerInfo.setWager(playerMoney.getWager());
         this.bank = bank;
-
     }
 
     @Override
     public void stateChanged(String stateName) {
+        //FIXME bug with states gameIsOver after preflop
         currentStateName = stateName;
     }
 
@@ -127,6 +130,30 @@ public class Game implements PokerEventListener, GameAPI {
 
     @Override
     public void gameOver(List<PlayerIdStack> playersInfo) {
+        this.playersInfo = new LinkedHashMap<>();
+        playersInfo.stream()
+                .filter(playerIdStack -> playerIdStack.getStack() > 0)
+                .forEach(playerIdStack -> {
+                    String id = playerIdStack.getId();
+                    int stack = playerIdStack.getStack();
+                    PlayerExpandedInfo info = new PlayerExpandedInfo(stack, 0, true);
+                    this.playersInfo.put(id, info);
+                });
+
+        poker = new Poker();
+        poker.subscribe(this);
+        communityCards = new ArrayList<>();
+        playersCards = new LinkedHashMap<>();
+
+        smallBlindSize *= 1.25;
+
+        List<PlayerIdStack> playersStacks = new ArrayList<>();
+        this.playersInfo.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getStack())));
+        try {
+            poker.setUp(playersStacks, playersStacks.get(0).getId(), playersStacks.get(1).getId(), smallBlindSize);
+        } catch (GameOverException e) {
+            e.printStackTrace();
+        }
 
     }
 

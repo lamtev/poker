@@ -164,7 +164,7 @@ public class Poker implements PokerAPI {
 
     private void addStateChangedListener(StateChangedListener stateChangedListener) {
         stateChangedListeners.add(stateChangedListener);
-        notifyStateChangedListeners();
+//        notifyStateChangedListeners();
     }
 
     private void addGameIsOverListener(GameOverListener gameOverListener) {

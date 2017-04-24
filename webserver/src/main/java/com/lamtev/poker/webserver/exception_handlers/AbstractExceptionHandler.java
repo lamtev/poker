@@ -1,6 +1,6 @@
 package com.lamtev.poker.webserver.exception_handlers;
 
-import com.lamtev.poker.webserver.controllers.exceptions.RoomStateException;
+import com.lamtev.poker.webserver.controllers.exceptions.RoomStatusException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -15,9 +15,9 @@ public abstract class AbstractExceptionHandler {
         return new ResponseMessage(status.value(), e.getMessage());
     }
 
-    @ExceptionHandler(RoomStateException.class)
+    @ExceptionHandler(RoomStatusException.class)
     @ResponseStatus(CONFLICT)
-    public ResponseMessage illegalState(RoomStateException e) {
+    public ResponseMessage illegalState(RoomStatusException e) {
         return message(CONFLICT, e);
     }
 

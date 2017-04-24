@@ -6,7 +6,7 @@ import com.lamtev.poker.webserver.GameAPI;
 import com.lamtev.poker.webserver.Room;
 import com.lamtev.poker.webserver.controllers.exceptions.RequestBodyHasUnsuitableFormatException;
 import com.lamtev.poker.webserver.controllers.exceptions.ResourceAlreadyExistsException;
-import com.lamtev.poker.webserver.controllers.exceptions.RoomStateException;
+import com.lamtev.poker.webserver.controllers.exceptions.RoomStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,11 +32,11 @@ public final class RoomsController extends AbstractController {
         return rooms.values();
     }
 
-    @GetMapping(value = "{id}", produces = APPLICATION_JSON_VALUE)
-    public Room room(@PathVariable String id) throws Exception {
+    @GetMapping(value = "{roomId}", produces = APPLICATION_JSON_VALUE)
+    public Room room(@PathVariable String roomId) throws Exception {
         makeSureThatRoomsExist();
-        makeSureThatRoomExists(id);
-        return rooms.get(id);
+        makeSureThatRoomExists(roomId);
+        return rooms.get(roomId);
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -49,14 +49,14 @@ public final class RoomsController extends AbstractController {
         return room;
     }
 
-    @PutMapping(value = "{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PutMapping(value = "{roomId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
-    public Room updateRoom(@PathVariable String id,
+    public Room updateRoom(@PathVariable String roomId,
                            @RequestBody Room newRoom) throws Exception {
         makeSureThatRoomIsValid(newRoom);
         makeSureThatRoomsExist();
-        makeSureThatRoomExists(id);
-        Room room = rooms.get(id);
+        makeSureThatRoomExists(roomId);
+        Room room = rooms.get(roomId);
         makeSureThatRoomIsFree(room, "Can not update room");
         room.setId(newRoom.getId());
         room.setPlayersNumber(newRoom.getPlayersNumber());
@@ -64,28 +64,28 @@ public final class RoomsController extends AbstractController {
         return room;
     }
 
-    @PostMapping(value = "{id}/start")
+    @PostMapping(value = "{roomId}/start")
     @ResponseStatus(ACCEPTED)
-    public void start(@PathVariable String id,
+    public void start(@PathVariable String roomId,
                       @RequestParam(value = "name") String name) throws Exception {
         makeSureThatRoomsExist();
-        makeSureThatRoomExists(id);
-        Room room = rooms.get(id);
+        makeSureThatRoomExists(roomId);
+        Room room = rooms.get(roomId);
         makeSureThatRoomIsFree(room, "Game has been already started");
         GameAPI game = room.getGame();
         game.start(name, room.getPlayersNumber(), room.getStack());
         room.setFree(false);
     }
 
-    private void makeSureThatRoomIsFree(Room room, String message) throws RoomStateException {
+    private void makeSureThatRoomIsFree(Room room, String message) throws RoomStatusException {
         if (room.isTaken()) {
-            throw new RoomStateException("taken", message);
+            throw new RoomStatusException("taken", message);
         }
     }
 
     private void makeSureThatRoomDoesNotExist(Room room) throws ResourceAlreadyExistsException {
         if (rooms.containsKey(room.getId())) {
-            throw new ResourceAlreadyExistsException("Room with id " + room.getId());
+            throw new ResourceAlreadyExistsException("Room with roomId " + room.getId());
         }
     }
 

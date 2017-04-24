@@ -3,9 +3,11 @@ package com.lamtev.poker.webserver.controllers;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.lamtev.poker.core.api.PlayerExpandedInfo;
+import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.webserver.GameAPI;
 import com.lamtev.poker.webserver.Room;
-import com.lamtev.poker.webserver.controllers.exceptions.RoomStateException;
+import com.lamtev.poker.webserver.controllers.exceptions.NoCardsException;
+import com.lamtev.poker.webserver.controllers.exceptions.RoomStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,22 +27,49 @@ public class GameController extends AbstractController {
         super(rooms, gson);
     }
 
-    @GetMapping(value = "{id}/players", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{roomId}/players", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public List<Map.Entry<String, PlayerExpandedInfo>> getPlayers(@PathVariable String id) throws Exception {
+    public List<Map.Entry<String, PlayerExpandedInfo>> getPlayers(@PathVariable String roomId) throws Exception {
         makeSureThatRoomsExist();
-        makeSureThatRoomExists(id);
-        Room room = rooms.get(id);
+        makeSureThatRoomExists(roomId);
+        Room room = rooms.get(roomId);
         makeSureThatRoomIsTaken(room, "There isn't players info because game has not been started");
-        return rooms.get(id).getGame().getPlayersInfo();
+        return rooms.get(roomId).getGame().getPlayersInfo();
     }
 
-    @GetMapping(value = "{id}/short-info", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{roomId}/communityCards", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public String shortInfo(@PathVariable String id) throws Exception {
+    public List<Card> communityCards(@PathVariable String roomId) throws Exception {
         makeSureThatRoomsExist();
-        makeSureThatRoomExists(id);
-        Room room = rooms.get(id);
+        makeSureThatRoomExists(roomId);
+        Room room = rooms.get(roomId);
+        makeSureThatRoomIsTaken(room, "Can not get community cards because game has not been started");
+
+        List<Card> communityCards = room.getGame().getCommunityCards();
+        makeSureThatCardsAreNotEmpty(communityCards);
+        return communityCards;
+    }
+
+    @GetMapping(value = "{roomId}/players/{playerId}/cards", produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public List<Card> cards(@PathVariable String roomId,
+                            @PathVariable String playerId) throws Exception {
+        makeSureThatRoomsExist();
+        makeSureThatRoomExists(roomId);
+        Room room = rooms.get(roomId);
+        makeSureThatRoomIsTaken(room, "Can not get cards of player with roomId " + playerId + " because game has not been started");
+
+        List<Card> playerCards = room.getGame().getPlayerCards(playerId);
+        makeSureThatCardsAreNotEmpty(playerCards);
+        return playerCards;
+    }
+
+    @GetMapping(value = "{roomId}/short-info", produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(OK)
+    public String shortInfo(@PathVariable String roomId) throws Exception {
+        makeSureThatRoomsExist();
+        makeSureThatRoomExists(roomId);
+        Room room = rooms.get(roomId);
         makeSureThatRoomIsTaken(room, "There isn't info because game has not been started");
         GameAPI game = room.getGame();
         JsonObject jsonObject = new JsonObject();
@@ -50,60 +79,66 @@ public class GameController extends AbstractController {
         return jsonObject.toString();
     }
 
-    @PostMapping(value = "{id}/call")
+    @PostMapping(value = "{roomId}/call")
     @ResponseStatus(ACCEPTED)
-    public void call(@PathVariable String id) throws Exception {
+    public void call(@PathVariable String roomId) throws Exception {
         makeSureThatRoomsExist();
-        makeSureThatRoomExists(id);
-        Room room = rooms.get(id);
+        makeSureThatRoomExists(roomId);
+        Room room = rooms.get(roomId);
         makeSureThatRoomIsTaken(room, "Can not call because game has not been started");
         room.getGame().call();
     }
 
-    @PostMapping(value = "{id}/check")
+    @PostMapping(value = "{roomId}/check")
     @ResponseStatus(ACCEPTED)
-    public void check(@PathVariable String id) throws Exception {
+    public void check(@PathVariable String roomId) throws Exception {
         makeSureThatRoomsExist();
-        makeSureThatRoomExists(id);
-        Room room = rooms.get(id);
+        makeSureThatRoomExists(roomId);
+        Room room = rooms.get(roomId);
         makeSureThatRoomIsTaken(room, "Can not check because game has not been started");
         room.getGame().check();
     }
 
-    @PostMapping(value = "{id}/raise")
+    @PostMapping(value = "{roomId}/raise")
     @ResponseStatus(ACCEPTED)
-    public void raise(@PathVariable String id,
+    public void raise(@PathVariable String roomId,
                       @RequestParam(value = "additionalWager") int additionalWager) throws Exception {
         makeSureThatRoomsExist();
-        makeSureThatRoomExists(id);
-        Room room = rooms.get(id);
+        makeSureThatRoomExists(roomId);
+        Room room = rooms.get(roomId);
         makeSureThatRoomIsTaken(room, "Can not raise because game has not been started");
         room.getGame().raise(additionalWager);
     }
 
-    @PostMapping(value = "{id}/fold")
+    @PostMapping(value = "{roomId}/fold")
     @ResponseStatus(ACCEPTED)
-    public void fold(@PathVariable String id) throws Exception {
+    public void fold(@PathVariable String roomId) throws Exception {
         makeSureThatRoomsExist();
-        makeSureThatRoomExists(id);
-        Room room = rooms.get(id);
+        makeSureThatRoomExists(roomId);
+        Room room = rooms.get(roomId);
         makeSureThatRoomIsTaken(room, "Can not fold because game has not been started");
         room.getGame().fold();
     }
 
-    @PostMapping(value = "{id}/showDown")
+    @PostMapping(value = "{roomId}/showDown")
     @ResponseStatus(ACCEPTED)
-    public void showDown(@PathVariable String id) throws Exception {
+    public void showDown(@PathVariable String roomId) throws Exception {
         makeSureThatRoomsExist();
-        makeSureThatRoomExists(id);
-        Room room = rooms.get(id);
+        makeSureThatRoomExists(roomId);
+        Room room = rooms.get(roomId);
         makeSureThatRoomIsTaken(room, "Can not show down because game has not been started");
         room.getGame().showDown();
     }
 
-    private void makeSureThatRoomIsTaken(Room room, String message) throws RoomStateException {
+    private void makeSureThatCardsAreNotEmpty(List<Card> playerCards) throws NoCardsException {
+        if (playerCards.isEmpty()) {
+            throw new NoCardsException();
+        }
+    }
+
+    private void makeSureThatRoomIsTaken(Room room, String message) throws RoomStatusException {
         if (room.isFree()) {
-            throw new RoomStateException("free", message);
+            throw new RoomStatusException("free", message);
         }
     }
 

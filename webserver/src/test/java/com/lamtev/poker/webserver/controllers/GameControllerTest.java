@@ -58,6 +58,53 @@ public class GameControllerTest {
     }
 
     @Test
+    public void testGetPlayerCards() throws Exception {
+        createRoom();
+
+        mockMvc.perform(post("/rooms/xxx/start")
+                .param("name", "Anton"))
+                .andDo(print());
+
+        mockMvc.perform(get("/rooms/xxx/players/Anton/cards"))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(2)));
+    }
+
+    @Test
+    public void testGetCommunityCardsWhenNoCards() throws Exception {
+        createRoom();
+
+        mockMvc.perform(post("/rooms/xxx/start")
+                .param("name", "Anton"))
+                .andDo(print());
+
+        mockMvc.perform(get("/rooms/xxx/communityCards"))
+                .andDo(print())
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code", is(404)))
+                .andExpect(jsonPath("$.message", is("No cards")));
+    }
+
+    @Test
+    public void testGetCommunityCards() throws Exception {
+        createRoom();
+
+        mockMvc.perform(post("/rooms/xxx/start")
+                .param("name", "Anton"))
+                .andDo(print());
+
+        callNTimes(5);
+
+        mockMvc.perform(get("/rooms/xxx/communityCards"))
+                .andDo(print())
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(3)));
+    }
+
+    @Test
     public void testGetShortInfo() throws Exception {
         createRoom();
 
@@ -163,6 +210,13 @@ public class GameControllerTest {
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(validRoomJson()))
                 .andDo(print());
+    }
+
+    private void callNTimes(int n) throws Exception {
+        for (int i = 0; i < n; ++i) {
+            mockMvc.perform(post("/rooms/xxx/call"))
+                    .andDo(print());
+        }
     }
 
 }
