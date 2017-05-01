@@ -50,7 +50,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void allIn() throws UnallowableMoveException {
+    public void allIn() {
         //FIXME
         //TODO what for catches?
         int additionalWager = currentPlayer().getStack() - (bank.getCurrentWager() - currentPlayer().getWager());
