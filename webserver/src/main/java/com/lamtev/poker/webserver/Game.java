@@ -121,6 +121,7 @@ public class Game implements PokerEventListener, GameAPI {
     public void stateChanged(String stateName) {
         //FIXME bug with states gameIsOver after preflop
         currentStateName = stateName;
+        System.out.println(currentStateName);
     }
 
     @Override
@@ -130,6 +131,12 @@ public class Game implements PokerEventListener, GameAPI {
 
     @Override
     public void gameOver(List<PlayerIdStack> playersInfo) {
+        long cnt = playersInfo.stream().filter(x -> x.getStack() > 0).count();
+        System.out.println(cnt);
+        if (cnt == 1) {
+            currentStateName = "Finished";
+            return;
+        }
         this.playersInfo = new LinkedHashMap<>();
         playersInfo.stream()
                 .filter(playerIdStack -> playerIdStack.getStack() > 0)
@@ -154,7 +161,6 @@ public class Game implements PokerEventListener, GameAPI {
         } catch (GameOverException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

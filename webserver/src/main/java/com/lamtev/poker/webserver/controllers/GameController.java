@@ -52,8 +52,8 @@ public class GameController extends AbstractController {
 
     @GetMapping(value = "{roomId}/players/{playerId}/cards", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public List<Card> cards(@PathVariable String roomId,
-                            @PathVariable String playerId) throws Exception {
+    public List<Card> playerCards(@PathVariable String roomId,
+                                  @PathVariable String playerId) throws Exception {
         makeSureThatRoomsExist();
         makeSureThatRoomExists(roomId);
         Room room = rooms.get(roomId);
@@ -108,6 +108,16 @@ public class GameController extends AbstractController {
         Room room = rooms.get(roomId);
         makeSureThatRoomIsTaken(room, "Can not raise because game has not been started");
         room.getGame().raise(additionalWager);
+    }
+
+    @PostMapping(value = "{roomId}/allIn")
+    @ResponseStatus(ACCEPTED)
+    public void allIn(@PathVariable String roomId) throws Exception {
+        makeSureThatRoomsExist();
+        makeSureThatRoomExists(roomId);
+        Room room = rooms.get(roomId);
+        makeSureThatRoomIsTaken(room, "Can not all-in because game has not been started");
+        room.getGame().allIn();
     }
 
     @PostMapping(value = "{roomId}/fold")

@@ -31,9 +31,7 @@ public class GameControllerTest {
     public void testGetPlayersWhenStarted() throws Exception {
         createRoom();
 
-        mockMvc.perform(post("/rooms/xxx/start")
-                .param("name", "Anton"))
-                .andDo(print());
+        start();
 
         mockMvc.perform(get("/rooms/xxx/players"))
                 .andDo(print())
@@ -61,9 +59,7 @@ public class GameControllerTest {
     public void testGetPlayerCards() throws Exception {
         createRoom();
 
-        mockMvc.perform(post("/rooms/xxx/start")
-                .param("name", "Anton"))
-                .andDo(print());
+        start();
 
         mockMvc.perform(get("/rooms/xxx/players/Anton/cards"))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -75,9 +71,7 @@ public class GameControllerTest {
     public void testGetCommunityCardsWhenNoCards() throws Exception {
         createRoom();
 
-        mockMvc.perform(post("/rooms/xxx/start")
-                .param("name", "Anton"))
-                .andDo(print());
+        start();
 
         mockMvc.perform(get("/rooms/xxx/communityCards"))
                 .andDo(print())
@@ -91,9 +85,7 @@ public class GameControllerTest {
     public void testGetCommunityCards() throws Exception {
         createRoom();
 
-        mockMvc.perform(post("/rooms/xxx/start")
-                .param("name", "Anton"))
-                .andDo(print());
+        start();
 
         callNTimes(5);
 
@@ -108,9 +100,7 @@ public class GameControllerTest {
     public void testGetShortInfo() throws Exception {
         createRoom();
 
-        mockMvc.perform(post("/rooms/xxx/start")
-                .param("name", "Anton"))
-                .andDo(print());
+        start();
 
         mockMvc.perform(get("/rooms/xxx/short-info"))
                 .andDo(print())
@@ -137,9 +127,7 @@ public class GameControllerTest {
     public void testCall() throws Exception {
         createRoom();
 
-        mockMvc.perform(post("/rooms/xxx/start")
-                .param("name", "Anton"))
-                .andDo(print());
+        start();
 
         mockMvc.perform(post("/rooms/xxx/call"))
                 .andDo(print())
@@ -151,9 +139,7 @@ public class GameControllerTest {
         //TODO
         createRoom();
 
-        mockMvc.perform(post("/rooms/xxx/start")
-                .param("name", "Anton"))
-                .andDo(print());
+        start();
 
         mockMvc.perform(post("/rooms/xxx/check"))
                 .andDo(print())
@@ -166,9 +152,7 @@ public class GameControllerTest {
     public void testRaise() throws Exception {
         createRoom();
 
-        mockMvc.perform(post("/rooms/xxx/start")
-                .param("name", "Anton"))
-                .andDo(print());
+        start();
 
         mockMvc.perform(post("/rooms/xxx/raise")
                 .param("additionalWager", "100"))
@@ -177,12 +161,21 @@ public class GameControllerTest {
     }
 
     @Test
+    public void testAllIn() throws Exception {
+        createRoom();
+
+        start();
+
+        mockMvc.perform(post("/rooms/xxx/allIn"))
+                .andDo(print())
+                .andExpect(status().isAccepted());
+    }
+
+    @Test
     public void testFold() throws Exception {
         createRoom();
 
-        mockMvc.perform(post("/rooms/xxx/start")
-                .param("name", "Anton"))
-                .andDo(print());
+        start();
 
         mockMvc.perform(post("/rooms/xxx/fold"))
                 .andDo(print())
@@ -194,9 +187,7 @@ public class GameControllerTest {
         //TODO
         createRoom();
 
-        mockMvc.perform(post("/rooms/xxx/start")
-                .param("name", "Anton"))
-                .andDo(print());
+        start();
 
         mockMvc.perform(post("/rooms/xxx/showDown"))
                 .andDo(print())
@@ -209,6 +200,12 @@ public class GameControllerTest {
         mockMvc.perform(post("/rooms")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(validRoomJson()))
+                .andDo(print());
+    }
+
+    private void start() throws Exception {
+        mockMvc.perform(post("/rooms/xxx/start")
+                .param("name", "Anton"))
                 .andDo(print());
     }
 

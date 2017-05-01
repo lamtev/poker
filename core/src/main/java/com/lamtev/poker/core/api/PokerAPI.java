@@ -4,6 +4,7 @@ import com.lamtev.poker.core.states.exceptions.*;
 
 import java.util.List;
 
+//TODO give only needed information to each player
 public interface PokerAPI {
     void subscribe(PokerEventListener pokerEventListener);
 

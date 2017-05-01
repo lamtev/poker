@@ -94,7 +94,7 @@ class ShowdownPokerState extends ActionPokerState {
                                 bank.getMoney()
                         );
                     });
-
+            System.out.println("happens after preflop");
             poker.setState(new GameIsOverPokerState(this));
         }
     }

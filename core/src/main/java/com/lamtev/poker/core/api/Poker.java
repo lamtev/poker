@@ -25,9 +25,22 @@ public class Poker implements PokerAPI {
     private List<PlayerFoldListener> playerFoldListeners = new ArrayList<>();
     private List<PreflopMadeListener> preflopMadeListeners = new ArrayList<>();
     private List<PlayerShowedDownListener> playerShowedDownListeners = new ArrayList<>();
-
     private boolean gameIsSetUp = false;
     private boolean listenersAdded = false;
+
+    @Override
+    public void subscribe(PokerEventListener pokerEventListener) {
+        addCommunityCardsChangedListener(pokerEventListener);
+        addCurrentPlayerChangedListener(pokerEventListener);
+        addGameIsOverListener(pokerEventListener);
+        addMoveAbilityListener(pokerEventListener);
+        addPlayerFoldListener(pokerEventListener);
+        addPlayerShowedDownListener(pokerEventListener);
+        addPreflopMadeListener(pokerEventListener);
+        addStateChangedListener(pokerEventListener);
+        addWagerPlacedListener(pokerEventListener);
+        listenersAdded = true;
+    }
 
     @Override
     public void setUp(List<PlayerIdStack> playersStacks, String smallBlindId, String bigBlindId, int smallBlindSize)
@@ -101,20 +114,6 @@ public class Poker implements PokerAPI {
         state.showDown();
     }
 
-    @Override
-    public void subscribe(PokerEventListener pokerEventListener) {
-        addCommunityCardsChangedListener(pokerEventListener);
-        addCurrentPlayerChangedListener(pokerEventListener);
-        addGameIsOverListener(pokerEventListener);
-        addMoveAbilityListener(pokerEventListener);
-        addPlayerFoldListener(pokerEventListener);
-        addPlayerShowedDownListener(pokerEventListener);
-        addPreflopMadeListener(pokerEventListener);
-        addStateChangedListener(pokerEventListener);
-        addWagerPlacedListener(pokerEventListener);
-        listenersAdded = true;
-    }
-
     public void setState(PokerState newState) {
         state = newState;
         notifyStateChangedListeners();
@@ -175,31 +174,25 @@ public class Poker implements PokerAPI {
         currentPlayerChangedListeners.add(currentPlayerChangedListener);
     }
 
-
     private void addCommunityCardsChangedListener(CommunityCardsAddedListener communityCardsAddedListener) {
         communityCardsAddedListeners.add(communityCardsAddedListener);
     }
-
 
     private void addPlayerShowedDownListener(PlayerShowedDownListener playerShowedDownListener) {
         playerShowedDownListeners.add(playerShowedDownListener);
     }
 
-
     private void addWagerPlacedListener(WagerPlacedListener wagerPlacedListener) {
         wagerPlacedListeners.add(wagerPlacedListener);
     }
-
 
     private void addPlayerFoldListener(PlayerFoldListener playerFoldListener) {
         playerFoldListeners.add(playerFoldListener);
     }
 
-
     private void addMoveAbilityListener(MoveAbilityListener moveAbilityListener) {
         moveAbilityListeners.add(moveAbilityListener);
     }
-
 
     private void addPreflopMadeListener(PreflopMadeListener preflopMadeListener) {
         preflopMadeListeners.add(preflopMadeListener);
