@@ -107,7 +107,8 @@ public class GameControllerTest {
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.state", is("PreflopWageringPokerState")))
-                .andExpect(jsonPath("$.bank", is(75)));
+                .andExpect(jsonPath("$.bank", is(75)))
+                .andExpect(jsonPath("$.wager", is(50)));
     }
 
     @Test
@@ -135,8 +136,32 @@ public class GameControllerTest {
     }
 
     @Test
+    public void testCallWhenUnallowable() throws Exception {
+        createRoom();
+
+        start();
+
+        mockMvc.perform(post("/rooms/xxx/call"))
+                .andDo(print())
+                .andExpect(status().isAccepted());
+    }
+
+    @Test
     public void testCheck() throws Exception {
-        //TODO
+        createRoom();
+
+        start();
+
+        callNTimes(5);
+
+        mockMvc.perform(post("/rooms/xxx/check"))
+                .andDo(print())
+                .andExpect(status().isAccepted());
+    }
+
+
+    @Test
+    public void testCheckWhenForbidden() throws Exception {
         createRoom();
 
         start();
@@ -149,6 +174,25 @@ public class GameControllerTest {
     }
 
     @Test
+    public void testCheckWhenUnallowable() throws Exception {
+        createRoom();
+
+        start();
+
+        callNTimes(5);
+
+        mockMvc.perform(post("/rooms/xxx/raise")
+                .param("additionalWager", "100"))
+                .andDo(print());
+
+        mockMvc.perform(post("/rooms/xxx/check"))
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code", is(403)))
+                .andExpect(jsonPath("$.message", is("Check is not allowable")));
+    }
+
+    @Test
     public void testRaise() throws Exception {
         createRoom();
 
@@ -158,6 +202,35 @@ public class GameControllerTest {
                 .param("additionalWager", "100"))
                 .andDo(print())
                 .andExpect(status().isAccepted());
+    }
+
+    @Test
+    public void testRaiseNegativeWager() throws Exception {
+        createRoom();
+
+        start();
+
+        mockMvc.perform(post("/rooms/xxx/raise")
+                .param("additionalWager", "-100"))
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code", is(403)))
+                .andExpect(jsonPath("$.message", is("Wager can not be negative")));
+    }
+
+    @Test
+    public void testRaiseNotEnoughMoney() throws Exception {
+        createRoom();
+
+        start();
+
+        mockMvc.perform(post("/rooms/xxx/raise")
+                .param("additionalWager", "100000"))
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code", is(403)))
+                .andExpect(jsonPath("$.message",
+                        is("There is not enough money to make a move. Try to make allIn")));
     }
 
     @Test

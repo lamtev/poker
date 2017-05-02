@@ -20,6 +20,7 @@ public class Game implements PokerEventListener, GameAPI {
     private String currentStateName;
     private int bank;
     private int smallBlindSize;
+    private int wager;
 
     @Override
     public void start(String humanId, int playersNumber, int stack) throws GameOverException {
@@ -88,7 +89,7 @@ public class Game implements PokerEventListener, GameAPI {
 
     @Override
     public int getWager() {
-        return 0;
+        return wager;
     }
 
     @Override
@@ -115,6 +116,7 @@ public class Game implements PokerEventListener, GameAPI {
         playerInfo.setStack(playerMoney.getStack());
         playerInfo.setWager(playerMoney.getWager());
         this.bank = bank;
+        this.wager = playerMoney.getWager();
     }
 
     @Override
@@ -156,6 +158,7 @@ public class Game implements PokerEventListener, GameAPI {
 
         List<PlayerIdStack> playersStacks = new ArrayList<>();
         this.playersInfo.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getStack())));
+
         try {
             poker.setUp(playersStacks, playersStacks.get(0).getId(), playersStacks.get(1).getId(), smallBlindSize);
         } catch (GameOverException e) {

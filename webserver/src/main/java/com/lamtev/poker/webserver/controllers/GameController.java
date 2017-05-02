@@ -57,7 +57,8 @@ public class GameController extends AbstractController {
         makeSureThatRoomsExist();
         makeSureThatRoomExists(roomId);
         Room room = rooms.get(roomId);
-        makeSureThatRoomIsTaken(room, "Can not get cards of player with roomId " + playerId + " because game has not been started");
+        makeSureThatRoomIsTaken(room,
+                "Can not get cards of player with roomId " + playerId + " because game has not been started");
 
         List<Card> playerCards = room.getGame().getPlayerCards(playerId);
         makeSureThatCardsAreNotEmpty(playerCards);
@@ -76,6 +77,7 @@ public class GameController extends AbstractController {
         jsonObject.addProperty("state", game.getCurrentStateName());
         jsonObject.addProperty("currentPlayerId", game.getCurrentPlayerId());
         jsonObject.addProperty("bank", game.getBank());
+        jsonObject.addProperty("wager", game.getWager());
         return jsonObject.toString();
     }
 

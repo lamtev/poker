@@ -74,6 +74,23 @@ public class RoomsControllerTest {
     }
 
     @Test
+    public void testCreateAlreadyExistentRoom() throws Exception {
+        mockMvc.perform(post("/rooms")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(validRoomJson()))
+                .andDo(print());
+
+        mockMvc.perform(post("/rooms")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(validRoomJson()))
+                .andDo(print())
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code", is(409)))
+                .andExpect(jsonPath("$.message", is("Room with roomId xxx already exists")));
+    }
+
+    @Test
     public void testCreateInvalidRoom() throws Exception {
         mockMvc.perform(post("/rooms")
                 .contentType(APPLICATION_JSON_UTF8)
