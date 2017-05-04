@@ -1,0 +1,40 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
+    }
+}
+
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+jar {
+    baseName = 'poker-webserver'
+    version = '0.0.1'
+}
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile project(':core')
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'com.jayway.jsonpath:json-path:2.2.0'
+
+}
+
+task stage {
+    dependsOn bootRepackage
+}
+
+apply plugin: 'jacoco'
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+check.dependsOn jacocoTestReport

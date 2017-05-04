@@ -3,10 +3,11 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.states.exceptions.GameOverException;
 
 import java.util.List;
 
-abstract class ActionPokerState implements PokerState {
+abstract class ActionPokerState extends AbstractPokerState {
 
     protected int bigBlindIndex;
     protected int playerIndex;
@@ -34,8 +35,9 @@ abstract class ActionPokerState implements PokerState {
     }
 
     @Override
-    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize) {
-        throw new RuntimeException("Can't setUp when action poker state");
+    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize)
+            throws IllegalStateException, GameOverException {
+        throw new IllegalStateException("Can't setUp when" + toString());
     }
 
     void changePlayerIndex() {

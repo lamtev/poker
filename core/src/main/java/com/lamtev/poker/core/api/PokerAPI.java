@@ -1,24 +1,49 @@
 package com.lamtev.poker.core.api;
 
+import com.lamtev.poker.core.states.exceptions.*;
+
 import java.util.List;
 
+//TODO give only needed information to each player
 public interface PokerAPI {
     void subscribe(PokerEventListener pokerEventListener);
 
     void setUp(List<PlayerIdStack> playersStacks,
                String smallBlindId,
                String bigBlindId,
-               int smallBlindSize);
+               int smallBlindSize) throws IllegalStateException, GameOverException;
 
-    void call() throws Exception;
+    void call() throws
+            GameHaveNotBeenStartedException,
+            ForbiddenMoveException,
+            UnallowableMoveException,
+            IsNotEnoughMoneyException,
+            GameOverException;
 
-    void raise(int additionalWager) throws Exception;
+    void raise(int additionalWager) throws
+            GameHaveNotBeenStartedException,
+            ForbiddenMoveException,
+            UnallowableMoveException,
+            IsNotEnoughMoneyException,
+            NotPositiveWagerException,
+            GameOverException;
 
-    void allIn() throws Exception;
+    void allIn() throws
+            GameHaveNotBeenStartedException,
+            ForbiddenMoveException,
+            UnallowableMoveException,
+            GameOverException;
 
     void fold() throws Exception;
 
-    void check() throws Exception;
+    void check() throws
+            GameHaveNotBeenStartedException,
+            ForbiddenMoveException,
+            UnallowableMoveException,
+            GameOverException;
 
-    void showDown() throws Exception;
+    void showDown() throws
+            GameHaveNotBeenStartedException,
+            ForbiddenMoveException,
+            GameOverException;
 }

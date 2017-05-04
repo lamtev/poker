@@ -3,6 +3,10 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.api.PlayerMoney;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
+import com.lamtev.poker.core.states.exceptions.IsNotEnoughMoneyException;
+import com.lamtev.poker.core.states.exceptions.NotPositiveWagerException;
+import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +32,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void call() throws Exception {
+    public void call() throws UnallowableMoveException, IsNotEnoughMoneyException {
         moveValidator.validateCall(currentPlayer());
         bank.acceptCallFromPlayer(currentPlayer());
         wagerPlaced();
@@ -37,7 +41,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void raise(int additionalWager) throws Exception {
+    public void raise(int additionalWager) throws UnallowableMoveException, IsNotEnoughMoneyException, NotPositiveWagerException {
         moveValidator.validateRaise(raisers.size());
         bank.acceptRaiseFromPlayer(additionalWager, currentPlayer());
         raisers.add(currentPlayer());
@@ -46,13 +50,23 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void allIn() throws Exception {
+    public void allIn() {
+        //FIXME
+        //TODO what for catches?
         int additionalWager = currentPlayer().getStack() - (bank.getCurrentWager() - currentPlayer().getWager());
 
         if (additionalWager == 0) {
-            call();
+            try {
+                call();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else if (additionalWager > 0) {
-            raise(additionalWager);
+            try {
+                raise(additionalWager);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             bank.acceptAllInFromPlayer(currentPlayer());
             wagerPlaced();
@@ -62,7 +76,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void fold() throws Exception {
+    public void fold() {
         currentPlayer().fold();
         poker.notifyPlayerFoldListeners(currentPlayer().getId());
         changePlayerIndex();
@@ -75,7 +89,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void check() throws Exception {
+    public void check() throws ForbiddenMoveException, UnallowableMoveException {
         moveValidator.validateCheck(raisers.size());
         changePlayerIndex();
         ++checks;
@@ -83,8 +97,8 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void showDown() throws Exception {
-        throw new Exception("Can't show down when wagering");
+    public void showDown() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Show down", toString());
     }
 
     private void wagerPlaced() {
@@ -111,7 +125,7 @@ abstract class WageringPokerState extends ActionPokerState {
         return players.activePlayersNumber() == 1;
     }
 
-    private void gameIsOverState() throws Exception {
+    private void gameIsOverState() {
         poker.setState(new GameIsOverPokerState(this));
     }
 
@@ -143,7 +157,7 @@ abstract class WageringPokerState extends ActionPokerState {
         return -1;
     }
 
-    protected abstract void attemptNextState() throws Exception;
+    protected abstract void attemptNextState();
 
     boolean timeToShowDown() {
         return timeToNextState() && bank.getAllInners().size() != 0;

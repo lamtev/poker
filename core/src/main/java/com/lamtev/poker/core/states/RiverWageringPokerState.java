@@ -16,7 +16,7 @@ class RiverWageringPokerState extends WageringPokerState {
     }
 
     @Override
-    protected void attemptNextState() throws Exception {
+    protected void attemptNextState() {
         if (timeToNextState()) {
             poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));
         }

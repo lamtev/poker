@@ -5,6 +5,7 @@ import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.hands.PokerHandFactory;
 import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 
 import java.util.*;
 
@@ -27,18 +28,18 @@ class ShowdownPokerState extends ActionPokerState {
     }
 
     @Override
-    public void call() throws Exception {
-        throw new Exception();
+    public void call() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Call", toString());
     }
 
     @Override
-    public void raise(int additionalWager) throws Exception {
-        throw new Exception();
+    public void raise(int additionalWager) throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Raise", toString());
     }
 
     @Override
-    public void allIn() throws Exception {
-        throw new Exception();
+    public void allIn() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("All in", toString());
     }
 
     @Override
@@ -53,12 +54,12 @@ class ShowdownPokerState extends ActionPokerState {
     }
 
     @Override
-    public void check() throws Exception {
-        throw new Exception("Can't check when showDown poker state");
+    public void check() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Check", toString());
     }
 
     @Override
-    public void showDown() throws Exception {
+    public void showDown() {
         ++showDowns;
         PokerHandFactory phf = new PokerHandFactory(commonCards);
         PokerHand pokerHand = phf.createCombination(currentPlayer().getCards());
@@ -93,7 +94,7 @@ class ShowdownPokerState extends ActionPokerState {
                                 bank.getMoney()
                         );
                     });
-
+            System.out.println("happens after preflop");
             poker.setState(new GameIsOverPokerState(this));
         }
     }

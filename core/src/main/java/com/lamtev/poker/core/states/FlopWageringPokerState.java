@@ -16,7 +16,7 @@ class FlopWageringPokerState extends WageringPokerState {
     }
 
     @Override
-    protected void attemptNextState() throws Exception {
+    protected void attemptNextState() {
         if (timeToShowDown()) {
             //TODO think about how to dispose of code duplicates
             dealer.makeTurn();

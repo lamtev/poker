@@ -6,6 +6,7 @@ import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.PokerState;
 import com.lamtev.poker.core.states.SettingsPokerState;
+import com.lamtev.poker.core.states.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,54 +25,8 @@ public class Poker implements PokerAPI {
     private List<PlayerFoldListener> playerFoldListeners = new ArrayList<>();
     private List<PreflopMadeListener> preflopMadeListeners = new ArrayList<>();
     private List<PlayerShowedDownListener> playerShowedDownListeners = new ArrayList<>();
-
     private boolean gameIsSetUp = false;
     private boolean listenersAdded = false;
-
-    @Override
-    public void setUp(List<PlayerIdStack> playersStacks, String smallBlindId, String bigBlindId, int smallBlindSize) {
-        if (!listenersAdded) {
-            throw new RuntimeException("You must subscribe");
-        }
-        state.setUp(playersStacks, smallBlindId, bigBlindId, smallBlindSize);
-        gameIsSetUp = true;
-    }
-
-    @Override
-    public void call() throws Exception {
-        validateGameIsSetUp();
-        state.call();
-    }
-
-    @Override
-    public void raise(int additionalWager) throws Exception {
-        validateGameIsSetUp();
-        state.raise(additionalWager);
-    }
-
-    @Override
-    public void allIn() throws Exception {
-        validateGameIsSetUp();
-        state.allIn();
-    }
-
-    @Override
-    public void fold() throws Exception {
-        validateGameIsSetUp();
-        state.fold();
-    }
-
-    @Override
-    public void check() throws Exception {
-        validateGameIsSetUp();
-        state.check();
-    }
-
-    @Override
-    public void showDown() throws Exception {
-        validateGameIsSetUp();
-        state.showDown();
-    }
 
     @Override
     public void subscribe(PokerEventListener pokerEventListener) {
@@ -85,6 +40,78 @@ public class Poker implements PokerAPI {
         addStateChangedListener(pokerEventListener);
         addWagerPlacedListener(pokerEventListener);
         listenersAdded = true;
+    }
+
+    @Override
+    public void setUp(List<PlayerIdStack> playersStacks, String smallBlindId, String bigBlindId, int smallBlindSize)
+            throws GameOverException {
+        if (playersStacks.size() < 2) {
+            //TODO
+            throw new RuntimeException("There must be at least 2 players");
+        }
+        if (!listenersAdded) {
+            throw new RuntimeException("You must subscribe");
+        }
+        state.setUp(playersStacks, smallBlindId, bigBlindId, smallBlindSize);
+        gameIsSetUp = true;
+    }
+
+    @Override
+    public void call() throws
+            ForbiddenMoveException,
+            GameHaveNotBeenStartedException,
+            IsNotEnoughMoneyException,
+            GameOverException,
+            UnallowableMoveException {
+        validateGameIsSetUp();
+        state.call();
+    }
+
+    @Override
+    public void raise(int additionalWager) throws
+            ForbiddenMoveException,
+            GameHaveNotBeenStartedException,
+            IsNotEnoughMoneyException,
+            NotPositiveWagerException,
+            GameOverException,
+            UnallowableMoveException {
+        validateGameIsSetUp();
+        state.raise(additionalWager);
+    }
+
+    @Override
+    public void allIn() throws
+            ForbiddenMoveException,
+            GameHaveNotBeenStartedException,
+            GameOverException,
+            UnallowableMoveException {
+        validateGameIsSetUp();
+        state.allIn();
+    }
+
+    @Override
+    public void fold() throws Exception {
+        validateGameIsSetUp();
+        state.fold();
+    }
+
+    @Override
+    public void check() throws
+            ForbiddenMoveException,
+            GameHaveNotBeenStartedException,
+            GameOverException,
+            UnallowableMoveException {
+        validateGameIsSetUp();
+        state.check();
+    }
+
+    @Override
+    public void showDown() throws
+            ForbiddenMoveException,
+            GameHaveNotBeenStartedException,
+            GameOverException {
+        validateGameIsSetUp();
+        state.showDown();
     }
 
     public void setState(PokerState newState) {
@@ -128,9 +155,9 @@ public class Poker implements PokerAPI {
         playerFoldListeners.forEach(listener -> listener.playerFold(id));
     }
 
-    private void validateGameIsSetUp() throws Exception {
+    private void validateGameIsSetUp() {
         if (!gameIsSetUp) {
-            throw new Exception("Game is not set up");
+            throw new RuntimeException("Game is not set up");
         }
     }
 
@@ -147,31 +174,25 @@ public class Poker implements PokerAPI {
         currentPlayerChangedListeners.add(currentPlayerChangedListener);
     }
 
-
     private void addCommunityCardsChangedListener(CommunityCardsAddedListener communityCardsAddedListener) {
         communityCardsAddedListeners.add(communityCardsAddedListener);
     }
-
 
     private void addPlayerShowedDownListener(PlayerShowedDownListener playerShowedDownListener) {
         playerShowedDownListeners.add(playerShowedDownListener);
     }
 
-
     private void addWagerPlacedListener(WagerPlacedListener wagerPlacedListener) {
         wagerPlacedListeners.add(wagerPlacedListener);
     }
-
 
     private void addPlayerFoldListener(PlayerFoldListener playerFoldListener) {
         playerFoldListeners.add(playerFoldListener);
     }
 
-
     private void addMoveAbilityListener(MoveAbilityListener moveAbilityListener) {
         moveAbilityListeners.add(moveAbilityListener);
     }
-
 
     private void addPreflopMadeListener(PreflopMadeListener preflopMadeListener) {
         preflopMadeListeners.add(preflopMadeListener);

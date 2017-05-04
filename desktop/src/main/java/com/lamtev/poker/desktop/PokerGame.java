@@ -112,7 +112,11 @@ public class PokerGame implements PokerEventListener {
 
     private void setUpGame(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId) {
         poker.subscribe(this);
-        poker.setUp(playersInfo, smallBlindId, bigBlindId, smallBlindSize);
+        try {
+            poker.setUp(playersInfo, smallBlindId, bigBlindId, smallBlindSize);
+        } catch (GameOverException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setUpButtons() {
