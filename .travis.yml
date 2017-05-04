@@ -10,11 +10,9 @@ services:
 before_install:
   - sudo pip install --user codecov
 
-install:
-  - docker pull lamtev/java
-
 script:
   - docker run -v $TRAVIS_BUILD_DIR:/poker lamtev/java /bin/bash -c " cd poker && cloc * && gradle build "
-
+  - docker run -v $TRAVIS_BUILD_DIR:/poker lamtev/android /bin/bash -c " cd poker/android && cloc * && gradle build "
+  
 after_success:
   - bash <(curl -s https://codecov.io/bash)
