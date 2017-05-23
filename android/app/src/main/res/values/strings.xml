@@ -1,8 +1,5 @@
 <resources>
-    <string name="app_name">android</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_settings">Settings</string>
+    <string name="app_name">Poker</string>
+    <string name="poker">Poker</string>
+    <string name="poker_description">Poker</string>
 </resources>
