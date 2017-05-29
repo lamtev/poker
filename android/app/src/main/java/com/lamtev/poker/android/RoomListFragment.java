@@ -2,6 +2,7 @@ package com.lamtev.poker.android;
 
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -63,6 +64,12 @@ public class RoomListFragment extends Fragment {
 
         public RoomListItemHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(RoomListFragment.class.getSimpleName(), "card view clicked");
+                }
+            });
             name = (TextView) itemView.findViewById(R.id.room_card_room_name);
             playersNumber = (TextView) itemView.findViewById(R.id.room_card_players_number);
             stack = (TextView) itemView.findViewById(R.id.room_card_stack_size);
@@ -105,6 +112,7 @@ public class RoomListFragment extends Fragment {
             RoomInfo room = rooms.get(position);
             holder.bindRoom(room);
         }
+
 
         @Override
         public int getItemCount() {

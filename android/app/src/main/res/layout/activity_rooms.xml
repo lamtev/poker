@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
-    tools:context="com.lamtev.poker.android.RoomsActivity">
+    tools:context="com.lamtev.poker.android.RoomsActivity"
+    tools:openDrawer="start">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_fragment"
@@ -15,20 +15,29 @@
         android:layout_height="495dp"
         android:fitsSystemWindows="true"
         tools:context=".RoomsActivity"
-        tools:layout_editor_absoluteY="8dp"
-        tools:layout_editor_absoluteX="8dp">
-
-
-
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
     </android.support.design.widget.CoordinatorLayout>
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/fab"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="start"-->
+        <!--android:layout_margin="16dp"-->
+        <!--android:clickable="true"-->
+        <!--android:foreground="?android:attr/selectable"-->
+        <!--android:src="@drawable/ic_add_white_24dp"-->
+        <!--app:layout_anchor="@+id/room_card_list_view"-->
+        <!--app:layout_anchorGravity="bottom|end" />-->
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingTop="48dp"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/navigation"/>
+        android:paddingTop="48dp"
+        app:headerLayout="@layout/navigation" />
 
 </android.support.v4.widget.DrawerLayout>
