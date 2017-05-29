@@ -8,6 +8,13 @@ public class RoomInfo {
     private int stack;
     private boolean free;
 
+    public RoomInfo(String name, int playersNumber, int stack, boolean free) {
+        this.name = name;
+        this.playersNumber = playersNumber;
+        this.stack = stack;
+        this.free = free;
+    }
+
     public String getName() {
         return name;
     }
@@ -39,4 +46,5 @@ public class RoomInfo {
     public void setFree(boolean free) {
         this.free = free;
     }
+
 }
