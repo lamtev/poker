@@ -2,7 +2,6 @@ package com.lamtev.poker.android;
 
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,6 +60,7 @@ public class RoomListFragment extends Fragment {
         private TextView playersNumberText;
         private TextView stackText;
         private TextView statusText;
+        private RoomInfo roomInfo;
 
         public RoomListItemHolder(View itemView) {
             super(itemView);
@@ -68,6 +68,8 @@ public class RoomListFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Log.i(RoomListFragment.class.getSimpleName(), "card view clicked");
+                    startActivity(RoomActivity.newIntent(getActivity(), roomInfo));
+
                 }
             });
             name = (TextView) itemView.findViewById(R.id.room_card_room_name);
@@ -81,6 +83,7 @@ public class RoomListFragment extends Fragment {
         }
 
         public void bindRoom(final RoomInfo roomInfo) {
+            this.roomInfo = roomInfo;
             name.setText(roomInfo.getName());
             playersNumber.setText(roomInfo.getPlayersNumber() + "");
             stack.setText(roomInfo.getStack() + "");
@@ -91,7 +94,6 @@ public class RoomListFragment extends Fragment {
             statusText.setText(getString(R.string.game_status_text));
         }
     }
-
 
     private class RoomListItemAdapter extends RecyclerView.Adapter<RoomListItemHolder> {
         private List<RoomInfo> rooms;
@@ -112,7 +114,6 @@ public class RoomListFragment extends Fragment {
             RoomInfo room = rooms.get(position);
             holder.bindRoom(room);
         }
-
 
         @Override
         public int getItemCount() {

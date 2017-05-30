@@ -15,6 +15,9 @@ public class RoomInfo {
         this.free = free;
     }
 
+    public RoomInfo() {
+    }
+
     public String getName() {
         return name;
     }

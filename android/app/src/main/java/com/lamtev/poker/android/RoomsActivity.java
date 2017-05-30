@@ -1,5 +1,6 @@
 package com.lamtev.poker.android;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +23,7 @@ public class RoomsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i(getClass().getSimpleName(), "fab clicked");
+                startActivity(RoomActivity.newIntent(RoomsActivity.this));
             }
         });
         changeFragment(new RoomListFragment());
