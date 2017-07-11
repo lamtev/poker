@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Poker</string>
+    <string name="poker">Poker</string>
+    <string name="poker_description">Poker</string>
+    <string name="game_status_text">Game status:</string>
+    <string name="stack_size_text">Stack size:</string>
+    <string name="players_number_text">Players number:</string>
+    <string name="room_name">Name</string>
+    <string name="start">Start</string>
+    <string name="create">Create</string>
+</resources>
