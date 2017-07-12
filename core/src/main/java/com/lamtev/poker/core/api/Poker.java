@@ -43,7 +43,7 @@ public class Poker implements PokerAPI {
     }
 
     @Override
-    public void setUp(List<PlayerIdStack> playersStacks, String smallBlindId, String bigBlindId, int smallBlindSize)
+    public void setUp(List<PlayerIdStack> playersStacks, String dealerId, int smallBlindSize)
             throws GameOverException {
         if (playersStacks.size() < 2) {
             //TODO
@@ -52,7 +52,7 @@ public class Poker implements PokerAPI {
         if (!listenersAdded) {
             throw new RuntimeException("You must subscribe");
         }
-        state.setUp(playersStacks, smallBlindId, bigBlindId, smallBlindSize);
+        state.setUp(playersStacks, dealerId, smallBlindSize);
         gameIsSetUp = true;
     }
 

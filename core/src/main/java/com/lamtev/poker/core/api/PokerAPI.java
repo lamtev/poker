@@ -9,8 +9,7 @@ public interface PokerAPI {
     void subscribe(PokerEventListener pokerEventListener);
 
     void setUp(List<PlayerIdStack> playersStacks,
-               String smallBlindId,
-               String bigBlindId,
+               String dealerId,
                int smallBlindSize) throws IllegalStateException, GameOverException;
 
     void call() throws

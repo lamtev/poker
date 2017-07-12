@@ -14,7 +14,7 @@ public class MoveValidatorTest {
         players.add(new Player("c", 200));
         players.add(new Player("d", 200));
         players.add(new Player("e", 200));
-
+        players.setDealer("e");
         return players;
     }
 

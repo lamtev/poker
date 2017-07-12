@@ -87,13 +87,12 @@ public class PokerGame implements PokerEventListener {
         Label nickNameLabel = new Label();
         nickNameLabel.setText(playersInfo.get(0).getId());
         smallBlindSize = playersInfo.get(0).getStack() / 100;
-        String smallBlindId = playersInfo.get(0).getId();
-        String bigBlindId = playersInfo.get(1).getId();
-        startNewGame(playersInfo, smallBlindId, bigBlindId);
+        String dealerId = playersInfo.get(0).getId();
+        startNewGame(playersInfo, dealerId);
         setUpButtons();
     }
 
-    private void startNewGame(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId) {
+    private void startNewGame(List<PlayerIdStack> playersInfo, String dealerId) {
         statusBar.setText("Welcome to Texas Hold'em Poker!!!");
         this.playersInfo.clear();
         playersInfo.forEach(
@@ -107,13 +106,13 @@ public class PokerGame implements PokerEventListener {
         communityCards.clear();
         communityCardsView.getChildren().clear();
         poker = new Poker();
-        setUpGame(playersInfo, smallBlindId, bigBlindId);
+        setUpGame(playersInfo, dealerId);
     }
 
-    private void setUpGame(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId) {
+    private void setUpGame(List<PlayerIdStack> playersInfo, String dealerId) {
         poker.subscribe(this);
         try {
-            poker.setUp(playersInfo, smallBlindId, bigBlindId, smallBlindSize);
+            poker.setUp(playersInfo, dealerId, smallBlindSize);
         } catch (GameOverException e) {
             e.printStackTrace();
         }
@@ -362,7 +361,7 @@ public class PokerGame implements PokerEventListener {
         Collections.rotate(list, -1);
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(2500),
-                ae -> startNewGame(playersInfo, list.get(0).getId(), list.get(1).getId())
+                ae -> startNewGame(playersInfo, list.get(0).getId())
         ));
         timeline.play();
     }

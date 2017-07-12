@@ -26,9 +26,9 @@ public class SettingsPokerState extends AbstractPokerState {
     }
 
     @Override
-    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize) {
-        init(playersInfo, smallBlindId, bigBlindId);
-        Bank.BlindsStatus blindsStatus = bank.acceptBlindWagers(smallBlind, bigBlind, smallBlindSize);
+    public void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize) {
+        init(playersInfo, dealerId);
+        Bank.BlindsStatus blindsStatus = bank.acceptBlindWagers(smallBlindSize);
         notifyWagerPlacedListeners();
         nextState(blindsStatus);
     }
@@ -63,18 +63,19 @@ public class SettingsPokerState extends AbstractPokerState {
         throw new GameHaveNotBeenStartedException();
     }
 
-    private void init(List<PlayerIdStack> playersIdsStacks, String smallBlindId, String bigBlindId) {
+    private void init(List<PlayerIdStack> playersIdsStacks, String dealerId) {
         players = new Players();
         playersIdsStacks.forEach(playerIdStack -> {
             String id = playerIdStack.getId();
             int stack = playerIdStack.getStack();
             players.add(new Player(id, stack));
         });
+        players.setDealer(dealerId);
         bank = new Bank(players);
         communityCards = new Cards();
         dealer = new Dealer(players, communityCards);
-        smallBlind = players.get(smallBlindId);
-        bigBlind = players.get(bigBlindId);
+        smallBlind = players.smallBlind();
+        bigBlind = players.bigBlind();
     }
 
     private void notifyWagerPlacedListeners() {
@@ -100,11 +101,10 @@ public class SettingsPokerState extends AbstractPokerState {
                 poker.notifyCommunityCardsChangedListeners(new ArrayList<Card>() {{
                     communityCards.forEach(this::add);
                 }});
-                poker.setState(new ShowdownPokerState(poker, players, bank, dealer, communityCards, blindsStatus.getLatestAggressorIndex()));
+                poker.setState(new ShowdownPokerState(poker, players, bank, dealer, communityCards, blindsStatus.getLatestAggressor()));
                 break;
             default:
-                int bigBlindIndex = players.indexOf(bigBlind);
-                poker.setState(new PreflopWageringPokerState(poker, players, bank, dealer, communityCards, bigBlindIndex));
+                poker.setState(new PreflopWageringPokerState(poker, players, bank, dealer, communityCards));
         }
     }
 

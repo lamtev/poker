@@ -15,16 +15,20 @@ class ShowdownPokerState extends ActionPokerState {
     private Map<String, PokerHand> madeShowDown = new LinkedHashMap<>();
 
     ShowdownPokerState(Poker poker, Players players, Bank bank,
-                       Dealer dealer, Cards commonCards, int latestAggressorIndex) {
+                       Dealer dealer, Cards commonCards, Player latestAggressor) {
         super(poker, players, bank, dealer, commonCards);
-        playerIndex = latestAggressorIndex;
+        players.setLatestAggressor(latestAggressor);
         poker.notifyCurrentPlayerChangedListeners(currentPlayer().getId());
     }
 
-    ShowdownPokerState(ActionPokerState state, int latestAggressorIndex) {
+    ShowdownPokerState(ActionPokerState state, Player latestAggressor) {
         super(state);
-        playerIndex = latestAggressorIndex;
-        poker.notifyCurrentPlayerChangedListeners(currentPlayer().getId());
+        if (latestAggressor == null) {
+            players().nextAfterDealer();
+        } else {
+            players().setLatestAggressor(latestAggressor);
+        }
+        poker().notifyCurrentPlayerChangedListeners(currentPlayer().getId());
     }
 
     @Override
@@ -48,7 +52,7 @@ class ShowdownPokerState extends ActionPokerState {
             throw new Exception("Can't fold when nobody did showDown");
         }
         currentPlayer().fold();
-        poker.notifyPlayerFoldListeners(currentPlayer().getId());
+        poker().notifyPlayerFoldListeners(currentPlayer().getId());
         changePlayerIndex();
         attemptDetermineWinners();
     }
@@ -61,10 +65,10 @@ class ShowdownPokerState extends ActionPokerState {
     @Override
     public void showDown() {
         ++showDowns;
-        PokerHandFactory phf = new PokerHandFactory(commonCards);
+        PokerHandFactory phf = new PokerHandFactory(communityCards());
         PokerHand pokerHand = phf.createCombination(currentPlayer().getCards());
         madeShowDown.put(currentPlayer().getId(), pokerHand);
-        poker.notifyPlayerShowedDownListeners(currentPlayer().getId(), pokerHand);
+        poker().notifyPlayerShowedDownListeners(currentPlayer().getId(), pokerHand);
         changePlayerIndex();
         attemptDetermineWinners();
     }
@@ -82,25 +86,25 @@ class ShowdownPokerState extends ActionPokerState {
                     .filter(e -> e.getValue().equals(maxPokerHand))
                     .forEach(e -> winnersIds.add(e.getKey()));
 
-            bank.giveMoneyToWinners(winnersIds);
+            bank().giveMoneyToWinners(winnersIds);
 
             //TODO think about rename WagerPlacedListener
             winnersIds.forEach(
                     winnerId -> {
-                        Player winner = players.get(winnerId);
-                        poker.notifyWagerPlacedListeners(
+                        Player winner = players().get(winnerId);
+                        poker().notifyWagerPlacedListeners(
                                 winnerId,
                                 new PlayerMoney(winner.getStack(), winner.getWager()),
-                                bank.getMoney()
+                                bank().getMoney()
                         );
                     });
             System.out.println("happens after preflop");
-            poker.setState(new GameIsOverPokerState(this));
+            poker().setState(new GameIsOverPokerState(this));
         }
     }
 
     private boolean timeToDetermineWinners() {
-        return showDowns == players.activePlayersNumber();
+        return showDowns == players().activePlayersNumber();
     }
 
 }

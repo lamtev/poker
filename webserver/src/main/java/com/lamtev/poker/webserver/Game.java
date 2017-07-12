@@ -34,7 +34,7 @@ public class Game implements PokerEventListener, GameAPI {
         List<PlayerIdStack> playersStacks = new ArrayList<>();
         playersInfo.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getStack())));
         smallBlindSize = stack / 1000;
-        poker.setUp(playersStacks, playersStacks.get(0).getId(), playersStacks.get(1).getId(), smallBlindSize);
+        poker.setUp(playersStacks, playersStacks.get(0).getId(), smallBlindSize);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class Game implements PokerEventListener, GameAPI {
         this.playersInfo.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getStack())));
 
         try {
-            poker.setUp(playersStacks, playersStacks.get(0).getId(), playersStacks.get(1).getId(), smallBlindSize);
+            poker.setUp(playersStacks, playersStacks.get(0).getId(), smallBlindSize);
         } catch (GameOverException e) {
             e.printStackTrace();
         }

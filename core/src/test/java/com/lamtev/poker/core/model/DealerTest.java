@@ -9,8 +9,9 @@ public class DealerTest {
     private Players generatePlayers() {
         Players players = new Players();
         for (int i = 0; i < 5; ++i) {
-            players.add(new Player("pro", 100));
+            players.add(new Player("pro" + i, 100));
         }
+        players.setDealer("pro4");
         return players;
     }
 

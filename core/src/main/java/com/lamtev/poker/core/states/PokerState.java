@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface PokerState {
 
-    void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize) throws
+    void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize) throws
             IllegalStateException,
             GameOverException;
 

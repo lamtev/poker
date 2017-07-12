@@ -13,6 +13,7 @@ public class BankTest {
         players.add(new Player("c", 150));
         players.add(new Player("d", 300));
         players.add(new Player("e", 250));
+        players.setDealer("e");
         return players;
     }
 
@@ -22,7 +23,7 @@ public class BankTest {
     public void testAcceptBlindWagers() {
         Players players = generatePlayers();
         Bank bank = new Bank(players);
-        bank.acceptBlindWagers(players.get(0), players.get(1), 5);
+        bank.acceptBlindWagers(5);
         assertEquals(5, players.get(0).getWager());
         assertEquals(95, players.get(0).getStack());
         assertEquals(10, players.get(1).getWager());
@@ -35,7 +36,7 @@ public class BankTest {
     public void testAcceptCallFromPlayer() {
         Players players = generatePlayers();
         Bank bank = new Bank(players);
-        bank.acceptBlindWagers(players.get(0), players.get(1), 5);
+        bank.acceptBlindWagers(5);
         try {
             bank.acceptCallFromPlayer(players.get(2));
         } catch (Exception e) {
@@ -51,7 +52,7 @@ public class BankTest {
     public void testAcceptRaiseFromPlayer() {
         Players players = generatePlayers();
         Bank bank = new Bank(players);
-        bank.acceptBlindWagers(players.get(0), players.get(1), 5);
+        bank.acceptBlindWagers(5);
         try {
             bank.acceptRaiseFromPlayer(30, players.get(3));
         } catch (Exception e) {

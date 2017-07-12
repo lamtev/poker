@@ -25,9 +25,9 @@ public class PokerTest implements PokerEventListener {
 
     private List<PlayerIdStack> generatePlayersInfo() {
         List<PlayerIdStack> playersInfo = new ArrayList<>();
+        playersInfo.add(new PlayerIdStack("c1", 300));
         playersInfo.add(new PlayerIdStack("a1", 100));
         playersInfo.add(new PlayerIdStack("b1", 200));
-        playersInfo.add(new PlayerIdStack("c1", 300));
         return playersInfo;
     }
 
@@ -50,7 +50,7 @@ public class PokerTest implements PokerEventListener {
         System.out.println(state);
         assertEquals("SettingsPokerState", state);
 
-        poker.setUp(generatePlayersInfo(), "a1", "b1", 30);
+        poker.setUp(generatePlayersInfo(), "c1", 30);
         System.out.println(state);
         assertEquals("PreflopWageringPokerState", state);
 

@@ -9,14 +9,14 @@ import java.util.List;
 class GameIsOverPokerState extends ActionPokerState {
 
     GameIsOverPokerState(ActionPokerState state) {
-        super(state.poker, state.players, state.bank, state.dealer, state.commonCards);
-        poker.notifyGameOverListeners(new ArrayList<PlayerIdStack>() {{
-            players.forEach(player -> add(new PlayerIdStack(player.getId(), player.getStack())));
+        super(state.poker(), state.players(), state.bank(), state.dealer(), state.communityCards());
+        poker().notifyGameOverListeners(new ArrayList<PlayerIdStack>() {{
+            players().forEach(player -> add(new PlayerIdStack(player.getId(), player.getStack())));
         }});
     }
 
     @Override
-    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize) throws GameOverException {
+    public void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize) throws GameOverException {
         throw new GameOverException();
     }
 

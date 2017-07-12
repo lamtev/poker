@@ -9,24 +9,29 @@ class TurnWageringPokerState extends WageringPokerState {
 
     TurnWageringPokerState(ActionPokerState state) {
         super(state);
-        dealer.makeTurn();
+        dealer().makeTurn();
         List<Card> addedCards = new ArrayList<>();
-        addedCards.add(commonCards.cardAt(4));
-        poker.notifyCommunityCardsChangedListeners(addedCards);
+        addedCards.add(communityCards().cardAt(4));
+        poker().notifyCommunityCardsChangedListeners(addedCards);
     }
 
     @Override
     protected void attemptNextState() {
         if (timeToShowDown()) {
             //TODO think about how to dispose of code duplicates
-            dealer.makeRiver();
+            dealer().makeRiver();
             List<Card> addedCards = new ArrayList<>();
-            addedCards.add(commonCards.cardAt(5));
-            poker.notifyCommunityCardsChangedListeners(addedCards);
-            poker.setState(new ShowdownPokerState(this, latestAggressorIndex()));
+            addedCards.add(communityCards().cardAt(5));
+            poker().notifyCommunityCardsChangedListeners(addedCards);
+            poker().setState(new ShowdownPokerState(this, latestAggressor()));
         } else if (timeToNextState()) {
-            poker.setState(new RiverWageringPokerState(this));
+            poker().setState(new RiverWageringPokerState(this));
         }
+    }
+
+    @Override
+    void determinePlayerIndex() {
+        players().nextAfterDealer();
     }
 
 }

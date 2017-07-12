@@ -9,49 +9,58 @@ import java.util.List;
 
 abstract class ActionPokerState extends AbstractPokerState {
 
-    protected int bigBlindIndex;
-    protected int playerIndex;
-    protected Poker poker;
-    protected Players players;
-    protected Bank bank;
-    protected Dealer dealer;
-    protected Cards commonCards;
+    private Poker poker;
+    private Players players;
+    private Bank bank;
+    private Dealer dealer;
 
-    ActionPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards, int bigBlindIndex) {
-        this(poker, players, bank, dealer, commonCards);
-        this.bigBlindIndex = bigBlindIndex;
+    public Poker poker() {
+        return poker;
     }
+
+    public Players players() {
+        return players;
+    }
+
+    public Bank bank() {
+        return bank;
+    }
+
+    public Dealer dealer() {
+        return dealer;
+    }
+
+    public Cards communityCards() {
+        return communityCards;
+    }
+
+    private Cards communityCards;
 
     ActionPokerState(ActionPokerState state) {
-        this(state.poker, state.players, state.bank, state.dealer, state.commonCards, state.bigBlindIndex);
+        this(state.poker, state.players, state.bank, state.dealer, state.communityCards);
     }
 
-    ActionPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
+    ActionPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards communityCards) {
         this.poker = poker;
         this.players = players;
         this.bank = bank;
         this.dealer = dealer;
-        this.commonCards = commonCards;
+        this.communityCards = communityCards;
     }
 
     @Override
-    public void setUp(List<PlayerIdStack> playersInfo, String smallBlindId, String bigBlindId, int smallBlindSize)
+    public void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize)
             throws IllegalStateException, GameOverException {
         throw new IllegalStateException("Can't setUp when" + toString());
     }
 
     void changePlayerIndex() {
-        ++playerIndex;
-        playerIndex %= players.size();
-        while (!players.get(playerIndex).isActive()) {
-            ++playerIndex;
-            playerIndex %= players.size();
-        }
-        poker.notifyCurrentPlayerChangedListeners(players.get(playerIndex).getId());
+        players.nextActive();
+        poker.notifyCurrentPlayerChangedListeners(players.current().getId());
     }
 
     Player currentPlayer() {
-        return players.get(playerIndex);
+        return players.current();
     }
 
 }

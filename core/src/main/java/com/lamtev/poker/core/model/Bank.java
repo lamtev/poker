@@ -12,35 +12,11 @@ public final class Bank {
 
     //TODO side pots
 
-    private static class Pot {
-        private int money;
-        private int wager;
-        private Set<Player> applicants = new HashSet<>();
-    }
-
     private Pot mainPot = new Pot();
     private Players players;
     private boolean blindsSet = false;
     private BlindsStatus blindsStatus = BlindsStatus.USUAL_BLIND;
     private List<Player> allInners = new ArrayList<>();
-
-    //TODO
-    public enum BlindsStatus {
-        USUAL_BLIND,
-        ALL_IN;
-
-        private int latestAggressorIndex;
-
-        public void setLatestAggressorIndex(int latestAggressorIndex) {
-            this.latestAggressorIndex = latestAggressorIndex;
-        }
-
-        public int getLatestAggressorIndex() {
-            return latestAggressorIndex;
-        }
-
-    }
-
     public Bank(Players players) {
         this.players = players;
     }
@@ -57,9 +33,9 @@ public final class Bank {
         return allInners;
     }
 
-    public BlindsStatus acceptBlindWagers(Player smallBlind, Player bigBlind, int smallBlindSize) {
-        acceptBlindWager(smallBlind, smallBlindSize);
-        acceptBlindWager(bigBlind, smallBlindSize * 2);
+    public BlindsStatus acceptBlindWagers(int smallBlindSize) {
+        acceptBlindWager(players.smallBlind(), smallBlindSize);
+        acceptBlindWager(players.bigBlind(), smallBlindSize * 2);
         blindsSet = true;
         return blindsStatus;
     }
@@ -118,7 +94,7 @@ public final class Bank {
         if (blind.getStack() <= wager) {
             acceptAllInFromPlayer(blind);
             blindsStatus = BlindsStatus.ALL_IN;
-            blindsStatus.setLatestAggressorIndex(players.indexOf(blind));
+            blindsStatus.setLatestAggressor(blind);
         } else {
             mainPot.money += blind.takeMoney(wager);
             mainPot.wager = wager;
@@ -129,6 +105,29 @@ public final class Bank {
         if (player.getStack() < moneyTakingFromPlayer) {
             throw new IsNotEnoughMoneyException("Try to make allIn");
         }
+    }
+
+    //TODO
+    public enum BlindsStatus {
+        USUAL_BLIND,
+        ALL_IN;
+
+        private Player latestAggressor;
+
+        public Player getLatestAggressor() {
+            return latestAggressor;
+        }
+
+        public void setLatestAggressor(Player latestAggressor) {
+            this.latestAggressor = latestAggressor;
+        }
+
+    }
+
+    private static class Pot {
+        private int money;
+        private int wager;
+        private Set<Player> applicants = new HashSet<>();
     }
 
 }
