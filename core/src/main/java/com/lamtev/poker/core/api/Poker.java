@@ -43,7 +43,9 @@ public class Poker implements PokerAPI {
     }
 
     @Override
-    public void setUp(List<PlayerIdStack> playersStacks, String dealerId, int smallBlindSize)
+    public void setUp(List<PlayerIdStack> playersStacks,
+                      String dealerId,
+                      int smallBlindSize)
             throws GameOverException {
         if (playersStacks.size() < 2) {
             //TODO
@@ -90,7 +92,10 @@ public class Poker implements PokerAPI {
     }
 
     @Override
-    public void fold() throws Exception {
+    public void fold() throws
+            UnallowableMoveException,
+            GameOverException,
+            GameHaveNotBeenStartedException {
         validateGameIsSetUp();
         state.fold();
     }

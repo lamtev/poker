@@ -10,7 +10,7 @@ public interface PokerAPI {
 
     void setUp(List<PlayerIdStack> playersStacks,
                String dealerId,
-               int smallBlindSize) throws IllegalStateException, GameOverException;
+               int smallBlindSize) throws GameOverException;
 
     void call() throws
             GameHaveNotBeenStartedException,
@@ -33,7 +33,10 @@ public interface PokerAPI {
             UnallowableMoveException,
             GameOverException;
 
-    void fold() throws Exception;
+    void fold() throws
+            UnallowableMoveException,
+            GameOverException,
+            GameHaveNotBeenStartedException;
 
     void check() throws
             GameHaveNotBeenStartedException,

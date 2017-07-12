@@ -3,6 +3,7 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
+import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -20,10 +21,21 @@ class PreflopWageringPokerState extends WageringPokerState {
     }
 
     @Override
-    public void check() throws ForbiddenMoveException {
-        //TODO
-        throw new ForbiddenMoveException("Check", toString());
+    public void check() throws ForbiddenMoveException, UnallowableMoveException {
+        if (moveIsFinalBigBlindMove()) {
+            super.check();
+            return;
+        }
+        throw new UnallowableMoveException("Check");
     }
+    @Override
+    public void fold() throws UnallowableMoveException {
+        if (moveIsFinalBigBlindMove()) {
+            throw new UnallowableMoveException("Fold");
+        }
+        super.fold();
+    }
+
 
     @Override
     public void attemptNextState() {
@@ -42,11 +54,19 @@ class PreflopWageringPokerState extends WageringPokerState {
 
     @Override
     boolean timeToNextState() {
-        return preflopWageringHasBeenFinished();
+        return checks() == 1 && players().activePlayersNumber()
+                == numberOfNotAllInnersActivePlayersWithSameWagers() + bank().getAllInners().size()
+                || super.timeToNextState();
     }
 
     @Override
     void determinePlayerIndex() {
         players().nextAfterBigBlind();
     }
+
+    private boolean moveIsFinalBigBlindMove() {
+        return raisers().isEmpty() && players().current() == players().bigBlind();
+    }
+
+
 }

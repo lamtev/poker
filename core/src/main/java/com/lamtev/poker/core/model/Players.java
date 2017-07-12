@@ -21,6 +21,7 @@ public final class Players implements Iterable<Player> {
         Player dealer = mayBeDealer.orElseThrow(RuntimeException::new);
         dealerIndex = players.indexOf(dealer);
     }
+
     public void add(Player player) {
         players.add(player);
     }
@@ -52,12 +53,6 @@ public final class Players implements Iterable<Player> {
 
     public Player current() {
         return players.get(currentPlayerIndex);
-    }
-
-    private Player next() {
-        ++currentPlayerIndex;
-        currentPlayerIndex %= size();
-        return current();
     }
 
     public Player nextActive() {
@@ -93,10 +88,6 @@ public final class Players implements Iterable<Player> {
         return players.size();
     }
 
-    public int indexOf(Player player) {
-        return players.indexOf(player);
-    }
-
     //TODO make it O(1)
     public int activePlayersNumber() {
         int activePlayersNumber = 0;
@@ -120,6 +111,12 @@ public final class Players implements Iterable<Player> {
     @Override
     public void forEach(Consumer<? super Player> action) {
         players.forEach(action);
+    }
+
+    private Player next() {
+        ++currentPlayerIndex;
+        currentPlayerIndex %= size();
+        return current();
     }
 
 }

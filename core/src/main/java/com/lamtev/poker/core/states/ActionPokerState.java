@@ -48,6 +48,7 @@ abstract class ActionPokerState extends AbstractPokerState {
         this.communityCards = communityCards;
     }
 
+    //TODO smallBlindSize -> bigBlindSize ?
     @Override
     public void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize)
             throws IllegalStateException, GameOverException {
@@ -57,10 +58,6 @@ abstract class ActionPokerState extends AbstractPokerState {
     void changePlayerIndex() {
         players.nextActive();
         poker.notifyCurrentPlayerChangedListeners(players.current().getId());
-    }
-
-    Player currentPlayer() {
-        return players.current();
     }
 
 }

@@ -32,7 +32,10 @@ public interface PokerState {
             UnallowableMoveException,
             GameOverException;
 
-    void fold() throws Exception;
+    void fold() throws
+            UnallowableMoveException,
+            GameOverException,
+            GameHaveNotBeenStartedException;
 
     void check() throws
             GameHaveNotBeenStartedException,

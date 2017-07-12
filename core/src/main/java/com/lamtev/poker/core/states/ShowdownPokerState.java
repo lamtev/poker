@@ -18,7 +18,7 @@ class ShowdownPokerState extends ActionPokerState {
                        Dealer dealer, Cards commonCards, Player latestAggressor) {
         super(poker, players, bank, dealer, commonCards);
         players.setLatestAggressor(latestAggressor);
-        poker.notifyCurrentPlayerChangedListeners(currentPlayer().getId());
+        poker.notifyCurrentPlayerChangedListeners(players().current().getId());
     }
 
     ShowdownPokerState(ActionPokerState state, Player latestAggressor) {
@@ -28,7 +28,7 @@ class ShowdownPokerState extends ActionPokerState {
         } else {
             players().setLatestAggressor(latestAggressor);
         }
-        poker().notifyCurrentPlayerChangedListeners(currentPlayer().getId());
+        poker().notifyCurrentPlayerChangedListeners(players().current().getId());
     }
 
     @Override
@@ -47,12 +47,12 @@ class ShowdownPokerState extends ActionPokerState {
     }
 
     @Override
-    public void fold() throws Exception {
+    public void fold() {
         if (showDowns == 0) {
-            throw new Exception("Can't fold when nobody did showDown");
+            throw new RuntimeException("Can't fold when nobody did showDown");
         }
-        currentPlayer().fold();
-        poker().notifyPlayerFoldListeners(currentPlayer().getId());
+        players().current().fold();
+        poker().notifyPlayerFoldListeners(players().current().getId());
         changePlayerIndex();
         attemptDetermineWinners();
     }
@@ -66,9 +66,9 @@ class ShowdownPokerState extends ActionPokerState {
     public void showDown() {
         ++showDowns;
         PokerHandFactory phf = new PokerHandFactory(communityCards());
-        PokerHand pokerHand = phf.createCombination(currentPlayer().getCards());
-        madeShowDown.put(currentPlayer().getId(), pokerHand);
-        poker().notifyPlayerShowedDownListeners(currentPlayer().getId(), pokerHand);
+        PokerHand pokerHand = phf.createCombination(players().current().getCards());
+        madeShowDown.put(players().current().getId(), pokerHand);
+        poker().notifyPlayerShowedDownListeners(players().current().getId(), pokerHand);
         changePlayerIndex();
         attemptDetermineWinners();
     }

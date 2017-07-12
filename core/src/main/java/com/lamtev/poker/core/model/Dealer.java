@@ -4,12 +4,12 @@ public final class Dealer {
 
     private CardDeck cardDeck;
     private Players players;
-    private Cards commonCards;
+    private Cards communityCards;
 
-    public Dealer(Players players, Cards commonCards) {
+    public Dealer(Players players, Cards communityCards) {
         this.cardDeck = new CardDeck();
         this.players = players;
-        this.commonCards = commonCards;
+        this.communityCards = communityCards;
         cardDeck.shuffle();
     }
 
@@ -23,7 +23,7 @@ public final class Dealer {
     public void makeFlop() {
         if (isAbleToMakeFlop()) {
             for (int i = 0; i < 3; ++i) {
-                commonCards.add(cardDeck.pickUpTop());
+                communityCards.add(cardDeck.pickUpTop());
             }
         } else {
             throw new RuntimeException("can't make flop");
@@ -33,7 +33,7 @@ public final class Dealer {
 
     public void makeTurn() {
         if (isAbleToMakeTurn()) {
-            commonCards.add(cardDeck.pickUpTop());
+            communityCards.add(cardDeck.pickUpTop());
         } else {
             throw new RuntimeException("can't make turn");
         }
@@ -42,7 +42,7 @@ public final class Dealer {
 
     public void makeRiver() {
         if (isAbleToMakeRiver()) {
-            commonCards.add(cardDeck.pickUpTop());
+            communityCards.add(cardDeck.pickUpTop());
         } else {
             throw new RuntimeException("can't make river");
         }
@@ -60,20 +60,20 @@ public final class Dealer {
 
     private void dealTwoCardsToPlayers() {
         for (int i = 0; i < 2; ++i) {
-            players.forEach((player) -> player.addCard(cardDeck.pickUpTop()));
+            players.forEach(player -> player.addCard(cardDeck.pickUpTop()));
         }
     }
 
     private boolean isAbleToMakeFlop() {
-        return preflopHasAlreadyBeen() && commonCards.size() == 0;
+        return preflopHasAlreadyBeen() && communityCards.size() == 0;
     }
 
     private boolean isAbleToMakeTurn() {
-        return preflopHasAlreadyBeen() && commonCards.size() == 3;
+        return preflopHasAlreadyBeen() && communityCards.size() == 3;
     }
 
     private boolean isAbleToMakeRiver() {
-        return preflopHasAlreadyBeen() && commonCards.size() == 4;
+        return preflopHasAlreadyBeen() && communityCards.size() == 4;
     }
 
 }
