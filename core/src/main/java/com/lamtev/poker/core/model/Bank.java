@@ -118,7 +118,7 @@ public final class Bank {
             return latestAggressor;
         }
 
-        public void setLatestAggressor(Player latestAggressor) {
+        void setLatestAggressor(Player latestAggressor) {
             this.latestAggressor = latestAggressor;
         }
 
