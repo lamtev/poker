@@ -2,17 +2,19 @@ package com.lamtev.poker.core.model;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 public class DealerTest {
 
     private Players generatePlayers() {
-        Players players = new Players();
+        List<Player> players = new ArrayList<>();
         for (int i = 0; i < 5; ++i) {
             players.add(new Player("pro" + i, 100));
         }
-        players.setDealer("pro4");
-        return players;
+        return new Players(players, "pro4");
     }
 
     private Dealer generateDealer() {

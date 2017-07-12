@@ -2,19 +2,21 @@ package com.lamtev.poker.core.model;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 public class BankTest {
 
     private Players generatePlayers() {
-        Players players = new Players();
+        List<Player> players = new ArrayList<>();
         players.add(new Player("a", 100));
         players.add(new Player("b", 200));
         players.add(new Player("c", 150));
         players.add(new Player("d", 300));
         players.add(new Player("e", 250));
-        players.setDealer("e");
-        return players;
+        return new Players(players, "e");
     }
 
     //TODO add cases for exceptions

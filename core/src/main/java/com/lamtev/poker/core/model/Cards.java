@@ -8,11 +8,7 @@ import java.util.function.Consumer;
 
 public class Cards implements Iterable<Card> {
 
-    protected List<Card> cards;
-
-    public Cards() {
-        cards = new ArrayList<>();
-    }
+    protected List<Card> cards = new ArrayList<>();;
 
     public Card cardAt(int index) {
         return cards.get(index - 1);

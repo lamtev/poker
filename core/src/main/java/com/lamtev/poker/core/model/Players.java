@@ -14,12 +14,9 @@ public final class Players implements Iterable<Player> {
     private int currentPlayerIndex = 0;
     private List<Player> players = new ArrayList<>();
 
-    public void setDealer(String dealerId) {
-        Optional<Player> mayBeDealer = players.stream()
-                .filter(player -> player.getId().equals(dealerId))
-                .findFirst();
-        Player dealer = mayBeDealer.orElseThrow(RuntimeException::new);
-        dealerIndex = players.indexOf(dealer);
+    public Players(List<Player> players, String dealerId) {
+        this.players = players;
+        setDealer(dealerId);
     }
 
     public void add(Player player) {
@@ -88,12 +85,11 @@ public final class Players implements Iterable<Player> {
         return players.size();
     }
 
-    //TODO make it O(1)
     public int activePlayersNumber() {
         int activePlayersNumber = 0;
         for (Player player : players) {
             if (player.isActive()) {
-                activePlayersNumber++;
+                ++activePlayersNumber;
             }
         }
         return activePlayersNumber;
@@ -111,6 +107,14 @@ public final class Players implements Iterable<Player> {
     @Override
     public void forEach(Consumer<? super Player> action) {
         players.forEach(action);
+    }
+
+    private void setDealer(String dealerId) {
+        Optional<Player> mayBeDealer = players.stream()
+                .filter(player -> player.getId().equals(dealerId))
+                .findFirst();
+        Player dealer = mayBeDealer.orElseThrow(RuntimeException::new);
+        dealerIndex = players.indexOf(dealer);
     }
 
     private Player next() {

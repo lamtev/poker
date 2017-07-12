@@ -5,17 +5,19 @@ import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.model.Players;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MoveValidatorTest {
 
     private Players generatePlayers() {
-        Players players = new Players();
+        List<Player> players = new ArrayList<>();
         players.add(new Player("a", 200));
         players.add(new Player("b", 200));
         players.add(new Player("c", 200));
         players.add(new Player("d", 200));
         players.add(new Player("e", 200));
-        players.setDealer("e");
-        return players;
+        return new Players(players,"e");
     }
 
     @Test(expected = Exception.class)

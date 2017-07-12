@@ -24,4 +24,8 @@ public final class CardDeck extends Cards {
         Collections.shuffle(cards, new Random(new Date().getTime()));
     }
 
+    @Override
+    public void add(Card card) {
+        throw new UnsupportedOperationException();
+    }
 }

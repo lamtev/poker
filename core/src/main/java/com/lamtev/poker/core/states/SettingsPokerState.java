@@ -64,13 +64,13 @@ public class SettingsPokerState extends AbstractPokerState {
     }
 
     private void init(List<PlayerIdStack> playersIdsStacks, String dealerId) {
-        players = new Players();
+        List<Player> playerList = new ArrayList<>();
         playersIdsStacks.forEach(playerIdStack -> {
             String id = playerIdStack.getId();
             int stack = playerIdStack.getStack();
-            players.add(new Player(id, stack));
+            playerList.add(new Player(id, stack));
         });
-        players.setDealer(dealerId);
+        players = new Players(playerList, dealerId);
         bank = new Bank(players);
         communityCards = new Cards();
         dealer = new Dealer(players, communityCards);
@@ -82,10 +82,8 @@ public class SettingsPokerState extends AbstractPokerState {
         String smallBlindId = smallBlind.getId();
         PlayerMoney smallBLindMoney = new PlayerMoney(smallBlind.getStack(), smallBlind.getWager());
         poker.notifyWagerPlacedListeners(smallBlindId, smallBLindMoney, bank.getMoney());
-
-        String bigBlindId = bigBlind.getId();
         PlayerMoney bigBlindMoney = new PlayerMoney(bigBlind.getStack(), bigBlind.getWager());
-        poker.notifyWagerPlacedListeners(bigBlindId, bigBlindMoney, bank.getMoney());
+        poker.notifyWagerPlacedListeners(bigBlind.getId(), bigBlindMoney, bank.getMoney());
     }
 
     private void nextState(Bank.BlindsStatus blindsStatus) {
