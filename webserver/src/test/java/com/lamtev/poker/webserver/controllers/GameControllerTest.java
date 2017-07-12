@@ -88,6 +88,8 @@ public class GameControllerTest {
         start();
 
         callNTimes(5);
+        mockMvc.perform(post("/rooms/xxx/check"))
+                .andDo(print());
 
         mockMvc.perform(get("/rooms/xxx/communityCards"))
                 .andDo(print())
@@ -161,7 +163,7 @@ public class GameControllerTest {
 
 
     @Test
-    public void testCheckWhenForbidden() throws Exception {
+    public void testCheckWhenUnallowable1() throws Exception {
         createRoom();
 
         start();
@@ -170,11 +172,11 @@ public class GameControllerTest {
                 .andDo(print())
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.code", is(403)))
-                .andExpect(jsonPath("$.message", is("Check is forbidden move in PreflopWageringPokerState")));
+                .andExpect(jsonPath("$.message", is("Check is not allowable")));
     }
 
     @Test
-    public void testCheckWhenUnallowable() throws Exception {
+    public void testCheckWhenUnallowable2() throws Exception {
         createRoom();
 
         start();
