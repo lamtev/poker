@@ -11,12 +11,11 @@ import java.util.Set;
 public final class Bank {
 
     //TODO side pots
-
     private Pot mainPot = new Pot();
     private Players players;
     private boolean blindsSet = false;
-    private BlindsStatus blindsStatus = BlindsStatus.USUAL_BLIND;
     private List<Player> allInners = new ArrayList<>();
+
     public Bank(Players players) {
         this.players = players;
     }
@@ -33,11 +32,10 @@ public final class Bank {
         return allInners;
     }
 
-    public BlindsStatus acceptBlindWagers(int smallBlindSize) {
+    public void acceptBlindWagers(int smallBlindSize) {
         acceptBlindWager(players.smallBlind(), smallBlindSize);
         acceptBlindWager(players.bigBlind(), smallBlindSize * 2);
         blindsSet = true;
-        return blindsStatus;
     }
 
     public void acceptCallFromPlayer(Player player) throws IsNotEnoughMoneyException {
@@ -93,35 +91,17 @@ public final class Bank {
     private void acceptBlindWager(Player blind, int wager) {
         if (blind.getStack() <= wager) {
             acceptAllInFromPlayer(blind);
-            blindsStatus = BlindsStatus.ALL_IN;
-            blindsStatus.setLatestAggressor(blind);
         } else {
             mainPot.money += blind.takeMoney(wager);
             mainPot.wager = wager;
         }
     }
 
-    private void validateTakingMoneyFromPlayer(Player player, int moneyTakingFromPlayer) throws IsNotEnoughMoneyException {
+    private void validateTakingMoneyFromPlayer(Player player, int moneyTakingFromPlayer)
+            throws IsNotEnoughMoneyException {
         if (player.getStack() < moneyTakingFromPlayer) {
             throw new IsNotEnoughMoneyException("Try to make allIn");
         }
-    }
-
-    //TODO
-    public enum BlindsStatus {
-        USUAL_BLIND,
-        ALL_IN;
-
-        private Player latestAggressor;
-
-        public Player getLatestAggressor() {
-            return latestAggressor;
-        }
-
-        void setLatestAggressor(Player latestAggressor) {
-            this.latestAggressor = latestAggressor;
-        }
-
     }
 
     private static class Pot {

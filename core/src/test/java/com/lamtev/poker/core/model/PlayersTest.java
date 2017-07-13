@@ -54,6 +54,15 @@ public class PlayersTest {
     }
 
     @Test
+    public void testNextActiveNonAllinner() {
+        Players players = generatePlayers();
+        players.nextActiveNonAllinner();
+        players.nextActiveNonAllinner();
+        players.nextActiveNonAllinner();
+        assertEquals("f", players.current().getId());
+    }
+
+    @Test
     public void testActivePlayersNumber() {
         Players players = generatePlayers();
         List<String> ids = asList("e", "f");
@@ -66,14 +75,13 @@ public class PlayersTest {
     }
 
     private Players generatePlayers() {
-
         List<Player> players = new ArrayList<>();
         players.addAll(asList(
                 new Player("a", 100),
                 player,
                 new Player("c", 100),
-                new Player("d", 100),
-                new Player("e", 100),
+                new Player("d", 0),
+                new Player("e", 0),
                 new Player("f", 100),
                 new Player("g", 100)
         ));

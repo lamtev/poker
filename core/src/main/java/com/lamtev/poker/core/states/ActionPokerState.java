@@ -58,8 +58,12 @@ abstract class ActionPokerState extends AbstractPokerState {
     }
 
     void changePlayerIndex() {
-        players.nextActive();
+        players.nextActiveNonAllinner();
         poker.notifyCurrentPlayerChangedListeners(players.current().getId());
+    }
+
+    boolean timeToForcedShowdown() {
+        return players.activePlayersNumber() == players.allinnersNumber();
     }
 
 }

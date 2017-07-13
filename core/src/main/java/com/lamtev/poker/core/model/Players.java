@@ -59,6 +59,13 @@ public final class Players implements Iterable<Player> {
         return current();
     }
 
+    public Player nextActiveNonAllinner() {
+        do {
+            nextActive();
+        } while (current().getStack() == 0);
+        return current();
+    }
+
     public Player nextAfterBigBlind() {
         currentPlayerIndex = players.indexOf(bigBlind());
         do {
@@ -93,6 +100,16 @@ public final class Players implements Iterable<Player> {
             }
         }
         return activePlayersNumber;
+    }
+
+    public int allinnersNumber() {
+        int allinnersNumber = 0;
+        for (Player player : players) {
+            if (player.isActive() && player.getStack() == 0) {
+                ++allinnersNumber;
+            }
+        }
+        return allinnersNumber;
     }
 
     public boolean isEmpty() {

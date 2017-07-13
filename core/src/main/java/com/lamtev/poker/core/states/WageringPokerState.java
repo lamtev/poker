@@ -1,8 +1,7 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.PlayerMoney;
-import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 import com.lamtev.poker.core.states.exceptions.IsNotEnoughMoneyException;
 import com.lamtev.poker.core.states.exceptions.NotPositiveWagerException;
@@ -18,18 +17,16 @@ abstract class WageringPokerState extends ActionPokerState {
     private int checks = 0;
     private List<Player> raisers = new ArrayList<>();
 
-    WageringPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
-        super(poker, players, bank, dealer, commonCards);
-        determineUnderTheGunPosition();
-        poker.notifyCurrentPlayerChangedListeners(players().current().getId());
-        moveValidator = new MoveValidator(players, bank);
-    }
-
     WageringPokerState(ActionPokerState state) {
         super(state);
         determineUnderTheGunPosition();
         poker().notifyCurrentPlayerChangedListeners(players().current().getId());
         moveValidator = new MoveValidator(players(), bank());
+    }
+
+    @Override
+    public void placeBlindWagers() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Placing blind wagers", toString());
     }
 
     @Override
@@ -42,7 +39,8 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void raise(int additionalWager) throws UnallowableMoveException, IsNotEnoughMoneyException, NotPositiveWagerException {
+    public void raise(int additionalWager) throws UnallowableMoveException,
+            IsNotEnoughMoneyException, NotPositiveWagerException {
         moveValidator.validateRaise(raisers.size());
         bank().acceptRaiseFromPlayer(additionalWager, players().current());
         raisers.add(players().current());
@@ -51,23 +49,16 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     @Override
-    public void allIn() {
+    public void allIn() throws UnallowableMoveException,
+            IsNotEnoughMoneyException, NotPositiveWagerException {
         //FIXME
-        //TODO what for catches?
-        int additionalWager = players().current().getStack() - (bank().getCurrentWager() - players().current().getWager());
+        int additionalWager = players().current().getStack() -
+                (bank().getCurrentWager() - players().current().getWager());
 
         if (additionalWager == 0) {
-            try {
-                call();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            call();
         } else if (additionalWager > 0) {
-            try {
-                raise(additionalWager);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            raise(additionalWager);
         } else {
             bank().acceptAllInFromPlayer(players().current());
             wagerPlaced();

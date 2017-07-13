@@ -4,6 +4,7 @@ import com.lamtev.poker.core.event_listeners.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
+import com.lamtev.poker.core.states.BlindsPokerState;
 import com.lamtev.poker.core.states.PokerState;
 import com.lamtev.poker.core.states.SettingsPokerState;
 import com.lamtev.poker.core.states.exceptions.*;
@@ -25,7 +26,6 @@ public class Poker implements PokerAPI {
     private List<PlayerFoldListener> playerFoldListeners = new ArrayList<>();
     private List<PreflopMadeListener> preflopMadeListeners = new ArrayList<>();
     private List<PlayerShowedDownListener> playerShowedDownListeners = new ArrayList<>();
-    private boolean gameIsSetUp = false;
     private boolean listenersAdded = false;
 
     @Override
@@ -55,7 +55,19 @@ public class Poker implements PokerAPI {
             throw new RuntimeException("You must subscribe");
         }
         state.setUp(playersStacks, dealerId, smallBlindSize);
-        gameIsSetUp = true;
+    }
+
+    @Override
+    public void placeBlindWagers() throws
+            NotPositiveWagerException,
+            ForbiddenMoveException,
+            IsNotEnoughMoneyException,
+            GameHaveNotBeenStartedException,
+            GameOverException,
+            UnallowableMoveException {
+        makeSureThatGameIsSetUp();
+        state.placeBlindWagers();
+
     }
 
     @Override
@@ -65,7 +77,8 @@ public class Poker implements PokerAPI {
             IsNotEnoughMoneyException,
             GameOverException,
             UnallowableMoveException {
-        validateGameIsSetUp();
+        makeSureThatGameIsSetUp();
+        makeSureThatBlindWagersPlaced();
         state.call();
     }
 
@@ -77,7 +90,8 @@ public class Poker implements PokerAPI {
             NotPositiveWagerException,
             GameOverException,
             UnallowableMoveException {
-        validateGameIsSetUp();
+        makeSureThatGameIsSetUp();
+        makeSureThatBlindWagersPlaced();
         state.raise(additionalWager);
     }
 
@@ -86,8 +100,11 @@ public class Poker implements PokerAPI {
             ForbiddenMoveException,
             GameHaveNotBeenStartedException,
             GameOverException,
-            UnallowableMoveException {
-        validateGameIsSetUp();
+            UnallowableMoveException,
+            IsNotEnoughMoneyException,
+            NotPositiveWagerException {
+        makeSureThatGameIsSetUp();
+        makeSureThatBlindWagersPlaced();
         state.allIn();
     }
 
@@ -96,7 +113,8 @@ public class Poker implements PokerAPI {
             UnallowableMoveException,
             GameOverException,
             GameHaveNotBeenStartedException {
-        validateGameIsSetUp();
+        makeSureThatGameIsSetUp();
+        makeSureThatBlindWagersPlaced();
         state.fold();
     }
 
@@ -106,7 +124,8 @@ public class Poker implements PokerAPI {
             GameHaveNotBeenStartedException,
             GameOverException,
             UnallowableMoveException {
-        validateGameIsSetUp();
+        makeSureThatGameIsSetUp();
+        makeSureThatBlindWagersPlaced();
         state.check();
     }
 
@@ -115,7 +134,8 @@ public class Poker implements PokerAPI {
             ForbiddenMoveException,
             GameHaveNotBeenStartedException,
             GameOverException {
-        validateGameIsSetUp();
+        makeSureThatGameIsSetUp();
+        makeSureThatBlindWagersPlaced();
         state.showDown();
     }
 
@@ -160,9 +180,15 @@ public class Poker implements PokerAPI {
         playerFoldListeners.forEach(listener -> listener.playerFold(id));
     }
 
-    private void validateGameIsSetUp() {
-        if (!gameIsSetUp) {
+    private void makeSureThatGameIsSetUp() {
+        if (state instanceof SettingsPokerState) {
             throw new RuntimeException("Game is not set up");
+        }
+    }
+
+    private void makeSureThatBlindWagersPlaced() {
+        if (state instanceof BlindsPokerState) {
+            throw new RuntimeException("Blind wagers are not placed");
         }
     }
 

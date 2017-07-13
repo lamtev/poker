@@ -1,7 +1,7 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.PlayerIdStack;
-import com.lamtev.poker.core.states.exceptions.GameOverException;
+import com.lamtev.poker.core.states.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +17,11 @@ class GameIsOverPokerState extends ActionPokerState {
 
     @Override
     public void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize) throws GameOverException {
+        throw new GameOverException();
+    }
+
+    @Override
+    public void placeBlindWagers() throws GameOverException {
         throw new GameOverException();
     }
 

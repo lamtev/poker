@@ -1,10 +1,9 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.PlayerMoney;
-import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.hands.PokerHandFactory;
-import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 
 import java.util.*;
@@ -14,13 +13,6 @@ class ShowdownPokerState extends ActionPokerState {
     private int showDowns = 0;
     private Map<String, PokerHand> madeShowDown = new LinkedHashMap<>();
 
-    ShowdownPokerState(Poker poker, Players players, Bank bank,
-                       Dealer dealer, Cards commonCards, Player latestAggressor) {
-        super(poker, players, bank, dealer, commonCards);
-        players.setLatestAggressor(latestAggressor);
-        poker.notifyCurrentPlayerChangedListeners(players().current().getId());
-    }
-
     ShowdownPokerState(ActionPokerState state, Player latestAggressor) {
         super(state);
         if (latestAggressor == null) {
@@ -29,6 +21,11 @@ class ShowdownPokerState extends ActionPokerState {
             players().setLatestAggressor(latestAggressor);
         }
         poker().notifyCurrentPlayerChangedListeners(players().current().getId());
+    }
+
+    @Override
+    public void placeBlindWagers() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Placing the blind wagers", toString());
     }
 
     @Override
@@ -73,6 +70,12 @@ class ShowdownPokerState extends ActionPokerState {
         attemptDetermineWinners();
     }
 
+    @Override
+    void changePlayerIndex() {
+        players().nextActive();
+        poker().notifyCurrentPlayerChangedListeners(players().current().getId());
+    }
+
     //TODO     add feature for action: not showDown and not fold
     //TODO     When it would be added, if only one action player then state = ShowDown
     //TODO     and player will have 2 variants: do this action or showDown
@@ -89,16 +92,14 @@ class ShowdownPokerState extends ActionPokerState {
             bank().giveMoneyToWinners(winnersIds);
 
             //TODO think about rename WagerPlacedListener
-            winnersIds.forEach(
-                    winnerId -> {
-                        Player winner = players().get(winnerId);
-                        poker().notifyWagerPlacedListeners(
-                                winnerId,
-                                new PlayerMoney(winner.getStack(), winner.getWager()),
-                                bank().getMoney()
-                        );
-                    });
-            System.out.println("happens after preflop");
+            winnersIds.forEach(winnerId -> {
+                Player winner = players().get(winnerId);
+                poker().notifyWagerPlacedListeners(
+                        winnerId,
+                        new PlayerMoney(winner.getStack(), winner.getWager()),
+                        bank().getMoney()
+                );
+            });
             poker().setState(new GameIsOverPokerState(this));
         }
     }

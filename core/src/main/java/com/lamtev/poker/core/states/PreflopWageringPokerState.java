@@ -1,7 +1,7 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
@@ -11,13 +11,12 @@ import java.util.Map;
 
 class PreflopWageringPokerState extends WageringPokerState {
 
-    PreflopWageringPokerState(Poker poker, Players players, Bank bank,
-                              Dealer dealer, Cards commonCards) {
-        super(poker, players, bank, dealer, commonCards);
-        dealer.makePreflop();
+    PreflopWageringPokerState(ActionPokerState state) {
+        super(state);
+        dealer().makePreflop();
         Map<String, Cards> playerIdToCards = new LinkedHashMap<>();
-        players.forEach(player -> playerIdToCards.put(player.getId(), player.getCards()));
-        poker.notifyPreflopMadeListeners(playerIdToCards);
+        players().forEach(player -> playerIdToCards.put(player.getId(), player.getCards()));
+        poker().notifyPreflopMadeListeners(playerIdToCards);
     }
 
     @Override
@@ -28,6 +27,7 @@ class PreflopWageringPokerState extends WageringPokerState {
         }
         throw new UnallowableMoveException("Check");
     }
+
     @Override
     public void fold() throws UnallowableMoveException {
         if (moveIsFinalBigBlindMove()) {

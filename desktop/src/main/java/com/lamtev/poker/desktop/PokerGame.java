@@ -4,7 +4,7 @@ import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.states.exceptions.GameOverException;
+import com.lamtev.poker.core.states.exceptions.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Orientation;
@@ -113,7 +113,9 @@ public class PokerGame implements PokerEventListener {
         poker.subscribe(this);
         try {
             poker.setUp(playersInfo, dealerId, smallBlindSize);
-        } catch (GameOverException e) {
+            poker.placeBlindWagers();
+        } catch (GameOverException | GameHaveNotBeenStartedException | ForbiddenMoveException
+                | NotPositiveWagerException | IsNotEnoughMoneyException | UnallowableMoveException e) {
             e.printStackTrace();
         }
     }

@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 public class PokerTest implements PokerEventListener {
 
-    //TODO functional tests
+    //TODO more test scenarios
 
     private String state;
     private List<PlayerIdStack> playersInfo;
@@ -51,6 +51,10 @@ public class PokerTest implements PokerEventListener {
         assertEquals("SettingsPokerState", state);
 
         poker.setUp(generatePlayersInfo(), "c1", 30);
+        System.out.println(state);
+        assertEquals("BlindsPokerState", state);
+
+        poker.placeBlindWagers();
         System.out.println(state);
         assertEquals("PreflopWageringPokerState", state);
 
