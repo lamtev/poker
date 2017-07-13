@@ -51,7 +51,6 @@ class PreflopWageringPokerState extends WageringPokerState {
         }
     }
 
-    //TODO time to next state
     @Override
     boolean timeToNextState() {
         return bigBlindChecked()

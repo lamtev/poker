@@ -31,7 +31,6 @@ public class BlindsPokerState extends ActionPokerState {
 
     private void nextState() {
         if (timeToForcedShowdown()) {
-            //TODO here may be that bigBlind is not latest aggressor
             poker().setState(new ShowdownPokerState(this, players().bigBlind()));
         } else {
             poker().setState(new PreflopWageringPokerState(this));

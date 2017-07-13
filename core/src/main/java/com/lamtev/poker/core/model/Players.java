@@ -3,7 +3,6 @@ package com.lamtev.poker.core.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public final class Players implements Iterable<Player> {
@@ -136,10 +135,10 @@ public final class Players implements Iterable<Player> {
     }
 
     private void setDealer(String dealerId) {
-        Optional<Player> mayBeDealer = players.stream()
+        Player dealer = players.stream()
                 .filter(player -> player.id().equals(dealerId))
-                .findFirst();
-        Player dealer = mayBeDealer.orElseThrow(RuntimeException::new);
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
         dealerIndex = players.indexOf(dealer);
     }
 

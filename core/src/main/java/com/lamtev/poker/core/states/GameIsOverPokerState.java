@@ -9,7 +9,7 @@ import java.util.List;
 class GameIsOverPokerState extends ActionPokerState {
 
     GameIsOverPokerState(ActionPokerState state) {
-        super(state.poker(), state.players(), state.bank(), state.dealer(), state.communityCards());
+        super(state);
         poker().notifyGameOverListeners(new ArrayList<PlayerIdStack>() {{
             players().forEach(player -> add(new PlayerIdStack(player.id(), player.stack())));
         }});
