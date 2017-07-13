@@ -15,29 +15,29 @@ public class PlayersTest {
     @Test
     public void testDealer() {
         Players players = generatePlayers();
-        assertEquals("a", players.dealer().getId());
+        assertEquals("a", players.dealer().id());
     }
 
     @Test
     public void testSmallBlind() {
         Players players = generatePlayers();
-        assertEquals("b", players.smallBlind().getId());
+        assertEquals("b", players.smallBlind().id());
     }
 
     @Test
     public void testBigBlind() {
         Players players = generatePlayers();
-        assertEquals("c", players.bigBlind().getId());
+        assertEquals("c", players.bigBlind().id());
     }
 
     @Test
     public void testCurrent() {
         Players players = generatePlayers();
         players.nextAfterDealer();
-        assertEquals("b", players.current().getId());
+        assertEquals("b", players.current().id());
 
         players.nextAfterBigBlind();
-        assertEquals("d", players.current().getId());
+        assertEquals("d", players.current().id());
 
         List<String> ids = asList("e", "f");
         CardDeck cardDeck = new CardDeck();
@@ -47,10 +47,10 @@ public class PlayersTest {
         ids.forEach(id -> players.get(id).fold());
 
         players.nextActive();
-        assertEquals("g", players.current().getId());
+        assertEquals("g", players.current().id());
 
         players.setLatestAggressor(player);
-        assertEquals("b", players.current().getId());
+        assertEquals("b", players.current().id());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class PlayersTest {
         players.nextActiveNonAllinner();
         players.nextActiveNonAllinner();
         players.nextActiveNonAllinner();
-        assertEquals("f", players.current().getId());
+        assertEquals("f", players.current().id());
     }
 
     @Test

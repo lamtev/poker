@@ -15,7 +15,7 @@ class PreflopWageringPokerState extends WageringPokerState {
         super(state);
         dealer().makePreflop();
         Map<String, Cards> playerIdToCards = new LinkedHashMap<>();
-        players().forEach(player -> playerIdToCards.put(player.getId(), player.getCards()));
+        players().forEach(player -> playerIdToCards.put(player.id(), player.cards()));
         poker().notifyPreflopMadeListeners(playerIdToCards);
     }
 
@@ -51,19 +51,12 @@ class PreflopWageringPokerState extends WageringPokerState {
         }
     }
 
-    private boolean bigBlindHaveDecidedToCheck() {
-        return checks() == 1 && players().activePlayersNumber()
-                == numberOfNotAllInnersActivePlayersWithSameWagers() + bank().getAllInners().size();
-    }
-
     //TODO time to next state
     @Override
     boolean timeToNextState() {
-        return bigBlindHaveDecidedToCheck()
-
-                || players().bigBlind().getStack() == 0 &&  players().activePlayersNumber()
-                == numberOfNotAllInnersActivePlayersWithSameWagers() + bank().getAllInners().size()
-
+        return bigBlindChecked()
+                || bigBlindIsAllinner()
+                && noRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers()
                 || super.timeToNextState();
     }
 
@@ -72,13 +65,24 @@ class PreflopWageringPokerState extends WageringPokerState {
         players().nextAfterBigBlind();
     }
 
-    /**
-     * This move -- is final big blind move
-     * @return nobody raise && current player is big blind
-     */
     private boolean moveIsFinalBigBlindMove() {
         return raisers().isEmpty() &&
                 players().current() == players().bigBlind();
+    }
+
+    private boolean bigBlindChecked() {
+        return checks() == 1 && players().activePlayersNumber()
+                == players().activeNonAllinnersWithSameWagerNumber(bank().currentWager())
+                + players().allinnersNumber();
+    }
+
+    private boolean bigBlindIsAllinner() {
+        return players().bigBlind().isAllinner();
+    }
+
+    private boolean noRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers() {
+        return raisers().isEmpty() && players().activePlayersNumber()
+                == players().activeNonAllinnersWithSameWagerNumber(bank().currentWager()) + players().allinnersNumber();
     }
 
 }

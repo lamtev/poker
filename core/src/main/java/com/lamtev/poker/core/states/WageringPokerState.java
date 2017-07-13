@@ -9,7 +9,6 @@ import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 abstract class WageringPokerState extends ActionPokerState {
 
@@ -20,7 +19,7 @@ abstract class WageringPokerState extends ActionPokerState {
     WageringPokerState(ActionPokerState state) {
         super(state);
         determineUnderTheGunPosition();
-        poker().notifyCurrentPlayerChangedListeners(players().current().getId());
+        poker().notifyCurrentPlayerChangedListeners(players().current().id());
         moveValidator = new MoveValidator(players(), bank());
     }
 
@@ -52,8 +51,8 @@ abstract class WageringPokerState extends ActionPokerState {
     public void allIn() throws UnallowableMoveException,
             IsNotEnoughMoneyException, NotPositiveWagerException {
         //FIXME
-        int additionalWager = players().current().getStack() -
-                (bank().getCurrentWager() - players().current().getWager());
+        int additionalWager = players().current().stack() -
+                (bank().currentWager() - players().current().wager());
 
         if (additionalWager == 0) {
             call();
@@ -70,9 +69,9 @@ abstract class WageringPokerState extends ActionPokerState {
     @Override
     public void fold() throws UnallowableMoveException {
         players().current().fold();
-        poker().notifyPlayerFoldListeners(players().current().getId());
+        poker().notifyPlayerFoldListeners(players().current().id());
         changePlayerIndex();
-        if (isOnlyOneActivePlayer()) {
+        if (onlyOneActivePlayer()) {
             bank().giveMoneyToWinners(players().current());
             gameIsOverState();
             return;
@@ -98,41 +97,24 @@ abstract class WageringPokerState extends ActionPokerState {
     abstract void attemptNextState();
 
     private void wagerPlaced() {
-        String playerId = players().current().getId();
-        int stack = players().current().getStack();
-        int wager = players().current().getWager();
-        int bank = this.bank().getMoney();
+        String playerId = players().current().id();
+        int stack = players().current().stack();
+        int wager = players().current().wager();
+        int bank = this.bank().money();
         PlayerMoney playerMoney = new PlayerMoney(stack, wager);
         poker().notifyWagerPlacedListeners(playerId, playerMoney, bank);
     }
 
     boolean timeToNextState() {
-        return checks == players().activePlayersNumber() ||
-                numberOfNotAllInnersActivePlayersWithSameWagers() + bank().getAllInners().size()
-                        == players().activePlayersNumber() && raisers.size() > 0 ;
+        return allActivePlayersChecked() ||
+                thereWereRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers();
     }
 
     Player latestAggressor() {
-        ListIterator<Player> it = raisers.listIterator();
-        while (it.hasPrevious()) {
-            Player latestAggressor = it.previous();
-            if (latestAggressor.isActive()) {
-                return latestAggressor;
-            }
-        }
-        return null;
-    }
-
-    //TODO delegate to Players
-    int numberOfNotAllInnersActivePlayersWithSameWagers() {
-        int count = 0;
-        for (Player player : players()) {
-            if (player.isActive() && !bank().getAllInners().contains(player) &&
-                    player.getWager() == bank().getCurrentWager()) {
-                ++count;
-            }
-        }
-        return count;
+        return raisers.stream()
+                .filter(Player::isActive)
+                .reduce((first, second) -> second)
+                .orElse(null);
     }
 
     int checks() {
@@ -143,12 +125,21 @@ abstract class WageringPokerState extends ActionPokerState {
         return raisers;
     }
 
-    private boolean isOnlyOneActivePlayer() {
+    private boolean onlyOneActivePlayer() {
         return players().activePlayersNumber() == 1;
     }
 
     private void gameIsOverState() {
         poker().setState(new GameIsOverPokerState(this));
+    }
+
+    private boolean allActivePlayersChecked() {
+        return checks == players().activePlayersNumber();
+    }
+
+    private boolean thereWereRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers() {
+        return !raisers.isEmpty() && players().activeNonAllinnersWithSameWagerNumber(bank().currentWager())
+                + players().allinnersNumber() == players().activePlayersNumber();
     }
 
 }

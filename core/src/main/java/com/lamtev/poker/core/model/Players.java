@@ -29,7 +29,7 @@ public final class Players implements Iterable<Player> {
 
     public Player get(String id) {
         for (Player player : players) {
-            if (player.getId().equals(id)) {
+            if (player.id().equals(id)) {
                 return player;
             }
         }
@@ -62,7 +62,7 @@ public final class Players implements Iterable<Player> {
     public Player nextActiveNonAllinner() {
         do {
             nextActive();
-        } while (current().getStack() == 0);
+        } while (current().stack() == 0);
         return current();
     }
 
@@ -103,23 +103,22 @@ public final class Players implements Iterable<Player> {
     }
 
     public int allinnersNumber() {
-        int allinnersNumber = 0;
-        for (Player player : players) {
-            if (player.isActive() && player.getStack() == 0) {
-                ++allinnersNumber;
-            }
-        }
-        return allinnersNumber;
+        return (int) players.stream()
+                .filter(Player::isAllinner)
+                .count();
     }
 
     public int activeNonAllinnersNumber() {
-        int activeNonAllinnersNumber = 0;
-        for (Player player : players) {
-            if (player.isActive() && player.getStack() != 0) {
-                ++activeNonAllinnersNumber;
-            }
-        }
-        return activeNonAllinnersNumber;
+        return (int) players.stream()
+                .filter(Player::isActiveNonAllinner)
+                .count();
+    }
+
+    public int activeNonAllinnersWithSameWagerNumber(int wager) {
+        return (int) players.stream()
+                .filter(Player::isActiveNonAllinner)
+                .filter(player -> player.wager() == wager)
+                .count();
     }
 
     public boolean isEmpty() {
@@ -138,7 +137,7 @@ public final class Players implements Iterable<Player> {
 
     private void setDealer(String dealerId) {
         Optional<Player> mayBeDealer = players.stream()
-                .filter(player -> player.getId().equals(dealerId))
+                .filter(player -> player.id().equals(dealerId))
                 .findFirst();
         Player dealer = mayBeDealer.orElseThrow(RuntimeException::new);
         dealerIndex = players.indexOf(dealer);

@@ -13,24 +13,32 @@ public final class Player {
         this.stack = stack;
     }
 
-    public String getId() {
+    public String id() {
         return id;
     }
 
-    public int getStack() {
+    public int stack() {
         return stack;
     }
 
-    public int getWager() {
+    public int wager() {
         return wager;
     }
 
-    public Cards getCards() {
+    public Cards cards() {
         return cards;
     }
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public boolean isAllinner() {
+        return isActive && stack == 0;
+    }
+
+    public boolean isActiveNonAllinner() {
+        return isActive && stack != 0;
     }
 
     public void addCard(Card card) {
@@ -58,10 +66,6 @@ public final class Player {
         stack -= money;
         wager += money;
         return money;
-    }
-
-    public boolean madeAllin() {
-        return stack == 0;
     }
 
 }

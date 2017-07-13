@@ -30,7 +30,7 @@ public class DealerTest {
         Dealer dealer = new Dealer(players, new Cards());
         dealer.makePreflop();
         for (Player player : players) {
-            assertEquals(2, player.getCards().size());
+            assertEquals(2, player.cards().size());
         }
     }
 

@@ -26,12 +26,12 @@ public class BankTest {
         Players players = generatePlayers();
         Bank bank = new Bank(players);
         bank.acceptBlindWagers(5);
-        assertEquals(5, players.get(0).getWager());
-        assertEquals(95, players.get(0).getStack());
-        assertEquals(10, players.get(1).getWager());
-        assertEquals(190, players.get(1).getStack());
-        assertEquals(15, bank.getMoney());
-        assertEquals(10, bank.getCurrentWager());
+        assertEquals(5, players.get(0).wager());
+        assertEquals(95, players.get(0).stack());
+        assertEquals(10, players.get(1).wager());
+        assertEquals(190, players.get(1).stack());
+        assertEquals(15, bank.money());
+        assertEquals(10, bank.currentWager());
     }
 
     @Test
@@ -44,10 +44,10 @@ public class BankTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(10, players.get(2).getWager());
-        assertEquals(140, players.get(2).getStack());
-        assertEquals(25, bank.getMoney());
-        assertEquals(10, bank.getCurrentWager());
+        assertEquals(10, players.get(2).wager());
+        assertEquals(140, players.get(2).stack());
+        assertEquals(25, bank.money());
+        assertEquals(10, bank.currentWager());
     }
 
     @Test
@@ -60,30 +60,30 @@ public class BankTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(40, players.get(3).getWager());
-        assertEquals(260, players.get(3).getStack());
-        assertEquals(55, bank.getMoney());
-        assertEquals(40, bank.getCurrentWager());
+        assertEquals(40, players.get(3).wager());
+        assertEquals(260, players.get(3).stack());
+        assertEquals(55, bank.money());
+        assertEquals(40, bank.currentWager());
 
         try {
             bank.acceptRaiseFromPlayer(20, players.get(4));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(60, players.get(4).getWager());
-        assertEquals(190, players.get(4).getStack());
-        assertEquals(115, bank.getMoney());
-        assertEquals(60, bank.getCurrentWager());
+        assertEquals(60, players.get(4).wager());
+        assertEquals(190, players.get(4).stack());
+        assertEquals(115, bank.money());
+        assertEquals(60, bank.currentWager());
 
         try {
             bank.acceptRaiseFromPlayer(30, players.get(3));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(90, players.get(3).getWager());
-        assertEquals(210, players.get(3).getStack());
-        assertEquals(165, bank.getMoney());
-        assertEquals(90, bank.getCurrentWager());
+        assertEquals(90, players.get(3).wager());
+        assertEquals(210, players.get(3).stack());
+        assertEquals(165, bank.money());
+        assertEquals(90, bank.currentWager());
 
     }
 

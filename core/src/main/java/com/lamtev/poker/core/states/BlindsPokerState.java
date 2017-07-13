@@ -22,11 +22,11 @@ public class BlindsPokerState extends ActionPokerState {
     }
 
     private void notifyWagerPlacedListeners(Player smallBlind, Player bigBlind) {
-        String smallBlindId = smallBlind.getId();
-        PlayerMoney smallBLindMoney = new PlayerMoney(smallBlind.getStack(), smallBlind.getWager());
-        poker().notifyWagerPlacedListeners(smallBlindId, smallBLindMoney, bank().getMoney());
-        PlayerMoney bigBlindMoney = new PlayerMoney(bigBlind.getStack(), bigBlind.getWager());
-        poker().notifyWagerPlacedListeners(bigBlind.getId(), bigBlindMoney, bank().getMoney());
+        String smallBlindId = smallBlind.id();
+        PlayerMoney smallBLindMoney = new PlayerMoney(smallBlind.stack(), smallBlind.wager());
+        poker().notifyWagerPlacedListeners(smallBlindId, smallBLindMoney, bank().money());
+        PlayerMoney bigBlindMoney = new PlayerMoney(bigBlind.stack(), bigBlind.wager());
+        poker().notifyWagerPlacedListeners(bigBlind.id(), bigBlindMoney, bank().money());
     }
 
     private void nextState() {

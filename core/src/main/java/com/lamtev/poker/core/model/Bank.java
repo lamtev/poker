@@ -20,15 +20,15 @@ public final class Bank {
         this.players = players;
     }
 
-    public int getMoney() {
+    public int money() {
         return mainPot.money;
     }
 
-    public int getCurrentWager() {
+    public int currentWager() {
         return mainPot.wager;
     }
 
-    public List<Player> getAllInners() {
+    public List<Player> allInners() {
         return allInners;
     }
 
@@ -42,7 +42,7 @@ public final class Bank {
         if (!blindsSet) {
             throw new RuntimeException("Can't accept call from player when blinds are not set");
         }
-        int moneyTakingFromPlayer = mainPot.wager - player.getWager();
+        int moneyTakingFromPlayer = mainPot.wager - player.wager();
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
         mainPot.money += player.takeMoney(moneyTakingFromPlayer);
         mainPot.applicants.add(player);
@@ -56,7 +56,7 @@ public final class Bank {
         if (additionalWager <= 0) {
             throw new NotPositiveWagerException();
         }
-        int moneyTakingFromPlayer = mainPot.wager + additionalWager - player.getWager();
+        int moneyTakingFromPlayer = mainPot.wager + additionalWager - player.wager();
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
         mainPot.money += player.takeMoney(moneyTakingFromPlayer);
         mainPot.wager += additionalWager;
@@ -67,11 +67,11 @@ public final class Bank {
     }
 
     public void acceptAllInFromPlayer(Player player) {
-        mainPot.money += player.takeMoney(player.getStack());
+        mainPot.money += player.takeMoney(player.stack());
         mainPot.applicants.add(player);
         allInners.add(player);
-        if (player.getWager() > mainPot.wager) {
-            mainPot.wager = player.getWager();
+        if (player.wager() > mainPot.wager) {
+            mainPot.wager = player.wager();
         }
     }
 
@@ -85,11 +85,11 @@ public final class Bank {
     }
 
     private boolean thisBetIsAllIn(Player player) {
-        return player.getStack() == 0;
+        return player.stack() == 0;
     }
 
     private void acceptBlindWager(Player blind, int wager) {
-        if (blind.getStack() <= wager) {
+        if (blind.stack() <= wager) {
             acceptAllInFromPlayer(blind);
         } else {
             mainPot.money += blind.takeMoney(wager);
@@ -99,7 +99,7 @@ public final class Bank {
 
     private void validateTakingMoneyFromPlayer(Player player, int moneyTakingFromPlayer)
             throws IsNotEnoughMoneyException {
-        if (player.getStack() < moneyTakingFromPlayer) {
+        if (player.stack() < moneyTakingFromPlayer) {
             throw new IsNotEnoughMoneyException("Try to make allIn");
         }
     }

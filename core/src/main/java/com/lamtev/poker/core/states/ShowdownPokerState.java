@@ -20,7 +20,7 @@ class ShowdownPokerState extends ActionPokerState {
         } else {
             players().setLatestAggressor(latestAggressor);
         }
-        poker().notifyCurrentPlayerChangedListeners(players().current().getId());
+        poker().notifyCurrentPlayerChangedListeners(players().current().id());
     }
 
     @Override
@@ -49,7 +49,7 @@ class ShowdownPokerState extends ActionPokerState {
             throw new RuntimeException("Can't fold when nobody did showDown");
         }
         players().current().fold();
-        poker().notifyPlayerFoldListeners(players().current().getId());
+        poker().notifyPlayerFoldListeners(players().current().id());
         changePlayerIndex();
         attemptDetermineWinners();
     }
@@ -63,9 +63,9 @@ class ShowdownPokerState extends ActionPokerState {
     public void showDown() {
         ++showDowns;
         PokerHandFactory phf = new PokerHandFactory(communityCards());
-        PokerHand pokerHand = phf.createCombination(players().current().getCards());
-        madeShowDown.put(players().current().getId(), pokerHand);
-        poker().notifyPlayerShowedDownListeners(players().current().getId(), pokerHand);
+        PokerHand pokerHand = phf.createCombination(players().current().cards());
+        madeShowDown.put(players().current().id(), pokerHand);
+        poker().notifyPlayerShowedDownListeners(players().current().id(), pokerHand);
         changePlayerIndex();
         attemptDetermineWinners();
     }
@@ -73,7 +73,7 @@ class ShowdownPokerState extends ActionPokerState {
     @Override
     void changePlayerIndex() {
         players().nextActive();
-        poker().notifyCurrentPlayerChangedListeners(players().current().getId());
+        poker().notifyCurrentPlayerChangedListeners(players().current().id());
     }
 
     //TODO     add feature for action: not showDown and not fold
@@ -96,8 +96,8 @@ class ShowdownPokerState extends ActionPokerState {
                 Player winner = players().get(winnerId);
                 poker().notifyWagerPlacedListeners(
                         winnerId,
-                        new PlayerMoney(winner.getStack(), winner.getWager()),
-                        bank().getMoney()
+                        new PlayerMoney(winner.stack(), winner.wager()),
+                        bank().money()
                 );
             });
             poker().setState(new GameIsOverPokerState(this));

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Random;
 
-public final class CardDeck extends Cards {
+final class CardDeck extends Cards {
 
     public CardDeck() {
         super();
@@ -21,7 +21,7 @@ public final class CardDeck extends Cards {
     }
 
     public void shuffle() {
-        Collections.shuffle(cards, new Random(new Date().getTime()));
+        Collections.shuffle(cards, new Random(System.currentTimeMillis()));
     }
 
     @Override

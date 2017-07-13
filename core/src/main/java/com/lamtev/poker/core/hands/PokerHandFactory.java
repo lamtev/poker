@@ -13,7 +13,7 @@ import java.util.List;
 public class PokerHandFactory {
 
     private final Cards commonCards;
-    private final static Comparator<Card> COMPARATOR_BY_RANK = Comparator.comparing(Card::getRank);
+    private final static Comparator<Card> COMPARATOR_BY_RANK = Comparator.comparing(Card::rank);
 
     public PokerHandFactory(Cards commonCards) {
         this.commonCards = commonCards;
@@ -78,8 +78,8 @@ public class PokerHandFactory {
         for (int i = 0; i < 4; ++i) {
             int numberOfSameSuits = 1;
             for (int j = 0; j < cards.size(); ++j) {
-                if (i != j && cards.get(i).getSuit().equals(cards.get(j).getSuit()) && ++numberOfSameSuits == 5) {
-                    final Rank highCardRank = cards.get(i).getRank();
+                if (i != j && cards.get(i).suit().equals(cards.get(j).suit()) && ++numberOfSameSuits == 5) {
+                    final Rank highCardRank = cards.get(i).rank();
                     if (highCardRank == Rank.ACE && isStraightFromRank(cards, highCardRank)) {
                         return new RoyalFlush();
                     }
@@ -93,8 +93,8 @@ public class PokerHandFactory {
         for (int i = 0; i < 4; ++i) {
             int numberOfSameSuits = 1;
             for (int j = 0; j < cards.size(); ++j) {
-                if (i != j && cards.get(i).getSuit().equals(cards.get(j).getSuit()) && ++numberOfSameSuits == 5) {
-                    final Rank highCardRank = cards.get(i).getRank();
+                if (i != j && cards.get(i).suit().equals(cards.get(j).suit()) && ++numberOfSameSuits == 5) {
+                    final Rank highCardRank = cards.get(i).rank();
                     if (isStraightFromRank(cards, highCardRank)) {
                         return new StraightFlush(highCardRank);
                     }
@@ -110,9 +110,9 @@ public class PokerHandFactory {
         for (int i = 0; i < 5; ++i) {
             int numberOfSameRanks = 1;
             for (int j = 0; j < cards.size(); ++j) {
-                if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++numberOfSameRanks == 4) {
-                    Rank otherCardRank = determineRanksExceptThese(cards, cards.get(i).getRank()).get(0);
-                    return new FourOfAKind(cards.get(i).getRank(), otherCardRank);
+                if (i != j && cards.get(i).rank().equals(cards.get(j).rank()) && ++numberOfSameRanks == 4) {
+                    Rank otherCardRank = determineRanksExceptThese(cards, cards.get(i).rank()).get(0);
+                    return new FourOfAKind(cards.get(i).rank(), otherCardRank);
                 }
             }
         }
@@ -126,8 +126,8 @@ public class PokerHandFactory {
         for (int i = 0; i < 6; ++i) {
             int threeOfAKindNumberOfSameRanks = 1;
             for (int j = 0; j < cards.size(); ++j) {
-                if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++threeOfAKindNumberOfSameRanks == 3) {
-                    threeOfAKindHighCardRank = cards.get(i).getRank();
+                if (i != j && cards.get(i).rank().equals(cards.get(j).rank()) && ++threeOfAKindNumberOfSameRanks == 3) {
+                    threeOfAKindHighCardRank = cards.get(i).rank();
                     break;
                 }
                 if (threeOfAKindHighCardRank != null) {
@@ -140,8 +140,8 @@ public class PokerHandFactory {
                 int pairNumberOfSameRanks = 1;
                 Rank pairHighCardRank;
                 for (int k = 0; k < cards.size(); ++k) {
-                    if (i != k && cards.get(i).getRank() != threeOfAKindHighCardRank && cards.get(i).getRank().equals(cards.get(k).getRank()) && ++pairNumberOfSameRanks == 2) {
-                        pairHighCardRank = cards.get(i).getRank();
+                    if (i != k && cards.get(i).rank() != threeOfAKindHighCardRank && cards.get(i).rank().equals(cards.get(k).rank()) && ++pairNumberOfSameRanks == 2) {
+                        pairHighCardRank = cards.get(i).rank();
                         return new FullHouse(threeOfAKindHighCardRank, pairHighCardRank);
                     }
                 }
@@ -152,10 +152,10 @@ public class PokerHandFactory {
 
     private PokerHand parseFlush(List<Card> cards) {
         for (int i = 0; i < 3; ++i) {
-            final Suit suit = cards.get(i).getSuit();
+            final Suit suit = cards.get(i).suit();
             int numberOfSameSuits = 1;
             for (int j = i + 1; j < cards.size(); ++j) {
-                if (cards.get(i).getSuit().equals(cards.get(j).getSuit()) && ++numberOfSameSuits == 5) {
+                if (cards.get(i).suit().equals(cards.get(j).suit()) && ++numberOfSameSuits == 5) {
                     final Rank highCardRank = determineRankOfHighCardWithThisSuit(cards, suit);
                     return new Flush(highCardRank);
                 }
@@ -180,9 +180,9 @@ public class PokerHandFactory {
         for (int i = 0; i < 6; ++i) {
             int numberOfSameRanks = 1;
             for (int j = 0; j < cards.size(); ++j) {
-                if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++numberOfSameRanks == 3) {
-                    List<Rank> otherCardsRanks = determineRanksExceptThese(cards, cards.get(i).getRank()).subList(0, 2);
-                    return new ThreeOfAKind(cards.get(i).getRank(), otherCardsRanks);
+                if (i != j && cards.get(i).rank().equals(cards.get(j).rank()) && ++numberOfSameRanks == 3) {
+                    List<Rank> otherCardsRanks = determineRanksExceptThese(cards, cards.get(i).rank()).subList(0, 2);
+                    return new ThreeOfAKind(cards.get(i).rank(), otherCardsRanks);
                 }
             }
         }
@@ -196,8 +196,8 @@ public class PokerHandFactory {
         for (int i = 0; i < 7; ++i) {
             int firstPairNumberOfSameRanks = 1;
             for (int j = 0; j < cards.size(); ++j) {
-                if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++firstPairNumberOfSameRanks == 2) {
-                    firstPairHighCardRank = cards.get(i).getRank();
+                if (i != j && cards.get(i).rank().equals(cards.get(j).rank()) && ++firstPairNumberOfSameRanks == 2) {
+                    firstPairHighCardRank = cards.get(i).rank();
                     break;
                 }
                 if (firstPairHighCardRank != null) {
@@ -210,8 +210,8 @@ public class PokerHandFactory {
                 int secondPairNumberOfSameRanks = 1;
                 Rank secondPairHighCardRank;
                 for (int k = 0; k < cards.size(); ++k) {
-                    if (i != k && cards.get(i).getRank() != firstPairHighCardRank && cards.get(i).getRank().equals(cards.get(k).getRank()) && ++secondPairNumberOfSameRanks == 2) {
-                        secondPairHighCardRank = cards.get(i).getRank();
+                    if (i != k && cards.get(i).rank() != firstPairHighCardRank && cards.get(i).rank().equals(cards.get(k).rank()) && ++secondPairNumberOfSameRanks == 2) {
+                        secondPairHighCardRank = cards.get(i).rank();
                         Rank otherCardRank = determineRanksExceptThese(cards, firstPairHighCardRank, secondPairHighCardRank).get(0);
                         return new TwoPairs(firstPairHighCardRank, secondPairHighCardRank, otherCardRank);
                     }
@@ -227,9 +227,9 @@ public class PokerHandFactory {
         for (int i = 0; i < 7; ++i) {
             int numberOfSameRanks = 1;
             for (int j = 0; j < cards.size(); ++j) {
-                if (i != j && cards.get(i).getRank().equals(cards.get(j).getRank()) && ++numberOfSameRanks == 2) {
-                    List<Rank> otherCardsRanks = determineRanksExceptThese(cards, cards.get(i).getRank()).subList(0, 3);
-                    return new Pair(cards.get(i).getRank(), otherCardsRanks);
+                if (i != j && cards.get(i).rank().equals(cards.get(j).rank()) && ++numberOfSameRanks == 2) {
+                    List<Rank> otherCardsRanks = determineRanksExceptThese(cards, cards.get(i).rank()).subList(0, 3);
+                    return new Pair(cards.get(i).rank(), otherCardsRanks);
                 }
             }
         }
@@ -254,25 +254,25 @@ public class PokerHandFactory {
 
     private Rank determineRankOfHighCardWithThisSuit(List<Card> cards, Suit suit) {
         return Collections.max(cards, (c1, c2) -> {
-            if (c1.getSuit() == suit && c1.getSuit() == c2.getSuit()) {
-                return c1.getRank().compareTo(c2.getRank());
+            if (c1.suit() == suit && c1.suit() == c2.suit()) {
+                return c1.rank().compareTo(c2.rank());
             } else {
-                if (c1.getSuit() == suit) return 1;
+                if (c1.suit() == suit) return 1;
                 else return -1;
             }
-        }).getRank();
+        }).rank();
     }
 
     //TODO think how to use stream here
     private List<Rank> determineRanksExceptThese(List<Card> cards, Rank... exceptedRanks) {
         List<Rank> ranks = new ArrayList<>();
         if (exceptedRanks == null || exceptedRanks.length == 0) {
-            cards.forEach(card -> ranks.add(card.getRank()));
+            cards.forEach(card -> ranks.add(card.rank()));
         } else {
             for (Rank rank : exceptedRanks) {
                 cards.forEach(card -> {
-                    if (card.getRank() != rank) {
-                        ranks.add(card.getRank());
+                    if (card.rank() != rank) {
+                        ranks.add(card.rank());
                     }
                 });
             }
