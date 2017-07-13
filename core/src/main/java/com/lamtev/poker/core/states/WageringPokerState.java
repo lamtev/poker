@@ -109,7 +109,7 @@ abstract class WageringPokerState extends ActionPokerState {
     boolean timeToNextState() {
         return checks == players().activePlayersNumber() ||
                 numberOfNotAllInnersActivePlayersWithSameWagers() + bank().getAllInners().size()
-                        == players().activePlayersNumber() && raisers.size() > 0;
+                        == players().activePlayersNumber() && raisers.size() > 0 ;
     }
 
     Player latestAggressor() {
@@ -123,10 +123,7 @@ abstract class WageringPokerState extends ActionPokerState {
         return null;
     }
 
-    boolean timeToShowDown() {
-        return timeToNextState() && bank().getAllInners().size() != 0;
-    }
-
+    //TODO delegate to Players
     int numberOfNotAllInnersActivePlayersWithSameWagers() {
         int count = 0;
         for (Player player : players()) {

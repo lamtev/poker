@@ -112,6 +112,16 @@ public final class Players implements Iterable<Player> {
         return allinnersNumber;
     }
 
+    public int activeNonAllinnersNumber() {
+        int activeNonAllinnersNumber = 0;
+        for (Player player : players) {
+            if (player.isActive() && player.getStack() != 0) {
+                ++activeNonAllinnersNumber;
+            }
+        }
+        return activeNonAllinnersNumber;
+    }
+
     public boolean isEmpty() {
         return players.isEmpty();
     }

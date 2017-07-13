@@ -79,6 +79,11 @@ public class PokerTest implements PokerEventListener {
         poker.call();
 
         System.out.println(state);
+        assertEquals("RiverWageringPokerState", state);
+
+        poker.check();
+        poker.check();
+        System.out.println(state);
         assertEquals("ShowdownPokerState", state);
 
         String id = currentPlayerId;

@@ -62,8 +62,10 @@ abstract class ActionPokerState extends AbstractPokerState {
         poker.notifyCurrentPlayerChangedListeners(players.current().getId());
     }
 
+    //TODO time to forced showdown
     boolean timeToForcedShowdown() {
-        return players.activePlayersNumber() == players.allinnersNumber();
+        return players.activePlayersNumber() == players.allinnersNumber() ||
+                players.activeNonAllinnersNumber() == 1;
     }
 
 }

@@ -36,10 +36,9 @@ class PreflopWageringPokerState extends WageringPokerState {
         super.fold();
     }
 
-
     @Override
     public void attemptNextState() {
-        if (timeToShowDown()) {
+        if (timeToForcedShowdown()) {
             dealer().makeFlop();
             dealer().makeTurn();
             dealer().makeRiver();
@@ -52,10 +51,19 @@ class PreflopWageringPokerState extends WageringPokerState {
         }
     }
 
+    private boolean bigBlindHaveDecidedToCheck() {
+        return checks() == 1 && players().activePlayersNumber()
+                == numberOfNotAllInnersActivePlayersWithSameWagers() + bank().getAllInners().size();
+    }
+
+    //TODO time to next state
     @Override
     boolean timeToNextState() {
-        return checks() == 1 && players().activePlayersNumber()
+        return bigBlindHaveDecidedToCheck()
+
+                || players().bigBlind().getStack() == 0 &&  players().activePlayersNumber()
                 == numberOfNotAllInnersActivePlayersWithSameWagers() + bank().getAllInners().size()
+
                 || super.timeToNextState();
     }
 
@@ -64,8 +72,13 @@ class PreflopWageringPokerState extends WageringPokerState {
         players().nextAfterBigBlind();
     }
 
+    /**
+     * This move -- is final big blind move
+     * @return nobody raise && current player is big blind
+     */
     private boolean moveIsFinalBigBlindMove() {
-        return raisers().isEmpty() && players().current() == players().bigBlind();
+        return raisers().isEmpty() &&
+                players().current() == players().bigBlind();
     }
 
 }

@@ -17,7 +17,7 @@ class TurnWageringPokerState extends WageringPokerState {
 
     @Override
     protected void attemptNextState() {
-        if (timeToShowDown()) {
+        if (timeToForcedShowdown()) {
             //TODO think about how to dispose of code duplicates
             dealer().makeRiver();
             List<Card> addedCards = new ArrayList<>();
