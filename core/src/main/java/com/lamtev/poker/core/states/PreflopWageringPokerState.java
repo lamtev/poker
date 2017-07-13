@@ -60,13 +60,12 @@ class PreflopWageringPokerState extends WageringPokerState {
     }
 
     @Override
-    void determinePlayerIndex() {
+    void determineUnderTheGunPosition() {
         players().nextAfterBigBlind();
     }
 
     private boolean moveIsFinalBigBlindMove() {
         return raisers().isEmpty() && players().current() == players().bigBlind();
     }
-
 
 }

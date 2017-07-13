@@ -99,7 +99,8 @@ public class SettingsPokerState extends AbstractPokerState {
                 poker.notifyCommunityCardsChangedListeners(new ArrayList<Card>() {{
                     communityCards.forEach(this::add);
                 }});
-                poker.setState(new ShowdownPokerState(poker, players, bank, dealer, communityCards, blindsStatus.getLatestAggressor()));
+                poker.setState(new ShowdownPokerState(poker, players, bank, dealer, communityCards,
+                        blindsStatus.getLatestAggressor()));
                 break;
             default:
                 poker.setState(new PreflopWageringPokerState(poker, players, bank, dealer, communityCards));

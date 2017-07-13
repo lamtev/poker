@@ -30,7 +30,7 @@ class TurnWageringPokerState extends WageringPokerState {
     }
 
     @Override
-    void determinePlayerIndex() {
+    void determineUnderTheGunPosition() {
         players().nextAfterDealer();
     }
 

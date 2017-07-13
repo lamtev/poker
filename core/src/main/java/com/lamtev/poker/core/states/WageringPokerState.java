@@ -20,14 +20,14 @@ abstract class WageringPokerState extends ActionPokerState {
 
     WageringPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards commonCards) {
         super(poker, players, bank, dealer, commonCards);
-        determinePlayerIndex();
+        determineUnderTheGunPosition();
         poker.notifyCurrentPlayerChangedListeners(players().current().getId());
         moveValidator = new MoveValidator(players, bank);
     }
 
     WageringPokerState(ActionPokerState state) {
         super(state);
-        determinePlayerIndex();
+        determineUnderTheGunPosition();
         poker().notifyCurrentPlayerChangedListeners(players().current().getId());
         moveValidator = new MoveValidator(players(), bank());
     }
@@ -102,7 +102,7 @@ abstract class WageringPokerState extends ActionPokerState {
         throw new ForbiddenMoveException("Show down", toString());
     }
 
-    abstract void determinePlayerIndex();
+    abstract void determineUnderTheGunPosition();
 
     abstract void attemptNextState();
 

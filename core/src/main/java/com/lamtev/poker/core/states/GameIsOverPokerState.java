@@ -49,4 +49,5 @@ class GameIsOverPokerState extends ActionPokerState {
     public void showDown() throws GameOverException {
         throw new GameOverException();
     }
+
 }

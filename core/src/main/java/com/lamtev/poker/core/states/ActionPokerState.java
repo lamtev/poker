@@ -2,7 +2,10 @@ package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.model.Bank;
+import com.lamtev.poker.core.model.Cards;
+import com.lamtev.poker.core.model.Dealer;
+import com.lamtev.poker.core.model.Players;
 import com.lamtev.poker.core.states.exceptions.GameOverException;
 
 import java.util.List;
@@ -13,6 +16,19 @@ abstract class ActionPokerState extends AbstractPokerState {
     private Players players;
     private Bank bank;
     private Dealer dealer;
+    private Cards communityCards;
+
+    ActionPokerState(ActionPokerState state) {
+        this(state.poker, state.players, state.bank, state.dealer, state.communityCards);
+    }
+
+    ActionPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards communityCards) {
+        this.poker = poker;
+        this.players = players;
+        this.bank = bank;
+        this.dealer = dealer;
+        this.communityCards = communityCards;
+    }
 
     public Poker poker() {
         return poker;
@@ -32,20 +48,6 @@ abstract class ActionPokerState extends AbstractPokerState {
 
     public Cards communityCards() {
         return communityCards;
-    }
-
-    private Cards communityCards;
-
-    ActionPokerState(ActionPokerState state) {
-        this(state.poker, state.players, state.bank, state.dealer, state.communityCards);
-    }
-
-    ActionPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards communityCards) {
-        this.poker = poker;
-        this.players = players;
-        this.bank = bank;
-        this.dealer = dealer;
-        this.communityCards = communityCards;
     }
 
     //TODO smallBlindSize -> bigBlindSize ?

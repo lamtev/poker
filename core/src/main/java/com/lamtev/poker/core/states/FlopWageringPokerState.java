@@ -32,7 +32,7 @@ class FlopWageringPokerState extends WageringPokerState {
     }
 
     @Override
-    void determinePlayerIndex() {
+    void determineUnderTheGunPosition() {
         players().nextAfterDealer();
     }
 
