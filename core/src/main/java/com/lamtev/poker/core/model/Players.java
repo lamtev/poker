@@ -83,6 +83,15 @@ public final class Players implements Iterable<Player> {
         return current();
     }
 
+    public Player nextActiveAfterDealer() {
+        currentPlayerIndex = dealerIndex;
+        do {
+            ++currentPlayerIndex;
+            currentPlayerIndex %= size();
+        } while (!current().isActive());
+        return current();
+    }
+
     public void setLatestAggressor(Player latestAggressor) {
         currentPlayerIndex = players.indexOf(latestAggressor);
     }
@@ -92,13 +101,9 @@ public final class Players implements Iterable<Player> {
     }
 
     public int activePlayersNumber() {
-        int activePlayersNumber = 0;
-        for (Player player : players) {
-            if (player.isActive()) {
-                ++activePlayersNumber;
-            }
-        }
-        return activePlayersNumber;
+        return (int) players.stream()
+                .filter(Player::isActive)
+                .count();
     }
 
     public int allinnersNumber() {

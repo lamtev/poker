@@ -7,16 +7,15 @@ import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 class PreflopWageringPokerState extends WageringPokerState {
 
     PreflopWageringPokerState(ActionPokerState state) {
         super(state);
         dealer().makePreflop();
-        Map<String, Cards> playerIdToCards = new LinkedHashMap<>();
-        players().forEach(player -> playerIdToCards.put(player.id(), player.cards()));
-        poker().notifyPreflopMadeListeners(playerIdToCards);
+        poker().notifyPreflopMadeListeners(new LinkedHashMap<String, Cards>() {{
+            players().forEach(player -> put(player.id(), player.cards()));
+        }});
     }
 
     @Override

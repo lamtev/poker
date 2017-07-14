@@ -7,7 +7,6 @@ import com.lamtev.poker.core.states.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class BlindsPokerState extends ActionPokerState {
 
@@ -36,15 +35,16 @@ public class BlindsPokerState extends ActionPokerState {
     private void nextState() {
         if (timeToForcedShowdown()) {
             dealer().makePreflop();
-            Map<String, Cards> playerIdToCards = new LinkedHashMap<>();
-            players().forEach(player -> playerIdToCards.put(player.id(), player.cards()));
-            poker().notifyPreflopMadeListeners(playerIdToCards);
+            poker().notifyPreflopMadeListeners(new LinkedHashMap<String, Cards>() {{
+                players().forEach(player -> put(player.id(), player.cards()));
+            }});
             dealer().makeFlop();
             dealer().makeTurn();
             dealer().makeRiver();
             poker().notifyCommunityCardsChangedListeners(new ArrayList<Card>() {{
                 communityCards().forEach(this::add);
             }});
+            //TODO make sure that latest aggressor is bigBlind
             poker().setState(new ShowdownPokerState(this, players().bigBlind()));
         } else {
             poker().setState(new PreflopWageringPokerState(this));

@@ -16,7 +16,8 @@ class ShowdownPokerState extends ActionPokerState {
     ShowdownPokerState(ActionPokerState state, Player latestAggressor) {
         super(state);
         if (latestAggressor == null) {
-            players().nextNonAllinnerAfterDealer();
+            //TODO latest aggressor when all in
+            players().nextActiveAfterDealer();
         } else {
             players().setLatestAggressor(latestAggressor);
         }
