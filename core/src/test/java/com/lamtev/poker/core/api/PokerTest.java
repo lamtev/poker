@@ -74,8 +74,8 @@ public class PokerTest implements PokerEventListener {
         assertEquals("TurnWageringPokerState", state);
         assertEquals(4, communityCards.size());
 
-        poker.raise(40);
         poker.allIn();
+        poker.call();
         poker.call();
 
         System.out.println(state);

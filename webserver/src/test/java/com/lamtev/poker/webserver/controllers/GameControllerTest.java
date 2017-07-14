@@ -88,6 +88,7 @@ public class GameControllerTest {
         start();
 
         callNTimes(5);
+
         mockMvc.perform(post("/rooms/xxx/check"))
                 .andDo(print());
 

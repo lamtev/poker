@@ -74,12 +74,12 @@ public final class Players implements Iterable<Player> {
         return current();
     }
 
-    public Player nextAfterDealer() {
+    public Player nextNonAllinnerAfterDealer() {
         currentPlayerIndex = dealerIndex;
         do {
             ++currentPlayerIndex;
             currentPlayerIndex %= size();
-        } while (!current().isActive());
+        } while (!current().isActive() ||current().isAllinner());
         return current();
     }
 

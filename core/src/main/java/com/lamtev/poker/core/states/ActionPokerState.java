@@ -50,7 +50,6 @@ abstract class ActionPokerState extends AbstractPokerState {
         return communityCards;
     }
 
-    //TODO smallBlindSize -> bigBlindSize ?
     @Override
     public void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize)
             throws IllegalStateException, GameOverException {
@@ -62,10 +61,8 @@ abstract class ActionPokerState extends AbstractPokerState {
         poker.notifyCurrentPlayerChangedListeners(players.current().id());
     }
 
-    //TODO time to forced showdown
     boolean timeToForcedShowdown() {
-        return players.activePlayersNumber() == players.allinnersNumber() ||
-                players.activeNonAllinnersNumber() == 1;
+        return players.activeNonAllinnersNumber() <= 1;
     }
 
 }

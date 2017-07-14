@@ -33,7 +33,7 @@ public class PlayersTest {
     @Test
     public void testCurrent() {
         Players players = generatePlayers();
-        players.nextAfterDealer();
+        players.nextNonAllinnerAfterDealer();
         assertEquals("b", players.current().id());
 
         players.nextAfterBigBlind();

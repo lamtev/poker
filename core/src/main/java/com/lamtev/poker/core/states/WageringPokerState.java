@@ -106,7 +106,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     boolean timeToNextState() {
-        return allActivePlayersChecked() ||
+        return allActiveNonAllinnersChecked() ||
                 thereWereRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers();
     }
 
@@ -133,8 +133,8 @@ abstract class WageringPokerState extends ActionPokerState {
         poker().setState(new GameIsOverPokerState(this));
     }
 
-    private boolean allActivePlayersChecked() {
-        return checks == players().activePlayersNumber();
+    private boolean allActiveNonAllinnersChecked() {
+        return checks == players().activeNonAllinnersNumber();
     }
 
     private boolean thereWereRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers() {
