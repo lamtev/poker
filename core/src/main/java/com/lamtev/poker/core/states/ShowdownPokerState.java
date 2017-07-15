@@ -5,13 +5,16 @@ import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.hands.PokerHandFactory;
 import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
+import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 class ShowdownPokerState extends ActionPokerState {
 
     private int showDowns = 0;
-    private Map<String, PokerHand> madeShowDown = new LinkedHashMap<>();
+    private Map<Player, PokerHand> showedDownPlayers = new HashMap<>();
 
     ShowdownPokerState(ActionPokerState state, Player latestAggressor) {
         super(state);
@@ -45,9 +48,9 @@ class ShowdownPokerState extends ActionPokerState {
     }
 
     @Override
-    public void fold() {
+    public void fold() throws UnallowableMoveException {
         if (showDowns == 0) {
-            throw new RuntimeException("Can't fold when nobody did showDown");
+            throw new UnallowableMoveException("Fold");
         }
         players().current().fold();
         poker().notifyPlayerFoldListeners(players().current().id());
@@ -65,7 +68,7 @@ class ShowdownPokerState extends ActionPokerState {
         ++showDowns;
         PokerHandFactory phf = new PokerHandFactory(communityCards());
         PokerHand pokerHand = phf.createCombination(players().current().cards());
-        madeShowDown.put(players().current().id(), pokerHand);
+        showedDownPlayers.put(players().current(), pokerHand);
         poker().notifyPlayerShowedDownListeners(players().current().id(), pokerHand);
         changePlayerIndex();
         attemptDetermineWinners();
@@ -83,24 +86,15 @@ class ShowdownPokerState extends ActionPokerState {
 
     private void attemptDetermineWinners() {
         if (timeToDetermineWinners()) {
-            PokerHand maxPokerHand = Collections.max(madeShowDown.values());
-            List<String> winnersIds = new ArrayList<>();
 
-            madeShowDown.entrySet().stream()
-                    .filter(e -> e.getValue().equals(maxPokerHand))
-                    .forEach(e -> winnersIds.add(e.getKey()));
-
-            bank().giveMoneyToWinners(winnersIds);
+            Set<Player> winners = bank().giveMoneyToWinners(showedDownPlayers);
 
             //TODO think about rename WagerPlacedListener
-            winnersIds.forEach(winnerId -> {
-                Player winner = players().get(winnerId);
-                poker().notifyWagerPlacedListeners(
-                        winnerId,
-                        new PlayerMoney(winner.stack(), winner.wager()),
-                        bank().money()
-                );
-            });
+            winners.forEach(winner -> poker().notifyWagerPlacedListeners(
+                    winner.id(),
+                    new PlayerMoney(winner.stack(), winner.wager()),
+                    bank().money()
+            ));
             poker().setState(new GameIsOverPokerState(this));
         }
     }

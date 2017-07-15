@@ -50,10 +50,8 @@ abstract class WageringPokerState extends ActionPokerState {
     @Override
     public void allIn() throws UnallowableMoveException,
             IsNotEnoughMoneyException, NotPositiveWagerException {
-        //FIXME
         int additionalWager = players().current().stack() -
                 (bank().currentWager() - players().current().wager());
-
         if (additionalWager == 0) {
             call();
         } else if (additionalWager > 0) {
@@ -72,7 +70,13 @@ abstract class WageringPokerState extends ActionPokerState {
         poker().notifyPlayerFoldListeners(players().current().id());
         changePlayerIndex();
         if (onlyOneActivePlayer()) {
-            bank().giveMoneyToWinners(players().current());
+            Player winner = players().nextActive();
+            bank().giveMoneyToWinners(winner);
+            poker().notifyWagerPlacedListeners(
+                    winner.id(),
+                    new PlayerMoney(winner.stack(), winner.wager()),
+                    bank().money()
+            );
             gameIsOverState();
             return;
         }

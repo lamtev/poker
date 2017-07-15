@@ -89,8 +89,9 @@ public class PokerTest implements PokerEventListener {
         String id = currentPlayerId;
         poker.showDown();
         PokerHand hand = hands.get(id);
-        poker.fold();
-        poker.fold();
+        poker.showDown();
+        poker.showDown();
+
 
         System.out.println(state);
         System.out.println(communityCards.toString() + playersCards.get(id).toString() + hand.getName());
