@@ -1,6 +1,7 @@
 package com.lamtev.poker.core.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
@@ -13,8 +14,8 @@ public final class Players implements Iterable<Player> {
     private int currentPlayerIndex = 0;
     private List<Player> players = new ArrayList<>();
 
-    public Players(List<Player> players, String dealerId) {
-        this.players = players;
+    public Players(Collection<Player> players, String dealerId) {
+        this.players.addAll(players);
         setDealer(dealerId);
     }
 
@@ -22,17 +23,11 @@ public final class Players implements Iterable<Player> {
         players.add(player);
     }
 
-    public Player get(int index) {
-        return players.get(index);
-    }
-
     public Player get(String id) {
-        for (Player player : players) {
-            if (player.id().equals(id)) {
-                return player;
-            }
-        }
-        throw new NullPointerException();
+        return players.stream()
+                .filter(player -> player.id().equals(id))
+                .findFirst()
+                .orElseThrow(NullPointerException::new);
     }
 
     public Player dealer() {
@@ -79,7 +74,7 @@ public final class Players implements Iterable<Player> {
         do {
             ++currentPlayerIndex;
             currentPlayerIndex %= size();
-        } while (!current().isActive() ||current().isAllinner());
+        } while (!current().isActive() || current().isAllinner());
         return current();
     }
 

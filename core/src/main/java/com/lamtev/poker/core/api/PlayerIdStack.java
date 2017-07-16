@@ -18,4 +18,11 @@ public class PlayerIdStack {
         return stack;
     }
 
+    @Override
+    public String toString() {
+        return "PlayerIdStack{" +
+                "id='" + id + '\'' +
+                ", stack=" + stack +
+                '}';
+    }
 }

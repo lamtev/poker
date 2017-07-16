@@ -89,10 +89,13 @@ public final class Bank {
             potsMoney += pot.money;
         }
         System.out.println(money + " == " + potsMoney);
+        assert money - potsMoney < 0.5;
+        money = 0;
         return winners;
     }
 
     private void buildUpPots(List<Player> showedDownPlayersList) {
+        //TODO refactor large method
         List<Player> allinners = new ArrayList<>();
         showedDownPlayersList.forEach(player -> {
             if (player.isAllinner()) {
@@ -111,7 +114,7 @@ public final class Bank {
                 .mapToInt(Number::intValue)
                 .sum();
         int previousAllinnersWagers = 0;
-        List<Player> excludedPlayers = new ArrayList<>();
+        Set<Player> excludedPlayers = new HashSet<>();
         for (Player allinner : allinners) {
             Pot pot = new Pot();
             showedDownPlayersList.stream()
@@ -154,9 +157,9 @@ public final class Bank {
         }
     }
 
-    private class Pot {
+    private static class Pot {
         private int money;
-        private List<Player> applicants = new ArrayList<>();
+        private Set<Player> applicants = new HashSet<>();
     }
 
 }

@@ -20,6 +20,9 @@ public class PlayerMoney {
 
     @Override
     public String toString() {
-        return wager + " " + stack;
+        return "PlayerMoney{" +
+                "stack=" + stack +
+                ", wager=" + wager +
+                '}';
     }
 }
