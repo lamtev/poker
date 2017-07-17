@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SettingsPokerState extends AbstractPokerState {
 
-    private Poker poker;
+    private final Poker poker;
 
     public SettingsPokerState(Poker poker) {
         this.poker = poker;

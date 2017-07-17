@@ -9,7 +9,7 @@ public final class Players implements Iterable<Player> {
     private static final int OFFSET_OF_BIG_BLIND = 2;
     private int dealerIndex;
     private int currentPlayerIndex = 0;
-    private List<Player> players = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
 
     public Players(Collection<Player> players, String dealerId) {
         this.players.addAll(players);
@@ -47,7 +47,7 @@ public final class Players implements Iterable<Player> {
 
     public Player nextActive() {
         Player nextActivePlayer;
-        while (!(nextActivePlayer = next()).isActive()) ;
+        while ((nextActivePlayer = next()).hadFold()) ;
         currentPlayerIndex = players.indexOf(nextActivePlayer);
         return current();
     }
@@ -64,7 +64,7 @@ public final class Players implements Iterable<Player> {
         do {
             ++currentPlayerIndex;
             currentPlayerIndex %= size();
-        } while (!current().isActive());
+        } while (current().hadFold());
         return current();
     }
 
@@ -73,7 +73,7 @@ public final class Players implements Iterable<Player> {
         do {
             ++currentPlayerIndex;
             currentPlayerIndex %= size();
-        } while (!current().isActive() || current().isAllinner());
+        } while (current().hadFold() || current().isAllinner());
         return current();
     }
 
@@ -82,7 +82,7 @@ public final class Players implements Iterable<Player> {
         do {
             ++currentPlayerIndex;
             currentPlayerIndex %= size();
-        } while (!current().isActive());
+        } while (current().hadFold());
         return current();
     }
 

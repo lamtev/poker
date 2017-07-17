@@ -7,8 +7,8 @@ import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
 class MoveValidator {
 
-    private Players players;
-    private Bank bank;
+    private final Players players;
+    private final Bank bank;
 
     MoveValidator(Players players, Bank bank) {
         this.players = players;

@@ -12,11 +12,11 @@ import java.util.List;
 
 abstract class ActionPokerState extends AbstractPokerState {
 
-    private Poker poker;
-    private Players players;
-    private Bank bank;
-    private Dealer dealer;
-    private Cards communityCards;
+    private final Poker poker;
+    private final Players players;
+    private final Bank bank;
+    private final Dealer dealer;
+    private final Cards communityCards;
 
     ActionPokerState(ActionPokerState state) {
         this(state.poker, state.players, state.bank, state.dealer, state.communityCards);

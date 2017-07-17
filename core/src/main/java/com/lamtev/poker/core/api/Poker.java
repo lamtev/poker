@@ -4,7 +4,6 @@ import com.lamtev.poker.core.event_listeners.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.states.BlindsPokerState;
 import com.lamtev.poker.core.states.PokerState;
 import com.lamtev.poker.core.states.SettingsPokerState;
 import com.lamtev.poker.core.states.exceptions.*;
@@ -181,14 +180,14 @@ public class Poker implements PokerAPI {
     }
 
     private void makeSureThatGameIsSetUp() {
-        if (state instanceof SettingsPokerState) {
+        if ("SettingsPokerState".equals(state.toString())) {
             throw new RuntimeException("Game is not set up");
         }
     }
 
     private void makeSureThatBlindWagersPlaced() {
-        if (state instanceof BlindsPokerState) {
-            throw new RuntimeException("Blind wagers are not placed");
+        if ("BlindsPokerState".equals(state.toString())) {
+            throw new RuntimeException("Blind wagers have not been placed");
         }
     }
 

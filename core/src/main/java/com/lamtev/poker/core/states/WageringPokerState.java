@@ -12,9 +12,9 @@ import java.util.List;
 
 abstract class WageringPokerState extends ActionPokerState {
 
-    private MoveValidator moveValidator;
+    private final MoveValidator moveValidator;
     private int checks = 0;
-    private List<Player> raisers = new ArrayList<>();
+    private final List<Player> raisers = new ArrayList<>();
 
     WageringPokerState(ActionPokerState state) {
         super(state);

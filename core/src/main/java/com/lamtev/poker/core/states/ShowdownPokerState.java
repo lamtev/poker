@@ -13,8 +13,8 @@ import java.util.Set;
 
 class ShowdownPokerState extends ActionPokerState {
 
-    private Map<Player, PokerHand> showedDownPlayers = new HashMap<>();
-    private PokerHandFactory handFactory;
+    private final Map<Player, PokerHand> showedDownPlayers = new HashMap<>();
+    private final PokerHandFactory handFactory;
 
     ShowdownPokerState(ActionPokerState state, Player latestAggressor) {
         super(state);

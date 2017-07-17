@@ -2,9 +2,9 @@ package com.lamtev.poker.core.model;
 
 public final class Dealer {
 
-    private CardDeck cardDeck;
-    private Players players;
-    private Cards communityCards;
+    private final CardDeck cardDeck;
+    private final Players players;
+    private final Cards communityCards;
 
     public Dealer(Players players, Cards communityCards) {
         this.cardDeck = new CardDeck();

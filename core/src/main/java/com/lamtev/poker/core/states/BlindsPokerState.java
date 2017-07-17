@@ -8,9 +8,9 @@ import com.lamtev.poker.core.states.exceptions.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-public class BlindsPokerState extends ActionPokerState {
+class BlindsPokerState extends ActionPokerState {
 
-    private int smallBlindSize;
+    private final int smallBlindSize;
 
     BlindsPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards communityCards, int smallBlindSize) {
         super(poker, players, bank, dealer, communityCards);
@@ -44,8 +44,9 @@ public class BlindsPokerState extends ActionPokerState {
             poker().notifyCommunityCardsChangedListeners(new ArrayList<Card>() {{
                 communityCards().forEach(this::add);
             }});
-            //TODO make sure that latest aggressor is bigBlind
-            poker().setState(new ShowdownPokerState(this, players().bigBlind()));
+            Player latestAggressor = players().bigBlind().isAllinner() ?
+                    players().bigBlind() : players().smallBlind();
+            poker().setState(new ShowdownPokerState(this, latestAggressor));
         } else {
             poker().setState(new PreflopWageringPokerState(this));
         }

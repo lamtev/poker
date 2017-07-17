@@ -7,12 +7,14 @@ import com.lamtev.poker.core.states.exceptions.NotPositiveWagerException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 public final class Bank {
 
-    private Queue<Pot> pots = new ArrayDeque<>();
     private int money;
     private int wager;
-    private Players players;
+    private final Players players;
+    private final Queue<Pot> pots = new ArrayDeque<>();
 
     public Bank(Players players) {
         this.players = players;
@@ -32,14 +34,7 @@ public final class Bank {
     }
 
     public void acceptCall(Player player) throws IsNotEnoughMoneyException {
-        if (players.smallBlind().wager() == 0 || players.bigBlind().wager() == 0) {
-            throw new RuntimeException("Can't accept call from player when blinds are not set");
-        }
         int moneyTakingFromPlayer = wager - player.wager();
-        if (moneyTakingFromPlayer == player.stack()) {
-            acceptAllIn(player);
-            return;
-        }
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
         money += player.takeMoney(moneyTakingFromPlayer);
     }
@@ -50,10 +45,6 @@ public final class Bank {
             throw new NotPositiveWagerException();
         }
         int moneyTakingFromPlayer = wager + additionalWager - player.wager();
-        if (moneyTakingFromPlayer == player.stack()) {
-            acceptAllIn(player);
-            return;
-        }
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
         money += player.takeMoney(moneyTakingFromPlayer);
         wager += additionalWager;
@@ -73,14 +64,9 @@ public final class Bank {
         int potsMoney = 0;
         while (!pots.isEmpty()) {
             Pot pot = pots.poll();
-            PokerHand winnerPokerHand = showedDownPlayers.get(
-                    Collections.max(
-                            pot.applicants,
-                            Comparator.comparing(showedDownPlayers::get)
-                    )
-            );
+            PokerHand bestHand = determineBestHand(showedDownPlayers, pot);
             List<Player> potWinners = pot.applicants.stream()
-                    .filter(player -> showedDownPlayers.get(player).equals(winnerPokerHand))
+                    .filter(player -> showedDownPlayers.get(player).equals(bestHand))
                     .collect(Collectors.toList());
             potWinners.forEach(player -> {
                 player.addMoney(pot.money / potWinners.size());
@@ -88,52 +74,9 @@ public final class Bank {
             });
             potsMoney += pot.money;
         }
-        System.out.println(money + " == " + potsMoney);
         assert money - potsMoney < 0.5;
         money = 0;
         return winners;
-    }
-
-    private void buildUpPots(List<Player> showedDownPlayersList) {
-        //TODO refactor large method
-        List<Player> allinners = new ArrayList<>();
-        showedDownPlayersList.forEach(player -> {
-            if (player.isAllinner()) {
-                allinners.add(player);
-            }
-        });
-        allinners.sort(Comparator.comparingInt(Player::wager));
-        List<Player> foldPlayers = new ArrayList<>();
-        players.forEach(player -> {
-            if (!player.isActive()) {
-                foldPlayers.add(player);
-            }
-        });
-        int foldPlayersWagers = foldPlayers.stream()
-                .map(Player::wager)
-                .mapToInt(Number::intValue)
-                .sum();
-        int previousAllinnerWager = 0;
-        Set<Player> excludedPlayers = new HashSet<>();
-        for (Player allinner : allinners) {
-            Pot pot = new Pot();
-            showedDownPlayersList.stream()
-                    .filter(player -> !excludedPlayers.contains(player))
-                    .forEach(pot.applicants::add);
-            pot.money = foldPlayersWagers + (allinner.wager() - previousAllinnerWager) * pot.applicants.size();
-            excludedPlayers.add(allinner);
-            pots.offer(pot);
-            previousAllinnerWager = allinner.wager();
-        }
-        Pot pot = new Pot();
-        showedDownPlayersList.stream()
-                .filter(player -> !excludedPlayers.contains(player))
-                .forEach(pot.applicants::add);
-        pot.money = allinners.isEmpty() ?
-                foldPlayersWagers + wager * pot.applicants.size() :
-                (wager - previousAllinnerWager) * pot.applicants.size();
-
-        pots.offer(pot);
     }
 
     public void giveMoneyToSingleWinner(Player winner) {
@@ -157,9 +100,63 @@ public final class Bank {
         }
     }
 
+    private void buildUpPots(List<Player> showedDownPlayersList) {
+        List<Player> allinners = orderedAllinners(showedDownPlayersList);
+        int foldPlayersWagers = calculateFoldPlayersWagers();
+        int previousAllinnerWager = 0;
+        Set<Player> allinnersWhichAlreadyInPot = new HashSet<>();
+        for (Player allinner : allinners) {
+            Pot pot = new Pot();
+            pot.addApplicantsFrom(showedDownPlayersList, allinnersWhichAlreadyInPot);
+            pot.money = foldPlayersWagers + (allinner.wager() - previousAllinnerWager) * pot.applicants.size();
+            allinnersWhichAlreadyInPot.add(allinner);
+            pots.offer(pot);
+            previousAllinnerWager = allinner.wager();
+        }
+        Pot pot = new Pot();
+        pot.addApplicantsFrom(showedDownPlayersList, allinnersWhichAlreadyInPot);
+        pot.money = allinners.isEmpty() ?
+                foldPlayersWagers + wager * pot.applicants.size() :
+                (wager - previousAllinnerWager) * pot.applicants.size();
+
+        pots.offer(pot);
+    }
+
+    private PokerHand determineBestHand(Map<Player, PokerHand> showedDownPlayers, Pot pot) {
+        return showedDownPlayers.get(
+                Collections.max(
+                        pot.applicants,
+                        Comparator.comparing(showedDownPlayers::get)
+                )
+        );
+    }
+
+    private int calculateFoldPlayersWagers() {
+        List<Player> players = new ArrayList<>();
+        this.players.forEach(players::add);
+        return players.stream()
+                .filter(Player::hadFold)
+                .map(Player::wager)
+                .mapToInt(Number::intValue)
+                .sum();
+    }
+
+    private List<Player> orderedAllinners(List<Player> showedDownPlayersList) {
+        return showedDownPlayersList.stream()
+                .filter(Player::isAllinner)
+                .sorted(Comparator.comparingInt(Player::wager))
+                .collect(toList());
+    }
+
     private static class Pot {
         private int money;
         private Set<Player> applicants = new HashSet<>();
+
+        private void addApplicantsFrom(List<Player> showedDownPlayersList, Set<Player> excludedPlayers) {
+            showedDownPlayersList.stream()
+                    .filter(player -> !excludedPlayers.contains(player))
+                    .forEach(applicants::add);
+        }
     }
 
 }

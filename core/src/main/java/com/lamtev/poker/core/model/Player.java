@@ -2,11 +2,11 @@ package com.lamtev.poker.core.model;
 
 public final class Player {
 
+    private final String id;
     private int stack;
     private int wager = 0;
-    private Cards cards = new Cards();
+    private final Cards cards = new Cards();
     private boolean isActive = true;
-    private final String id;
 
     public Player(String id, int stack) {
         this.id = id;
@@ -31,6 +31,10 @@ public final class Player {
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public boolean hadFold() {
+        return !isActive;
     }
 
     public boolean isAllinner() {
@@ -78,4 +82,5 @@ public final class Player {
                 ", id='" + id + '\'' +
                 '}';
     }
+
 }
