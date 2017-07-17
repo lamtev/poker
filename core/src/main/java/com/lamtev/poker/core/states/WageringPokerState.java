@@ -31,7 +31,7 @@ abstract class WageringPokerState extends ActionPokerState {
     @Override
     public void call() throws UnallowableMoveException, IsNotEnoughMoneyException {
         moveValidator.validateCall(players().current());
-        bank().acceptCallFromPlayer(players().current());
+        bank().acceptCall(players().current());
         wagerPlaced();
         changePlayerIndex();
         attemptNextState();
@@ -41,7 +41,7 @@ abstract class WageringPokerState extends ActionPokerState {
     public void raise(int additionalWager) throws UnallowableMoveException,
             IsNotEnoughMoneyException, NotPositiveWagerException {
         moveValidator.validateRaise(raisers.size());
-        bank().acceptRaiseFromPlayer(additionalWager, players().current());
+        bank().acceptRaise(additionalWager, players().current());
         raisers.add(players().current());
         wagerPlaced();
         changePlayerIndex();
@@ -57,7 +57,7 @@ abstract class WageringPokerState extends ActionPokerState {
         } else if (additionalWager > 0) {
             raise(additionalWager);
         } else {
-            bank().acceptAllInFromPlayer(players().current());
+            bank().acceptAllIn(players().current());
             wagerPlaced();
             changePlayerIndex();
             attemptNextState();
@@ -71,7 +71,7 @@ abstract class WageringPokerState extends ActionPokerState {
         changePlayerIndex();
         if (onlyOneActivePlayer()) {
             Player winner = players().nextActive();
-            bank().giveMoneyToWinners(winner);
+            bank().giveMoneyToSingleWinner(winner);
             poker().notifyWagerPlacedListeners(
                     winner.id(),
                     new PlayerMoney(winner.stack(), winner.wager()),

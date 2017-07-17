@@ -68,4 +68,14 @@ public final class Player {
         return money;
     }
 
+    @Override
+    public String toString() {
+        return "Player{" +
+                "stack=" + stack +
+                ", wager=" + wager +
+                ", cards=" + cards +
+                ", isActive=" + isActive +
+                ", id='" + id + '\'' +
+                '}';
+    }
 }

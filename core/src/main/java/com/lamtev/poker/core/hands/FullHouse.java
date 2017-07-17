@@ -55,4 +55,13 @@ class FullHouse implements PokerHand {
         result = 31 * result + (pairHighCardRank != null ? pairHighCardRank.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "FullHouse{" +
+                "threeOfAKindHighCardRank=" + threeOfAKindHighCardRank +
+                ", pairHighCardRank=" + pairHighCardRank +
+                '}';
+    }
+
 }

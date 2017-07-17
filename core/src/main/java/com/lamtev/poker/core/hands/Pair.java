@@ -65,4 +65,13 @@ class Pair implements PokerHand {
         result = 31 * result + (otherCardsRanks != null ? otherCardsRanks.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Pair{" +
+                "pairRank=" + pairRank +
+                ", otherCardsRanks=" + otherCardsRanks +
+                '}';
+    }
+
 }

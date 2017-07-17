@@ -46,4 +46,12 @@ class Straight implements PokerHand {
         result = 31 * result + (highCardRank != null ? highCardRank.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Straight{" +
+                "highCardRank=" + highCardRank +
+                '}';
+    }
+
 }

@@ -64,4 +64,14 @@ class TwoPairs implements PokerHand {
         result = 31 * result + (otherCardRank != null ? otherCardRank.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "TwoPairs{" +
+                "firstPairRank=" + firstPairRank +
+                ", secondPairRank=" + secondPairRank +
+                ", otherCardRank=" + otherCardRank +
+                '}';
+    }
+
 }

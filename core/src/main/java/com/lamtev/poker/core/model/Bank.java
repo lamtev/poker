@@ -31,27 +31,27 @@ public final class Bank {
         acceptBlindWager(players.bigBlind(), smallBlindSize * 2);
     }
 
-    public void acceptCallFromPlayer(Player player) throws IsNotEnoughMoneyException {
+    public void acceptCall(Player player) throws IsNotEnoughMoneyException {
         if (players.smallBlind().wager() == 0 || players.bigBlind().wager() == 0) {
             throw new RuntimeException("Can't accept call from player when blinds are not set");
         }
         int moneyTakingFromPlayer = wager - player.wager();
         if (moneyTakingFromPlayer == player.stack()) {
-            acceptAllInFromPlayer(player);
+            acceptAllIn(player);
             return;
         }
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
         money += player.takeMoney(moneyTakingFromPlayer);
     }
 
-    public void acceptRaiseFromPlayer(int additionalWager, Player player) throws
+    public void acceptRaise(int additionalWager, Player player) throws
             IsNotEnoughMoneyException, NotPositiveWagerException {
         if (additionalWager <= 0) {
             throw new NotPositiveWagerException();
         }
         int moneyTakingFromPlayer = wager + additionalWager - player.wager();
         if (moneyTakingFromPlayer == player.stack()) {
-            acceptAllInFromPlayer(player);
+            acceptAllIn(player);
             return;
         }
         validateTakingMoneyFromPlayer(player, moneyTakingFromPlayer);
@@ -59,7 +59,7 @@ public final class Bank {
         wager += additionalWager;
     }
 
-    public void acceptAllInFromPlayer(Player player) {
+    public void acceptAllIn(Player player) {
         money += player.takeMoney(player.stack());
         if (player.wager() > wager) {
             wager = player.wager();
@@ -113,17 +113,17 @@ public final class Bank {
                 .map(Player::wager)
                 .mapToInt(Number::intValue)
                 .sum();
-        int previousAllinnersWagers = 0;
+        int previousAllinnerWager = 0;
         Set<Player> excludedPlayers = new HashSet<>();
         for (Player allinner : allinners) {
             Pot pot = new Pot();
             showedDownPlayersList.stream()
                     .filter(player -> !excludedPlayers.contains(player))
                     .forEach(pot.applicants::add);
-            pot.money = foldPlayersWagers + (allinner.wager() - previousAllinnersWagers) * pot.applicants.size();
+            pot.money = foldPlayersWagers + (allinner.wager() - previousAllinnerWager) * pot.applicants.size();
             excludedPlayers.add(allinner);
             pots.offer(pot);
-            previousAllinnersWagers += allinner.wager();
+            previousAllinnerWager = allinner.wager();
         }
         Pot pot = new Pot();
         showedDownPlayersList.stream()
@@ -131,19 +131,19 @@ public final class Bank {
                 .forEach(pot.applicants::add);
         pot.money = allinners.isEmpty() ?
                 foldPlayersWagers + wager * pot.applicants.size() :
-                (wager - previousAllinnersWagers) * pot.applicants.size();
+                (wager - previousAllinnerWager) * pot.applicants.size();
 
         pots.offer(pot);
     }
 
-    public void giveMoneyToWinners(Player winner) {
+    public void giveMoneyToSingleWinner(Player winner) {
         winner.addMoney(money);
         money = 0;
     }
 
     private void acceptBlindWager(Player blind, int wager) {
         if (blind.stack() <= wager) {
-            acceptAllInFromPlayer(blind);
+            acceptAllIn(blind);
         } else {
             money += blind.takeMoney(wager);
             this.wager = wager;

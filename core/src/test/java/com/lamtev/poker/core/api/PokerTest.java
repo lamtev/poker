@@ -3,6 +3,7 @@ package com.lamtev.poker.core.api;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -14,16 +15,16 @@ import static org.junit.Assert.assertEquals;
 
 public class PokerTest implements PokerEventListener {
 
-    //TODO more test scenarios
-
     private String state;
     private List<PlayerIdStack> playersInfo;
-    private List<Card> communityCards = new ArrayList<>();
-    private Map<String, PokerHand> hands = new HashMap<>();
+    private List<Card> communityCards;
+    private Map<String, PokerHand> hands;
     private String currentPlayerId;
-    private Map<String, Cards> playersCards = new HashMap<>();
+    private Map<String, Cards> playersCards;
+    private List<String> foldPlayers;
+    private int bank;
 
-    private List<PlayerIdStack> generatePlayersInfo() {
+    private List<PlayerIdStack> generatePlayersInfo1() {
         List<PlayerIdStack> playersInfo = new ArrayList<>();
         playersInfo.add(new PlayerIdStack("c1", 300));
         playersInfo.add(new PlayerIdStack("a1", 100));
@@ -31,18 +32,86 @@ public class PokerTest implements PokerEventListener {
         return playersInfo;
     }
 
-    @Override
-    public void gameOver(List<PlayerIdStack> playersInfo) {
-        this.playersInfo = playersInfo;
+    private List<PlayerIdStack> generatePlayersInfo() {
+        List<PlayerIdStack> playersInfo = new ArrayList<>();
+        playersInfo.add(new PlayerIdStack("a", 500));
+        playersInfo.add(new PlayerIdStack("b", 500));
+        playersInfo.add(new PlayerIdStack("c", 500));
+        playersInfo.add(new PlayerIdStack("d", 500));
+        playersInfo.add(new PlayerIdStack("e", 500));
+        playersInfo.add(new PlayerIdStack("f", 500));
+        return playersInfo;
     }
 
-    @Override
-    public void stateChanged(String stateName) {
-        this.state = stateName;
+    @Before
+    public void cleanUp() {
+        state = null;
+        playersInfo = null;
+        communityCards = new ArrayList<>();
+        hands = new HashMap<>();
+        currentPlayerId = null;
+        playersCards = new HashMap<>();
+        foldPlayers = new ArrayList<>();
+        bank = 0;
+
+//        when(cardDeck.pickUpTop()).thenReturn(
+//                new Card(QUEEN, PIKES),
+//                new Card(TWO, CLOVERS),
+//                new Card(KING, CLOVERS),
+//                new Card(ACE, TILES),
+//                new Card(EIGHT, CLOVERS),
+//                new Card(FOUR, HEARTS),
+//                new Card(JACK, PIKES),
+//                new Card(NINE, HEARTS),
+//                new Card(SEVEN, TILES),
+//                new Card(ACE, HEARTS),
+//                new Card(THREE, PIKES),
+//                new Card(FOUR, TILES),
+//                new Card(QUEEN, CLOVERS),
+//                new Card(JACK, CLOVERS),
+//                new Card(TWO, TILES),
+//                new Card(NINE, CLOVERS),
+//                new Card(TEN, CLOVERS)
+//        );
     }
 
     @Test
     public void test() throws Exception {
+
+        PokerAPI poker = new Poker();
+        poker.subscribe(this);
+        assertEquals("SettingsPokerState", state);
+
+        poker.setUp(generatePlayersInfo(), "a", 5);
+        assertEquals("BlindsPokerState", state);
+
+        poker.placeBlindWagers();
+        assertEquals("PreflopWageringPokerState", state);
+
+        poker.call();
+        poker.raise(90);
+        for (int i = 0; i < 5; ++i) poker.call();
+        assertEquals("FlopWageringPokerState", state);
+
+        for (int i = 0; i < 6; ++i) poker.check();
+        assertEquals("TurnWageringPokerState", state);
+
+        for (int i = 0; i < 6; ++i) poker.check();
+        assertEquals("RiverWageringPokerState", state);
+
+        poker.raise(100);
+        poker.raise(100);
+        poker.raise(100);
+        for (int i = 0; i < 5; ++i) poker.call();
+        assertEquals("ShowdownPokerState", state);
+
+        for (int i = 0; i < 6; ++i) poker.showDown();
+        assertEquals("GameIsOverPokerState", state);
+        hands.values().forEach(System.out::println);
+    }
+
+    @Test
+    public void test1() throws Exception {
 
         Poker poker = new Poker();
         poker.subscribe(this);
@@ -50,7 +119,7 @@ public class PokerTest implements PokerEventListener {
         System.out.println(state);
         assertEquals("SettingsPokerState", state);
 
-        poker.setUp(generatePlayersInfo(), "c1", 30);
+        poker.setUp(generatePlayersInfo1(), "c1", 30);
         System.out.println(state);
         assertEquals("BlindsPokerState", state);
 
@@ -101,8 +170,18 @@ public class PokerTest implements PokerEventListener {
     }
 
     @Override
-    public void playerFold(String foldPlayerId) {
+    public void gameOver(List<PlayerIdStack> playersInfo) {
+        this.playersInfo = playersInfo;
+    }
 
+    @Override
+    public void stateChanged(String stateName) {
+        this.state = stateName;
+    }
+
+    @Override
+    public void playerFold(String foldPlayerId) {
+        foldPlayers.add(foldPlayerId);
     }
 
     @Override
@@ -113,6 +192,21 @@ public class PokerTest implements PokerEventListener {
     @Override
     public void currentPlayerChanged(String playerId) {
         currentPlayerId = playerId;
+    }
+
+    @Override
+    public void preflopMade(Map<String, Cards> playerIdToCards) {
+        playersCards = playerIdToCards;
+    }
+
+    @Override
+    public void communityCardsAdded(List<Card> addedCommunityCards) {
+        communityCards.addAll(addedCommunityCards);
+    }
+
+    @Override
+    public void playerShowedDown(String playerId, PokerHand hand) {
+        hands.put(playerId, hand);
     }
 
     @Override
@@ -145,18 +239,4 @@ public class PokerTest implements PokerEventListener {
 
     }
 
-    @Override
-    public void preflopMade(Map<String, Cards> playerIdToCards) {
-        playersCards = playerIdToCards;
-    }
-
-    @Override
-    public void communityCardsAdded(List<Card> addedCommunityCards) {
-        communityCards.addAll(addedCommunityCards);
-    }
-
-    @Override
-    public void playerShowedDown(String playerId, PokerHand hand) {
-        hands.put(playerId, hand);
-    }
 }

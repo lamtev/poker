@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -59,7 +60,7 @@ public class PlayersTest {
         players.nextActiveNonAllinner();
         players.nextActiveNonAllinner();
         players.nextActiveNonAllinner();
-        assertEquals("f", players.current().id());
+        assertEquals("g", players.current().id());
     }
 
     @Test
@@ -72,6 +73,18 @@ public class PlayersTest {
         }
         ids.forEach(id -> players.get(id).fold());
         assertEquals(5, players.activePlayersNumber());
+    }
+
+    @Test
+    public void testPlayersOrder() {
+        Players players = generatePlayers();
+        List<Player> playerList = new ArrayList<>();
+        players.forEach(playerList::add);
+        List<String> expected = asList("b", "c", "d", "e", "f", "g", "a");
+        List<String> actual = playerList.stream()
+                .map(Player::id)
+                .collect(Collectors.toList());
+        assertEquals(expected, actual);
     }
 
     private Players generatePlayers() {

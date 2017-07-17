@@ -4,7 +4,6 @@ import com.lamtev.poker.core.event_listeners.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.states.exceptions.GameOverException;
 
 import java.util.List;
 import java.util.Map;

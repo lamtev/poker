@@ -1,9 +1,6 @@
 package com.lamtev.poker.core.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public final class Players implements Iterable<Player> {
@@ -16,7 +13,9 @@ public final class Players implements Iterable<Player> {
 
     public Players(Collection<Player> players, String dealerId) {
         this.players.addAll(players);
-        setDealer(dealerId);
+        dealerIndex = this.players.indexOf(get(dealerId));
+        Collections.rotate(this.players, size() - 1 - dealerIndex);
+        dealerIndex = size() - 1;
     }
 
     public void add(Player player) {
@@ -134,12 +133,13 @@ public final class Players implements Iterable<Player> {
         players.forEach(action);
     }
 
-    private void setDealer(String dealerId) {
-        Player dealer = players.stream()
-                .filter(player -> player.id().equals(dealerId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-        dealerIndex = players.indexOf(dealer);
+    @Override
+    public String toString() {
+        return "Players{" +
+                "dealerIndex=" + dealerIndex +
+                ", currentPlayerIndex=" + currentPlayerIndex +
+                ", players=" + players +
+                '}';
     }
 
     private Player next() {

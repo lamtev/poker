@@ -10,18 +10,21 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+
 public class PokerHandFactory {
 
-    private final Cards commonCards;
     private final static Comparator<Card> COMPARATOR_BY_RANK = Comparator.comparing(Card::rank);
+    private final Cards communityCards;
 
-    public PokerHandFactory(Cards commonCards) {
-        this.commonCards = commonCards;
+    public PokerHandFactory(Cards communityCards) {
+        this.communityCards = communityCards;
     }
 
     public PokerHand createCombination(Cards playerCards) {
         List<Card> cards = new ArrayList<>();
-        commonCards.forEach(cards::add);
+        communityCards.forEach(cards::add);
         playerCards.forEach(cards::add);
 
         cards.sort(COMPARATOR_BY_RANK.reversed());
@@ -263,22 +266,13 @@ public class PokerHandFactory {
         }).rank();
     }
 
-    //TODO think how to use stream here
     private List<Rank> determineRanksExceptThese(List<Card> cards, Rank... exceptedRanks) {
-        List<Rank> ranks = new ArrayList<>();
-        if (exceptedRanks == null || exceptedRanks.length == 0) {
-            cards.forEach(card -> ranks.add(card.rank()));
-        } else {
-            for (Rank rank : exceptedRanks) {
-                cards.forEach(card -> {
-                    if (card.rank() != rank) {
-                        ranks.add(card.rank());
-                    }
-                });
-            }
-        }
-        return ranks;
-    }
+        List<Rank> exceptedRanksList = asList(exceptedRanks);
+        return cards.stream()
+                .map(Card::rank)
+                .filter(rank -> !exceptedRanksList.contains(rank))
+                .collect(toList());
 
+    }
 
 }

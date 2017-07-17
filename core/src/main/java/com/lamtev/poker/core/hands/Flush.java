@@ -45,4 +45,12 @@ class Flush implements PokerHand {
         result = 31 * result + (highCardRank != null ? highCardRank.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Flush{" +
+                "highCardRank=" + highCardRank +
+                '}';
+    }
+
 }

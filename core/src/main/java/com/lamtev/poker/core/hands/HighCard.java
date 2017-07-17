@@ -57,4 +57,12 @@ class HighCard implements PokerHand {
         result = 31 * result + (cardsRanks != null ? cardsRanks.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "HighCard{" +
+                "cardsRanks=" + cardsRanks +
+                '}';
+    }
+
 }

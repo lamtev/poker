@@ -13,8 +13,8 @@ import java.util.Set;
 
 class ShowdownPokerState extends ActionPokerState {
 
-    private int showDowns = 0;
     private Map<Player, PokerHand> showedDownPlayers = new HashMap<>();
+    private PokerHandFactory handFactory;
 
     ShowdownPokerState(ActionPokerState state, Player latestAggressor) {
         super(state);
@@ -25,6 +25,7 @@ class ShowdownPokerState extends ActionPokerState {
             players().setLatestAggressor(latestAggressor);
         }
         poker().notifyCurrentPlayerChangedListeners(players().current().id());
+        handFactory = new PokerHandFactory(communityCards());
     }
 
     @Override
@@ -49,7 +50,7 @@ class ShowdownPokerState extends ActionPokerState {
 
     @Override
     public void fold() throws UnallowableMoveException {
-        if (showDowns == 0) {
+        if (showedDownPlayers.isEmpty() || players().current().isAllinner()) {
             throw new UnallowableMoveException("Fold");
         }
         players().current().fold();
@@ -65,9 +66,7 @@ class ShowdownPokerState extends ActionPokerState {
 
     @Override
     public void showDown() {
-        ++showDowns;
-        PokerHandFactory phf = new PokerHandFactory(communityCards());
-        PokerHand pokerHand = phf.createCombination(players().current().cards());
+        PokerHand pokerHand = handFactory.createCombination(players().current().cards());
         showedDownPlayers.put(players().current(), pokerHand);
         poker().notifyPlayerShowedDownListeners(players().current().id(), pokerHand);
         changePlayerIndex();
@@ -100,7 +99,7 @@ class ShowdownPokerState extends ActionPokerState {
     }
 
     private boolean timeToDetermineWinners() {
-        return showDowns == players().activePlayersNumber();
+        return showedDownPlayers.size() == players().activePlayersNumber();
     }
 
 }

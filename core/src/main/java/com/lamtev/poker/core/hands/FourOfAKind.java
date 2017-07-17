@@ -54,4 +54,13 @@ class FourOfAKind implements PokerHand {
         result = 31 * result + (otherCardRank != null ? otherCardRank.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "FourOfAKind{" +
+                "highCardRank=" + highCardRank +
+                ", otherCardRank=" + otherCardRank +
+                '}';
+    }
+
 }
