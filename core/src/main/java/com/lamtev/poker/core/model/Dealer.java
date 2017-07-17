@@ -2,9 +2,9 @@ package com.lamtev.poker.core.model;
 
 public final class Dealer {
 
-    private CardDeck cardDeck;
-    private Players players;
-    private Cards communityCards;
+    private final CardDeck cardDeck;
+    private final Players players;
+    private final Cards communityCards;
 
     public Dealer(Players players, Cards communityCards) {
         this.cardDeck = new CardDeck();
@@ -50,8 +50,7 @@ public final class Dealer {
 
     private boolean preflopHasAlreadyBeen() {
         for (Player player : players) {
-            //TODO may be fix bug adding isActive checking
-            if (player.isActive() && player.getCards().size() != 2) {
+            if (player.isActive() && player.cards().size() != 2) {
                 return false;
             }
         }

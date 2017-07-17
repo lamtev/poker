@@ -3,12 +3,11 @@ package com.lamtev.poker.core.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Spliterator;
 import java.util.function.Consumer;
 
 public class Cards implements Iterable<Card> {
 
-    protected List<Card> cards = new ArrayList<>();;
+    final List<Card> cards = new ArrayList<>();
 
     public Card cardAt(int index) {
         return cards.get(index - 1);
@@ -26,7 +25,6 @@ public class Cards implements Iterable<Card> {
         cards.add(card);
     }
 
-    //TODO возможно очередь подойдёт лучше
     public Card pickUpTop() {
         return cards.remove(size() - 1);
     }
@@ -34,11 +32,6 @@ public class Cards implements Iterable<Card> {
     @Override
     public void forEach(Consumer<? super Card> action) {
         cards.forEach(action);
-    }
-
-    @Override
-    public Spliterator<Card> spliterator() {
-        return cards.spliterator();
     }
 
     @Override
@@ -53,23 +46,19 @@ public class Cards implements Iterable<Card> {
 
         Cards cards1 = (Cards) o;
 
-        return cards != null ? cards.equals(cards1.cards) : cards1.cards == null;
+        return cards.equals(cards1.cards);
     }
 
     @Override
     public int hashCode() {
-        return cards != null ? cards.hashCode() : 0;
+        return cards.hashCode();
     }
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Card card : cards) {
-            stringBuilder
-                    .append(card.toString())
-                    .append(" ");
-        }
-
-        return stringBuilder.toString();
+        return "Cards{" +
+                "cards=" + cards +
+                '}';
     }
+
 }

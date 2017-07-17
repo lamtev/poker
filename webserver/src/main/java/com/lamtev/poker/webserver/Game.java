@@ -4,7 +4,7 @@ import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.states.exceptions.GameOverException;
+import com.lamtev.poker.core.states.exceptions.*;
 
 import java.util.*;
 
@@ -23,7 +23,7 @@ public class Game implements PokerEventListener, GameAPI {
     private int wager;
 
     @Override
-    public void start(String humanId, int playersNumber, int stack) throws GameOverException {
+    public void start(String humanId, int playersNumber, int stack) throws GameOverException, ForbiddenMoveException, NotPositiveWagerException, IsNotEnoughMoneyException, UnallowableMoveException, GameHaveNotBeenStartedException {
         poker.subscribe(this);
         final int numberOfBots = playersNumber - 1;
         List<String> players = names(numberOfBots);
@@ -35,6 +35,7 @@ public class Game implements PokerEventListener, GameAPI {
         playersInfo.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getStack())));
         smallBlindSize = stack / 1000;
         poker.setUp(playersStacks, playersStacks.get(0).getId(), smallBlindSize);
+        poker.placeBlindWagers();
     }
 
     @Override

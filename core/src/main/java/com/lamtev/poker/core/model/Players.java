@@ -1,9 +1,6 @@
 package com.lamtev.poker.core.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 public final class Players implements Iterable<Player> {
@@ -12,28 +9,24 @@ public final class Players implements Iterable<Player> {
     private static final int OFFSET_OF_BIG_BLIND = 2;
     private int dealerIndex;
     private int currentPlayerIndex = 0;
-    private List<Player> players = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
 
-    public Players(List<Player> players, String dealerId) {
-        this.players = players;
-        setDealer(dealerId);
+    public Players(Collection<Player> players, String dealerId) {
+        this.players.addAll(players);
+        dealerIndex = this.players.indexOf(get(dealerId));
+        Collections.rotate(this.players, size() - 1 - dealerIndex);
+        dealerIndex = size() - 1;
     }
 
     public void add(Player player) {
         players.add(player);
     }
 
-    public Player get(int index) {
-        return players.get(index);
-    }
-
     public Player get(String id) {
-        for (Player player : players) {
-            if (player.getId().equals(id)) {
-                return player;
-            }
-        }
-        throw new NullPointerException();
+        return players.stream()
+                .filter(player -> player.id().equals(id))
+                .findFirst()
+                .orElseThrow(NullPointerException::new);
     }
 
     public Player dealer() {
@@ -54,8 +47,15 @@ public final class Players implements Iterable<Player> {
 
     public Player nextActive() {
         Player nextActivePlayer;
-        while (!(nextActivePlayer = next()).isActive()) ;
+        while ((nextActivePlayer = next()).hadFold()) ;
         currentPlayerIndex = players.indexOf(nextActivePlayer);
+        return current();
+    }
+
+    public Player nextActiveNonAllinner() {
+        do {
+            nextActive();
+        } while (current().stack() == 0);
         return current();
     }
 
@@ -64,16 +64,25 @@ public final class Players implements Iterable<Player> {
         do {
             ++currentPlayerIndex;
             currentPlayerIndex %= size();
-        } while (!current().isActive());
+        } while (current().hadFold());
         return current();
     }
 
-    public Player nextAfterDealer() {
+    public Player nextNonAllinnerAfterDealer() {
         currentPlayerIndex = dealerIndex;
         do {
             ++currentPlayerIndex;
             currentPlayerIndex %= size();
-        } while (!current().isActive());
+        } while (current().hadFold() || current().isAllinner());
+        return current();
+    }
+
+    public Player nextActiveAfterDealer() {
+        currentPlayerIndex = dealerIndex;
+        do {
+            ++currentPlayerIndex;
+            currentPlayerIndex %= size();
+        } while (current().hadFold());
         return current();
     }
 
@@ -86,13 +95,28 @@ public final class Players implements Iterable<Player> {
     }
 
     public int activePlayersNumber() {
-        int activePlayersNumber = 0;
-        for (Player player : players) {
-            if (player.isActive()) {
-                ++activePlayersNumber;
-            }
-        }
-        return activePlayersNumber;
+        return (int) players.stream()
+                .filter(Player::isActive)
+                .count();
+    }
+
+    public int allinnersNumber() {
+        return (int) players.stream()
+                .filter(Player::isAllinner)
+                .count();
+    }
+
+    public int activeNonAllinnersNumber() {
+        return (int) players.stream()
+                .filter(Player::isActiveNonAllinner)
+                .count();
+    }
+
+    public int activeNonAllinnersWithSameWagerNumber(int wager) {
+        return (int) players.stream()
+                .filter(Player::isActiveNonAllinner)
+                .filter(player -> player.wager() == wager)
+                .count();
     }
 
     public boolean isEmpty() {
@@ -109,12 +133,13 @@ public final class Players implements Iterable<Player> {
         players.forEach(action);
     }
 
-    private void setDealer(String dealerId) {
-        Optional<Player> mayBeDealer = players.stream()
-                .filter(player -> player.getId().equals(dealerId))
-                .findFirst();
-        Player dealer = mayBeDealer.orElseThrow(RuntimeException::new);
-        dealerIndex = players.indexOf(dealer);
+    @Override
+    public String toString() {
+        return "Players{" +
+                "dealerIndex=" + dealerIndex +
+                ", currentPlayerIndex=" + currentPlayerIndex +
+                ", players=" + players +
+                '}';
     }
 
     private Player next() {

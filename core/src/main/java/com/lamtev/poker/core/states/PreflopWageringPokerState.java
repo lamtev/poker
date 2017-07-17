@@ -1,23 +1,22 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 class PreflopWageringPokerState extends WageringPokerState {
 
-    PreflopWageringPokerState(Poker poker, Players players, Bank bank,
-                              Dealer dealer, Cards commonCards) {
-        super(poker, players, bank, dealer, commonCards);
-        dealer.makePreflop();
-        Map<String, Cards> playerIdToCards = new LinkedHashMap<>();
-        players.forEach(player -> playerIdToCards.put(player.getId(), player.getCards()));
-        poker.notifyPreflopMadeListeners(playerIdToCards);
+    PreflopWageringPokerState(ActionPokerState state) {
+        super(state);
+        dealer().makePreflop();
+        //TODO notify players from sb to dealer
+        poker().notifyPreflopMadeListeners(new LinkedHashMap<String, Cards>() {{
+            players().forEach(player -> put(player.id(), player.cards()));
+        }});
     }
 
     @Override
@@ -28,6 +27,7 @@ class PreflopWageringPokerState extends WageringPokerState {
         }
         throw new UnallowableMoveException("Check");
     }
+
     @Override
     public void fold() throws UnallowableMoveException {
         if (moveIsFinalBigBlindMove()) {
@@ -36,10 +36,9 @@ class PreflopWageringPokerState extends WageringPokerState {
         super.fold();
     }
 
-
     @Override
     public void attemptNextState() {
-        if (timeToShowDown()) {
+        if (timeToForcedShowdown()) {
             dealer().makeFlop();
             dealer().makeTurn();
             dealer().makeRiver();
@@ -54,19 +53,35 @@ class PreflopWageringPokerState extends WageringPokerState {
 
     @Override
     boolean timeToNextState() {
-        return checks() == 1 && players().activePlayersNumber()
-                == numberOfNotAllInnersActivePlayersWithSameWagers() + bank().getAllInners().size()
+        return bigBlindChecked()
+                || bigBlindIsAllinner()
+                && noRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers()
                 || super.timeToNextState();
     }
 
     @Override
-    void determinePlayerIndex() {
+    void determineUnderTheGunPosition() {
         players().nextAfterBigBlind();
     }
 
     private boolean moveIsFinalBigBlindMove() {
-        return raisers().isEmpty() && players().current() == players().bigBlind();
+        return raisers().isEmpty() &&
+                players().current() == players().bigBlind();
     }
 
+    private boolean bigBlindChecked() {
+        return checks() == 1 && players().activePlayersNumber()
+                == players().activeNonAllinnersWithSameWagerNumber(bank().currentWager())
+                + players().allinnersNumber();
+    }
+
+    private boolean bigBlindIsAllinner() {
+        return players().bigBlind().isAllinner();
+    }
+
+    private boolean noRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers() {
+        return raisers().isEmpty() && players().activePlayersNumber()
+                == players().activeNonAllinnersWithSameWagerNumber(bank().currentWager()) + players().allinnersNumber();
+    }
 
 }

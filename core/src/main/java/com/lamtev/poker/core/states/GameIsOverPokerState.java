@@ -9,14 +9,19 @@ import java.util.List;
 class GameIsOverPokerState extends ActionPokerState {
 
     GameIsOverPokerState(ActionPokerState state) {
-        super(state.poker(), state.players(), state.bank(), state.dealer(), state.communityCards());
+        super(state);
         poker().notifyGameOverListeners(new ArrayList<PlayerIdStack>() {{
-            players().forEach(player -> add(new PlayerIdStack(player.getId(), player.getStack())));
+            players().forEach(player -> add(new PlayerIdStack(player.id(), player.stack())));
         }});
     }
 
     @Override
     public void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize) throws GameOverException {
+        throw new GameOverException();
+    }
+
+    @Override
+    public void placeBlindWagers() throws GameOverException {
         throw new GameOverException();
     }
 
@@ -49,4 +54,5 @@ class GameIsOverPokerState extends ActionPokerState {
     public void showDown() throws GameOverException {
         throw new GameOverException();
     }
+
 }

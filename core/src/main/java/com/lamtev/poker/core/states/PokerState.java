@@ -11,6 +11,14 @@ public interface PokerState {
             IllegalStateException,
             GameOverException;
 
+    void placeBlindWagers() throws
+            GameHaveNotBeenStartedException,
+            ForbiddenMoveException,
+            UnallowableMoveException,
+            GameOverException,
+            IsNotEnoughMoneyException,
+            NotPositiveWagerException;
+
     void call() throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
@@ -30,7 +38,9 @@ public interface PokerState {
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             UnallowableMoveException,
-            GameOverException;
+            GameOverException,
+            IsNotEnoughMoneyException,
+            NotPositiveWagerException;
 
     void fold() throws
             UnallowableMoveException,

@@ -65,4 +65,14 @@ class ThreeOfAKind implements PokerHand {
         result = 31 * result + (otherCardsRanks != null ? otherCardsRanks.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ThreeOfAKind{" +
+                "highCardRank=" + highCardRank +
+                ", otherCardsRanks=" + otherCardsRanks +
+                '}';
+    }
+
 }
+

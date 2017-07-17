@@ -23,8 +23,8 @@ class RiverWageringPokerState extends WageringPokerState {
     }
 
     @Override
-    void determinePlayerIndex() {
-        players().nextAfterDealer();
+    void determineUnderTheGunPosition() {
+        players().nextNonAllinnerAfterDealer();
     }
 
 }

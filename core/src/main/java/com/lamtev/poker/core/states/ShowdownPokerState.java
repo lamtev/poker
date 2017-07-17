@@ -1,34 +1,36 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.PlayerMoney;
-import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.hands.PokerHandFactory;
-import com.lamtev.poker.core.model.*;
+import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
+import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 class ShowdownPokerState extends ActionPokerState {
 
-    private int showDowns = 0;
-    private Map<String, PokerHand> madeShowDown = new LinkedHashMap<>();
-
-    ShowdownPokerState(Poker poker, Players players, Bank bank,
-                       Dealer dealer, Cards commonCards, Player latestAggressor) {
-        super(poker, players, bank, dealer, commonCards);
-        players.setLatestAggressor(latestAggressor);
-        poker.notifyCurrentPlayerChangedListeners(players().current().getId());
-    }
+    private final Map<Player, PokerHand> showedDownPlayers = new HashMap<>();
+    private final PokerHandFactory handFactory;
 
     ShowdownPokerState(ActionPokerState state, Player latestAggressor) {
         super(state);
         if (latestAggressor == null) {
-            players().nextAfterDealer();
+            //TODO latest aggressor when all in
+            players().nextActiveAfterDealer();
         } else {
             players().setLatestAggressor(latestAggressor);
         }
-        poker().notifyCurrentPlayerChangedListeners(players().current().getId());
+        poker().notifyCurrentPlayerChangedListeners(players().current().id());
+        handFactory = new PokerHandFactory(communityCards());
+    }
+
+    @Override
+    public void placeBlindWagers() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Placing the blind wagers", toString());
     }
 
     @Override
@@ -47,12 +49,12 @@ class ShowdownPokerState extends ActionPokerState {
     }
 
     @Override
-    public void fold() {
-        if (showDowns == 0) {
-            throw new RuntimeException("Can't fold when nobody did showDown");
+    public void fold() throws UnallowableMoveException {
+        if (showedDownPlayers.isEmpty() || players().current().isAllinner()) {
+            throw new UnallowableMoveException("Fold");
         }
         players().current().fold();
-        poker().notifyPlayerFoldListeners(players().current().getId());
+        poker().notifyPlayerFoldListeners(players().current().id());
         changePlayerIndex();
         attemptDetermineWinners();
     }
@@ -64,13 +66,17 @@ class ShowdownPokerState extends ActionPokerState {
 
     @Override
     public void showDown() {
-        ++showDowns;
-        PokerHandFactory phf = new PokerHandFactory(communityCards());
-        PokerHand pokerHand = phf.createCombination(players().current().getCards());
-        madeShowDown.put(players().current().getId(), pokerHand);
-        poker().notifyPlayerShowedDownListeners(players().current().getId(), pokerHand);
+        PokerHand pokerHand = handFactory.createCombination(players().current().cards());
+        showedDownPlayers.put(players().current(), pokerHand);
+        poker().notifyPlayerShowedDownListeners(players().current().id(), pokerHand);
         changePlayerIndex();
         attemptDetermineWinners();
+    }
+
+    @Override
+    void changePlayerIndex() {
+        players().nextActive();
+        poker().notifyCurrentPlayerChangedListeners(players().current().id());
     }
 
     //TODO     add feature for action: not showDown and not fold
@@ -79,32 +85,21 @@ class ShowdownPokerState extends ActionPokerState {
 
     private void attemptDetermineWinners() {
         if (timeToDetermineWinners()) {
-            PokerHand maxPokerHand = Collections.max(madeShowDown.values());
-            List<String> winnersIds = new ArrayList<>();
 
-            madeShowDown.entrySet().stream()
-                    .filter(e -> e.getValue().equals(maxPokerHand))
-                    .forEach(e -> winnersIds.add(e.getKey()));
-
-            bank().giveMoneyToWinners(winnersIds);
+            Set<Player> winners = bank().giveMoneyToWinners(showedDownPlayers);
 
             //TODO think about rename WagerPlacedListener
-            winnersIds.forEach(
-                    winnerId -> {
-                        Player winner = players().get(winnerId);
-                        poker().notifyWagerPlacedListeners(
-                                winnerId,
-                                new PlayerMoney(winner.getStack(), winner.getWager()),
-                                bank().getMoney()
-                        );
-                    });
-            System.out.println("happens after preflop");
+            winners.forEach(winner -> poker().notifyWagerPlacedListeners(
+                    winner.id(),
+                    new PlayerMoney(winner.stack(), winner.wager()),
+                    bank().money()
+            ));
             poker().setState(new GameIsOverPokerState(this));
         }
     }
 
     private boolean timeToDetermineWinners() {
-        return showDowns == players().activePlayersNumber();
+        return showedDownPlayers.size() == players().activePlayersNumber();
     }
 
 }

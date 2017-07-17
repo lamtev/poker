@@ -3,6 +3,7 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.model.Bank;
 import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.model.Players;
+import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -20,15 +21,15 @@ public class MoveValidatorTest {
         return new Players(players,"e");
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = UnallowableMoveException.class)
     public void validateCall() throws Exception {
         Players players = generatePlayers();
         Bank bank = new Bank(players);
         MoveValidator mv = new MoveValidator(players, bank);
-        mv.validateCall(players.get(0));
+        mv.validateCall(players.get("a"));
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = UnallowableMoveException.class)
     public void validateRaise() throws Exception {
         Players players = generatePlayers();
         Bank bank = new Bank(players);
@@ -36,7 +37,7 @@ public class MoveValidatorTest {
         mv.validateRaise(3);
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = UnallowableMoveException.class)
     public void validateCheck() throws Exception {
         Players players = generatePlayers();
         Bank bank = new Bank(players);

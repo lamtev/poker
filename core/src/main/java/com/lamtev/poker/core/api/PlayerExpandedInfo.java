@@ -36,4 +36,13 @@ public class PlayerExpandedInfo {
     public void setActive(boolean active) {
         isActive = active;
     }
+
+    @Override
+    public String toString() {
+        return "PlayerExpandedInfo{" +
+                "stack=" + stack +
+                ", wager=" + wager +
+                ", isActive=" + isActive +
+                '}';
+    }
 }

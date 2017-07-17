@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -15,29 +16,29 @@ public class PlayersTest {
     @Test
     public void testDealer() {
         Players players = generatePlayers();
-        assertEquals("a", players.dealer().getId());
+        assertEquals("a", players.dealer().id());
     }
 
     @Test
     public void testSmallBlind() {
         Players players = generatePlayers();
-        assertEquals("b", players.smallBlind().getId());
+        assertEquals("b", players.smallBlind().id());
     }
 
     @Test
     public void testBigBlind() {
         Players players = generatePlayers();
-        assertEquals("c", players.bigBlind().getId());
+        assertEquals("c", players.bigBlind().id());
     }
 
     @Test
     public void testCurrent() {
         Players players = generatePlayers();
-        players.nextAfterDealer();
-        assertEquals("b", players.current().getId());
+        players.nextNonAllinnerAfterDealer();
+        assertEquals("b", players.current().id());
 
         players.nextAfterBigBlind();
-        assertEquals("d", players.current().getId());
+        assertEquals("d", players.current().id());
 
         List<String> ids = asList("e", "f");
         CardDeck cardDeck = new CardDeck();
@@ -47,10 +48,19 @@ public class PlayersTest {
         ids.forEach(id -> players.get(id).fold());
 
         players.nextActive();
-        assertEquals("g", players.current().getId());
+        assertEquals("g", players.current().id());
 
         players.setLatestAggressor(player);
-        assertEquals("b", players.current().getId());
+        assertEquals("b", players.current().id());
+    }
+
+    @Test
+    public void testNextActiveNonAllinner() {
+        Players players = generatePlayers();
+        players.nextActiveNonAllinner();
+        players.nextActiveNonAllinner();
+        players.nextActiveNonAllinner();
+        assertEquals("g", players.current().id());
     }
 
     @Test
@@ -65,15 +75,26 @@ public class PlayersTest {
         assertEquals(5, players.activePlayersNumber());
     }
 
-    private Players generatePlayers() {
+    @Test
+    public void testPlayersOrder() {
+        Players players = generatePlayers();
+        List<Player> playerList = new ArrayList<>();
+        players.forEach(playerList::add);
+        List<String> expected = asList("b", "c", "d", "e", "f", "g", "a");
+        List<String> actual = playerList.stream()
+                .map(Player::id)
+                .collect(Collectors.toList());
+        assertEquals(expected, actual);
+    }
 
+    private Players generatePlayers() {
         List<Player> players = new ArrayList<>();
         players.addAll(asList(
                 new Player("a", 100),
                 player,
                 new Player("c", 100),
-                new Player("d", 100),
-                new Player("e", 100),
+                new Player("d", 0),
+                new Player("e", 0),
                 new Player("f", 100),
                 new Player("g", 100)
         ));

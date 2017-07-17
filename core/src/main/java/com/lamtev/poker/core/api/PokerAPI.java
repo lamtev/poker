@@ -12,6 +12,14 @@ public interface PokerAPI {
                String dealerId,
                int smallBlindSize) throws GameOverException;
 
+    void placeBlindWagers() throws
+            NotPositiveWagerException,
+            ForbiddenMoveException,
+            IsNotEnoughMoneyException,
+            GameHaveNotBeenStartedException,
+            GameOverException,
+            UnallowableMoveException;
+
     void call() throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
@@ -31,7 +39,9 @@ public interface PokerAPI {
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             UnallowableMoveException,
-            GameOverException;
+            GameOverException,
+            IsNotEnoughMoneyException,
+            NotPositiveWagerException;
 
     void fold() throws
             UnallowableMoveException,

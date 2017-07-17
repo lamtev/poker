@@ -39,30 +39,28 @@ public class GameController extends AbstractController {
 
     @GetMapping(value = "{roomId}/communityCards", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public List<Card> communityCards(@PathVariable String roomId) throws Exception {
+    public String communityCards(@PathVariable String roomId) throws Exception {
         makeSureThatRoomsExist();
         makeSureThatRoomExists(roomId);
         Room room = rooms.get(roomId);
         makeSureThatRoomIsTaken(room, "Can not get community cards because game has not been started");
-
         List<Card> communityCards = room.getGame().getCommunityCards();
         makeSureThatCardsAreNotEmpty(communityCards);
-        return communityCards;
+        return gson.toJson(communityCards);
     }
 
     @GetMapping(value = "{roomId}/players/{playerId}/cards", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public List<Card> playerCards(@PathVariable String roomId,
+    public String playerCards(@PathVariable String roomId,
                                   @PathVariable String playerId) throws Exception {
         makeSureThatRoomsExist();
         makeSureThatRoomExists(roomId);
         Room room = rooms.get(roomId);
         makeSureThatRoomIsTaken(room,
                 "Can not get cards of player with roomId " + playerId + " because game has not been started");
-
         List<Card> playerCards = room.getGame().getPlayerCards(playerId);
         makeSureThatCardsAreNotEmpty(playerCards);
-        return playerCards;
+        return gson.toJson(playerCards);
     }
 
     @GetMapping(value = "{roomId}/short-info", produces = APPLICATION_JSON_VALUE)

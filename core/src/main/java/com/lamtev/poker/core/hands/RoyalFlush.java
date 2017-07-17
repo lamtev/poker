@@ -30,4 +30,10 @@ class RoyalFlush implements PokerHand {
     public int hashCode() {
         return NAME.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "RoyalFlush{}";
+    }
+
 }
