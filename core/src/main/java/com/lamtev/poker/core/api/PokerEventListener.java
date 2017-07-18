@@ -44,7 +44,7 @@ public interface PokerEventListener extends
     void raiseAbilityChanged(boolean flag);
 
     @Override
-    void preflopMade(Map<String, Cards> playerIdToCards);
+    void preflopMade(Map<String, List<Card>> playerIdToCards);
 
     @Override
     void onCommunityCardsDealt(List<Card> addedCommunityCards);

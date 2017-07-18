@@ -2,7 +2,6 @@ package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
-import com.lamtev.poker.core.model.Cards;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +19,7 @@ public class PokerTest implements PokerEventListener {
     private List<Card> communityCards;
     private Map<String, PokerHand> hands;
     private String currentPlayerId;
-    private Map<String, Cards> playersCards;
+    private Map<String, List<Card>> playersCards;
     private List<String> foldPlayers;
     private int bank;
 
@@ -78,7 +77,7 @@ public class PokerTest implements PokerEventListener {
     @Test
     public void test() throws Exception {
 
-        PokerAPI poker = new Poker();
+        RoundOfPlay poker = new Poker();
         poker.subscribe(this);
         assertEquals("SettingsState", state);
 
@@ -195,7 +194,7 @@ public class PokerTest implements PokerEventListener {
     }
 
     @Override
-    public void preflopMade(Map<String, Cards> playerIdToCards) {
+    public void preflopMade(Map<String, List<Card>> playerIdToCards) {
         playersCards = playerIdToCards;
     }
 

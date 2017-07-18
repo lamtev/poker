@@ -3,7 +3,6 @@ package com.lamtev.poker.webserver;
 import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
-import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.exceptions.*;
 
 import java.util.*;
@@ -12,10 +11,10 @@ import static com.lamtev.poker.webserver.Util.names;
 
 public class PokerGame implements PokerEventListener, GameAPI {
 
-    private PokerAPI poker = new Poker();
+    private RoundOfPlay poker = new Poker();
     private List<Card> communityCards = new ArrayList<>();
     private Map<String, PlayerExpandedInfo> playersInfo = new LinkedHashMap<>();
-    private Map<String, Cards> playersCards = new LinkedHashMap<>();
+    private Map<String, List<Card>> playersCards = new LinkedHashMap<>();
     private String currentPlayerId;
     private String currentStateName;
     private int bank;
@@ -101,7 +100,7 @@ public class PokerGame implements PokerEventListener, GameAPI {
     @Override
     public List<Card> getPlayerCards(String playerId) {
         List<Card> cards = new ArrayList<>();
-        playersCards.get(playerId).forEach(cards::add);
+        cards.addAll(playersCards.get(playerId));
         return cards;
     }
 
@@ -173,7 +172,7 @@ public class PokerGame implements PokerEventListener, GameAPI {
     }
 
     @Override
-    public void preflopMade(Map<String, Cards> playerIdToCards) {
+    public void preflopMade(Map<String, List<Card>> playerIdToCards) {
         playerIdToCards.forEach(playersCards::put);
     }
 

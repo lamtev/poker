@@ -3,7 +3,6 @@ package com.lamtev.poker.desktop;
 import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
-import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.exceptions.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -25,13 +24,13 @@ public class PokerGame implements PokerEventListener {
     private Stage primaryStage;
 
     private String playerNick;
-    private PokerAPI poker;
+    private RoundOfPlay poker;
     private String stateName;
     private int smallBlindSize;
     private String currentPlayerId;
     private List<Card> communityCards = new ArrayList<>();
     private Map<String, PlayerExpandedInfo> playersInfo = new LinkedHashMap<>();
-    private Map<String, Cards> playersCards = new LinkedHashMap<>();
+    private Map<String, List<Card>> playersCards = new LinkedHashMap<>();
     private List<String> showedDown = new ArrayList<>();
 
     private HBox playersCardsViewHBox = new HBox();
@@ -51,6 +50,16 @@ public class PokerGame implements PokerEventListener {
     private Button showDown = new Button("show down");
     private Separator verticalSeparator = new Separator(Orientation.VERTICAL);
     private Separator horizontalSeparator = new Separator(Orientation.HORIZONTAL);
+
+    PokerGame(List<PlayerIdStack> playersInfo) {
+        playerNick = playersInfo.get(0).id();
+        Label nickNameLabel = new Label();
+        nickNameLabel.setText(playersInfo.get(0).id());
+        smallBlindSize = playersInfo.get(0).stack() / 100;
+        String dealerId = playersInfo.get(0).id();
+        startNewGame(playersInfo, dealerId);
+        setUpButtons();
+    }
 
     void setToStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -80,16 +89,6 @@ public class PokerGame implements PokerEventListener {
         root.add(buttons, 4, 44, GridPane.REMAINING, 1);
 
         primaryStage.setScene(new Scene(root, 1200, 720));
-    }
-
-    PokerGame(List<PlayerIdStack> playersInfo) {
-        playerNick = playersInfo.get(0).id();
-        Label nickNameLabel = new Label();
-        nickNameLabel.setText(playersInfo.get(0).id());
-        smallBlindSize = playersInfo.get(0).stack() / 100;
-        String dealerId = playersInfo.get(0).id();
-        startNewGame(playersInfo, dealerId);
-        setUpButtons();
     }
 
     private void startNewGame(List<PlayerIdStack> playersInfo, String dealerId) {
@@ -383,7 +382,7 @@ public class PokerGame implements PokerEventListener {
     }
 
     @Override
-    public void preflopMade(Map<String, Cards> playerIdToCards) {
+    public void preflopMade(Map<String, List<Card>> playerIdToCards) {
         playersCards = playerIdToCards;
         updatePlayersCardsView();
     }

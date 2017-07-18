@@ -1,12 +1,12 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.model.Card;
-import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 class PreflopWageringState extends WageringState {
 
@@ -14,8 +14,10 @@ class PreflopWageringState extends WageringState {
         super(state);
         dealer().makePreflop();
         //TODO notify players from sb to dealer
-        poker().notifyPreflopMadeListeners(new LinkedHashMap<String, Cards>() {{
-            players().forEach(player -> put(player.id(), player.cards()));
+        poker().notifyPreflopMadeListeners(new LinkedHashMap<String, List<Card>>() {{
+            players().forEach(player -> put(player.id(), new ArrayList<Card>() {{
+                player.cards().forEach(this::add);
+            }}));
         }});
     }
 

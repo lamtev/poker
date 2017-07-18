@@ -5,8 +5,12 @@ import com.lamtev.poker.core.states.exceptions.*;
 import java.util.List;
 
 //TODO give only needed information to each player
-public interface PokerAPI {
-    void subscribe(PokerEventListener pokerEventListener);
+public interface RoundOfPlay {
+    void subscribe(PokerAI listener);
+
+    void subscribe(PokerPlayer listener);
+
+    void subscribe(PokerPlay listener);
 
     void setUp(List<PlayerIdStack> playersStacks,
                String dealerId,
