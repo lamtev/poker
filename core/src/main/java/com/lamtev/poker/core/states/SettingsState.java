@@ -8,11 +8,11 @@ import com.lamtev.poker.core.states.exceptions.GameHaveNotBeenStartedException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsPokerState extends AbstractPokerState {
+public class SettingsState extends AbstractPokerState {
 
     private final Poker poker;
 
-    public SettingsPokerState(Poker poker) {
+    public SettingsState(Poker poker) {
         this.poker = poker;
     }
 
@@ -20,13 +20,13 @@ public class SettingsPokerState extends AbstractPokerState {
     public void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize) {
         List<Player> playerList = new ArrayList<>();
         playersInfo.forEach(playerIdStack -> {
-            String id = playerIdStack.getId();
-            int stack = playerIdStack.getStack();
+            String id = playerIdStack.id();
+            int stack = playerIdStack.stack();
             playerList.add(new Player(id, stack));
         });
         final Players players = new Players(playerList, dealerId);
         final Cards communityCards = new Cards();
-        poker.setState(new BlindsPokerState(
+        poker.setState(new BlindsState(
                 poker,
                 players,
                 new Bank(players),

@@ -10,7 +10,7 @@ import java.util.*;
 
 import static com.lamtev.poker.webserver.Util.names;
 
-public class Game implements PokerEventListener, GameAPI {
+public class PokerGame implements PokerEventListener, GameAPI {
 
     private PokerAPI poker = new Poker();
     private List<Card> communityCards = new ArrayList<>();
@@ -23,7 +23,7 @@ public class Game implements PokerEventListener, GameAPI {
     private int wager;
 
     @Override
-    public void start(String humanId, int playersNumber, int stack) throws GameOverException, ForbiddenMoveException, NotPositiveWagerException, IsNotEnoughMoneyException, UnallowableMoveException, GameHaveNotBeenStartedException {
+    public void start(String humanId, int playersNumber, int stack) throws RoundOfPlayIsOverException, ForbiddenMoveException, NotPositiveWagerException, IsNotEnoughMoneyException, UnallowableMoveException, GameHaveNotBeenStartedException {
         poker.subscribe(this);
         final int numberOfBots = playersNumber - 1;
         List<String> players = names(numberOfBots);
@@ -34,7 +34,7 @@ public class Game implements PokerEventListener, GameAPI {
         List<PlayerIdStack> playersStacks = new ArrayList<>();
         playersInfo.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getStack())));
         smallBlindSize = stack / 1000;
-        poker.setUp(playersStacks, playersStacks.get(0).getId(), smallBlindSize);
+        poker.setUp(playersStacks, playersStacks.get(0).id(), smallBlindSize);
         poker.placeBlindWagers();
     }
 
@@ -112,12 +112,12 @@ public class Game implements PokerEventListener, GameAPI {
     }
 
     @Override
-    public void wagerPlaced(String playerId, PlayerMoney playerMoney, int bank) {
+    public void onMoneyChanged(String playerId, int playerStack, int playerWager, int bank) {
         PlayerExpandedInfo playerInfo = this.playersInfo.get(playerId);
-        playerInfo.setStack(playerMoney.getStack());
-        playerInfo.setWager(playerMoney.getWager());
+        playerInfo.setStack(playerStack);
+        playerInfo.setWager(playerWager);
         this.bank = bank;
-        this.wager = playerMoney.getWager();
+        this.wager = playerWager;
     }
 
     @Override
@@ -128,13 +128,13 @@ public class Game implements PokerEventListener, GameAPI {
     }
 
     @Override
-    public void currentPlayerChanged(String playerId) {
-        currentPlayerId = playerId;
+    public void onCurrentPlayerChanged(String currentPlayerId) {
+        this.currentPlayerId = currentPlayerId;
     }
 
     @Override
-    public void gameOver(List<PlayerIdStack> playersInfo) {
-        long cnt = playersInfo.stream().filter(x -> x.getStack() > 0).count();
+    public void onRoundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
+        long cnt = playersInfo.stream().filter(x -> x.stack() > 0).count();
         System.out.println(cnt);
         if (cnt == 1) {
             currentStateName = "Finished";
@@ -142,10 +142,10 @@ public class Game implements PokerEventListener, GameAPI {
         }
         this.playersInfo = new LinkedHashMap<>();
         playersInfo.stream()
-                .filter(playerIdStack -> playerIdStack.getStack() > 0)
+                .filter(playerIdStack -> playerIdStack.stack() > 0)
                 .forEach(playerIdStack -> {
-                    String id = playerIdStack.getId();
-                    int stack = playerIdStack.getStack();
+                    String id = playerIdStack.id();
+                    int stack = playerIdStack.stack();
                     PlayerExpandedInfo info = new PlayerExpandedInfo(stack, 0, true);
                     this.playersInfo.put(id, info);
                 });
@@ -161,14 +161,14 @@ public class Game implements PokerEventListener, GameAPI {
         this.playersInfo.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getStack())));
 
         try {
-            poker.setUp(playersStacks, playersStacks.get(0).getId(), smallBlindSize);
-        } catch (GameOverException e) {
+            poker.setUp(playersStacks, playersStacks.get(0).id(), smallBlindSize);
+        } catch (RoundOfPlayIsOverException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void playerShowedDown(String playerId, PokerHand hand) {
+    public void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand) {
 
     }
 
@@ -178,7 +178,7 @@ public class Game implements PokerEventListener, GameAPI {
     }
 
     @Override
-    public void communityCardsAdded(List<Card> addedCommunityCards) {
+    public void onCommunityCardsDealt(List<Card> addedCommunityCards) {
         communityCards.addAll(addedCommunityCards);
     }
 

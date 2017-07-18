@@ -165,7 +165,7 @@ public class RoomsControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.code", is(409)))
                 .andExpect(jsonPath("$.message",
-                        is("Game has been already started. Room is taken")));
+                        is("PokerGame has been already started. Room is taken")));
     }
 
     @Test

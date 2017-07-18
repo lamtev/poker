@@ -5,9 +5,9 @@ import com.lamtev.poker.core.model.Card;
 import java.util.ArrayList;
 import java.util.List;
 
-class RiverWageringPokerState extends WageringPokerState {
+class RiverWageringState extends WageringState {
 
-    RiverWageringPokerState(ActionPokerState state) {
+    RiverWageringState(ActionState state) {
         super(state);
         dealer().makeRiver();
         List<Card> addedCards = new ArrayList<>();
@@ -18,7 +18,7 @@ class RiverWageringPokerState extends WageringPokerState {
     @Override
     protected void attemptNextState() {
         if (timeToNextState()) {
-            poker().setState(new ShowdownPokerState(this, latestAggressor()));
+            poker().setState(new ShowdownState(this, latestAggressor()));
         }
     }
 

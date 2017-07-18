@@ -16,11 +16,11 @@ import java.util.List;
 
 public class Settings {
 
+    List<PlayerIdStack> playersInfo = new ArrayList<>();
     private PokerGame pokerGame;
     private String playerNick;
     private int numberOfOpponents;
     private int playerStackSize;
-    List<PlayerIdStack> playersInfo = new ArrayList<>();
 
     public void setToStage(Stage primaryStage) {
         FlowPane rootNode = new FlowPane(10, 10);

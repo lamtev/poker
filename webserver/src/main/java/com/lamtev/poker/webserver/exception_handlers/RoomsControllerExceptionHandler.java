@@ -1,6 +1,6 @@
 package com.lamtev.poker.webserver.exception_handlers;
 
-import com.lamtev.poker.core.states.exceptions.GameOverException;
+import com.lamtev.poker.core.states.exceptions.RoundOfPlayIsOverException;
 import com.lamtev.poker.webserver.controllers.exceptions.RequestBodyHasUnsuitableFormatException;
 import com.lamtev.poker.webserver.controllers.exceptions.ResourceAlreadyExistsException;
 import com.lamtev.poker.webserver.controllers.exceptions.ResourceNotFoundException;
@@ -32,9 +32,9 @@ public class RoomsControllerExceptionHandler extends AbstractExceptionHandler {
     }
 
     //TODO replace BAD_REQUEST by better status
-    @ExceptionHandler(GameOverException.class)
+    @ExceptionHandler(RoundOfPlayIsOverException.class)
     @ResponseStatus(BAD_REQUEST)
-    public ResponseMessage gameOver(GameOverException e) {
+    public ResponseMessage gameOver(RoundOfPlayIsOverException e) {
         return message(BAD_REQUEST, e);
     }
 

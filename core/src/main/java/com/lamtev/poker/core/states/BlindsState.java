@@ -1,6 +1,5 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.api.PlayerMoney;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
 import com.lamtev.poker.core.states.exceptions.*;
@@ -8,11 +7,11 @@ import com.lamtev.poker.core.states.exceptions.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-class BlindsPokerState extends ActionPokerState {
+class BlindsState extends ActionState {
 
     private final int smallBlindSize;
 
-    BlindsPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards communityCards, int smallBlindSize) {
+    BlindsState(Poker poker, Players players, Bank bank, Dealer dealer, Cards communityCards, int smallBlindSize) {
         super(poker, players, bank, dealer, communityCards);
         this.smallBlindSize = smallBlindSize;
     }
@@ -25,11 +24,8 @@ class BlindsPokerState extends ActionPokerState {
     }
 
     private void notifyWagerPlacedListeners(Player smallBlind, Player bigBlind) {
-        String smallBlindId = smallBlind.id();
-        PlayerMoney smallBLindMoney = new PlayerMoney(smallBlind.stack(), smallBlind.wager());
-        poker().notifyWagerPlacedListeners(smallBlindId, smallBLindMoney, bank().money());
-        PlayerMoney bigBlindMoney = new PlayerMoney(bigBlind.stack(), bigBlind.wager());
-        poker().notifyWagerPlacedListeners(bigBlind.id(), bigBlindMoney, bank().money());
+        poker().notifyMoneyChangedListeners(smallBlind.id(), smallBlind.stack(), smallBlind.wager(),bank().money());
+        poker().notifyMoneyChangedListeners(bigBlind.id(), bigBlind.stack(), bigBlind.wager(), bank().money());
     }
 
     private void nextState() {
@@ -46,9 +42,9 @@ class BlindsPokerState extends ActionPokerState {
             }});
             Player latestAggressor = players().bigBlind().isAllinner() ?
                     players().bigBlind() : players().smallBlind();
-            poker().setState(new ShowdownPokerState(this, latestAggressor));
+            poker().setState(new ShowdownState(this, latestAggressor));
         } else {
-            poker().setState(new PreflopWageringPokerState(this));
+            poker().setState(new PreflopWageringState(this));
         }
     }
 
@@ -58,7 +54,7 @@ class BlindsPokerState extends ActionPokerState {
             ForbiddenMoveException,
             UnallowableMoveException,
             IsNotEnoughMoneyException,
-            GameOverException {
+            RoundOfPlayIsOverException {
     }
 
     @Override
@@ -68,7 +64,7 @@ class BlindsPokerState extends ActionPokerState {
             UnallowableMoveException,
             IsNotEnoughMoneyException,
             NotPositiveWagerException,
-            GameOverException {
+            RoundOfPlayIsOverException {
     }
 
     @Override
@@ -76,7 +72,7 @@ class BlindsPokerState extends ActionPokerState {
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             UnallowableMoveException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             IsNotEnoughMoneyException,
             NotPositiveWagerException {
     }
@@ -84,7 +80,7 @@ class BlindsPokerState extends ActionPokerState {
     @Override
     public void fold() throws
             UnallowableMoveException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             GameHaveNotBeenStartedException {
     }
 
@@ -93,13 +89,13 @@ class BlindsPokerState extends ActionPokerState {
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             UnallowableMoveException,
-            GameOverException {
+            RoundOfPlayIsOverException {
     }
 
     @Override
     public void showDown() throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
-            GameOverException {
+            RoundOfPlayIsOverException {
     }
 }

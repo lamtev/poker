@@ -83,11 +83,11 @@ public class PokerGame implements PokerEventListener {
     }
 
     PokerGame(List<PlayerIdStack> playersInfo) {
-        playerNick = playersInfo.get(0).getId();
+        playerNick = playersInfo.get(0).id();
         Label nickNameLabel = new Label();
-        nickNameLabel.setText(playersInfo.get(0).getId());
-        smallBlindSize = playersInfo.get(0).getStack() / 100;
-        String dealerId = playersInfo.get(0).getId();
+        nickNameLabel.setText(playersInfo.get(0).id());
+        smallBlindSize = playersInfo.get(0).stack() / 100;
+        String dealerId = playersInfo.get(0).id();
         startNewGame(playersInfo, dealerId);
         setUpButtons();
     }
@@ -97,8 +97,8 @@ public class PokerGame implements PokerEventListener {
         this.playersInfo.clear();
         playersInfo.forEach(
                 playerInfo -> this.playersInfo.put(
-                        playerInfo.getId(),
-                        new PlayerExpandedInfo(playerInfo.getStack(), 0, true)
+                        playerInfo.id(),
+                        new PlayerExpandedInfo(playerInfo.stack(), 0, true)
                 )
         );
         showedDown.clear();
@@ -114,7 +114,7 @@ public class PokerGame implements PokerEventListener {
         try {
             poker.setUp(playersInfo, dealerId, smallBlindSize);
             poker.placeBlindWagers();
-        } catch (GameOverException | GameHaveNotBeenStartedException | ForbiddenMoveException
+        } catch (RoundOfPlayIsOverException | GameHaveNotBeenStartedException | ForbiddenMoveException
                 | NotPositiveWagerException | IsNotEnoughMoneyException | UnallowableMoveException e) {
             e.printStackTrace();
         }
@@ -198,7 +198,7 @@ public class PokerGame implements PokerEventListener {
         showDown.setOnAction(event -> {
             try {
                 poker.showDown();
-            } catch (GameOverException e) {
+            } catch (RoundOfPlayIsOverException e) {
                 statusBar.setText(e.getMessage());
             } catch (RuntimeException e) {
                 e.printStackTrace();
@@ -291,11 +291,9 @@ public class PokerGame implements PokerEventListener {
     }
 
     @Override
-    public void wagerPlaced(String playerId, PlayerMoney playerMoney, int bank) {
-        int stack = playerMoney.getStack();
-        int wager = playerMoney.getWager();
-        playersInfo.get(playerId).setStack(stack);
-        playersInfo.get(playerId).setWager(wager);
+    public void onMoneyChanged(String playerId, int playerStack, int playerWager, int bank) {
+        playersInfo.get(playerId).setStack(playerStack);
+        playersInfo.get(playerId).setWager(playerWager);
         updateBank(bank);
         updateActiveAndFoldPlayersLists();
     }
@@ -322,7 +320,7 @@ public class PokerGame implements PokerEventListener {
     }
 
     @Override
-    public void gameOver(List<PlayerIdStack> playersInfo) {
+    public void onRoundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
         statusBar.setText("Game is over!");
 
         if (this.playersInfo.get(playerNick).getStack() == 0) {
@@ -340,7 +338,7 @@ public class PokerGame implements PokerEventListener {
             gameIsOverWindow.showAndWait();
             return;
         }
-        playersInfo.removeIf(playerInfo -> playerInfo.getStack() <= 0);
+        playersInfo.removeIf(playerInfo -> playerInfo.stack() <= 0);
         if (playersInfo.size() == 1) {
             Alert youWonWindow = new Alert(Alert.AlertType.INFORMATION);
             youWonWindow.setTitle("You won!!!");
@@ -363,21 +361,21 @@ public class PokerGame implements PokerEventListener {
         Collections.rotate(list, -1);
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(2500),
-                ae -> startNewGame(playersInfo, list.get(0).getId())
+                ae -> startNewGame(playersInfo, list.get(0).id())
         ));
         timeline.play();
     }
 
     @Override
-    public void currentPlayerChanged(String playerId) {
-        currentPlayerId = playerId;
-        whoseTurn.setText("Whose turn: " + playerId);
+    public void onCurrentPlayerChanged(String currentPlayerId) {
+        this.currentPlayerId = currentPlayerId;
+        whoseTurn.setText("Whose turn: " + currentPlayerId);
     }
 
 
     //TODO duplicate
     @Override
-    public void playerShowedDown(String playerId, PokerHand hand) {
+    public void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand) {
         showedDown.add(playerId);
 
         statusBar.setText(playerId + " showed down: " + hand.getName());
@@ -391,7 +389,7 @@ public class PokerGame implements PokerEventListener {
     }
 
     @Override
-    public void communityCardsAdded(List<Card> addedCommunityCards) {
+    public void onCommunityCardsDealt(List<Card> addedCommunityCards) {
         communityCards.addAll(addedCommunityCards);
         communityCardsView.getChildren().clear();
         communityCardsView.setAlignment(Pos.CENTER);

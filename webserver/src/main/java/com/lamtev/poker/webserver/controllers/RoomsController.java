@@ -1,7 +1,7 @@
 package com.lamtev.poker.webserver.controllers;
 
 import com.google.gson.Gson;
-import com.lamtev.poker.webserver.Game;
+import com.lamtev.poker.webserver.PokerGame;
 import com.lamtev.poker.webserver.GameAPI;
 import com.lamtev.poker.webserver.Room;
 import com.lamtev.poker.webserver.controllers.exceptions.RequestBodyHasUnsuitableFormatException;
@@ -44,7 +44,7 @@ public final class RoomsController extends AbstractController {
     public Room createRoom(@RequestBody Room room) throws Exception {
         makeSureThatRoomIsValid(room);
         makeSureThatRoomDoesNotExist(room);
-        room.setGame(new Game());
+        room.setGame(new PokerGame());
         rooms.put(room.getId(), room);
         return room;
     }
@@ -71,7 +71,7 @@ public final class RoomsController extends AbstractController {
         makeSureThatRoomsExist();
         makeSureThatRoomExists(roomId);
         Room room = rooms.get(roomId);
-        makeSureThatRoomIsFree(room, "Game has been already started");
+        makeSureThatRoomIsFree(room, "PokerGame has been already started");
         GameAPI game = room.getGame();
         game.start(name, room.getPlayersNumber(), room.getStack());
         room.setFree(false);
