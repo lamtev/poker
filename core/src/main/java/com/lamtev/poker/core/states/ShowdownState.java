@@ -1,25 +1,22 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.api.PlayerMoney;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.hands.PokerHandFactory;
+import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-class ShowdownPokerState extends ActionPokerState {
+class ShowdownState extends ActionState {
 
     private final Map<Player, PokerHand> showedDownPlayers = new HashMap<>();
     private final PokerHandFactory handFactory;
 
-    ShowdownPokerState(ActionPokerState state, Player latestAggressor) {
+    ShowdownState(ActionState state, Player latestAggressor) {
         super(state);
         if (latestAggressor == null) {
-            //TODO latest aggressor when all in
             players().nextActiveAfterDealer();
         } else {
             players().setLatestAggressor(latestAggressor);
@@ -66,9 +63,12 @@ class ShowdownPokerState extends ActionPokerState {
 
     @Override
     public void showDown() {
-        PokerHand pokerHand = handFactory.createCombination(players().current().cards());
-        showedDownPlayers.put(players().current(), pokerHand);
-        poker().notifyPlayerShowedDownListeners(players().current().id(), pokerHand);
+        Player currentPlayer = players().current();
+        PokerHand pokerHand = handFactory.createCombination(currentPlayer.cards());
+        showedDownPlayers.put(currentPlayer, pokerHand);
+        List<Card> holeCards = new ArrayList<>();
+        currentPlayer.cards().forEach(holeCards::add);
+        poker().notifyPlayerShowedDownListeners(currentPlayer.id(), holeCards, pokerHand);
         changePlayerIndex();
         attemptDetermineWinners();
     }
@@ -88,13 +88,14 @@ class ShowdownPokerState extends ActionPokerState {
 
             Set<Player> winners = bank().giveMoneyToWinners(showedDownPlayers);
 
-            //TODO think about rename WagerPlacedListener
-            winners.forEach(winner -> poker().notifyWagerPlacedListeners(
+            //TODO think about rename MoneyChangedListener
+            winners.forEach(winner -> poker().notifyMoneyChangedListeners(
                     winner.id(),
-                    new PlayerMoney(winner.stack(), winner.wager()),
+                    winner.stack(),
+                    winner.wager(),
                     bank().money()
             ));
-            poker().setState(new GameIsOverPokerState(this));
+            poker().setState(new RoundOfPlayIsOverState(this));
         }
     }
 

@@ -9,13 +9,13 @@ public interface PokerState {
 
     void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize) throws
             IllegalStateException,
-            GameOverException;
+            RoundOfPlayIsOverException;
 
     void placeBlindWagers() throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             UnallowableMoveException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             IsNotEnoughMoneyException,
             NotPositiveWagerException;
 
@@ -24,7 +24,7 @@ public interface PokerState {
             ForbiddenMoveException,
             UnallowableMoveException,
             IsNotEnoughMoneyException,
-            GameOverException;
+            RoundOfPlayIsOverException;
 
     void raise(int additionalWager) throws
             GameHaveNotBeenStartedException,
@@ -32,30 +32,30 @@ public interface PokerState {
             UnallowableMoveException,
             IsNotEnoughMoneyException,
             NotPositiveWagerException,
-            GameOverException;
+            RoundOfPlayIsOverException;
 
     void allIn() throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             UnallowableMoveException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             IsNotEnoughMoneyException,
             NotPositiveWagerException;
 
     void fold() throws
             UnallowableMoveException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             GameHaveNotBeenStartedException;
 
     void check() throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             UnallowableMoveException,
-            GameOverException;
+            RoundOfPlayIsOverException;
 
     void showDown() throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
-            GameOverException;
+            RoundOfPlayIsOverException;
 
 }

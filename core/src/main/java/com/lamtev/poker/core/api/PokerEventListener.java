@@ -10,35 +10,35 @@ import java.util.Map;
 
 public interface PokerEventListener extends
         //TODO may be all listeners should be inlined into this
-        CommunityCardsAddedListener,
+        CommunityCardsDealtListener,
         CurrentPlayerChangedListener,
-        GameOverListener,
+        RoundOfPlayIsOverListener,
         MoveAbilityListener,
         PlayerFoldListener,
         PlayerShowedDownListener,
         PreflopMadeListener,
         StateChangedListener,
-        WagerPlacedListener {
+        MoneyChangedListener {
     @Override
     void playerFold(String foldPlayerId);
 
     @Override
-    void wagerPlaced(String playerId, PlayerMoney playerMoney, int bank);
+    void onMoneyChanged(String playerId, int playerStack, int playerWager, int bank);
 
     @Override
     void stateChanged(String stateName);
 
     @Override
-    void currentPlayerChanged(String playerId);
+    void onCurrentPlayerChanged(String currentPlayerId);
 
     @Override
     void callAbilityChanged(boolean flag);
 
     @Override
-    void gameOver(List<PlayerIdStack> playersInfo);
+    void onRoundOfPlayIsOver(List<PlayerIdStack> playersInfo);
 
     @Override
-    void playerShowedDown(String playerId, PokerHand hand);
+    void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand);
 
     @Override
     void raiseAbilityChanged(boolean flag);
@@ -47,7 +47,7 @@ public interface PokerEventListener extends
     void preflopMade(Map<String, Cards> playerIdToCards);
 
     @Override
-    void communityCardsAdded(List<Card> addedCommunityCards);
+    void onCommunityCardsDealt(List<Card> addedCommunityCards);
 
     @Override
     void allInAbilityChanged(boolean flag);

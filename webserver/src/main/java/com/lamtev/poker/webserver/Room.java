@@ -9,7 +9,7 @@ public class Room {
     private int stack;
     private boolean free;
     @JsonIgnore
-    private GameAPI game = new Game();
+    private GameAPI game = new PokerGame();
 
     public Room() {
 

@@ -8,9 +8,9 @@ import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-class PreflopWageringPokerState extends WageringPokerState {
+class PreflopWageringState extends WageringState {
 
-    PreflopWageringPokerState(ActionPokerState state) {
+    PreflopWageringState(ActionState state) {
         super(state);
         dealer().makePreflop();
         //TODO notify players from sb to dealer
@@ -45,9 +45,9 @@ class PreflopWageringPokerState extends WageringPokerState {
             poker().notifyCommunityCardsChangedListeners(new ArrayList<Card>() {{
                 communityCards().forEach(this::add);
             }});
-            poker().setState(new ShowdownPokerState(this, latestAggressor()));
+            poker().setState(new ShowdownState(this, latestAggressor()));
         } else if (timeToNextState()) {
-            poker().setState(new FlopWageringPokerState(this));
+            poker().setState(new FlopWageringState(this));
         }
     }
 

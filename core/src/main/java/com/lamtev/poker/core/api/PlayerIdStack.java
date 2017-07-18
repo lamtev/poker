@@ -10,11 +10,11 @@ public class PlayerIdStack {
         this.stack = stack;
     }
 
-    public String getId() {
+    public String id() {
         return id;
     }
 
-    public int getStack() {
+    public int stack() {
         return stack;
     }
 

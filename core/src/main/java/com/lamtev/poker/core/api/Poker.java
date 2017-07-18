@@ -5,7 +5,7 @@ import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.states.PokerState;
-import com.lamtev.poker.core.states.SettingsPokerState;
+import com.lamtev.poker.core.states.SettingsState;
 import com.lamtev.poker.core.states.exceptions.*;
 
 import java.util.ArrayList;
@@ -14,16 +14,17 @@ import java.util.Map;
 
 public class Poker implements PokerAPI {
 
-    private PokerState state = new SettingsPokerState(this);
+    private PokerState state = new SettingsState(this);
 
     private List<StateChangedListener> stateChangedListeners = new ArrayList<>();
-    private List<GameOverListener> gameOverListeners = new ArrayList<>();
+    private List<RoundOfPlayIsOverListener> roundOfPlayIsOverListeners = new ArrayList<>();
     private List<MoveAbilityListener> moveAbilityListeners = new ArrayList<>();
     private List<CurrentPlayerChangedListener> currentPlayerChangedListeners = new ArrayList<>();
-    private List<CommunityCardsAddedListener> communityCardsAddedListeners = new ArrayList<>();
-    private List<WagerPlacedListener> wagerPlacedListeners = new ArrayList<>();
+    private List<CommunityCardsDealtListener> communityCardsDealtListeners = new ArrayList<>();
+    private List<MoneyChangedListener> moneyChangedListeners = new ArrayList<>();
     private List<PlayerFoldListener> playerFoldListeners = new ArrayList<>();
     private List<PreflopMadeListener> preflopMadeListeners = new ArrayList<>();
+    private List<HoleCardsDealtListener> holeCardsDealtListeners = new ArrayList<>();
     private List<PlayerShowedDownListener> playerShowedDownListeners = new ArrayList<>();
     private boolean listenersAdded = false;
 
@@ -45,7 +46,7 @@ public class Poker implements PokerAPI {
     public void setUp(List<PlayerIdStack> playersStacks,
                       String dealerId,
                       int smallBlindSize)
-            throws GameOverException {
+            throws RoundOfPlayIsOverException {
         if (playersStacks.size() < 2) {
             //TODO
             throw new RuntimeException("There must be at least 2 players");
@@ -62,7 +63,7 @@ public class Poker implements PokerAPI {
             ForbiddenMoveException,
             IsNotEnoughMoneyException,
             GameHaveNotBeenStartedException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             UnallowableMoveException {
         makeSureThatGameIsSetUp();
         state.placeBlindWagers();
@@ -74,7 +75,7 @@ public class Poker implements PokerAPI {
             ForbiddenMoveException,
             GameHaveNotBeenStartedException,
             IsNotEnoughMoneyException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             UnallowableMoveException {
         makeSureThatGameIsSetUp();
         makeSureThatBlindWagersPlaced();
@@ -87,7 +88,7 @@ public class Poker implements PokerAPI {
             GameHaveNotBeenStartedException,
             IsNotEnoughMoneyException,
             NotPositiveWagerException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             UnallowableMoveException {
         makeSureThatGameIsSetUp();
         makeSureThatBlindWagersPlaced();
@@ -98,7 +99,7 @@ public class Poker implements PokerAPI {
     public void allIn() throws
             ForbiddenMoveException,
             GameHaveNotBeenStartedException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             UnallowableMoveException,
             IsNotEnoughMoneyException,
             NotPositiveWagerException {
@@ -110,7 +111,7 @@ public class Poker implements PokerAPI {
     @Override
     public void fold() throws
             UnallowableMoveException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             GameHaveNotBeenStartedException {
         makeSureThatGameIsSetUp();
         makeSureThatBlindWagersPlaced();
@@ -121,7 +122,7 @@ public class Poker implements PokerAPI {
     public void check() throws
             ForbiddenMoveException,
             GameHaveNotBeenStartedException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             UnallowableMoveException {
         makeSureThatGameIsSetUp();
         makeSureThatBlindWagersPlaced();
@@ -132,7 +133,7 @@ public class Poker implements PokerAPI {
     public void showDown() throws
             ForbiddenMoveException,
             GameHaveNotBeenStartedException,
-            GameOverException {
+            RoundOfPlayIsOverException {
         makeSureThatGameIsSetUp();
         makeSureThatBlindWagersPlaced();
         state.showDown();
@@ -144,11 +145,11 @@ public class Poker implements PokerAPI {
     }
 
     public void notifyGameOverListeners(List<PlayerIdStack> playersInfo) {
-        gameOverListeners.forEach(listener -> listener.gameOver(playersInfo));
+        roundOfPlayIsOverListeners.forEach(listener -> listener.onRoundOfPlayIsOver(playersInfo));
     }
 
-    public void notifyPlayerShowedDownListeners(String playerId, PokerHand hand) {
-        playerShowedDownListeners.forEach(listener -> listener.playerShowedDown(playerId, hand));
+    public void notifyPlayerShowedDownListeners(String playerId, List<Card> holeCards, PokerHand hand) {
+        playerShowedDownListeners.forEach(listener -> listener.playerShowedDown(playerId, holeCards, hand));
     }
 
     public void notifyMoveAbilityListeners() {
@@ -156,23 +157,27 @@ public class Poker implements PokerAPI {
     }
 
     public void notifyCommunityCardsChangedListeners(List<Card> addedCards) {
-        communityCardsAddedListeners.forEach(listener -> listener.communityCardsAdded(addedCards));
+        communityCardsDealtListeners.forEach(listener -> listener.onCommunityCardsDealt(addedCards));
     }
 
     public void notifyCurrentPlayerChangedListeners(String id) {
-        currentPlayerChangedListeners.forEach(listener -> listener.currentPlayerChanged(id));
+        currentPlayerChangedListeners.forEach(listener -> listener.onCurrentPlayerChanged(id));
     }
 
     private void notifyStateChangedListeners() {
         stateChangedListeners.forEach(listener -> listener.stateChanged(state.getClass().getSimpleName()));
     }
 
-    public void notifyWagerPlacedListeners(String playerId, PlayerMoney playerMoney, int bank) {
-        wagerPlacedListeners.forEach(listener -> listener.wagerPlaced(playerId, playerMoney, bank));
+    public void notifyMoneyChangedListeners(String playerId, int playerStack, int playerWager, int bank) {
+        moneyChangedListeners.forEach(listener -> listener.onMoneyChanged(playerId, playerStack, playerWager, bank));
     }
 
     public void notifyPreflopMadeListeners(Map<String, Cards> playerIdToCards) {
         preflopMadeListeners.forEach(listener -> listener.preflopMade(playerIdToCards));
+    }
+
+    public void notifyHoleCardsDealtListeners(String playerId, List<Card> cards) {
+
     }
 
     public void notifyPlayerFoldListeners(String id) {
@@ -180,13 +185,13 @@ public class Poker implements PokerAPI {
     }
 
     private void makeSureThatGameIsSetUp() {
-        if ("SettingsPokerState".equals(state.toString())) {
+        if ("SettingsState".equals(state.toString())) {
             throw new RuntimeException("Game is not set up");
         }
     }
 
     private void makeSureThatBlindWagersPlaced() {
-        if ("BlindsPokerState".equals(state.toString())) {
+        if ("BlindsState".equals(state.toString())) {
             throw new RuntimeException("Blind wagers have not been placed");
         }
     }
@@ -196,24 +201,24 @@ public class Poker implements PokerAPI {
         notifyStateChangedListeners();
     }
 
-    private void addGameIsOverListener(GameOverListener gameOverListener) {
-        gameOverListeners.add(gameOverListener);
+    private void addGameIsOverListener(RoundOfPlayIsOverListener roundOfPlayIsOverListener) {
+        roundOfPlayIsOverListeners.add(roundOfPlayIsOverListener);
     }
 
     private void addCurrentPlayerChangedListener(CurrentPlayerChangedListener currentPlayerChangedListener) {
         currentPlayerChangedListeners.add(currentPlayerChangedListener);
     }
 
-    private void addCommunityCardsChangedListener(CommunityCardsAddedListener communityCardsAddedListener) {
-        communityCardsAddedListeners.add(communityCardsAddedListener);
+    private void addCommunityCardsChangedListener(CommunityCardsDealtListener communityCardsDealtListener) {
+        communityCardsDealtListeners.add(communityCardsDealtListener);
     }
 
     private void addPlayerShowedDownListener(PlayerShowedDownListener playerShowedDownListener) {
         playerShowedDownListeners.add(playerShowedDownListener);
     }
 
-    private void addWagerPlacedListener(WagerPlacedListener wagerPlacedListener) {
-        wagerPlacedListeners.add(wagerPlacedListener);
+    private void addWagerPlacedListener(MoneyChangedListener moneyChangedListener) {
+        moneyChangedListeners.add(moneyChangedListener);
     }
 
     private void addPlayerFoldListener(PlayerFoldListener playerFoldListener) {

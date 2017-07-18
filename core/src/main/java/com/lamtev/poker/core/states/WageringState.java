@@ -1,6 +1,5 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.api.PlayerMoney;
 import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 import com.lamtev.poker.core.states.exceptions.IsNotEnoughMoneyException;
@@ -10,13 +9,13 @@ import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class WageringPokerState extends ActionPokerState {
+abstract class WageringState extends ActionState {
 
     private final MoveValidator moveValidator;
     private int checks = 0;
     private final List<Player> raisers = new ArrayList<>();
 
-    WageringPokerState(ActionPokerState state) {
+    WageringState(ActionState state) {
         super(state);
         determineUnderTheGunPosition();
         poker().notifyCurrentPlayerChangedListeners(players().current().id());
@@ -72,9 +71,9 @@ abstract class WageringPokerState extends ActionPokerState {
         if (onlyOneActivePlayer()) {
             Player winner = players().nextActive();
             bank().giveMoneyToSingleWinner(winner);
-            poker().notifyWagerPlacedListeners(
+            poker().notifyMoneyChangedListeners(
                     winner.id(),
-                    new PlayerMoney(winner.stack(), winner.wager()),
+                    winner.stack(), winner.wager(),
                     bank().money()
             );
             gameIsOverState();
@@ -105,8 +104,7 @@ abstract class WageringPokerState extends ActionPokerState {
         int stack = players().current().stack();
         int wager = players().current().wager();
         int bank = this.bank().money();
-        PlayerMoney playerMoney = new PlayerMoney(stack, wager);
-        poker().notifyWagerPlacedListeners(playerId, playerMoney, bank);
+        poker().notifyMoneyChangedListeners(playerId, stack, wager, bank);
     }
 
     boolean timeToNextState() {
@@ -134,7 +132,7 @@ abstract class WageringPokerState extends ActionPokerState {
     }
 
     private void gameIsOverState() {
-        poker().setState(new GameIsOverPokerState(this));
+        poker().setState(new RoundOfPlayIsOverState(this));
     }
 
     private boolean allActiveNonAllinnersChecked() {

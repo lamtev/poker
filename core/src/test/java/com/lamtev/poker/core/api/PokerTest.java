@@ -80,33 +80,33 @@ public class PokerTest implements PokerEventListener {
 
         PokerAPI poker = new Poker();
         poker.subscribe(this);
-        assertEquals("SettingsPokerState", state);
+        assertEquals("SettingsState", state);
 
         poker.setUp(generatePlayersInfo(), "a", 5);
-        assertEquals("BlindsPokerState", state);
+        assertEquals("BlindsState", state);
 
         poker.placeBlindWagers();
-        assertEquals("PreflopWageringPokerState", state);
+        assertEquals("PreflopWageringState", state);
 
         poker.call();
         poker.raise(90);
         for (int i = 0; i < 5; ++i) poker.call();
-        assertEquals("FlopWageringPokerState", state);
+        assertEquals("FlopWageringState", state);
 
         for (int i = 0; i < 6; ++i) poker.check();
-        assertEquals("TurnWageringPokerState", state);
+        assertEquals("TurnWageringState", state);
 
         for (int i = 0; i < 6; ++i) poker.check();
-        assertEquals("RiverWageringPokerState", state);
+        assertEquals("RiverWageringState", state);
 
         poker.raise(100);
         poker.raise(100);
         poker.raise(100);
         for (int i = 0; i < 5; ++i) poker.call();
-        assertEquals("ShowdownPokerState", state);
+        assertEquals("ShowdownState", state);
 
         for (int i = 0; i < 6; ++i) poker.showDown();
-        assertEquals("GameIsOverPokerState", state);
+        assertEquals("RoundOfPlayIsOverState", state);
         hands.values().forEach(System.out::println);
     }
 
@@ -117,22 +117,22 @@ public class PokerTest implements PokerEventListener {
         poker.subscribe(this);
 
         System.out.println(state);
-        assertEquals("SettingsPokerState", state);
+        assertEquals("SettingsState", state);
 
         poker.setUp(generatePlayersInfo1(), "c1", 30);
         System.out.println(state);
-        assertEquals("BlindsPokerState", state);
+        assertEquals("BlindsState", state);
 
         poker.placeBlindWagers();
         System.out.println(state);
-        assertEquals("PreflopWageringPokerState", state);
+        assertEquals("PreflopWageringState", state);
 
         poker.call();
         poker.call();
         poker.check();
 
         System.out.println(state);
-        assertEquals("FlopWageringPokerState", state);
+        assertEquals("FlopWageringState", state);
         assertEquals(3, communityCards.size());
 
         poker.check();
@@ -140,7 +140,7 @@ public class PokerTest implements PokerEventListener {
         poker.check();
 
         System.out.println(state);
-        assertEquals("TurnWageringPokerState", state);
+        assertEquals("TurnWageringState", state);
         assertEquals(4, communityCards.size());
 
         poker.allIn();
@@ -148,12 +148,12 @@ public class PokerTest implements PokerEventListener {
         poker.call();
 
         System.out.println(state);
-        assertEquals("RiverWageringPokerState", state);
+        assertEquals("RiverWageringState", state);
 
         poker.check();
         poker.check();
         System.out.println(state);
-        assertEquals("ShowdownPokerState", state);
+        assertEquals("ShowdownState", state);
 
         String id = currentPlayerId;
         poker.showDown();
@@ -164,13 +164,13 @@ public class PokerTest implements PokerEventListener {
 
         System.out.println(state);
         System.out.println(communityCards.toString() + playersCards.get(id).toString() + hand.getName());
-        assertEquals("GameIsOverPokerState", state);
+        assertEquals("RoundOfPlayIsOverState", state);
 
         playersInfo.forEach(System.out::println);
     }
 
     @Override
-    public void gameOver(List<PlayerIdStack> playersInfo) {
+    public void onRoundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
         this.playersInfo = playersInfo;
     }
 
@@ -185,13 +185,13 @@ public class PokerTest implements PokerEventListener {
     }
 
     @Override
-    public void wagerPlaced(String playerId, PlayerMoney playerMoney, int bank) {
+    public void onMoneyChanged(String playerId, int playerStack, int playerWager, int bank) {
 
     }
 
     @Override
-    public void currentPlayerChanged(String playerId) {
-        currentPlayerId = playerId;
+    public void onCurrentPlayerChanged(String currentPlayerId) {
+        this.currentPlayerId = currentPlayerId;
     }
 
     @Override
@@ -200,12 +200,12 @@ public class PokerTest implements PokerEventListener {
     }
 
     @Override
-    public void communityCardsAdded(List<Card> addedCommunityCards) {
+    public void onCommunityCardsDealt(List<Card> addedCommunityCards) {
         communityCards.addAll(addedCommunityCards);
     }
 
     @Override
-    public void playerShowedDown(String playerId, PokerHand hand) {
+    public void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand) {
         hands.put(playerId, hand);
     }
 

@@ -5,9 +5,9 @@ import com.lamtev.poker.core.model.Card;
 import java.util.ArrayList;
 import java.util.List;
 
-class TurnWageringPokerState extends WageringPokerState {
+class TurnWageringState extends WageringState {
 
-    TurnWageringPokerState(ActionPokerState state) {
+    TurnWageringState(ActionState state) {
         super(state);
         dealer().makeTurn();
         List<Card> addedCards = new ArrayList<>();
@@ -23,9 +23,9 @@ class TurnWageringPokerState extends WageringPokerState {
             List<Card> addedCards = new ArrayList<>();
             addedCards.add(communityCards().cardAt(5));
             poker().notifyCommunityCardsChangedListeners(addedCards);
-            poker().setState(new ShowdownPokerState(this, latestAggressor()));
+            poker().setState(new ShowdownState(this, latestAggressor()));
         } else if (timeToNextState()) {
-            poker().setState(new RiverWageringPokerState(this));
+            poker().setState(new RiverWageringState(this));
         }
     }
 

@@ -10,14 +10,14 @@ public interface PokerAPI {
 
     void setUp(List<PlayerIdStack> playersStacks,
                String dealerId,
-               int smallBlindSize) throws GameOverException;
+               int smallBlindSize) throws RoundOfPlayIsOverException;
 
     void placeBlindWagers() throws
             NotPositiveWagerException,
             ForbiddenMoveException,
             IsNotEnoughMoneyException,
             GameHaveNotBeenStartedException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             UnallowableMoveException;
 
     void call() throws
@@ -25,7 +25,7 @@ public interface PokerAPI {
             ForbiddenMoveException,
             UnallowableMoveException,
             IsNotEnoughMoneyException,
-            GameOverException;
+            RoundOfPlayIsOverException;
 
     void raise(int additionalWager) throws
             GameHaveNotBeenStartedException,
@@ -33,29 +33,29 @@ public interface PokerAPI {
             UnallowableMoveException,
             IsNotEnoughMoneyException,
             NotPositiveWagerException,
-            GameOverException;
+            RoundOfPlayIsOverException;
 
     void allIn() throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             UnallowableMoveException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             IsNotEnoughMoneyException,
             NotPositiveWagerException;
 
     void fold() throws
             UnallowableMoveException,
-            GameOverException,
+            RoundOfPlayIsOverException,
             GameHaveNotBeenStartedException;
 
     void check() throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             UnallowableMoveException,
-            GameOverException;
+            RoundOfPlayIsOverException;
 
     void showDown() throws
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
-            GameOverException;
+            RoundOfPlayIsOverException;
 }

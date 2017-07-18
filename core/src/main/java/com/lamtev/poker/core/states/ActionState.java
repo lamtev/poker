@@ -6,11 +6,11 @@ import com.lamtev.poker.core.model.Bank;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.model.Dealer;
 import com.lamtev.poker.core.model.Players;
-import com.lamtev.poker.core.states.exceptions.GameOverException;
+import com.lamtev.poker.core.states.exceptions.RoundOfPlayIsOverException;
 
 import java.util.List;
 
-abstract class ActionPokerState extends AbstractPokerState {
+abstract class ActionState extends AbstractPokerState {
 
     private final Poker poker;
     private final Players players;
@@ -18,11 +18,11 @@ abstract class ActionPokerState extends AbstractPokerState {
     private final Dealer dealer;
     private final Cards communityCards;
 
-    ActionPokerState(ActionPokerState state) {
+    ActionState(ActionState state) {
         this(state.poker, state.players, state.bank, state.dealer, state.communityCards);
     }
 
-    ActionPokerState(Poker poker, Players players, Bank bank, Dealer dealer, Cards communityCards) {
+    ActionState(Poker poker, Players players, Bank bank, Dealer dealer, Cards communityCards) {
         this.poker = poker;
         this.players = players;
         this.bank = bank;
@@ -52,7 +52,7 @@ abstract class ActionPokerState extends AbstractPokerState {
 
     @Override
     public void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize)
-            throws IllegalStateException, GameOverException {
+            throws IllegalStateException, RoundOfPlayIsOverException {
         throw new IllegalStateException("Can't setUp when" + toString());
     }
 

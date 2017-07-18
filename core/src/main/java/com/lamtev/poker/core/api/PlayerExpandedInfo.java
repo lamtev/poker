@@ -1,5 +1,6 @@
 package com.lamtev.poker.core.api;
 
+//TODO remove the class
 public class PlayerExpandedInfo {
 
     private int stack;
@@ -28,7 +29,6 @@ public class PlayerExpandedInfo {
         this.stack = stack;
     }
 
-    //TODO можно выделить общую часть с классом PlayerMoney
     public void setWager(int wager) {
         this.wager = wager;
     }
