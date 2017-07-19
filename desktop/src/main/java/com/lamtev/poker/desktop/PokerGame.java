@@ -19,7 +19,7 @@ import javafx.util.Duration;
 
 import java.util.*;
 
-public class PokerGame implements PokerEventListener {
+public class PokerGame implements PokerEventListenerPlayer {
 
     private Stage primaryStage;
 
@@ -243,9 +243,9 @@ public class PokerGame implements PokerEventListener {
     }
 
     @Override
-    public void playerFold(String foldPlayerId) {
+    public void playerFold(String playerId) {
         //TODO add checking for Human-player fold
-        playersInfo.get(foldPlayerId).setActive(false);
+        playersInfo.get(playerId).setActive(false);
         updateActiveAndFoldPlayersLists();
         updatePlayersCardsView();
     }
@@ -290,7 +290,7 @@ public class PokerGame implements PokerEventListener {
     }
 
     @Override
-    public void onMoneyChanged(String playerId, int playerStack, int playerWager, int bank) {
+    public void playerMoneyUpdated(String playerId, int playerStack, int playerWager) {
         playersInfo.get(playerId).setStack(playerStack);
         playersInfo.get(playerId).setWager(playerWager);
         updateBank(bank);
@@ -319,7 +319,7 @@ public class PokerGame implements PokerEventListener {
     }
 
     @Override
-    public void onRoundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
+    public void roundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
         statusBar.setText("Game is over!");
 
         if (this.playersInfo.get(playerNick).getStack() == 0) {
@@ -366,7 +366,7 @@ public class PokerGame implements PokerEventListener {
     }
 
     @Override
-    public void onCurrentPlayerChanged(String currentPlayerId) {
+    public void currentPlayerChanged(String currentPlayerId) {
         this.currentPlayerId = currentPlayerId;
         whoseTurn.setText("Whose turn: " + currentPlayerId);
     }
@@ -388,7 +388,7 @@ public class PokerGame implements PokerEventListener {
     }
 
     @Override
-    public void onCommunityCardsDealt(List<Card> addedCommunityCards) {
+    public void communityCardsDealt(List<Card> addedCommunityCards) {
         communityCards.addAll(addedCommunityCards);
         communityCardsView.getChildren().clear();
         communityCardsView.setAlignment(Pos.CENTER);

@@ -25,14 +25,14 @@ class BlindsState extends ActionState {
     }
 
     private void notifyWagerPlacedListeners(Player smallBlind, Player bigBlind) {
-        poker().notifyMoneyChangedListeners(smallBlind.id(), smallBlind.stack(), smallBlind.wager(),bank().money());
-        poker().notifyMoneyChangedListeners(bigBlind.id(), bigBlind.stack(), bigBlind.wager(), bank().money());
+        poker().notifyPlayerMoneyUpdatedListeners(smallBlind.id(), smallBlind.stack(), smallBlind.wager());
+        poker().notifyPlayerMoneyUpdatedListeners(bigBlind.id(), bigBlind.stack(), bigBlind.wager());
     }
 
     private void nextState() {
         if (timeToForcedShowdown()) {
             dealer().makePreflop();
-            poker().notifyPreflopMadeListeners(new LinkedHashMap<String, List<Card>>() {{
+            poker().notifyHoleCardsDealtListeners(new LinkedHashMap<String, List<Card>>() {{
                 players().forEach(player -> put(player.id(), new ArrayList<Card>() {{
                     player.cards().forEach(this::add);
                 }}));
@@ -40,7 +40,7 @@ class BlindsState extends ActionState {
             dealer().makeFlop();
             dealer().makeTurn();
             dealer().makeRiver();
-            poker().notifyCommunityCardsChangedListeners(new ArrayList<Card>() {{
+            poker().notifyCommunityCardsDealtListeners(new ArrayList<Card>() {{
                 communityCards().forEach(this::add);
             }});
             Player latestAggressor = players().bigBlind().isAllinner() ?

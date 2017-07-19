@@ -3,12 +3,10 @@ package com.lamtev.poker.core.api;
 import com.lamtev.poker.core.event_listeners.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
-import com.lamtev.poker.core.model.Cards;
 
 import java.util.List;
-import java.util.Map;
 
-public interface PokerEventListener extends
+public interface PokerEventListenerPlayer extends
         //TODO may be all listeners should be inlined into this
         CommunityCardsDealtListener,
         CurrentPlayerChangedListener,
@@ -16,26 +14,25 @@ public interface PokerEventListener extends
         MoveAbilityListener,
         PlayerFoldListener,
         PlayerShowedDownListener,
-        PreflopMadeListener,
         StateChangedListener,
-        MoneyChangedListener {
+        PlayerMoneyUpdatedListener {
     @Override
-    void playerFold(String foldPlayerId);
+    void playerFold(String playerId);
 
     @Override
-    void onMoneyChanged(String playerId, int playerStack, int playerWager, int bank);
+    void playerMoneyUpdated(String playerId, int playerStack, int playerWager);
 
     @Override
     void stateChanged(String stateName);
 
     @Override
-    void onCurrentPlayerChanged(String currentPlayerId);
+    void currentPlayerChanged(String currentPlayerId);
 
     @Override
     void callAbilityChanged(boolean flag);
 
     @Override
-    void onRoundOfPlayIsOver(List<PlayerIdStack> playersInfo);
+    void roundOfPlayIsOver(List<PlayerIdStack> playersInfo);
 
     @Override
     void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand);
@@ -44,10 +41,7 @@ public interface PokerEventListener extends
     void raiseAbilityChanged(boolean flag);
 
     @Override
-    void preflopMade(Map<String, List<Card>> playerIdToCards);
-
-    @Override
-    void onCommunityCardsDealt(List<Card> addedCommunityCards);
+    void communityCardsDealt(List<Card> addedCommunityCards);
 
     @Override
     void allInAbilityChanged(boolean flag);

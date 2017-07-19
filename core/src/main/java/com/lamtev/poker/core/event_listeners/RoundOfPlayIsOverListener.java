@@ -5,5 +5,5 @@ import com.lamtev.poker.core.api.PlayerIdStack;
 import java.util.List;
 
 public interface RoundOfPlayIsOverListener {
-    void onRoundOfPlayIsOver(List<PlayerIdStack> playersInfo);
+    void roundOfPlayIsOver(List<PlayerIdStack> playersInfo);
 }

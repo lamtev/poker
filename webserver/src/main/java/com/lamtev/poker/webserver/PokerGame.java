@@ -9,7 +9,7 @@ import java.util.*;
 
 import static com.lamtev.poker.webserver.Util.names;
 
-public class PokerGame implements PokerEventListener, GameAPI {
+public class PokerGame implements PokerEventListenerPlayer, GameAPI {
 
     private RoundOfPlay poker = new Poker();
     private List<Card> communityCards = new ArrayList<>();
@@ -105,13 +105,13 @@ public class PokerGame implements PokerEventListener, GameAPI {
     }
 
     @Override
-    public void playerFold(String foldPlayerId) {
+    public void playerFold(String playerId) {
         //TODO
-        playersInfo.get(foldPlayerId).setActive(false);
+        playersInfo.get(playerId).setActive(false);
     }
 
     @Override
-    public void onMoneyChanged(String playerId, int playerStack, int playerWager, int bank) {
+    public void playerMoneyUpdated(String playerId, int playerStack, int playerWager) {
         PlayerExpandedInfo playerInfo = this.playersInfo.get(playerId);
         playerInfo.setStack(playerStack);
         playerInfo.setWager(playerWager);
@@ -127,12 +127,12 @@ public class PokerGame implements PokerEventListener, GameAPI {
     }
 
     @Override
-    public void onCurrentPlayerChanged(String currentPlayerId) {
+    public void currentPlayerChanged(String currentPlayerId) {
         this.currentPlayerId = currentPlayerId;
     }
 
     @Override
-    public void onRoundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
+    public void roundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
         long cnt = playersInfo.stream().filter(x -> x.stack() > 0).count();
         System.out.println(cnt);
         if (cnt == 1) {
@@ -177,7 +177,7 @@ public class PokerGame implements PokerEventListener, GameAPI {
     }
 
     @Override
-    public void onCommunityCardsDealt(List<Card> addedCommunityCards) {
+    public void communityCardsDealt(List<Card> addedCommunityCards) {
         communityCards.addAll(addedCommunityCards);
     }
 

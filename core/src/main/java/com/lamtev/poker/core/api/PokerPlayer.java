@@ -1,8 +1,19 @@
 package com.lamtev.poker.core.api;
 
-import com.lamtev.poker.core.event_listeners.HoleCardsDealtListener;
-import com.lamtev.poker.core.event_listeners.MoneyChangedListener;
+import com.lamtev.poker.core.model.Card;
 
-public interface PokerPlayer extends HoleCardsDealtListener,
-        MoneyChangedListener {
+import java.util.List;
+
+public interface PokerPlayer {
+
+    String id();
+
+    int stack();
+
+    int wager();
+
+    List<Card> cards();
+
+    boolean isActive();
+
 }

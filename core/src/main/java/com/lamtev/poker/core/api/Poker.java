@@ -12,32 +12,37 @@ import java.util.List;
 import java.util.Map;
 
 public class Poker implements RoundOfPlay {
-
     private PokerState state = new SettingsState(this);
 
-    private List<StateChangedListener> stateChangedListeners = new ArrayList<>();
-    private List<RoundOfPlayIsOverListener> roundOfPlayIsOverListeners = new ArrayList<>();
-    private List<MoveAbilityListener> moveAbilityListeners = new ArrayList<>();
-    private List<CurrentPlayerChangedListener> currentPlayerChangedListeners = new ArrayList<>();
+    //TODO think about ListenerManager
+    private List<BankMoneyUpdatedListener> bankMoneyUpdatedListeners = new ArrayList<>();
+    private List<BlindWagersPlacedListener> blindWagersPlacedListeners = new ArrayList<>();
     private List<CommunityCardsDealtListener> communityCardsDealtListeners = new ArrayList<>();
-    private List<MoneyChangedListener> moneyChangedListeners = new ArrayList<>();
-    private List<PlayerFoldListener> playerFoldListeners = new ArrayList<>();
-    private List<PreflopMadeListener> preflopMadeListeners = new ArrayList<>();
+    private List<CurrentPlayerChangedListener> currentPlayerChangedListeners = new ArrayList<>();
     private List<HoleCardsDealtListener> holeCardsDealtListeners = new ArrayList<>();
+    private List<MoveAbilityListener> moveAbilityListeners = new ArrayList<>();
+    private List<PlayerAllinnedListener> playerAllinnedListeners = new ArrayList<>();
+    private List<PlayerCalledListener> playerCalledListeners = new ArrayList<>();
+    private List<PlayerCheckedListener> playerCheckedListeners = new ArrayList<>();
+    private List<PlayerFoldListener> playerFoldListeners = new ArrayList<>();
+    private List<PlayerMoneyUpdatedListener> playerMoneyUpdatedListeners = new ArrayList<>();
+    private List<PlayerRaisedListener> playerRaisedListeners = new ArrayList<>();
     private List<PlayerShowedDownListener> playerShowedDownListeners = new ArrayList<>();
+    private List<RoundOfPlayIsOverListener> roundOfPlayIsOverListeners = new ArrayList<>();
+    private List<StateChangedListener> stateChangedListeners = new ArrayList<>();
+
     private boolean listenersAdded = false;
 
-    public void subscribe(PokerEventListener pokerEventListener) {
+    public void subscribe(PokerEventListenerPlayer pokerEventListener) {
         communityCardsDealtListeners.add(pokerEventListener);
         currentPlayerChangedListeners.add(pokerEventListener);
         roundOfPlayIsOverListeners.add(pokerEventListener);
         moveAbilityListeners.add(pokerEventListener);
         playerFoldListeners.add(pokerEventListener);
         playerShowedDownListeners.add(pokerEventListener);
-        preflopMadeListeners.add(pokerEventListener);
         stateChangedListeners.add(pokerEventListener);
         notifyStateChangedListeners();
-        moneyChangedListeners.add(pokerEventListener);
+        playerMoneyUpdatedListeners.add(pokerEventListener);
         listenersAdded = true;
     }
 
@@ -45,18 +50,11 @@ public class Poker implements RoundOfPlay {
     public void subscribe(PokerAI listener) {
         communityCardsDealtListeners.add(listener);
         currentPlayerChangedListeners.add(listener);
-//        roundOfPlayIsOverListeners.add(listener);
+        roundOfPlayIsOverListeners.add(listener);
         moveAbilityListeners.add(listener);
         playerFoldListeners.add(listener);
         stateChangedListeners.add(listener);
         notifyStateChangedListeners();
-        holeCardsDealtListeners.add(listener);
-        moneyChangedListeners.add(listener);
-    }
-
-    @Override
-    public void subscribe(PokerPlayer listener) {
-        moneyChangedListeners.add(listener);
         holeCardsDealtListeners.add(listener);
     }
 
@@ -69,7 +67,6 @@ public class Poker implements RoundOfPlay {
         playerFoldListeners.add(listener);
         stateChangedListeners.add(listener);
         notifyStateChangedListeners();
-        moneyChangedListeners.add(listener);
     }
 
     @Override
@@ -174,66 +171,80 @@ public class Poker implements RoundOfPlay {
         notifyStateChangedListeners();
     }
 
-    public void notifyGameOverListeners(List<PlayerIdStack> playersInfo) {
-        roundOfPlayIsOverListeners.stream()
-                .filter(this::listenerIsPlayOrAI)
-                .forEach(listener -> listener.onRoundOfPlayIsOver(playersInfo));
+    public void notifyBankMoneyUpdatedListeners(int money, int wager) {
+        bankMoneyUpdatedListeners.forEach(it -> it.bankMoneyUpdated(money, wager));
     }
 
-    public void notifyPlayerShowedDownListeners(String playerId, List<Card> holeCards, PokerHand hand) {
-        playerShowedDownListeners.stream()
-                .filter(this::listenerIsPlayOrAI)
-                .forEach(listener -> listener.playerShowedDown(playerId, holeCards, hand));
+    public void notifyBlindWagersPlacedListeners() {
+        blindWagersPlacedListeners.forEach(BlindWagersPlacedListener::blindWagersPlaced);
+    }
+
+    public void notifyCommunityCardsDealtListeners(List<Card> addedCards) {
+        communityCardsDealtListeners.forEach(it -> it.communityCardsDealt(addedCards));
+    }
+
+    public void notifyCurrentPlayerChangedListeners(String playerId) {
+        currentPlayerChangedListeners.forEach(it -> it.currentPlayerChanged(playerId));
+    }
+
+    public void notifyHoleCardsDealtListeners(Map<String, List<Card>> playerIdToCards) {
+        holeCardsDealtListeners.forEach(it -> {
+            if (listenerIsAI(it)) {
+                it.holeCardsDealt(playerIdToCards.get(it.id()));
+            } else {
+                it.holeCardsDealt(playerIdToCards);
+            }
+        });
     }
 
     public void notifyMoveAbilityListeners() {
         //TODO implement
     }
 
-    public void notifyCommunityCardsChangedListeners(List<Card> addedCards) {
-        communityCardsDealtListeners.stream()
-                .filter(this::listenerIsPlayOrAI)
-                .forEach(listener -> listener.onCommunityCardsDealt(addedCards));
+    public void notifyPlayerAllinnedListeners(String playerId) {
+        playerAllinnedListeners.forEach(it -> it.playerAllined(playerId));
     }
 
-    private boolean listenerIsPlayOrAI(Object listener) {
-        return listener instanceof PokerPlay || listener instanceof PokerAI;
+    public void notifyPlayerCalledListeners(String playerId) {
+        playerCalledListeners.forEach(it -> it.playerCalled(playerId));
     }
 
-    public void notifyCurrentPlayerChangedListeners(String id) {
-        currentPlayerChangedListeners.stream()
-                .filter(this::listenerIsPlayOrAI)
-                .forEach(listener -> listener.onCurrentPlayerChanged(id));
+    public void notifyPlayerCheckedListeners(String playerId) {
+        playerCheckedListeners.forEach(it -> it.playerChecked(playerId));
+    }
+
+    public void notifyPlayerFoldListeners(String playerId) {
+        playerFoldListeners.forEach(it -> it.playerFold(playerId));
+    }
+
+    public void notifyPlayerMoneyUpdatedListeners(String playerId, int playerStack, int playerWager) {
+        playerMoneyUpdatedListeners.forEach(it -> it.playerMoneyUpdated(playerId, playerStack, playerWager));
+    }
+
+    public void notifyPlayerRaisedListeners(String playerId) {
+        playerRaisedListeners.forEach(it -> it.playerRaised(playerId));
+    }
+
+    public void notifyPlayerShowedDownListeners(String playerId, List<Card> holeCards, PokerHand hand) {
+        playerShowedDownListeners.forEach(it -> {
+            if (listenerIsAI(it)) {
+                it.playerShowedDown(playerId, holeCards, hand);
+            } else {
+                it.playerShowedDown(playerId, hand);
+            }
+        });
+    }
+
+    public void notifyRoundOfPlayIsOverListeners(List<PlayerIdStack> playersInfo) {
+        roundOfPlayIsOverListeners.forEach(it -> it.roundOfPlayIsOver(playersInfo));
     }
 
     private void notifyStateChangedListeners() {
-        stateChangedListeners.stream()
-                .filter(this::listenerIsPlayOrAI)
-                .forEach(listener -> listener.stateChanged(state.toString()));
+        stateChangedListeners.forEach(it -> it.stateChanged(state.toString()));
     }
 
-    public void notifyMoneyChangedListeners(String playerId, int playerStack, int playerWager, int bank) {
-        moneyChangedListeners.forEach(listener -> listener.onMoneyChanged(playerId, playerStack, playerWager, bank));
-    }
-
-    public void notifyPreflopMadeListeners(Map<String, List<Card>> playerIdToCards) {
-        preflopMadeListeners.forEach(listener -> listener.preflopMade(playerIdToCards));
-    }
-
-    public void notifyHoleCardsDealtListeners(Map<String, List<Card>> playerIdToCards) {
-        playerIdToCards.forEach((id, cards) ->
-                holeCardsDealtListeners.stream()
-                        .filter(listener -> listener.id().equals(id))
-                        .findFirst()
-                        .orElseThrow(RuntimeException::new)
-                        .onHoleCardsDealt(cards)
-        );
-    }
-
-    public void notifyPlayerFoldListeners(String id) {
-        playerFoldListeners.stream()
-                .filter(this::listenerIsPlayOrAI)
-                .forEach(listener -> listener.playerFold(id));
+    private boolean listenerIsAI(Object listener) {
+        return listener instanceof PokerAI;
     }
 
     private void makeSureThatGameIsSetUp() {

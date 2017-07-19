@@ -1,16 +1,40 @@
 package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.event_listeners.*;
+import com.lamtev.poker.core.hands.PokerHand;
+import com.lamtev.poker.core.model.Card;
 
-public interface PokerAI extends CommunityCardsDealtListener,
-        HoleCardsDealtListener,
-        MoneyChangedListener,
+import java.util.List;
+import java.util.Map;
+
+public interface PokerAI extends
+        PokerPlayer,
+        BankMoneyUpdatedListener,
+        BlindWagersPlacedListener,
+        CommunityCardsDealtListener,
         CurrentPlayerChangedListener,
+        HoleCardsDealtListener,
         MoveAbilityListener,
-        StateChangedListener,
+        PlayerAllinnedListener,
+        PlayerCalledListener,
+        PlayerCheckedListener,
         PlayerFoldListener,
-        PlayerShowedDownListener {
+        PlayerMoneyUpdatedListener,
+        PlayerRaisedListener,
+        PlayerShowedDownListener,
+        RoundOfPlayIsOverListener,
+        StateChangedListener {
 
-    String id();
+    @Override
+    @Deprecated
+    default void playerShowedDown(String playerId, PokerHand hand) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @Deprecated
+    default void holeCardsDealt(Map<String, List<Card>> playerIdToCards) {
+        throw new UnsupportedOperationException();
+    }
 
 }

@@ -8,8 +8,6 @@ import java.util.List;
 public interface RoundOfPlay {
     void subscribe(PokerAI listener);
 
-    void subscribe(PokerPlayer listener);
-
     void subscribe(PokerPlay listener);
 
     void setUp(List<PlayerIdStack> playersStacks,
