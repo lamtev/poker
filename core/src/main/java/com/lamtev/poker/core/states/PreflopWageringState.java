@@ -14,7 +14,7 @@ class PreflopWageringState extends WageringState {
         super(state);
         dealer().makePreflop();
         //TODO notify players from sb to dealer
-        poker().notifyPreflopMadeListeners(new LinkedHashMap<String, List<Card>>() {{
+        poker().notifyHoleCardsDealtListeners(new LinkedHashMap<String, List<Card>>() {{
             players().forEach(player -> put(player.id(), new ArrayList<Card>() {{
                 player.cards().forEach(this::add);
             }}));
@@ -44,7 +44,7 @@ class PreflopWageringState extends WageringState {
             dealer().makeFlop();
             dealer().makeTurn();
             dealer().makeRiver();
-            poker().notifyCommunityCardsChangedListeners(new ArrayList<Card>() {{
+            poker().notifyCommunityCardsDealtListeners(new ArrayList<Card>() {{
                 communityCards().forEach(this::add);
             }});
             poker().setState(new ShowdownState(this, latestAggressor()));

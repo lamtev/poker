@@ -10,7 +10,7 @@ class RoundOfPlayIsOverState extends ActionState {
 
     RoundOfPlayIsOverState(ActionState state) {
         super(state);
-        poker().notifyGameOverListeners(new ArrayList<PlayerIdStack>() {{
+        poker().notifyRoundOfPlayIsOverListeners(new ArrayList<PlayerIdStack>() {{
             players().forEach(player -> add(new PlayerIdStack(player.id(), player.stack())));
         }});
     }

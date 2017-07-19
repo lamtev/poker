@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface PlayerShowedDownListener {
     void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand);
+
+    void playerShowedDown(String playerId, PokerHand hand);
 }

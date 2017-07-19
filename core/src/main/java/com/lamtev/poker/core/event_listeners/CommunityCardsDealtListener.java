@@ -5,5 +5,5 @@ import com.lamtev.poker.core.model.Card;
 import java.util.List;
 
 public interface CommunityCardsDealtListener {
-    void onCommunityCardsDealt(List<Card> addedCommunityCards);
+    void communityCardsDealt(List<Card> addedCommunityCards);
 }
