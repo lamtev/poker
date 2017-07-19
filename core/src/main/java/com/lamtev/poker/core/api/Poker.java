@@ -40,15 +40,14 @@ public class Poker implements RoundOfPlay {
 
     @Override
     public void placeBlindWagers() throws
-            NotPositiveWagerException,
             ForbiddenMoveException,
-            IsNotEnoughMoneyException,
             GameHaveNotBeenStartedException,
+            IsNotEnoughMoneyException,
+            NotPositiveWagerException,
             RoundOfPlayIsOverException,
             UnallowableMoveException {
         makeSureThatGameIsSetUp();
         state.placeBlindWagers();
-
     }
 
     @Override
@@ -59,7 +58,6 @@ public class Poker implements RoundOfPlay {
             RoundOfPlayIsOverException,
             UnallowableMoveException {
         makeSureThatGameIsSetUp();
-        makeSureThatBlindWagersPlaced();
         state.call();
     }
 
@@ -72,7 +70,6 @@ public class Poker implements RoundOfPlay {
             RoundOfPlayIsOverException,
             UnallowableMoveException {
         makeSureThatGameIsSetUp();
-        makeSureThatBlindWagersPlaced();
         state.raise(additionalWager);
     }
 
@@ -80,22 +77,21 @@ public class Poker implements RoundOfPlay {
     public void allIn() throws
             ForbiddenMoveException,
             GameHaveNotBeenStartedException,
-            RoundOfPlayIsOverException,
-            UnallowableMoveException,
             IsNotEnoughMoneyException,
-            NotPositiveWagerException {
+            NotPositiveWagerException,
+            RoundOfPlayIsOverException,
+            UnallowableMoveException {
         makeSureThatGameIsSetUp();
-        makeSureThatBlindWagersPlaced();
         state.allIn();
     }
 
     @Override
     public void fold() throws
-            UnallowableMoveException,
+            ForbiddenMoveException,
+            GameHaveNotBeenStartedException,
             RoundOfPlayIsOverException,
-            GameHaveNotBeenStartedException {
+            UnallowableMoveException {
         makeSureThatGameIsSetUp();
-        makeSureThatBlindWagersPlaced();
         state.fold();
     }
 
@@ -106,7 +102,6 @@ public class Poker implements RoundOfPlay {
             RoundOfPlayIsOverException,
             UnallowableMoveException {
         makeSureThatGameIsSetUp();
-        makeSureThatBlindWagersPlaced();
         state.check();
     }
 
@@ -116,7 +111,6 @@ public class Poker implements RoundOfPlay {
             GameHaveNotBeenStartedException,
             RoundOfPlayIsOverException {
         makeSureThatGameIsSetUp();
-        makeSureThatBlindWagersPlaced();
         state.showDown();
     }
 
@@ -145,8 +139,11 @@ public class Poker implements RoundOfPlay {
         listenerManager.notifyHoleCardsDealtListeners(playerIdToCards);
     }
 
-    public void notifyMoveAbilityListeners() {
-        listenerManager.notifyMoveAbilityListeners();
+    public void notifyMoveAbilityListeners(boolean allInIsAble, boolean callIsAble,
+                                           boolean checkIsAble, boolean foldIsAble,
+                                           boolean raiseIsAble, boolean showdownIsAble) {
+        listenerManager.notifyMoveAbilityListeners(allInIsAble, callIsAble, checkIsAble,
+                foldIsAble, raiseIsAble, showdownIsAble);
     }
 
     public void notifyPlayerAllinnedListeners(String playerId) {
@@ -188,12 +185,6 @@ public class Poker implements RoundOfPlay {
     private void makeSureThatGameIsSetUp() {
         if ("SettingsState".equals(state.toString())) {
             throw new RuntimeException("Game is not set up");
-        }
-    }
-
-    private void makeSureThatBlindWagersPlaced() {
-        if ("BlindsState".equals(state.toString())) {
-            throw new RuntimeException("Blind wagers have not been placed");
         }
     }
 

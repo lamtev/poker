@@ -4,62 +4,61 @@ import com.lamtev.poker.core.states.exceptions.*;
 
 import java.util.List;
 
-//TODO give only needed information to each player
 public interface RoundOfPlay {
 
     void subscribe(PokerPlay pokerPlay);
 
     void subscribe(PokerAI pokerAI);
 
-    void setUp(List<PlayerIdStack> playersStacks,
-               String dealerId,
-               int smallBlindSize) throws RoundOfPlayIsOverException;
+    void setUp(List<PlayerIdStack> playersStacks, String dealerId, int smallBlindSize) throws
+            RoundOfPlayIsOverException;
 
     void placeBlindWagers() throws
-            NotPositiveWagerException,
             ForbiddenMoveException,
-            IsNotEnoughMoneyException,
             GameHaveNotBeenStartedException,
+            IsNotEnoughMoneyException,
+            NotPositiveWagerException,
             RoundOfPlayIsOverException,
             UnallowableMoveException;
 
     void call() throws
-            GameHaveNotBeenStartedException,
             ForbiddenMoveException,
-            UnallowableMoveException,
+            GameHaveNotBeenStartedException,
             IsNotEnoughMoneyException,
-            RoundOfPlayIsOverException;
+            RoundOfPlayIsOverException,
+            UnallowableMoveException;
 
     void raise(int additionalWager) throws
-            GameHaveNotBeenStartedException,
             ForbiddenMoveException,
-            UnallowableMoveException,
+            GameHaveNotBeenStartedException,
             IsNotEnoughMoneyException,
             NotPositiveWagerException,
-            RoundOfPlayIsOverException;
+            RoundOfPlayIsOverException,
+            UnallowableMoveException;
 
     void allIn() throws
-            GameHaveNotBeenStartedException,
             ForbiddenMoveException,
-            UnallowableMoveException,
-            RoundOfPlayIsOverException,
+            GameHaveNotBeenStartedException,
             IsNotEnoughMoneyException,
-            NotPositiveWagerException;
+            NotPositiveWagerException,
+            RoundOfPlayIsOverException,
+            UnallowableMoveException;
 
     void fold() throws
-            UnallowableMoveException,
+            ForbiddenMoveException,
+            GameHaveNotBeenStartedException,
             RoundOfPlayIsOverException,
-            GameHaveNotBeenStartedException;
+            UnallowableMoveException;
 
     void check() throws
-            GameHaveNotBeenStartedException,
             ForbiddenMoveException,
-            UnallowableMoveException,
-            RoundOfPlayIsOverException;
+            GameHaveNotBeenStartedException,
+            RoundOfPlayIsOverException,
+            UnallowableMoveException;
 
     void showDown() throws
-            GameHaveNotBeenStartedException,
             ForbiddenMoveException,
+            GameHaveNotBeenStartedException,
             RoundOfPlayIsOverException;
 
 }

@@ -66,7 +66,9 @@ public class ListenerManager {
         });
     }
 
-    public void notifyMoveAbilityListeners() {
+    public void notifyMoveAbilityListeners(boolean allInIsAble, boolean callIsAble,
+                                           boolean checkIsAble, boolean foldIsAble,
+                                           boolean raiseIsAble, boolean showdownIsAble) {
         //TODO implement
     }
 

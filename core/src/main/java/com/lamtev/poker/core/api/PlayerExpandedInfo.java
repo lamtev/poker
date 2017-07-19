@@ -1,6 +1,7 @@
 package com.lamtev.poker.core.api;
 
 //TODO remove the class
+@Deprecated
 public class PlayerExpandedInfo {
 
     private int stack;

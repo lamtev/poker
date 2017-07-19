@@ -6,8 +6,8 @@ import com.lamtev.poker.core.model.Card;
 
 import java.util.List;
 
+@Deprecated
 public interface PokerEventListenerPlayer extends
-        //TODO may be all listeners should be inlined into this
         CommunityCardsDealtListener,
         CurrentPlayerChangedListener,
         RoundOfPlayIsOverListener,
