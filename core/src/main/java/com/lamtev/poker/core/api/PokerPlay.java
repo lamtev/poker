@@ -24,16 +24,19 @@ public interface PokerPlay extends
         StateChangedListener {
 
     @Override
+    @Deprecated
     default String id() {
         throw new UnsupportedOperationException();
     }
 
     @Override
+    @Deprecated
     default void holeCardsDealt(List<Card> holeCards) {
         throw new UnsupportedOperationException();
     }
 
     @Override
+    @Deprecated
     default void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand) {
         throw new UnsupportedOperationException();
     }

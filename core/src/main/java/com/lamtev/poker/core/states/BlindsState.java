@@ -2,7 +2,7 @@ package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
-import com.lamtev.poker.core.states.exceptions.*;
+import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -52,53 +52,32 @@ class BlindsState extends ActionState {
     }
 
     @Override
-    public void call() throws
-            GameHaveNotBeenStartedException,
-            ForbiddenMoveException,
-            UnallowableMoveException,
-            IsNotEnoughMoneyException,
-            RoundOfPlayIsOverException {
+    public void call() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Call", toString());
     }
 
     @Override
-    public void raise(int additionalWager) throws
-            GameHaveNotBeenStartedException,
-            ForbiddenMoveException,
-            UnallowableMoveException,
-            IsNotEnoughMoneyException,
-            NotPositiveWagerException,
-            RoundOfPlayIsOverException {
+    public void raise(int additionalWager) throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Raise", toString());
     }
 
     @Override
-    public void allIn() throws
-            GameHaveNotBeenStartedException,
-            ForbiddenMoveException,
-            UnallowableMoveException,
-            RoundOfPlayIsOverException,
-            IsNotEnoughMoneyException,
-            NotPositiveWagerException {
+    public void allIn() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("All in", toString());
     }
 
     @Override
-    public void fold() throws
-            UnallowableMoveException,
-            RoundOfPlayIsOverException,
-            GameHaveNotBeenStartedException {
+    public void fold() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Fold", toString());
     }
 
     @Override
-    public void check() throws
-            GameHaveNotBeenStartedException,
-            ForbiddenMoveException,
-            UnallowableMoveException,
-            RoundOfPlayIsOverException {
+    public void check() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Check", toString());
     }
 
     @Override
-    public void showDown() throws
-            GameHaveNotBeenStartedException,
-            ForbiddenMoveException,
-            RoundOfPlayIsOverException {
+    public void showDown() throws ForbiddenMoveException {
+        throw new ForbiddenMoveException("Show down", toString());
     }
 }

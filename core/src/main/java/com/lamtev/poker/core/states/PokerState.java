@@ -45,7 +45,7 @@ public interface PokerState {
     void fold() throws
             UnallowableMoveException,
             RoundOfPlayIsOverException,
-            GameHaveNotBeenStartedException;
+            GameHaveNotBeenStartedException, ForbiddenMoveException;
 
     void check() throws
             GameHaveNotBeenStartedException,
