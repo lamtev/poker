@@ -20,13 +20,13 @@ class BlindsState extends ActionState {
     @Override
     public void placeBlindWagers() {
         bank().acceptBlindWagers(smallBlindSize);
-        notifyWagerPlacedListeners(players().smallBlind(), players().bigBlind());
-        nextState();
-    }
-
-    private void notifyWagerPlacedListeners(Player smallBlind, Player bigBlind) {
+        Player smallBlind = players().smallBlind();
         poker().notifyPlayerMoneyUpdatedListeners(smallBlind.id(), smallBlind.stack(), smallBlind.wager());
+        Player bigBlind = players().bigBlind();
         poker().notifyPlayerMoneyUpdatedListeners(bigBlind.id(), bigBlind.stack(), bigBlind.wager());
+        poker().notifyBankMoneyUpdatedListeners(bank().money(), bank().wager());
+        poker().notifyBlindWagersPlacedListeners();
+        nextState();
     }
 
     private void nextState() {

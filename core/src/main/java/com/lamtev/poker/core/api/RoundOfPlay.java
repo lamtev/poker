@@ -6,9 +6,10 @@ import java.util.List;
 
 //TODO give only needed information to each player
 public interface RoundOfPlay {
-    void subscribe(PokerAI listener);
 
-    void subscribe(PokerPlay listener);
+    void subscribe(PokerPlay pokerPlay);
+
+    void subscribe(PokerAI pokerAI);
 
     void setUp(List<PlayerIdStack> playersStacks,
                String dealerId,
@@ -60,4 +61,5 @@ public interface RoundOfPlay {
             GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             RoundOfPlayIsOverException;
+
 }

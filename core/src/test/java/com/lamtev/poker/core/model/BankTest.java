@@ -23,7 +23,7 @@ public class BankTest {
         assertEquals(10, players.get("b").wager());
         assertEquals(190, players.get("b").stack());
         assertEquals(15, bank.money());
-        assertEquals(10, bank.currentWager());
+        assertEquals(10, bank.wager());
     }
 
     @Test
@@ -36,7 +36,7 @@ public class BankTest {
         assertEquals(10, players.get("c").wager());
         assertEquals(140, players.get("c").stack());
         assertEquals(25, bank.money());
-        assertEquals(10, bank.currentWager());
+        assertEquals(10, bank.wager());
     }
 
     @Test
@@ -49,21 +49,21 @@ public class BankTest {
         assertEquals(40, players.get("d").wager());
         assertEquals(260, players.get("d").stack());
         assertEquals(55, bank.money());
-        assertEquals(40, bank.currentWager());
+        assertEquals(40, bank.wager());
 
         bank.acceptRaise(20, players.get("e"));
 
         assertEquals(60, players.get("e").wager());
         assertEquals(190, players.get("e").stack());
         assertEquals(115, bank.money());
-        assertEquals(60, bank.currentWager());
+        assertEquals(60, bank.wager());
 
         bank.acceptRaise(30, players.get("d"));
 
         assertEquals(90, players.get("d").wager());
         assertEquals(210, players.get("d").stack());
         assertEquals(165, bank.money());
-        assertEquals(90, bank.currentWager());
+        assertEquals(90, bank.wager());
 
     }
 
@@ -75,7 +75,7 @@ public class BankTest {
         bank.acceptAllIn(players.get("d"));
         assertEquals(0, players.get("d").stack());
         assertEquals(300, bank.money());
-        assertEquals(300, bank.currentWager());
+        assertEquals(300, bank.wager());
     }
 
     @Test

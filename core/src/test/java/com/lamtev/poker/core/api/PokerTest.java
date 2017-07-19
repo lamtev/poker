@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class PokerTest implements PokerEventListenerPlayer {
+public class PokerTest implements PokerPlay {
 
     private String state;
     private List<PlayerIdStack> playersInfo;
@@ -194,7 +194,7 @@ public class PokerTest implements PokerEventListenerPlayer {
     }
 
     @Override
-    public void preflopMade(Map<String, List<Card>> playerIdToCards) {
+    public void holeCardsDealt(Map<String, List<Card>> playerIdToCards) {
         playersCards = playerIdToCards;
     }
 
@@ -204,8 +204,38 @@ public class PokerTest implements PokerEventListenerPlayer {
     }
 
     @Override
-    public void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand) {
+    public void playerShowedDown(String playerId, PokerHand hand) {
         hands.put(playerId, hand);
+    }
+
+    @Override
+    public void bankMoneyUpdated(int money, int wager) {
+        bank = money;
+    }
+
+    @Override
+    public void blindWagersPlaced() {
+
+    }
+
+    @Override
+    public void playerAllinned(String playerId) {
+
+    }
+
+    @Override
+    public void playerCalled(String playerId) {
+
+    }
+
+    @Override
+    public void playerChecked(String playerId) {
+
+    }
+
+    @Override
+    public void playerRaised(String playerId) {
+
     }
 
     @Override

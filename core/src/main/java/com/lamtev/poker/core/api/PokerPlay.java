@@ -1,6 +1,7 @@
 package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.event_listeners.*;
+import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 
 import java.util.List;
@@ -23,7 +24,18 @@ public interface PokerPlay extends
         StateChangedListener {
 
     @Override
+    default String id() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     default void holeCardsDealt(List<Card> holeCards) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    default void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand) {
+        throw new UnsupportedOperationException();
+    }
+
 }

@@ -50,8 +50,9 @@ class ShowdownState extends ActionState {
         if (showedDownPlayers.isEmpty() || players().current().isAllinner()) {
             throw new UnallowableMoveException("Fold");
         }
-        players().current().fold();
-        poker().notifyPlayerFoldListeners(players().current().id());
+        Player currentPlayer = players().current();
+        currentPlayer.fold();
+        poker().notifyPlayerFoldListeners(currentPlayer.id());
         changePlayerIndex();
         attemptDetermineWinners();
     }
