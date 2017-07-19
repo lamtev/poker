@@ -24,7 +24,7 @@ public final class Bank {
         return money;
     }
 
-    public int currentWager() {
+    public int wager() {
         return wager;
     }
 

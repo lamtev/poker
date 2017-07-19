@@ -16,7 +16,7 @@ class MoveValidator {
     }
 
     void validateCall(Player player) throws UnallowableMoveException {
-        if (player.wager() >= bank.currentWager()) {
+        if (player.wager() >= bank.wager()) {
             throw new UnallowableMoveException("Call");
         }
     }

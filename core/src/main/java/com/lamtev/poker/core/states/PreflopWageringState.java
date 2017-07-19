@@ -73,7 +73,7 @@ class PreflopWageringState extends WageringState {
 
     private boolean bigBlindChecked() {
         return checks() == 1 && players().activePlayersNumber()
-                == players().activeNonAllinnersWithSameWagerNumber(bank().currentWager())
+                == players().activeNonAllinnersWithSameWagerNumber(bank().wager())
                 + players().allinnersNumber();
     }
 
@@ -83,7 +83,7 @@ class PreflopWageringState extends WageringState {
 
     private boolean noRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers() {
         return raisers().isEmpty() && players().activePlayersNumber()
-                == players().activeNonAllinnersWithSameWagerNumber(bank().currentWager()) + players().allinnersNumber();
+                == players().activeNonAllinnersWithSameWagerNumber(bank().wager()) + players().allinnersNumber();
     }
 
 }
