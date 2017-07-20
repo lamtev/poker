@@ -5,12 +5,10 @@ import com.lamtev.poker.core.model.Card;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+import static java.util.Objects.isNull;
+import static org.junit.Assert.*;
 
 public class PokerTest implements PokerPlay {
 
@@ -19,17 +17,10 @@ public class PokerTest implements PokerPlay {
     private List<Card> communityCards;
     private Map<String, PokerHand> hands;
     private String currentPlayerId;
+    private Map<String, Map.Entry<Integer, Integer>> playersMoney;
     private Map<String, List<Card>> playersCards;
     private List<String> foldPlayers;
     private int bank;
-
-    private List<PlayerIdStack> generatePlayersInfo1() {
-        List<PlayerIdStack> playersInfo = new ArrayList<>();
-        playersInfo.add(new PlayerIdStack("c1", 300));
-        playersInfo.add(new PlayerIdStack("a1", 100));
-        playersInfo.add(new PlayerIdStack("b1", 200));
-        return playersInfo;
-    }
 
     private List<PlayerIdStack> generatePlayersInfo() {
         List<PlayerIdStack> playersInfo = new ArrayList<>();
@@ -45,33 +36,15 @@ public class PokerTest implements PokerPlay {
     @Before
     public void cleanUp() {
         state = null;
-        playersInfo = null;
         communityCards = new ArrayList<>();
         hands = new HashMap<>();
         currentPlayerId = null;
         playersCards = new HashMap<>();
+        playersInfo = generatePlayersInfo();
+        playersMoney = new HashMap<>();
+        playersInfo.forEach(it -> playersMoney.put(it.id(), new AbstractMap.SimpleEntry<>(it.stack(), 0)));
         foldPlayers = new ArrayList<>();
         bank = 0;
-
-//        when(cardDeck.pickUpTop()).thenReturn(
-//                new Card(QUEEN, PIKES),
-//                new Card(TWO, CLOVERS),
-//                new Card(KING, CLOVERS),
-//                new Card(ACE, TILES),
-//                new Card(EIGHT, CLOVERS),
-//                new Card(FOUR, HEARTS),
-//                new Card(JACK, PIKES),
-//                new Card(NINE, HEARTS),
-//                new Card(SEVEN, TILES),
-//                new Card(ACE, HEARTS),
-//                new Card(THREE, PIKES),
-//                new Card(FOUR, TILES),
-//                new Card(QUEEN, CLOVERS),
-//                new Card(JACK, CLOVERS),
-//                new Card(TWO, TILES),
-//                new Card(NINE, CLOVERS),
-//                new Card(TEN, CLOVERS)
-//        );
     }
 
     @Test
@@ -80,92 +53,58 @@ public class PokerTest implements PokerPlay {
         RoundOfPlay poker = new Poker();
         poker.subscribe(this);
         assertEquals("SettingsState", state);
-
-        poker.setUp(generatePlayersInfo(), "a", 5);
+        assertEquals(0, bank);
+        poker.setUp(playersInfo, "a", 5);
         assertEquals("BlindsState", state);
+        assertEquals(0, bank);
 
         poker.placeBlindWagers();
         assertEquals("PreflopWageringState", state);
+        assertEquals(15, bank);
+        playersCards.forEach((id, cards) -> assertEquals(2, cards.size()));
 
         poker.call();
         poker.raise(90);
         for (int i = 0; i < 5; ++i) poker.call();
         assertEquals("FlopWageringState", state);
+        assertEquals(600, bank);
+        assertEquals(3, communityCards.size());
 
         for (int i = 0; i < 6; ++i) poker.check();
         assertEquals("TurnWageringState", state);
+        assertEquals(4, communityCards.size());
 
         for (int i = 0; i < 6; ++i) poker.check();
         assertEquals("RiverWageringState", state);
+        assertEquals(5, communityCards.size());
 
         poker.raise(100);
         poker.raise(100);
         poker.raise(100);
         for (int i = 0; i < 5; ++i) poker.call();
         assertEquals("ShowdownState", state);
+        assertEquals(2400, bank);
+        playersMoney.forEach((id, playerMoney) -> {
+            assertEquals(Integer.valueOf(100), playerMoney.getKey());
+            assertEquals(Integer.valueOf(400), playerMoney.getValue());
+        });
 
-        for (int i = 0; i < 6; ++i) poker.showDown();
-        assertEquals("RoundOfPlayIsOverState", state);
-        hands.values().forEach(System.out::println);
-    }
-
-    @Test
-    public void test1() throws Exception {
-
-        Poker poker = new Poker();
-        poker.subscribe(this);
-
-        System.out.println(state);
-        assertEquals("SettingsState", state);
-
-        poker.setUp(generatePlayersInfo1(), "c1", 30);
-        System.out.println(state);
-        assertEquals("BlindsState", state);
-
-        poker.placeBlindWagers();
-        System.out.println(state);
-        assertEquals("PreflopWageringState", state);
-
-        poker.call();
-        poker.call();
-        poker.check();
-
-        System.out.println(state);
-        assertEquals("FlopWageringState", state);
-        assertEquals(3, communityCards.size());
-
-        poker.check();
-        poker.check();
-        poker.check();
-
-        System.out.println(state);
-        assertEquals("TurnWageringState", state);
-        assertEquals(4, communityCards.size());
-
-        poker.allIn();
-        poker.call();
-        poker.call();
-
-        System.out.println(state);
-        assertEquals("RiverWageringState", state);
-
-        poker.check();
-        poker.check();
-        System.out.println(state);
-        assertEquals("ShowdownState", state);
-
-        String id = currentPlayerId;
-        poker.showDown();
-        PokerHand hand = hands.get(id);
-        poker.showDown();
-        poker.showDown();
-
-
-        System.out.println(state);
-        System.out.println(communityCards.toString() + playersCards.get(id).toString() + hand.getName());
+        for (int i = 0; i < 6; ++i) {
+            String id = currentPlayerId;
+            assertTrue(isNull(hands.get(id)));
+            poker.showDown();
+            assertFalse(isNull(hands.get(id)));
+            System.out.println(id + ": " + hands.get(id));
+        }
         assertEquals("RoundOfPlayIsOverState", state);
 
-        playersInfo.forEach(System.out::println);
+        int actualPlayersStackSum = playersInfo
+                .stream()
+                .map(PlayerIdStack::stack)
+                .mapToInt(Number::intValue)
+                .sum();
+        assertEquals(3000, actualPlayersStackSum);
+        playersInfo.forEach(it -> System.out.println(it.id() + ": " + it.stack()));
     }
 
     @Override
@@ -185,7 +124,8 @@ public class PokerTest implements PokerPlay {
 
     @Override
     public void playerMoneyUpdated(String playerId, int playerStack, int playerWager) {
-
+        playersMoney.remove(playerId);
+        playersMoney.put(playerId, new AbstractMap.SimpleEntry<>(playerStack, playerWager));
     }
 
     @Override
