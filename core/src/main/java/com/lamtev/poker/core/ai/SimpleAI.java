@@ -3,11 +3,14 @@ package com.lamtev.poker.core.ai;
 import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.PokerAI;
 import com.lamtev.poker.core.api.RoundOfPlay;
+import com.lamtev.poker.core.event_listeners.MoveAbility;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SimpleAI implements PokerAI {
 
@@ -18,6 +21,9 @@ public class SimpleAI implements PokerAI {
     private List<Card> cards;
     private List<Card> communityCards = new ArrayList<>();
     private RoundOfPlay poker;
+    private MoveAbility moveAbility = new MoveAbility();
+    private String state;
+    private Map<String, PokerHand> playersHands = new HashMap<>();
 
     public SimpleAI(String id, int stack) {
         this.id = id;
@@ -74,9 +80,30 @@ public class SimpleAI implements PokerAI {
 
     @Override
     public void currentPlayerChanged(String currentPlayerId) {
-        if (id().equals(currentPlayerId)) {
-            //Make a move
+        try {
+            if (id().equals(currentPlayerId)) {
+                switch (state) {
+                    case "PreflopWageringState":
+                    case "FlopWageringState":
+                    case "TurnWageringState":
+                    case "RiverWageringState":
+                        if (moveAbility.checkIsAble()) {
+                            poker.check();
+                        } else if (moveAbility.callIsAble()) {
+                            poker.call();
+                        } else {
+                            poker.fold();
+                        }
+                        break;
+                    case "ShowdownState":
+                        poker.showDown();
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     @Override
@@ -118,47 +145,47 @@ public class SimpleAI implements PokerAI {
 
     @Override
     public void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand) {
-
+        playersHands.put(playerId, hand);
     }
 
     @Override
     public void allInAbilityChanged(boolean flag) {
-
+        moveAbility.setAllInIsAble(flag);
     }
 
     @Override
     public void callAbilityChanged(boolean flag) {
-
+        moveAbility.setCallIsAble(flag);
     }
 
     @Override
     public void checkAbilityChanged(boolean flag) {
-
+        moveAbility.setCheckIsAble(flag);
     }
 
     @Override
     public void raiseAbilityChanged(boolean flag) {
-
+        moveAbility.setRaiseIsAble(flag);
     }
 
     @Override
     public void foldAbilityChanged(boolean flag) {
-
+        moveAbility.setFoldIsAble(flag);
     }
 
     @Override
     public void showDownAbilityChanged(boolean flag) {
-
+        moveAbility.setShowdownIsAble(flag);
     }
 
     @Override
     public void roundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
-
+        communityCards.clear();
     }
 
     @Override
     public void stateChanged(String stateName) {
-
+        state = stateName;
     }
 
 }
