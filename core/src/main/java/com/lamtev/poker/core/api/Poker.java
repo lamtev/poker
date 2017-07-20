@@ -23,6 +23,7 @@ public class Poker implements RoundOfPlay {
     @Override
     public void subscribe(PokerAI pokerAI) {
         listenerManager.subscribe(pokerAI);
+        listenerManager.notifyRoundOfPlayChanged(this);
     }
 
     @Override
