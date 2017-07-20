@@ -2,7 +2,6 @@ package com.lamtev.poker.webserver.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.lamtev.poker.core.api.PlayerExpandedInfo;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.webserver.GameAPI;
 import com.lamtev.poker.webserver.Room;
@@ -29,12 +28,12 @@ public class GameController extends AbstractController {
 
     @GetMapping(value = "{roomId}/players", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public List<Map.Entry<String, PlayerExpandedInfo>> getPlayers(@PathVariable String roomId) throws Exception {
+    public List<Map.Entry<String, Map.Entry<Integer, Integer>>> getPlayers(@PathVariable String roomId) throws Exception {
         makeSureThatRoomsExist();
         makeSureThatRoomExists(roomId);
         Room room = rooms.get(roomId);
         makeSureThatRoomIsTaken(room, "There isn't players info because game has not been started");
-        return rooms.get(roomId).getGame().getPlayersInfo();
+        return rooms.get(roomId).getGame().getPlayersMoney();
     }
 
     @GetMapping(value = "{roomId}/communityCards", produces = APPLICATION_JSON_VALUE)
@@ -52,7 +51,7 @@ public class GameController extends AbstractController {
     @GetMapping(value = "{roomId}/players/{playerId}/cards", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     public String playerCards(@PathVariable String roomId,
-                                  @PathVariable String playerId) throws Exception {
+                              @PathVariable String playerId) throws Exception {
         makeSureThatRoomsExist();
         makeSureThatRoomExists(roomId);
         Room room = rooms.get(roomId);
