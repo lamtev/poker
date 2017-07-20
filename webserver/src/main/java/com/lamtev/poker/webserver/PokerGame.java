@@ -1,6 +1,9 @@
 package com.lamtev.poker.webserver;
 
-import com.lamtev.poker.core.api.*;
+import com.lamtev.poker.core.api.PlayerIdStack;
+import com.lamtev.poker.core.api.Poker;
+import com.lamtev.poker.core.api.PokerPlay;
+import com.lamtev.poker.core.api.RoundOfPlay;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.states.exceptions.*;
@@ -9,11 +12,12 @@ import java.util.*;
 
 import static com.lamtev.poker.webserver.Util.names;
 
-public class PokerGame implements PokerEventListenerPlayer, GameAPI {
+public class PokerGame implements PokerPlay, GameAPI {
 
     private RoundOfPlay poker = new Poker();
     private List<Card> communityCards = new ArrayList<>();
-    private Map<String, PlayerExpandedInfo> playersInfo = new LinkedHashMap<>();
+    private Map<String, Map.Entry<Integer, Integer>> playersMoney = new LinkedHashMap<>();
+    private Set<String> foldPlayers = new HashSet<>();
     private Map<String, List<Card>> playersCards = new LinkedHashMap<>();
     private String currentPlayerId;
     private String currentStateName;
@@ -29,9 +33,9 @@ public class PokerGame implements PokerEventListenerPlayer, GameAPI {
         //TODO check name existence
         players.add(humanId);
         Collections.shuffle(players);
-        players.forEach(player -> playersInfo.put(player, new PlayerExpandedInfo(stack, 0, true)));
+        players.forEach(id -> playersMoney.put(id, new AbstractMap.SimpleEntry<Integer, Integer>(stack, 0)));
         List<PlayerIdStack> playersStacks = new ArrayList<>();
-        playersInfo.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getStack())));
+        playersMoney.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getKey())));
         smallBlindSize = stack / 1000;
         poker.setUp(playersStacks, playersStacks.get(0).id(), smallBlindSize);
         poker.placeBlindWagers();
@@ -68,8 +72,8 @@ public class PokerGame implements PokerEventListenerPlayer, GameAPI {
     }
 
     @Override
-    public List<Map.Entry<String, PlayerExpandedInfo>> getPlayersInfo() {
-        return new ArrayList<>(playersInfo.entrySet());
+    public List<Map.Entry<String, Map.Entry<Integer, Integer>>> getPlayersMoney() {
+        return new ArrayList<>(playersMoney.entrySet());
     }
 
     @Override
@@ -107,16 +111,13 @@ public class PokerGame implements PokerEventListenerPlayer, GameAPI {
     @Override
     public void playerFold(String playerId) {
         //TODO
-        playersInfo.get(playerId).setActive(false);
+        foldPlayers.add(playerId);
     }
 
     @Override
     public void playerMoneyUpdated(String playerId, int playerStack, int playerWager) {
-        PlayerExpandedInfo playerInfo = this.playersInfo.get(playerId);
-        playerInfo.setStack(playerStack);
-        playerInfo.setWager(playerWager);
-        this.bank = bank;
-        this.wager = playerWager;
+        playersMoney.remove(playerId);
+        playersMoney.put(playerId, new AbstractMap.SimpleEntry<>(playerStack, playerWager));
     }
 
     @Override
@@ -139,16 +140,15 @@ public class PokerGame implements PokerEventListenerPlayer, GameAPI {
             currentStateName = "Finished";
             return;
         }
-        this.playersInfo = new LinkedHashMap<>();
+        this.playersMoney = new LinkedHashMap<>();
         playersInfo.stream()
                 .filter(playerIdStack -> playerIdStack.stack() > 0)
                 .forEach(playerIdStack -> {
                     String id = playerIdStack.id();
                     int stack = playerIdStack.stack();
-                    PlayerExpandedInfo info = new PlayerExpandedInfo(stack, 0, true);
-                    this.playersInfo.put(id, info);
+                    this.playersMoney.put(id, new AbstractMap.SimpleEntry<>(stack, 0));
                 });
-
+        foldPlayers = new HashSet<>();
         poker = new Poker();
         poker.subscribe(this);
         communityCards = new ArrayList<>();
@@ -157,7 +157,7 @@ public class PokerGame implements PokerEventListenerPlayer, GameAPI {
         smallBlindSize *= 1.25;
 
         List<PlayerIdStack> playersStacks = new ArrayList<>();
-        this.playersInfo.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getStack())));
+        this.playersMoney.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getKey())));
 
         try {
             poker.setUp(playersStacks, playersStacks.get(0).id(), smallBlindSize);
@@ -167,18 +167,49 @@ public class PokerGame implements PokerEventListenerPlayer, GameAPI {
     }
 
     @Override
-    public void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand) {
+    public void communityCardsDealt(List<Card> addedCommunityCards) {
+        communityCards.addAll(addedCommunityCards);
+    }
+
+    @Override
+    public void bankMoneyUpdated(int money, int wager) {
+        bank = money;
+        this.wager = wager;
+    }
+
+    @Override
+    public void blindWagersPlaced() {
 
     }
 
     @Override
-    public void preflopMade(Map<String, List<Card>> playerIdToCards) {
+    public void holeCardsDealt(Map<String, List<Card>> playerIdToCards) {
         playerIdToCards.forEach(playersCards::put);
     }
 
     @Override
-    public void communityCardsDealt(List<Card> addedCommunityCards) {
-        communityCards.addAll(addedCommunityCards);
+    public void playerAllinned(String playerId) {
+
+    }
+
+    @Override
+    public void playerCalled(String playerId) {
+
+    }
+
+    @Override
+    public void playerChecked(String playerId) {
+
+    }
+
+    @Override
+    public void playerRaised(String playerId) {
+
+    }
+
+    @Override
+    public void playerShowedDown(String playerId, PokerHand hand) {
+
     }
 
     @Override

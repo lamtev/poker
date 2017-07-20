@@ -1,6 +1,9 @@
 package com.lamtev.poker.desktop;
 
-import com.lamtev.poker.core.api.*;
+import com.lamtev.poker.core.api.PlayerIdStack;
+import com.lamtev.poker.core.api.Poker;
+import com.lamtev.poker.core.api.PokerPlay;
+import com.lamtev.poker.core.api.RoundOfPlay;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.states.exceptions.*;
@@ -19,7 +22,7 @@ import javafx.util.Duration;
 
 import java.util.*;
 
-public class PokerGame implements PokerEventListenerPlayer {
+public class PokerGame implements PokerPlay {
 
     private Stage primaryStage;
 
@@ -29,7 +32,8 @@ public class PokerGame implements PokerEventListenerPlayer {
     private int smallBlindSize;
     private String currentPlayerId;
     private List<Card> communityCards = new ArrayList<>();
-    private Map<String, PlayerExpandedInfo> playersInfo = new LinkedHashMap<>();
+    private Map<String, Map.Entry<Integer, Integer>> playersInfo = new LinkedHashMap<>();
+    private Set<String> foldPlayers = new HashSet<>();
     private Map<String, List<Card>> playersCards = new LinkedHashMap<>();
     private List<String> showedDown = new ArrayList<>();
 
@@ -97,9 +101,10 @@ public class PokerGame implements PokerEventListenerPlayer {
         playersInfo.forEach(
                 playerInfo -> this.playersInfo.put(
                         playerInfo.id(),
-                        new PlayerExpandedInfo(playerInfo.stack(), 0, true)
+                        new AbstractMap.SimpleEntry<>(playerInfo.stack(), 0)
                 )
         );
+        foldPlayers.clear();
         showedDown.clear();
         playersCards.clear();
         communityCards.clear();
@@ -245,7 +250,7 @@ public class PokerGame implements PokerEventListenerPlayer {
     @Override
     public void playerFold(String playerId) {
         //TODO add checking for Human-player fold
-        playersInfo.get(playerId).setActive(false);
+        foldPlayers.add(playerId);
         updateActiveAndFoldPlayersLists();
         updatePlayersCardsView();
     }
@@ -257,7 +262,7 @@ public class PokerGame implements PokerEventListenerPlayer {
         playersCardsViewHBox.setSpacing(5);
 
         playersInfo.forEach((id, info) -> {
-            if (info.isActive()) {
+            if (!foldPlayers.contains(id)) {
                 VBox playerIdAndCardsView = new VBox();
                 playerIdAndCardsView.setAlignment(Pos.CENTER);
                 playerIdAndCardsView.setSpacing(2);
@@ -291,9 +296,8 @@ public class PokerGame implements PokerEventListenerPlayer {
 
     @Override
     public void playerMoneyUpdated(String playerId, int playerStack, int playerWager) {
-        playersInfo.get(playerId).setStack(playerStack);
-        playersInfo.get(playerId).setWager(playerWager);
-        updateBank(bank);
+        playersInfo.remove(playerId);
+        playersInfo.put(playerId, new AbstractMap.SimpleEntry<>(playerStack, playerWager));
         updateActiveAndFoldPlayersLists();
     }
 
@@ -301,13 +305,13 @@ public class PokerGame implements PokerEventListenerPlayer {
         activePlayersList.getItems().clear();
         foldPlayersList.getItems().clear();
         playersInfo.forEach((id, playerInfo) -> {
-            if (playerInfo.isActive()) {
+            if (!foldPlayers.contains(id)) {
                 activePlayersList.getItems().add(
-                        new Label(id + ": " + playerInfo.getStack() + " " + playerInfo.getWager())
+                        new Label(id + ": " + playerInfo.getKey() + " " + playerInfo.getValue())
                 );
             } else {
                 foldPlayersList.getItems().add(
-                        new Label(id + ": " + playerInfo.getStack() + " " + playerInfo.getWager())
+                        new Label(id + ": " + playerInfo.getKey() + " " + playerInfo.getValue())
                 );
             }
         });
@@ -322,7 +326,7 @@ public class PokerGame implements PokerEventListenerPlayer {
     public void roundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
         statusBar.setText("Game is over!");
 
-        if (this.playersInfo.get(playerNick).getStack() == 0) {
+        if (this.playersInfo.get(playerNick).getKey() == 0) {
             Alert gameIsOverWindow = new Alert(Alert.AlertType.INFORMATION);
             gameIsOverWindow.setTitle("Game is over!!!");
             gameIsOverWindow.setContentText("You have lost all your money!!!");
@@ -372,21 +376,6 @@ public class PokerGame implements PokerEventListenerPlayer {
     }
 
 
-    //TODO duplicate
-    @Override
-    public void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand) {
-        showedDown.add(playerId);
-
-        statusBar.setText(playerId + " showed down: " + hand.getName());
-        updatePlayersCardsView();
-    }
-
-    @Override
-    public void preflopMade(Map<String, List<Card>> playerIdToCards) {
-        playersCards = playerIdToCards;
-        updatePlayersCardsView();
-    }
-
     @Override
     public void communityCardsDealt(List<Card> addedCommunityCards) {
         communityCards.addAll(addedCommunityCards);
@@ -401,6 +390,50 @@ public class PokerGame implements PokerEventListenerPlayer {
         });
         root.getChildren().remove(communityCardsView);
         root.add(communityCardsView, 2, 4, GridPane.REMAINING, 20);
+    }
+
+    @Override
+    public void bankMoneyUpdated(int money, int wager) {
+        updateBank(money);
+    }
+
+    @Override
+    public void blindWagersPlaced() {
+
+    }
+
+    @Override
+    public void holeCardsDealt(Map<String, List<Card>> playerIdToCards) {
+        playersCards = playerIdToCards;
+        updatePlayersCardsView();
+    }
+
+    @Override
+    public void playerAllinned(String playerId) {
+
+    }
+
+    @Override
+    public void playerCalled(String playerId) {
+
+    }
+
+    @Override
+    public void playerChecked(String playerId) {
+
+    }
+
+    @Override
+    public void playerRaised(String playerId) {
+
+    }
+
+    @Override
+    public void playerShowedDown(String playerId, PokerHand hand) {
+        showedDown.add(playerId);
+
+        statusBar.setText(playerId + " showed down: " + hand.getName());
+        updatePlayersCardsView();
     }
 
     @Override

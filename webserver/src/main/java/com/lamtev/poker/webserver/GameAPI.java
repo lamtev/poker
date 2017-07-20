@@ -1,6 +1,5 @@
 package com.lamtev.poker.webserver;
 
-import com.lamtev.poker.core.api.PlayerExpandedInfo;
 import com.lamtev.poker.core.model.Card;
 
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.Map;
 public interface GameAPI {
     void start(String humanId, int playersNumber, int stack) throws Exception;
 
-    List<Map.Entry<String, PlayerExpandedInfo>> getPlayersInfo();
+    List<Map.Entry<String, Map.Entry<Integer, Integer>>> getPlayersMoney();
 
     int getBank();
 
