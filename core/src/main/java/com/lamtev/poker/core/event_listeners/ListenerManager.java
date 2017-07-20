@@ -70,10 +70,17 @@ public class ListenerManager {
         });
     }
 
-    public void notifyMoveAbilityListeners(boolean allInIsAble, boolean callIsAble,
-                                           boolean checkIsAble, boolean foldIsAble,
-                                           boolean raiseIsAble, boolean showdownIsAble) {
-        //TODO implement
+    public void notifyMoveAbilityListeners(String playerId, MoveAbility moveAbility) {
+        moveAbilityListeners.forEach(it -> {
+            if (!listenerIsAI(it) || playerId.equals(it.id())) {
+                it.allInAbilityChanged(moveAbility.allInIsAble());
+                it.callAbilityChanged(moveAbility.callIsAble());
+                it.checkAbilityChanged(moveAbility.checkIsAble());
+                it.foldAbilityChanged(moveAbility.foldIsAble());
+                it.raiseAbilityChanged(moveAbility.raiseIsAble());
+                it.showDownAbilityChanged(moveAbility.showdownIsAble());
+            }
+        });
     }
 
     public void notifyPlayerAllinnedListeners(String playerId) {
