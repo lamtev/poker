@@ -9,6 +9,11 @@ public class MoveAbility {
     private Boolean raiseIsAble;
     private Boolean showdownIsAble;
 
+
+    public MoveAbility() {
+        this(false, false, false, false, false, false);
+    }
+
     public MoveAbility(Boolean allInIsAble, Boolean callIsAble, Boolean checkIsAble,
                        Boolean foldIsAble, Boolean raiseIsAble, Boolean showdownIsAble) {
         this.allInIsAble = allInIsAble;
