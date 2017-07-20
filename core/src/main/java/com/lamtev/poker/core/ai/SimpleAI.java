@@ -5,7 +5,6 @@ import com.lamtev.poker.core.api.PokerAI;
 import com.lamtev.poker.core.api.RoundOfPlay;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
-import com.sun.istack.internal.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,6 @@ public class SimpleAI implements PokerAI {
     }
 
     @Override
-    @Nullable
     public List<Card> cards() {
         return cards;
     }
