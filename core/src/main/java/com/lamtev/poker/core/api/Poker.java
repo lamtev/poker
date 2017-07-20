@@ -1,6 +1,7 @@
 package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.event_listeners.ListenerManager;
+import com.lamtev.poker.core.event_listeners.MoveAbility;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.states.PokerState;
@@ -140,11 +141,8 @@ public class Poker implements RoundOfPlay {
         listenerManager.notifyHoleCardsDealtListeners(playerIdToCards);
     }
 
-    public void notifyMoveAbilityListeners(boolean allInIsAble, boolean callIsAble,
-                                           boolean checkIsAble, boolean foldIsAble,
-                                           boolean raiseIsAble, boolean showdownIsAble) {
-        listenerManager.notifyMoveAbilityListeners(allInIsAble, callIsAble, checkIsAble,
-                foldIsAble, raiseIsAble, showdownIsAble);
+    public void notifyMoveAbilityListeners(String playerId, MoveAbility moveAbility) {
+        listenerManager.notifyMoveAbilityListeners(playerId, moveAbility);
     }
 
     public void notifyPlayerAllinnedListeners(String playerId) {

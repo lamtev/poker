@@ -8,9 +8,12 @@ public interface MoveAbilityListener {
 
     void checkAbilityChanged(boolean flag);
 
-    void raiseAbilityChanged(boolean flag);
-
     void foldAbilityChanged(boolean flag);
 
+    void raiseAbilityChanged(boolean flag);
+
     void showDownAbilityChanged(boolean flag);
+
+    String id();
+
 }
