@@ -3,6 +3,7 @@ package com.lamtev.poker.core.event_listeners;
 import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.PokerAI;
 import com.lamtev.poker.core.api.PokerPlay;
+import com.lamtev.poker.core.api.RoundOfPlay;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.states.SettingsState;
@@ -28,6 +29,7 @@ public class ListenerManager {
     private List<PlayerShowedDownListener> playerShowedDownListeners = new ArrayList<>();
     private List<RoundOfPlayIsOverListener> roundOfPlayIsOverListeners = new ArrayList<>();
     private List<StateChangedListener> stateChangedListeners = new ArrayList<>();
+    private List<RoundOfPlayChangedListener> roundOfPlayChangedListeners = new ArrayList<>();
 
     private boolean listenersSubscribed = false;
 
@@ -38,10 +40,12 @@ public class ListenerManager {
 
     public void subscribe(PokerAI pokerAI) {
         subscribeForUpdates(pokerAI);
+        roundOfPlayChangedListeners.add(pokerAI);
     }
 
     public void notifyBankMoneyUpdatedListeners(int money, int wager) {
         bankMoneyUpdatedListeners.forEach(it -> it.bankMoneyUpdated(money, wager));
+
     }
 
     public void notifyBlindWagersPlacedListeners() {
@@ -112,6 +116,10 @@ public class ListenerManager {
 
     public void notifyStateChangedListeners(String state) {
         stateChangedListeners.forEach(it -> it.stateChanged(state));
+    }
+
+    public void notifyRoundOfPlayChanged(RoundOfPlay roundOfPlay) {
+        roundOfPlayChangedListeners.forEach(it -> it.roundOfPlayChanged(roundOfPlay));
     }
 
     public boolean listenersSubscribed() {
