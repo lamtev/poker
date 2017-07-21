@@ -19,6 +19,11 @@ class PreflopWageringState extends WageringState {
                 player.cards().forEach(this::add);
             }}));
         }});
+        moveAbility().setCallIsAble(true);
+        moveAbility().setCheckIsAble(moveIsFinalBigBlindMove());
+        moveAbility().setFoldIsAble(!moveIsFinalBigBlindMove());
+        moveAbility().setRaiseIsAble(true);
+        poker().notifyMoveAbilityListeners(players().current().id(), moveAbility());
     }
 
     @Override
@@ -64,6 +69,15 @@ class PreflopWageringState extends WageringState {
     @Override
     void determineUnderTheGunPosition() {
         players().nextAfterBigBlind();
+    }
+
+    @Override
+    void changePlayerIndex() {
+        super.changePlayerIndex();
+        moveAbility().setCallIsAble(!moveIsFinalBigBlindMove());
+        moveAbility().setCheckIsAble(moveIsFinalBigBlindMove());
+        moveAbility().setFoldIsAble(!moveIsFinalBigBlindMove());
+        moveAbility().setRaiseIsAble(true);
     }
 
     private boolean moveIsFinalBigBlindMove() {
