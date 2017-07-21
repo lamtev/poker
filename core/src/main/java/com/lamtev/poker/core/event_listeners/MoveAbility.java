@@ -2,20 +2,20 @@ package com.lamtev.poker.core.event_listeners;
 
 public class MoveAbility {
 
-    private Boolean allInIsAble;
-    private Boolean callIsAble;
-    private Boolean checkIsAble;
-    private Boolean foldIsAble;
-    private Boolean raiseIsAble;
-    private Boolean showdownIsAble;
+    private boolean allInIsAble;
+    private boolean callIsAble;
+    private boolean checkIsAble;
+    private boolean foldIsAble;
+    private boolean raiseIsAble;
+    private boolean showdownIsAble;
 
 
     public MoveAbility() {
-        this(false, false, false, false, false, false);
+
     }
 
-    public MoveAbility(Boolean allInIsAble, Boolean callIsAble, Boolean checkIsAble,
-                       Boolean foldIsAble, Boolean raiseIsAble, Boolean showdownIsAble) {
+    public MoveAbility(boolean allInIsAble, boolean callIsAble, boolean checkIsAble,
+                       boolean foldIsAble, boolean raiseIsAble, boolean showdownIsAble) {
         this.allInIsAble = allInIsAble;
         this.callIsAble = callIsAble;
         this.checkIsAble = checkIsAble;
@@ -24,51 +24,51 @@ public class MoveAbility {
         this.showdownIsAble = showdownIsAble;
     }
 
-    public Boolean allInIsAble() {
+    public boolean allInIsAble() {
         return allInIsAble;
     }
 
-    public void setAllInIsAble(Boolean allInIsAble) {
+    public void setAllInIsAble(boolean allInIsAble) {
         this.allInIsAble = allInIsAble;
     }
 
-    public Boolean callIsAble() {
+    public boolean callIsAble() {
         return callIsAble;
     }
 
-    public void setCallIsAble(Boolean callIsAble) {
+    public void setCallIsAble(boolean callIsAble) {
         this.callIsAble = callIsAble;
     }
 
-    public Boolean checkIsAble() {
+    public boolean checkIsAble() {
         return checkIsAble;
     }
 
-    public void setCheckIsAble(Boolean checkIsAble) {
+    public void setCheckIsAble(boolean checkIsAble) {
         this.checkIsAble = checkIsAble;
     }
 
-    public Boolean foldIsAble() {
+    public boolean foldIsAble() {
         return foldIsAble;
     }
 
-    public void setFoldIsAble(Boolean foldIsAble) {
+    public void setFoldIsAble(boolean foldIsAble) {
         this.foldIsAble = foldIsAble;
     }
 
-    public Boolean raiseIsAble() {
+    public boolean raiseIsAble() {
         return raiseIsAble;
     }
 
-    public void setRaiseIsAble(Boolean raiseIsAble) {
+    public void setRaiseIsAble(boolean raiseIsAble) {
         this.raiseIsAble = raiseIsAble;
     }
 
-    public Boolean showdownIsAble() {
+    public boolean showdownIsAble() {
         return showdownIsAble;
     }
 
-    public void setShowdownIsAble(Boolean showdownIsAble) {
+    public void setShowdownIsAble(boolean showdownIsAble) {
         this.showdownIsAble = showdownIsAble;
     }
 

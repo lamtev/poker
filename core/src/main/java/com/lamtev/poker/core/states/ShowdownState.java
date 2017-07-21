@@ -16,13 +16,21 @@ class ShowdownState extends ActionState {
 
     ShowdownState(ActionState state, Player latestAggressor) {
         super(state);
+        handFactory = new PokerHandFactory(communityCards());
         if (latestAggressor == null) {
             players().nextActiveAfterDealer();
         } else {
             players().setLatestAggressor(latestAggressor);
         }
-        poker().notifyCurrentPlayerChangedListeners(players().current().id());
-        handFactory = new PokerHandFactory(communityCards());
+        String currentPlayerId = players().current().id();
+        poker().notifyCurrentPlayerChangedListeners(currentPlayerId);
+        moveAbility().setAllInIsAble(false);
+        moveAbility().setCallIsAble(false);
+        moveAbility().setCheckIsAble(false);
+        moveAbility().setRaiseIsAble(false);
+        moveAbility().setFoldIsAble(false);
+        moveAbility().setShowdownIsAble(true);
+        poker().notifyMoveAbilityListeners(currentPlayerId, moveAbility());
     }
 
     @Override
@@ -47,7 +55,7 @@ class ShowdownState extends ActionState {
 
     @Override
     public void fold() throws UnallowableMoveException {
-        if (showedDownPlayers.isEmpty() || players().current().isAllinner()) {
+        if (currentPlayerCantFold()) {
             throw new UnallowableMoveException("Fold");
         }
         Player currentPlayer = players().current();
@@ -55,6 +63,10 @@ class ShowdownState extends ActionState {
         poker().notifyPlayerFoldListeners(currentPlayer.id());
         changePlayerIndex();
         attemptDetermineWinners();
+    }
+
+    private boolean currentPlayerCantFold() {
+        return showedDownPlayers.isEmpty() || players().current().isAllinner();
     }
 
     @Override
@@ -77,7 +89,10 @@ class ShowdownState extends ActionState {
     @Override
     void changePlayerIndex() {
         players().nextActive();
-        poker().notifyCurrentPlayerChangedListeners(players().current().id());
+        String currentPlayerId = players().current().id();
+        poker().notifyCurrentPlayerChangedListeners(currentPlayerId);
+        moveAbility().setFoldIsAble(!currentPlayerCantFold());
+        poker().notifyMoveAbilityListeners(currentPlayerId, moveAbility());
     }
 
     //TODO     add feature for action: not showDown and not fold

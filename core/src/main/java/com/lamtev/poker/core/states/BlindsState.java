@@ -1,6 +1,7 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.Poker;
+import com.lamtev.poker.core.event_listeners.MoveAbility;
 import com.lamtev.poker.core.model.*;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 
@@ -12,8 +13,8 @@ class BlindsState extends ActionState {
 
     private final int smallBlindSize;
 
-    BlindsState(Poker poker, Players players, Bank bank, Dealer dealer, Cards communityCards, int smallBlindSize) {
-        super(poker, players, bank, dealer, communityCards);
+    BlindsState(Poker poker, Players players, Bank bank, Dealer dealer, Cards communityCards, MoveAbility moveAbility, int smallBlindSize) {
+        super(poker, players, bank, dealer, communityCards, moveAbility);
         this.smallBlindSize = smallBlindSize;
     }
 

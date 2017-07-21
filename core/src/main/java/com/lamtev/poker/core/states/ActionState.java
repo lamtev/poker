@@ -2,6 +2,7 @@ package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.Poker;
+import com.lamtev.poker.core.event_listeners.MoveAbility;
 import com.lamtev.poker.core.model.Bank;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.model.Dealer;
@@ -17,17 +18,19 @@ abstract class ActionState extends AbstractPokerState {
     private final Bank bank;
     private final Dealer dealer;
     private final Cards communityCards;
+    private final MoveAbility moveAbility;
 
     ActionState(ActionState state) {
-        this(state.poker, state.players, state.bank, state.dealer, state.communityCards);
+        this(state.poker, state.players, state.bank, state.dealer, state.communityCards, state.moveAbility);
     }
 
-    ActionState(Poker poker, Players players, Bank bank, Dealer dealer, Cards communityCards) {
+    ActionState(Poker poker, Players players, Bank bank, Dealer dealer, Cards communityCards, MoveAbility moveAbility) {
         this.poker = poker;
         this.players = players;
         this.bank = bank;
         this.dealer = dealer;
         this.communityCards = communityCards;
+        this.moveAbility = moveAbility;
     }
 
     public Poker poker() {
@@ -48,6 +51,10 @@ abstract class ActionState extends AbstractPokerState {
 
     public Cards communityCards() {
         return communityCards;
+    }
+
+    public MoveAbility moveAbility() {
+        return moveAbility;
     }
 
     @Override

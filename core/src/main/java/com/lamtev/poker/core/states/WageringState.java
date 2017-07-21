@@ -20,6 +20,7 @@ abstract class WageringState extends ActionState {
         determineUnderTheGunPosition();
         poker().notifyCurrentPlayerChangedListeners(players().current().id());
         moveValidator = new MoveValidator(players(), bank());
+        moveAbility().setAllInIsAble(true);
     }
 
     @Override
