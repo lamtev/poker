@@ -1,7 +1,6 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.model.Bank;
-import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.model.Players;
 import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
@@ -15,22 +14,34 @@ class MoveValidator {
         this.bank = bank;
     }
 
-    void validateCall(Player player) throws UnallowableMoveException {
-        if (player.wager() >= bank.wager()) {
+    void validateCall() throws UnallowableMoveException {
+        if (!callIsAble()) {
             throw new UnallowableMoveException("Call");
         }
     }
 
+    boolean callIsAble() {
+        return players.current().wager() < bank.wager();
+    }
+
     void validateRaise(int raises) throws UnallowableMoveException {
-        if ((players.activePlayersNumber() <= 2 || raises >= 3) && players.activePlayersNumber() != 2) {
+        if (!raiseIsAble(raises)) {
             throw new UnallowableMoveException("Raise");
         }
     }
 
+    boolean raiseIsAble(int raises) {
+        return players.activePlayersNumber() > 2 && raises < 3 || players.activePlayersNumber() == 2;
+    }
+
     void validateCheck(int raises) throws UnallowableMoveException {
-        if (raises != 0) {
+        if (!checkIsAble(raises)) {
             throw new UnallowableMoveException("Check");
         }
+    }
+
+    boolean checkIsAble(int raises) {
+        return raises == 0;
     }
 
 }
