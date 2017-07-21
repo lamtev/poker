@@ -89,10 +89,13 @@ public class SimpleAI implements PokerAI {
                     case "RiverWageringState":
                         if (moveAbility.checkIsAble()) {
                             poker.check();
+                            System.out.println(id + " checked");
                         } else if (moveAbility.callIsAble()) {
                             poker.call();
+                            System.out.println(id + " called");
                         } else {
                             poker.fold();
+                            System.out.println(id + " fold");
                         }
                         break;
                     case "ShowdownState":

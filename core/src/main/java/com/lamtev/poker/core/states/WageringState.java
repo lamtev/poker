@@ -31,7 +31,7 @@ abstract class WageringState extends ActionState {
     @Override
     public void call() throws UnallowableMoveException, IsNotEnoughMoneyException {
         Player currentPlayer = players().current();
-        moveValidator.validateCall(currentPlayer);
+        moveValidator.validateCall();
         bank().acceptCall(currentPlayer);
         notifyMoneyUpdatedListeners();
         poker().notifyPlayerCalledListeners(currentPlayer.id());
@@ -101,6 +101,18 @@ abstract class WageringState extends ActionState {
     @Override
     public void showDown() throws ForbiddenMoveException {
         throw new ForbiddenMoveException("Show down", toString());
+    }
+
+    //TODO think about all in ability if all in is raise
+
+    @Override
+    void changePlayerIndex() {
+        super.changePlayerIndex();
+        moveAbility().setRaiseIsAble(moveValidator.raiseIsAble(raisers.size()));
+        moveAbility().setCallIsAble(moveValidator.callIsAble());
+        moveAbility().setCheckIsAble(moveValidator.checkIsAble(raisers.size()));
+        System.out.println(players().current().id());
+        poker().notifyMoveAbilityListeners(players().current().id(), moveAbility());
     }
 
     abstract void determineUnderTheGunPosition();

@@ -26,7 +26,7 @@ public class MoveValidatorTest {
         Players players = generatePlayers();
         Bank bank = new Bank(players);
         MoveValidator mv = new MoveValidator(players, bank);
-        mv.validateCall(players.get("a"));
+        mv.validateCall();
     }
 
     @Test(expected = UnallowableMoveException.class)

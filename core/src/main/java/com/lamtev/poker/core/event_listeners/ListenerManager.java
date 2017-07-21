@@ -1,5 +1,6 @@
 package com.lamtev.poker.core.event_listeners;
 
+import com.lamtev.poker.core.ai.SimpleAI;
 import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.PokerAI;
 import com.lamtev.poker.core.api.PokerPlay;
