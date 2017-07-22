@@ -1,9 +1,6 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.states.exceptions.*;
-
-import java.util.List;
 
 public interface PokerState {
 

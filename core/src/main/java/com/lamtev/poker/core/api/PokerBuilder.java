@@ -2,17 +2,22 @@ package com.lamtev.poker.core.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PokerBuilder {
 
-    private List<PlayerIdStack> playerIdStacks;
+    private List<Player> players = new ArrayList<>();
     private String dealerId;
     private int smallBlindSize;
     private Play play;
-    private List<AI> ais = new ArrayList<>();
 
-    public PokerBuilder registerPlayers(List<PlayerIdStack> playerIdStacks) {
-        this.playerIdStacks = playerIdStacks;
+    public PokerBuilder registerPlay(Play play) {
+        this.play = play;
+        return this;
+    }
+
+    public PokerBuilder registerPlayers(List<Player> players) {
+        this.players.addAll(players);
         return this;
     }
 
@@ -26,27 +31,23 @@ public class PokerBuilder {
         return this;
     }
 
-    public PokerBuilder registerPlay(Play play) {
-        this.play = play;
-        return this;
-    }
-
-    public PokerBuilder registerAI(AI ai) {
-        ais.add(ai);
-        return this;
-    }
-
     public Poker create() {
         makeSureThatPokerConfigured();
-        Poker poker = new Poker(playerIdStacks, dealerId, smallBlindSize);
+        List<PlayerIdStack> playerIdStackList = players.stream()
+                .map(it -> new PlayerIdStack(it.id(), it.stack()))
+                .collect(Collectors.toList());
+        Poker poker = new Poker(playerIdStackList, dealerId, smallBlindSize);
         poker.registerPlay(play);
-        ais.forEach(poker::registerAI);
+        players.stream()
+                .filter(it -> it instanceof AI)
+                .map(it -> (AI) it)
+                .forEach(poker::registerAI);
         poker.start();
         return poker;
     }
 
     private void makeSureThatPokerConfigured() {
-        if (playerIdStacks == null || dealerId == null || smallBlindSize == 0 || play == null) {
+        if (players.isEmpty() || dealerId == null || smallBlindSize == 0 || play == null) {
             throw new RuntimeException();
         }
     }
