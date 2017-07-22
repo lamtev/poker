@@ -1,7 +1,7 @@
 package com.lamtev.poker.core.ai;
 
 import com.lamtev.poker.core.api.*;
-import com.lamtev.poker.core.event_listeners.MoveAbility;
+import com.lamtev.poker.core.api.MoveAbility;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class SimpleAITest implements PokerPlay {
+public class SimpleAITest implements Play {
 
     private MoveAbility moveAbility = new MoveAbility();
     private String currentPlayerId;
@@ -20,7 +20,7 @@ public class SimpleAITest implements PokerPlay {
 
     @Test
     public void test() throws Exception {
-        PokerAI bot = new SimpleAI("bot1", 1000);
+        AI bot = new SimpleAI("bot1", 1000);
 
         List<PlayerIdStack> playerIdStackList = new ArrayList<PlayerIdStack>() {{
             add(new PlayerIdStack("xxx", 1000));

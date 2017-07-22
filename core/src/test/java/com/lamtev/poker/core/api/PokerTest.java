@@ -10,7 +10,7 @@ import java.util.*;
 import static java.util.Objects.isNull;
 import static org.junit.Assert.*;
 
-public class PokerTest implements PokerPlay {
+public class PokerTest implements Play {
 
     private String state;
     private List<PlayerIdStack> playersInfo;

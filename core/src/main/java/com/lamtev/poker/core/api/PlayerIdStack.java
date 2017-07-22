@@ -1,5 +1,6 @@
 package com.lamtev.poker.core.api;
 
+@Deprecated
 public class PlayerIdStack {
 
     private final String id;

@@ -1,9 +1,9 @@
 package com.lamtev.poker.core.ai;
 
 import com.lamtev.poker.core.api.PlayerIdStack;
-import com.lamtev.poker.core.api.PokerAI;
+import com.lamtev.poker.core.api.AI;
 import com.lamtev.poker.core.api.RoundOfPlay;
-import com.lamtev.poker.core.event_listeners.MoveAbility;
+import com.lamtev.poker.core.api.MoveAbility;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SimpleAI implements PokerAI {
+public class SimpleAI implements AI {
 
     private final String id;
     private int stack;

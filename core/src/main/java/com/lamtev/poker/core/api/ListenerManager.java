@@ -1,9 +1,6 @@
-package com.lamtev.poker.core.event_listeners;
+package com.lamtev.poker.core.api;
 
-import com.lamtev.poker.core.api.PlayerIdStack;
-import com.lamtev.poker.core.api.PokerAI;
-import com.lamtev.poker.core.api.PokerPlay;
-import com.lamtev.poker.core.api.RoundOfPlay;
+import com.lamtev.poker.core.event_listeners.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.states.SettingsState;
@@ -12,55 +9,52 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ListenerManager {
+class ListenerManager {
 
-    private List<BankMoneyUpdatedListener> bankMoneyUpdatedListeners = new ArrayList<>();
-    private List<BlindWagersPlacedListener> blindWagersPlacedListeners = new ArrayList<>();
-    private List<CommunityCardsDealtListener> communityCardsDealtListeners = new ArrayList<>();
-    private List<CurrentPlayerChangedListener> currentPlayerChangedListeners = new ArrayList<>();
-    private List<HoleCardsDealtListener> holeCardsDealtListeners = new ArrayList<>();
-    private List<MoveAbilityListener> moveAbilityListeners = new ArrayList<>();
-    private List<PlayerAllinnedListener> playerAllinnedListeners = new ArrayList<>();
-    private List<PlayerCalledListener> playerCalledListeners = new ArrayList<>();
-    private List<PlayerCheckedListener> playerCheckedListeners = new ArrayList<>();
-    private List<PlayerFoldListener> playerFoldListeners = new ArrayList<>();
-    private List<PlayerMoneyUpdatedListener> playerMoneyUpdatedListeners = new ArrayList<>();
-    private List<PlayerRaisedListener> playerRaisedListeners = new ArrayList<>();
-    private List<PlayerShowedDownListener> playerShowedDownListeners = new ArrayList<>();
-    private List<RoundOfPlayIsOverListener> roundOfPlayIsOverListeners = new ArrayList<>();
-    private List<StateChangedListener> stateChangedListeners = new ArrayList<>();
-    private List<RoundOfPlayChangedListener> roundOfPlayChangedListeners = new ArrayList<>();
+    private final List<BankMoneyUpdatedListener> bankMoneyUpdatedListeners = new ArrayList<>();
+    private final List<BlindWagersPlacedListener> blindWagersPlacedListeners = new ArrayList<>();
+    private final List<CommunityCardsDealtListener> communityCardsDealtListeners = new ArrayList<>();
+    private final List<CurrentPlayerChangedListener> currentPlayerChangedListeners = new ArrayList<>();
+    private final List<HoleCardsDealtListener> holeCardsDealtListeners = new ArrayList<>();
+    private final List<MoveAbilityListener> moveAbilityListeners = new ArrayList<>();
+    private final List<PlayerAllinnedListener> playerAllinnedListeners = new ArrayList<>();
+    private final List<PlayerCalledListener> playerCalledListeners = new ArrayList<>();
+    private final List<PlayerCheckedListener> playerCheckedListeners = new ArrayList<>();
+    private final List<PlayerFoldListener> playerFoldListeners = new ArrayList<>();
+    private final List<PlayerMoneyUpdatedListener> playerMoneyUpdatedListeners = new ArrayList<>();
+    private final List<PlayerRaisedListener> playerRaisedListeners = new ArrayList<>();
+    private final List<PlayerShowedDownListener> playerShowedDownListeners = new ArrayList<>();
+    private final List<RoundOfPlayIsOverListener> roundOfPlayIsOverListeners = new ArrayList<>();
+    private final List<StateChangedListener> stateChangedListeners = new ArrayList<>();
+    private final List<RoundOfPlayChangedListener> roundOfPlayChangedListeners = new ArrayList<>();
 
-    private boolean listenersSubscribed = false;
-
-    public void subscribe(PokerPlay pokerPlay) {
-        subscribeForUpdates(pokerPlay);
-        listenersSubscribed = true;
+    void subscribe(Play play) {
+        subscribeForUpdates(play);
     }
 
-    public void subscribe(PokerAI pokerAI) {
-        subscribeForUpdates(pokerAI);
-        roundOfPlayChangedListeners.add(pokerAI);
+    void subscribe(AI ai) {
+        subscribeForUpdates(ai);
+        roundOfPlayChangedListeners.add(ai);
     }
 
-    public void notifyBankMoneyUpdatedListeners(int money, int wager) {
+    void notifyBankMoneyUpdatedListeners(int money, int wager) {
         bankMoneyUpdatedListeners.forEach(it -> it.bankMoneyUpdated(money, wager));
 
     }
 
-    public void notifyBlindWagersPlacedListeners() {
+    void notifyBlindWagersPlacedListeners() {
         blindWagersPlacedListeners.forEach(BlindWagersPlacedListener::blindWagersPlaced);
     }
 
-    public void notifyCommunityCardsDealtListeners(List<Card> addedCards) {
+    void notifyCommunityCardsDealtListeners(List<Card> addedCards) {
         communityCardsDealtListeners.forEach(it -> it.communityCardsDealt(addedCards));
     }
 
-    public void notifyCurrentPlayerChangedListeners(String playerId) {
+    void notifyCurrentPlayerChangedListeners(String playerId) {
         currentPlayerChangedListeners.forEach(it -> it.currentPlayerChanged(playerId));
     }
 
-    public void notifyHoleCardsDealtListeners(Map<String, List<Card>> playerIdToCards) {
+    void notifyHoleCardsDealtListeners(Map<String, List<Card>> playerIdToCards) {
         holeCardsDealtListeners.forEach(it -> {
             if (listenerIsAI(it)) {
                 it.holeCardsDealt(playerIdToCards.get(it.id()));
@@ -70,7 +64,7 @@ public class ListenerManager {
         });
     }
 
-    public void notifyMoveAbilityListeners(String playerId, MoveAbility moveAbility) {
+    void notifyMoveAbilityListeners(String playerId, MoveAbility moveAbility) {
         moveAbilityListeners.forEach(it -> {
             if (!listenerIsAI(it) || playerId.equals(it.id())) {
                 it.allInAbilityChanged(moveAbility.allInIsAble());
@@ -83,31 +77,31 @@ public class ListenerManager {
         });
     }
 
-    public void notifyPlayerAllinnedListeners(String playerId) {
+    void notifyPlayerAllinnedListeners(String playerId) {
         playerAllinnedListeners.forEach(it -> it.playerAllinned(playerId));
     }
 
-    public void notifyPlayerCalledListeners(String playerId) {
+    void notifyPlayerCalledListeners(String playerId) {
         playerCalledListeners.forEach(it -> it.playerCalled(playerId));
     }
 
-    public void notifyPlayerCheckedListeners(String playerId) {
+    void notifyPlayerCheckedListeners(String playerId) {
         playerCheckedListeners.forEach(it -> it.playerChecked(playerId));
     }
 
-    public void notifyPlayerFoldListeners(String playerId) {
+    void notifyPlayerFoldListeners(String playerId) {
         playerFoldListeners.forEach(it -> it.playerFold(playerId));
     }
 
-    public void notifyPlayerMoneyUpdatedListeners(String playerId, int playerStack, int playerWager) {
+    void notifyPlayerMoneyUpdatedListeners(String playerId, int playerStack, int playerWager) {
         playerMoneyUpdatedListeners.forEach(it -> it.playerMoneyUpdated(playerId, playerStack, playerWager));
     }
 
-    public void notifyPlayerRaisedListeners(String playerId) {
+    void notifyPlayerRaisedListeners(String playerId) {
         playerRaisedListeners.forEach(it -> it.playerRaised(playerId));
     }
 
-    public void notifyPlayerShowedDownListeners(String playerId, List<Card> holeCards, PokerHand hand) {
+    void notifyPlayerShowedDownListeners(String playerId, List<Card> holeCards, PokerHand hand) {
         playerShowedDownListeners.forEach(it -> {
             if (listenerIsAI(it)) {
                 it.playerShowedDown(playerId, holeCards, hand);
@@ -117,20 +111,16 @@ public class ListenerManager {
         });
     }
 
-    public void notifyRoundOfPlayIsOverListeners(List<PlayerIdStack> playersInfo) {
+    void notifyRoundOfPlayIsOverListeners(List<PlayerIdStack> playersInfo) {
         roundOfPlayIsOverListeners.forEach(it -> it.roundOfPlayIsOver(playersInfo));
     }
 
-    public void notifyStateChangedListeners(String state) {
+    void notifyStateChangedListeners(String state) {
         stateChangedListeners.forEach(it -> it.stateChanged(state));
     }
 
-    public void notifyRoundOfPlayChanged(RoundOfPlay roundOfPlay) {
+    void notifyRoundOfPlayChanged(RoundOfPlay roundOfPlay) {
         roundOfPlayChangedListeners.forEach(it -> it.roundOfPlayChanged(roundOfPlay));
-    }
-
-    public boolean listenersSubscribed() {
-        return listenersSubscribed;
     }
 
     private void subscribeForUpdates(Object listener) {
@@ -153,7 +143,7 @@ public class ListenerManager {
     }
 
     private boolean listenerIsAI(Object listener) {
-        return listener instanceof PokerAI;
+        return listener instanceof AI;
     }
 
 }

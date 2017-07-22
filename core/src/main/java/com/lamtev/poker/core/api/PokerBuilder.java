@@ -8,8 +8,8 @@ public class PokerBuilder {
     private List<PlayerIdStack> playerIdStacks;
     private String dealerId;
     private int smallBlindSize;
-    private PokerPlay pokerPlay;
-    private List<PokerAI> ais = new ArrayList<>();
+    private Play play;
+    private List<AI> ais = new ArrayList<>();
 
     public PokerBuilder registerPlayers(List<PlayerIdStack> playerIdStacks) {
         this.playerIdStacks = playerIdStacks;
@@ -26,12 +26,12 @@ public class PokerBuilder {
         return this;
     }
 
-    public PokerBuilder registerPlay(PokerPlay pokerPlay) {
-        this.pokerPlay = pokerPlay;
+    public PokerBuilder registerPlay(Play play) {
+        this.play = play;
         return this;
     }
 
-    public PokerBuilder registerAI(PokerAI ai) {
+    public PokerBuilder registerAI(AI ai) {
         ais.add(ai);
         return this;
     }
@@ -39,14 +39,14 @@ public class PokerBuilder {
     public Poker create() {
         makeSureThatPokerConfigured();
         Poker poker = new Poker(playerIdStacks, dealerId, smallBlindSize);
-        poker.registerPlay(pokerPlay);
+        poker.registerPlay(play);
         ais.forEach(poker::registerAI);
         poker.start();
         return poker;
     }
 
     private void makeSureThatPokerConfigured() {
-        if (playerIdStacks == null || dealerId == null || smallBlindSize == 0 || pokerPlay == null) {
+        if (playerIdStacks == null || dealerId == null || smallBlindSize == 0 || play == null) {
             throw new RuntimeException();
         }
     }

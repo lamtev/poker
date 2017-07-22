@@ -4,7 +4,7 @@ import com.lamtev.poker.core.model.Card;
 
 import java.util.List;
 
-public interface PokerPlayer {
+public interface Player {
 
     String id();
 
