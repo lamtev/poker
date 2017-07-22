@@ -6,20 +6,11 @@ import java.util.List;
 
 public interface RoundOfPlay {
 
+    void start();
+
     void subscribe(PokerPlay pokerPlay);
 
     void subscribe(PokerAI pokerAI);
-
-    void setUp(List<PlayerIdStack> playersStacks, String dealerId, int smallBlindSize) throws
-            RoundOfPlayIsOverException;
-
-    void placeBlindWagers() throws
-            ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
-            IsNotEnoughMoneyException,
-            NotPositiveWagerException,
-            RoundOfPlayIsOverException,
-            UnallowableMoveException;
 
     void call() throws
             ForbiddenMoveException,

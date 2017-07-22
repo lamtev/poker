@@ -13,8 +13,17 @@ import java.util.Map;
 
 public class Poker implements RoundOfPlay {
 
-    private PokerState state = new SettingsState(this);
-    private ListenerManager listenerManager = new ListenerManager();
+    private PokerState state;
+    private final ListenerManager listenerManager = new ListenerManager();
+
+    Poker(List<PlayerIdStack> playerIdStackList, String dealerId, int smallBlindWager) {
+        state = new SettingsState(this, playerIdStackList, dealerId, smallBlindWager);
+    }
+
+    @Override
+    public void start() {
+        state.start();
+    }
 
     @Override
     public void subscribe(PokerPlay pokerPlay) {
@@ -25,31 +34,6 @@ public class Poker implements RoundOfPlay {
     public void subscribe(PokerAI pokerAI) {
         listenerManager.subscribe(pokerAI);
         listenerManager.notifyRoundOfPlayChanged(this);
-    }
-
-    @Override
-    public void setUp(List<PlayerIdStack> playersStacks, String dealerId, int smallBlindSize)
-            throws RoundOfPlayIsOverException {
-        if (playersStacks.size() < 2) {
-            //TODO
-            throw new RuntimeException("There must be at least 2 players");
-        }
-        if (!listenerManager.listenersSubscribed()) {
-            throw new RuntimeException("You must subscribe");
-        }
-        state.setUp(playersStacks, dealerId, smallBlindSize);
-    }
-
-    @Override
-    public void placeBlindWagers() throws
-            ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
-            IsNotEnoughMoneyException,
-            NotPositiveWagerException,
-            RoundOfPlayIsOverException,
-            UnallowableMoveException {
-        makeSureThatGameIsSetUp();
-        state.placeBlindWagers();
     }
 
     @Override
@@ -119,6 +103,7 @@ public class Poker implements RoundOfPlay {
     public void setState(PokerState newState) {
         state = newState;
         notifyStateChangedListeners();
+        state.start();
     }
 
     public void notifyBankMoneyUpdatedListeners(int money, int wager) {

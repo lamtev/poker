@@ -50,15 +50,16 @@ public class PokerTest implements PokerPlay {
     @Test
     public void test() throws Exception {
 
-        RoundOfPlay poker = new Poker();
-        poker.subscribe(this);
-        assertEquals("SettingsState", state);
-        assertEquals(0, bank);
-        poker.setUp(playersInfo, "a", 5);
-        assertEquals("BlindsState", state);
-        assertEquals(0, bank);
+        RoundOfPlay poker = new PokerBuilder()
+                .registerPlayers(generatePlayersInfo())
+                .setDealerId("a")
+                .setSmallBlindWager(5)
+                .create();
 
-        poker.placeBlindWagers();
+        poker.subscribe(this);
+
+        poker.start();
+
         assertEquals("PreflopWageringState", state);
         assertEquals(15, bank);
         playersCards.forEach((id, cards) -> assertEquals(2, cards.size()));

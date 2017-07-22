@@ -16,15 +16,13 @@ public class SimpleAITest implements PokerPlay {
 
     private MoveAbility moveAbility = new MoveAbility();
     private String currentPlayerId;
+    private String state;
 
     @Test
     public void test() throws Exception {
-        PokerAI ai1 = new SimpleAI("bot1", 1000);
-        RoundOfPlay poker = new Poker();
-        poker.subscribe(this);
-        poker.subscribe(ai1);
+        PokerAI bot = new SimpleAI("bot1", 1000);
 
-        poker.setUp(new ArrayList<PlayerIdStack>() {{
+        List<PlayerIdStack> playerIdStackList = new ArrayList<PlayerIdStack>() {{
             add(new PlayerIdStack("xxx", 1000));
             add(new PlayerIdStack("yyy", 1000));
             add(new PlayerIdStack("zzz", 1000));
@@ -32,13 +30,70 @@ public class SimpleAITest implements PokerPlay {
             add(new PlayerIdStack("aaa", 1000));
             add(new PlayerIdStack("bbb", 1000));
             add(new PlayerIdStack("bot1", 1000));
-        }}, "www", 50);
+        }};
 
-        poker.placeBlindWagers();
+        RoundOfPlay poker = new PokerBuilder()
+                .registerPlayers(playerIdStackList)
+                .setDealerId("www")
+                .setSmallBlindWager(50)
+                .create();
+
+
+
+        poker.subscribe(this);
+        poker.subscribe(bot);
+
+        poker.start();
+
+        assertEquals("PreflopWageringState", state);
+        assertEquals("bot1", currentPlayerId);
+
+        bot.makeAMove();
         assertEquals("xxx", currentPlayerId);
-//        nTimes(4, poker::call);
-//        assertEquals("xxx", currentPlayerId);
 
+        nTimes(5, poker::call);
+        poker.check();
+        assertEquals("FlopWageringState", state);
+        assertEquals("aaa", currentPlayerId);
+
+        nTimes(2, poker::check);
+        assertEquals("bot1", currentPlayerId);
+
+        bot.makeAMove();
+        assertEquals("xxx", currentPlayerId);
+
+        nTimes(4, poker::check);
+        assertEquals("TurnWageringState", state);
+        assertEquals("aaa", currentPlayerId);
+
+        nTimes(2, poker::check);
+        assertEquals("bot1", currentPlayerId);
+
+        bot.makeAMove();
+        assertEquals("xxx", currentPlayerId);
+
+        nTimes(4, poker::check);
+        assertEquals("RiverWageringState", state);
+        assertEquals("aaa", currentPlayerId);
+
+        nTimes(2, poker::check);
+        assertEquals("bot1", currentPlayerId);
+
+        bot.makeAMove();
+        assertEquals("xxx", currentPlayerId);
+
+        nTimes(4, poker::check);
+        assertEquals("ShowdownState", state);
+        assertEquals("aaa", currentPlayerId);
+
+        nTimes(2, poker::showDown);
+        assertEquals("bot1", currentPlayerId);
+
+        bot.makeAMove();
+        assertEquals("xxx", currentPlayerId);
+
+        nTimes(4, poker::showDown);
+        assertEquals("RoundOfPlayIsOverState", state);
     }
 
     private interface Action {
@@ -146,6 +201,6 @@ public class SimpleAITest implements PokerPlay {
 
     @Override
     public void stateChanged(String stateName) {
-
+        this.state = stateName;
     }
 }

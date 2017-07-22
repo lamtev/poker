@@ -1,9 +1,6 @@
 package com.lamtev.poker.webserver;
 
-import com.lamtev.poker.core.api.PlayerIdStack;
-import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.api.PokerPlay;
-import com.lamtev.poker.core.api.RoundOfPlay;
+import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.states.exceptions.*;
@@ -14,7 +11,7 @@ import static com.lamtev.poker.webserver.Util.names;
 
 public class PokerGame implements PokerPlay, GameAPI {
 
-    private RoundOfPlay poker = new Poker();
+    private RoundOfPlay poker;
     private List<Card> communityCards = new ArrayList<>();
     private Map<String, Map.Entry<Integer, Integer>> playersMoney = new LinkedHashMap<>();
     private Set<String> foldPlayers = new HashSet<>();
@@ -27,7 +24,6 @@ public class PokerGame implements PokerPlay, GameAPI {
 
     @Override
     public void start(String humanId, int playersNumber, int stack) throws RoundOfPlayIsOverException, ForbiddenMoveException, NotPositiveWagerException, IsNotEnoughMoneyException, UnallowableMoveException, GameHaveNotBeenStartedException {
-        poker.subscribe(this);
         final int numberOfBots = playersNumber - 1;
         List<String> players = names(numberOfBots);
         //TODO check name existence
@@ -37,8 +33,14 @@ public class PokerGame implements PokerPlay, GameAPI {
         List<PlayerIdStack> playersStacks = new ArrayList<>();
         playersMoney.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getKey())));
         smallBlindSize = stack / 1000;
-        poker.setUp(playersStacks, playersStacks.get(0).id(), smallBlindSize);
-        poker.placeBlindWagers();
+        poker = new PokerBuilder()
+                .registerPlayers(playersStacks)
+                .setDealerId(playersStacks.get(0).id())
+                .setSmallBlindWager(smallBlindSize)
+                .create();
+
+        poker.subscribe(this);
+        poker.start();
     }
 
     @Override
@@ -149,21 +151,24 @@ public class PokerGame implements PokerPlay, GameAPI {
                     this.playersMoney.put(id, new AbstractMap.SimpleEntry<>(stack, 0));
                 });
         foldPlayers = new HashSet<>();
-        poker = new Poker();
         poker.subscribe(this);
-        communityCards = new ArrayList<>();
-        playersCards = new LinkedHashMap<>();
 
         smallBlindSize *= 1.25;
+
+        communityCards = new ArrayList<>();
+        playersCards = new LinkedHashMap<>();
 
         List<PlayerIdStack> playersStacks = new ArrayList<>();
         this.playersMoney.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getKey())));
 
-        try {
-            poker.setUp(playersStacks, playersStacks.get(0).id(), smallBlindSize);
-        } catch (RoundOfPlayIsOverException e) {
-            e.printStackTrace();
-        }
+        poker = new PokerBuilder()
+                .registerPlayers(playersStacks)
+                .setDealerId(playersStacks.get(0).id())
+                .setSmallBlindWager(smallBlindSize)
+                .create();
+
+        poker.subscribe(this);
+        poker.start();
     }
 
     @Override

@@ -33,9 +33,4 @@ class TurnWageringState extends WageringState {
         }
     }
 
-    @Override
-    void determineUnderTheGunPosition() {
-        players().nextNonAllinnerAfterDealer();
-    }
-
 }

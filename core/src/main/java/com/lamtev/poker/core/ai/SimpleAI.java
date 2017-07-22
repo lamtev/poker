@@ -24,10 +24,44 @@ public class SimpleAI implements PokerAI {
     private MoveAbility moveAbility = new MoveAbility();
     private String state;
     private Map<String, PokerHand> playersHands = new HashMap<>();
+    private String currentPlayer;
 
     public SimpleAI(String id, int stack) {
         this.id = id;
         this.stack = stack;
+    }
+
+    @Override
+    public void makeAMove() {
+        if (!id().equals(currentPlayer)) {
+            throw new RuntimeException();
+        }
+        try {
+            System.out.println(state);
+            switch (state) {
+                case "PreflopWageringState":
+                case "FlopWageringState":
+                case "TurnWageringState":
+                case "RiverWageringState":
+                    if (moveAbility.checkIsAble()) {
+                        poker.check();
+                        System.out.println(id + " checked");
+                    } else if (moveAbility.callIsAble()) {
+                        poker.call();
+                        System.out.println(id + " called");
+                    } else {
+                        poker.fold();
+                        System.out.println(id + " fold");
+                    }
+                    break;
+                case "ShowdownState":
+                    poker.showDown();
+                    System.out.println(id + " showed down");
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -80,33 +114,7 @@ public class SimpleAI implements PokerAI {
 
     @Override
     public void currentPlayerChanged(String currentPlayerId) {
-        try {
-            if (id().equals(currentPlayerId)) {
-                switch (state) {
-                    case "PreflopWageringState":
-                    case "FlopWageringState":
-                    case "TurnWageringState":
-                    case "RiverWageringState":
-                        if (moveAbility.checkIsAble()) {
-                            poker.check();
-                            System.out.println(id + " checked");
-                        } else if (moveAbility.callIsAble()) {
-                            poker.call();
-                            System.out.println(id + " called");
-                        } else {
-                            poker.fold();
-                            System.out.println(id + " fold");
-                        }
-                        break;
-                    case "ShowdownState":
-                        poker.showDown();
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        this.currentPlayer = currentPlayerId;
     }
 
     @Override

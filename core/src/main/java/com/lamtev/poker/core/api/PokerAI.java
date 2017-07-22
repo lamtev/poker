@@ -26,6 +26,8 @@ public interface PokerAI extends
         RoundOfPlayIsOverListener,
         StateChangedListener {
 
+    void makeAMove();
+
     @Override
     @Deprecated
     default void playerShowedDown(String playerId, PokerHand hand) {

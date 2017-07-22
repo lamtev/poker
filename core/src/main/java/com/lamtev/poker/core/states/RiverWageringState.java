@@ -26,9 +26,4 @@ class RiverWageringState extends WageringState {
         }
     }
 
-    @Override
-    void determineUnderTheGunPosition() {
-        players().nextNonAllinnerAfterDealer();
-    }
-
 }

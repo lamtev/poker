@@ -1,9 +1,6 @@
 package com.lamtev.poker.desktop;
 
-import com.lamtev.poker.core.api.PlayerIdStack;
-import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.api.PokerPlay;
-import com.lamtev.poker.core.api.RoundOfPlay;
+import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.states.exceptions.*;
@@ -109,19 +106,14 @@ public class PokerGame implements PokerPlay {
         playersCards.clear();
         communityCards.clear();
         communityCardsView.getChildren().clear();
-        poker = new Poker();
-        setUpGame(playersInfo, dealerId);
-    }
 
-    private void setUpGame(List<PlayerIdStack> playersInfo, String dealerId) {
+        poker = new PokerBuilder()
+                .registerPlayers(playersInfo)
+                .setDealerId(dealerId)
+                .setSmallBlindWager(smallBlindSize)
+                .create();
         poker.subscribe(this);
-        try {
-            poker.setUp(playersInfo, dealerId, smallBlindSize);
-            poker.placeBlindWagers();
-        } catch (RoundOfPlayIsOverException | GameHaveNotBeenStartedException | ForbiddenMoveException
-                | NotPositiveWagerException | IsNotEnoughMoneyException | UnallowableMoveException e) {
-            e.printStackTrace();
-        }
+        poker.start();
     }
 
     private void setUpButtons() {
