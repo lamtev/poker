@@ -125,12 +125,6 @@ abstract class WageringState extends ActionState {
 
     abstract void attemptNextState();
 
-    private void notifyMoneyUpdatedListeners() {
-        Player currentPlayer = players().current();
-        poker().notifyPlayerMoneyUpdatedListeners(currentPlayer.id(), currentPlayer.stack(), currentPlayer.wager());
-        poker().notifyBankMoneyUpdatedListeners(bank().money(), bank().wager());
-    }
-
     boolean timeToNextState() {
         return allActiveNonAllinnersChecked() ||
                 thereWereRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers();
@@ -162,6 +156,12 @@ abstract class WageringState extends ActionState {
     private boolean thereWereRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers() {
         return !raisers.isEmpty() && players().activeNonAllinnersWithSameWagerNumber(bank().wager())
                 + players().allinnersNumber() == players().activePlayersNumber();
+    }
+
+    private void notifyMoneyUpdatedListeners() {
+        Player currentPlayer = players().current();
+        poker().notifyPlayerMoneyUpdatedListeners(currentPlayer.id(), currentPlayer.stack(), currentPlayer.wager());
+        poker().notifyBankMoneyUpdatedListeners(bank().money(), bank().wager());
     }
 
 }
