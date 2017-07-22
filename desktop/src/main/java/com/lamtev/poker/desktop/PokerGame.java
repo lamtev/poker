@@ -1,9 +1,12 @@
 package com.lamtev.poker.desktop;
 
-import com.lamtev.poker.core.api.*;
+import com.lamtev.poker.core.api.PlayerIdStack;
+import com.lamtev.poker.core.api.PokerBuilder;
+import com.lamtev.poker.core.api.PokerPlay;
+import com.lamtev.poker.core.api.RoundOfPlay;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
-import com.lamtev.poker.core.states.exceptions.*;
+import com.lamtev.poker.core.states.exceptions.RoundOfPlayIsOverException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Orientation;
@@ -111,9 +114,8 @@ public class PokerGame implements PokerPlay {
                 .registerPlayers(playersInfo)
                 .setDealerId(dealerId)
                 .setSmallBlindWager(smallBlindSize)
+                .registerPlay(this)
                 .create();
-        poker.subscribe(this);
-        poker.start();
     }
 
     private void setUpButtons() {

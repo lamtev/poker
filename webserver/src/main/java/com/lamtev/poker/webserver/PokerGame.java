@@ -1,6 +1,9 @@
 package com.lamtev.poker.webserver;
 
-import com.lamtev.poker.core.api.*;
+import com.lamtev.poker.core.api.PlayerIdStack;
+import com.lamtev.poker.core.api.PokerBuilder;
+import com.lamtev.poker.core.api.PokerPlay;
+import com.lamtev.poker.core.api.RoundOfPlay;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.states.exceptions.*;
@@ -37,10 +40,8 @@ public class PokerGame implements PokerPlay, GameAPI {
                 .registerPlayers(playersStacks)
                 .setDealerId(playersStacks.get(0).id())
                 .setSmallBlindWager(smallBlindSize)
+                .registerPlay(this)
                 .create();
-
-        poker.subscribe(this);
-        poker.start();
     }
 
     @Override
@@ -151,7 +152,6 @@ public class PokerGame implements PokerPlay, GameAPI {
                     this.playersMoney.put(id, new AbstractMap.SimpleEntry<>(stack, 0));
                 });
         foldPlayers = new HashSet<>();
-        poker.subscribe(this);
 
         smallBlindSize *= 1.25;
 
@@ -165,10 +165,8 @@ public class PokerGame implements PokerPlay, GameAPI {
                 .registerPlayers(playersStacks)
                 .setDealerId(playersStacks.get(0).id())
                 .setSmallBlindWager(smallBlindSize)
+                .registerPlay(this)
                 .create();
-
-        poker.subscribe(this);
-        poker.start();
     }
 
     @Override

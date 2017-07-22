@@ -16,26 +16,6 @@ public class Poker implements RoundOfPlay {
     private PokerState state;
     private final ListenerManager listenerManager = new ListenerManager();
 
-    Poker(List<PlayerIdStack> playerIdStackList, String dealerId, int smallBlindWager) {
-        state = new SettingsState(this, playerIdStackList, dealerId, smallBlindWager);
-    }
-
-    @Override
-    public void start() {
-        state.start();
-    }
-
-    @Override
-    public void subscribe(PokerPlay pokerPlay) {
-        listenerManager.subscribe(pokerPlay);
-    }
-
-    @Override
-    public void subscribe(PokerAI pokerAI) {
-        listenerManager.subscribe(pokerAI);
-        listenerManager.notifyRoundOfPlayChanged(this);
-    }
-
     @Override
     public void call() throws
             ForbiddenMoveException,
@@ -160,6 +140,23 @@ public class Poker implements RoundOfPlay {
 
     public void notifyRoundOfPlayIsOverListeners(List<PlayerIdStack> playersInfo) {
         listenerManager.notifyRoundOfPlayIsOverListeners(playersInfo);
+    }
+
+    Poker(List<PlayerIdStack> playerIdStackList, String dealerId, int smallBlindWager) {
+        state = new SettingsState(this, playerIdStackList, dealerId, smallBlindWager);
+    }
+
+    void registerPlay(PokerPlay pokerPlay) {
+        listenerManager.subscribe(pokerPlay);
+    }
+
+    void registerAI(PokerAI pokerAI) {
+        listenerManager.subscribe(pokerAI);
+        listenerManager.notifyRoundOfPlayChanged(this);
+    }
+
+    void start() {
+        state.start();
     }
 
     private void notifyStateChangedListeners() {
