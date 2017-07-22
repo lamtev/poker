@@ -6,12 +6,6 @@ import java.util.List;
 
 public interface RoundOfPlay {
 
-    void start();
-
-    void subscribe(PokerPlay pokerPlay);
-
-    void subscribe(PokerAI pokerAI);
-
     void call() throws
             ForbiddenMoveException,
             GameHaveNotBeenStartedException,

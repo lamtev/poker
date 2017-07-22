@@ -36,14 +36,9 @@ public class SimpleAITest implements PokerPlay {
                 .registerPlayers(playerIdStackList)
                 .setDealerId("www")
                 .setSmallBlindWager(50)
+                .registerPlay(this)
+                .registerAI(bot)
                 .create();
-
-
-
-        poker.subscribe(this);
-        poker.subscribe(bot);
-
-        poker.start();
 
         assertEquals("PreflopWageringState", state);
         assertEquals("bot1", currentPlayerId);

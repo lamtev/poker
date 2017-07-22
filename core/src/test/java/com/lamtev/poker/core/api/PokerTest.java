@@ -54,11 +54,8 @@ public class PokerTest implements PokerPlay {
                 .registerPlayers(generatePlayersInfo())
                 .setDealerId("a")
                 .setSmallBlindWager(5)
+                .registerPlay(this)
                 .create();
-
-        poker.subscribe(this);
-
-        poker.start();
 
         assertEquals("PreflopWageringState", state);
         assertEquals(15, bank);
