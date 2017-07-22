@@ -20,7 +20,7 @@ class TurnWageringState extends WageringState {
     }
 
     @Override
-    protected void attemptNextState() {
+    void attemptNextState() {
         if (timeToForcedShowdown()) {
             //TODO think about how to dispose of code duplicates
             dealer().makeRiver();

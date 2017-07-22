@@ -43,7 +43,7 @@ class PreflopWageringState extends WageringState {
     }
 
     @Override
-    public void attemptNextState() {
+    void attemptNextState() {
         if (timeToForcedShowdown()) {
             dealer().makeFlop();
             dealer().makeTurn();

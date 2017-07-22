@@ -58,6 +58,8 @@ public class SimpleAI implements AI {
                     poker.showDown();
                     System.out.println(id + " showed down");
                     break;
+                default:
+                    break;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -209,4 +211,5 @@ public class SimpleAI implements AI {
                 ", cards=" + cards +
                 '}';
     }
+
 }
