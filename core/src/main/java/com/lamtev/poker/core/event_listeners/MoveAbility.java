@@ -72,4 +72,15 @@ public class MoveAbility {
         this.showdownIsAble = showdownIsAble;
     }
 
+    @Override
+    public String toString() {
+        return "MoveAbility{" +
+                "allInIsAble=" + allInIsAble +
+                ", callIsAble=" + callIsAble +
+                ", checkIsAble=" + checkIsAble +
+                ", foldIsAble=" + foldIsAble +
+                ", raiseIsAble=" + raiseIsAble +
+                ", showdownIsAble=" + showdownIsAble +
+                '}';
+    }
 }

@@ -87,12 +87,16 @@ class ShowdownState extends ActionState {
     }
 
     @Override
+    void updateMoveAbility() {
+        moveAbility().setFoldIsAble(!currentPlayerCantFold());
+        poker().notifyMoveAbilityListeners(players().current().id(), moveAbility());
+    }
+
+    @Override
     void changePlayerIndex() {
         players().nextActive();
-        String currentPlayerId = players().current().id();
-        poker().notifyCurrentPlayerChangedListeners(currentPlayerId);
-        moveAbility().setFoldIsAble(!currentPlayerCantFold());
-        poker().notifyMoveAbilityListeners(currentPlayerId, moveAbility());
+        updateMoveAbility();
+        poker().notifyCurrentPlayerChangedListeners(players().current().id());
     }
 
     //TODO     add feature for action: not showDown and not fold
@@ -110,7 +114,7 @@ class ShowdownState extends ActionState {
                     winner.stack(),
                     winner.wager()
             ));
-            poker().setState(new RoundOfPlayIsOverState(this));
+            poker().setState(new RoundOfPlayIsOverState(poker(), players()));
         }
     }
 

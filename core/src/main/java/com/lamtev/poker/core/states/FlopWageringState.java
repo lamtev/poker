@@ -9,6 +9,10 @@ class FlopWageringState extends WageringState {
 
     FlopWageringState(ActionState state) {
         super(state);
+    }
+
+    @Override
+    void makeDealerJob() {
         dealer().makeFlop();
         List<Card> addedCards = new ArrayList<>();
         communityCards().forEach(addedCards::add);

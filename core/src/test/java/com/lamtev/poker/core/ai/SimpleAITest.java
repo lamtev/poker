@@ -20,11 +20,9 @@ public class SimpleAITest implements PokerPlay {
     @Test
     public void test() throws Exception {
         PokerAI ai1 = new SimpleAI("bot1", 1000);
-        PokerAI ai2 = new SimpleAI("bot2", 1000);
         RoundOfPlay poker = new Poker();
         poker.subscribe(this);
         poker.subscribe(ai1);
-        poker.subscribe(ai2);
 
         poker.setUp(new ArrayList<PlayerIdStack>() {{
             add(new PlayerIdStack("xxx", 1000));
@@ -34,13 +32,12 @@ public class SimpleAITest implements PokerPlay {
             add(new PlayerIdStack("aaa", 1000));
             add(new PlayerIdStack("bbb", 1000));
             add(new PlayerIdStack("bot1", 1000));
-            add(new PlayerIdStack("bot2", 1000));
-        }}, "bot2", 50);
+        }}, "www", 50);
 
         poker.placeBlindWagers();
-
-        nTimes(4, poker::call);
         assertEquals("xxx", currentPlayerId);
+//        nTimes(4, poker::call);
+//        assertEquals("xxx", currentPlayerId);
 
     }
 

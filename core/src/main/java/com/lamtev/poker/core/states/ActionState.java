@@ -33,27 +33,27 @@ abstract class ActionState extends AbstractPokerState {
         this.moveAbility = moveAbility;
     }
 
-    public Poker poker() {
+    Poker poker() {
         return poker;
     }
 
-    public Players players() {
+    Players players() {
         return players;
     }
 
-    public Bank bank() {
+    Bank bank() {
         return bank;
     }
 
-    public Dealer dealer() {
+    Dealer dealer() {
         return dealer;
     }
 
-    public Cards communityCards() {
+    Cards communityCards() {
         return communityCards;
     }
 
-    public MoveAbility moveAbility() {
+    MoveAbility moveAbility() {
         return moveAbility;
     }
 
@@ -65,8 +65,11 @@ abstract class ActionState extends AbstractPokerState {
 
     void changePlayerIndex() {
         players.nextActiveNonAllinner();
+        updateMoveAbility();
         poker.notifyCurrentPlayerChangedListeners(players.current().id());
     }
+
+    abstract void updateMoveAbility();
 
     boolean timeToForcedShowdown() {
         return players.activeNonAllinnersNumber() <= 1;
