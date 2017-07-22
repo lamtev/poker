@@ -17,10 +17,14 @@ abstract class WageringState extends ActionState {
 
     WageringState(ActionState state) {
         super(state);
-        determineUnderTheGunPosition();
-        poker().notifyCurrentPlayerChangedListeners(players().current().id());
         moveValidator = new MoveValidator(players(), bank());
+        determineUnderTheGunPosition();
         moveAbility().setAllInIsAble(true);
+        updateMoveAbility();
+        makeDealerJob();
+        System.out.println(moveAbility());
+        System.out.println(players().current());
+        poker().notifyCurrentPlayerChangedListeners(players().current().id());
     }
 
     @Override
@@ -83,7 +87,7 @@ abstract class WageringState extends ActionState {
                     winner.id(),
                     winner.stack(), winner.wager()
             );
-            poker().setState(new RoundOfPlayIsOverState(this));
+            poker().setState(new RoundOfPlayIsOverState(poker(), players()));
             return;
         }
         attemptNextState();
@@ -106,16 +110,16 @@ abstract class WageringState extends ActionState {
     //TODO think about all in ability if all in is raise
 
     @Override
-    void changePlayerIndex() {
-        super.changePlayerIndex();
+    void updateMoveAbility() {
         moveAbility().setRaiseIsAble(moveValidator.raiseIsAble(raisers.size()));
         moveAbility().setCallIsAble(moveValidator.callIsAble());
         moveAbility().setCheckIsAble(moveValidator.checkIsAble(raisers.size()));
-        System.out.println(players().current().id());
         poker().notifyMoveAbilityListeners(players().current().id(), moveAbility());
     }
 
     abstract void determineUnderTheGunPosition();
+
+    abstract void makeDealerJob();
 
     abstract void attemptNextState();
 

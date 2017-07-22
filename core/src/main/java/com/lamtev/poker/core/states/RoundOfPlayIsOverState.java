@@ -1,22 +1,24 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.PlayerIdStack;
+import com.lamtev.poker.core.api.Poker;
+import com.lamtev.poker.core.model.Players;
 import com.lamtev.poker.core.states.exceptions.RoundOfPlayIsOverException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class RoundOfPlayIsOverState extends ActionState {
+class RoundOfPlayIsOverState extends AbstractPokerState {
 
-    RoundOfPlayIsOverState(ActionState state) {
-        super(state);
-        poker().notifyRoundOfPlayIsOverListeners(new ArrayList<PlayerIdStack>() {{
-            players().forEach(player -> add(new PlayerIdStack(player.id(), player.stack())));
+    RoundOfPlayIsOverState(Poker poker, Players players) {
+        poker.notifyRoundOfPlayIsOverListeners(new ArrayList<PlayerIdStack>() {{
+            players.forEach(player -> add(new PlayerIdStack(player.id(), player.stack())));
         }});
     }
 
     @Override
-    public void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize) throws RoundOfPlayIsOverException {
+    public void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize)
+            throws RoundOfPlayIsOverException {
         throw new RoundOfPlayIsOverException();
     }
 

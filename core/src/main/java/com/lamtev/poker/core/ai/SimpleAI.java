@@ -191,4 +191,14 @@ public class SimpleAI implements PokerAI {
         state = stateName;
     }
 
+    @Override
+    public String toString() {
+        return "SimpleAI{" +
+                "id='" + id + '\'' +
+                ", stack=" + stack +
+                ", wager=" + wager +
+                ", isActive=" + isActive +
+                ", cards=" + cards +
+                '}';
+    }
 }

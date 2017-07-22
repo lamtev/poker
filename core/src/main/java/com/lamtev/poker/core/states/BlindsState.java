@@ -81,4 +81,10 @@ class BlindsState extends ActionState {
     public void showDown() throws ForbiddenMoveException {
         throw new ForbiddenMoveException("Show down", toString());
     }
+
+    @Override
+    void updateMoveAbility() {
+
+    }
+
 }
