@@ -13,17 +13,22 @@ class ShowdownState extends ActionState {
 
     private final Map<Player, PokerHand> showedDownPlayers = new HashMap<>();
     private final PokerHandFactory handFactory;
+    private final Player latestAggressor;
 
     ShowdownState(ActionState state, Player latestAggressor) {
         super(state);
         handFactory = new PokerHandFactory(communityCards());
+        this.latestAggressor = latestAggressor;
+    }
+
+    @Override
+    public void start() {
         if (latestAggressor == null) {
             players().nextActiveAfterDealer();
         } else {
             players().setLatestAggressor(latestAggressor);
         }
         String currentPlayerId = players().current().id();
-        poker().notifyCurrentPlayerChangedListeners(currentPlayerId);
         moveAbility().setAllInIsAble(false);
         moveAbility().setCallIsAble(false);
         moveAbility().setCheckIsAble(false);
@@ -31,11 +36,7 @@ class ShowdownState extends ActionState {
         moveAbility().setFoldIsAble(false);
         moveAbility().setShowdownIsAble(true);
         poker().notifyMoveAbilityListeners(currentPlayerId, moveAbility());
-    }
-
-    @Override
-    public void placeBlindWagers() throws ForbiddenMoveException {
-        throw new ForbiddenMoveException("Placing the blind wagers", toString());
+        poker().notifyCurrentPlayerChangedListeners(currentPlayerId);
     }
 
     @Override
@@ -63,10 +64,6 @@ class ShowdownState extends ActionState {
         poker().notifyPlayerFoldListeners(currentPlayer.id());
         changePlayerIndex();
         attemptDetermineWinners();
-    }
-
-    private boolean currentPlayerCantFold() {
-        return showedDownPlayers.isEmpty() || players().current().isAllinner();
     }
 
     @Override
@@ -99,9 +96,9 @@ class ShowdownState extends ActionState {
         poker().notifyCurrentPlayerChangedListeners(players().current().id());
     }
 
-    //TODO     add feature for action: not showDown and not fold
-    //TODO     When it would be added, if only one action player then state = ShowDown
-    //TODO     and player will have 2 variants: do this action or showDown
+    private boolean currentPlayerCantFold() {
+        return showedDownPlayers.isEmpty() || players().current().isAllinner();
+    }
 
     private void attemptDetermineWinners() {
         if (timeToDetermineWinners()) {

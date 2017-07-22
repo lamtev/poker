@@ -18,18 +18,18 @@ abstract class WageringState extends ActionState {
     WageringState(ActionState state) {
         super(state);
         moveValidator = new MoveValidator(players(), bank());
+    }
+
+    @Override
+    public void start() {
+        if (timeToForcedShowdown()) {
+            attemptNextState();
+        }
         determineUnderTheGunPosition();
         moveAbility().setAllInIsAble(true);
         updateMoveAbility();
         makeDealerJob();
-        System.out.println(moveAbility());
-        System.out.println(players().current());
         poker().notifyCurrentPlayerChangedListeners(players().current().id());
-    }
-
-    @Override
-    public void placeBlindWagers() throws ForbiddenMoveException {
-        throw new ForbiddenMoveException("Placing blind wagers", toString());
     }
 
     @Override
@@ -117,7 +117,9 @@ abstract class WageringState extends ActionState {
         poker().notifyMoveAbilityListeners(players().current().id(), moveAbility());
     }
 
-    abstract void determineUnderTheGunPosition();
+    void determineUnderTheGunPosition() {
+        players().nextNonAllinnerAfterDealer();
+    }
 
     abstract void makeDealerJob();
 

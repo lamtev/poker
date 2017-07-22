@@ -1,15 +1,11 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.event_listeners.MoveAbility;
 import com.lamtev.poker.core.model.Bank;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.model.Dealer;
 import com.lamtev.poker.core.model.Players;
-import com.lamtev.poker.core.states.exceptions.RoundOfPlayIsOverException;
-
-import java.util.List;
 
 abstract class ActionState extends AbstractPokerState {
 
@@ -55,12 +51,6 @@ abstract class ActionState extends AbstractPokerState {
 
     MoveAbility moveAbility() {
         return moveAbility;
-    }
-
-    @Override
-    public void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize)
-            throws IllegalStateException, RoundOfPlayIsOverException {
-        throw new IllegalStateException("Can't setUp when" + toString());
     }
 
     void changePlayerIndex() {

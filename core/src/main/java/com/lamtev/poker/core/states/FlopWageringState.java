@@ -29,15 +29,15 @@ class FlopWageringState extends WageringState {
             addedCards.add(communityCards().cardAt(4));
             addedCards.add(communityCards().cardAt(5));
             poker().notifyCommunityCardsDealtListeners(addedCards);
+            if (latestAggressor() == null) {
+                players().nextActiveAfterDealer();
+            } else {
+                players().setLatestAggressor(latestAggressor());
+            }
             poker().setState(new ShowdownState(this, latestAggressor()));
         } else if (timeToNextState()) {
             poker().setState(new TurnWageringState(this));
         }
-    }
-
-    @Override
-    void determineUnderTheGunPosition() {
-        players().nextNonAllinnerAfterDealer();
     }
 
 }

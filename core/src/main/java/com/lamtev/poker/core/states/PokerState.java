@@ -7,17 +7,7 @@ import java.util.List;
 
 public interface PokerState {
 
-    void setUp(List<PlayerIdStack> playersInfo, String dealerId, int smallBlindSize) throws
-            IllegalStateException,
-            RoundOfPlayIsOverException;
-
-    void placeBlindWagers() throws
-            GameHaveNotBeenStartedException,
-            ForbiddenMoveException,
-            UnallowableMoveException,
-            RoundOfPlayIsOverException,
-            IsNotEnoughMoneyException,
-            NotPositiveWagerException;
+    void start();
 
     void call() throws
             GameHaveNotBeenStartedException,
