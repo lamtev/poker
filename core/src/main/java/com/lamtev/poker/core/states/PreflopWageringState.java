@@ -12,6 +12,10 @@ class PreflopWageringState extends WageringState {
 
     PreflopWageringState(ActionState state) {
         super(state);
+    }
+
+    @Override
+    void makeDealerJob() {
         dealer().makePreflop();
         //TODO notify players from sb to dealer
         poker().notifyHoleCardsDealtListeners(new LinkedHashMap<String, List<Card>>() {{
@@ -64,6 +68,15 @@ class PreflopWageringState extends WageringState {
     @Override
     void determineUnderTheGunPosition() {
         players().nextAfterBigBlind();
+    }
+
+    @Override
+    void updateMoveAbility() {
+        super.updateMoveAbility();
+        moveAbility().setCallIsAble(!moveIsFinalBigBlindMove());
+        moveAbility().setCheckIsAble(moveIsFinalBigBlindMove());
+        moveAbility().setFoldIsAble(!moveIsFinalBigBlindMove());
+        poker().notifyMoveAbilityListeners(players().current().id(), moveAbility());
     }
 
     private boolean moveIsFinalBigBlindMove() {

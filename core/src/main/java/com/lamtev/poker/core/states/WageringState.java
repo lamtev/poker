@@ -17,20 +17,25 @@ abstract class WageringState extends ActionState {
 
     WageringState(ActionState state) {
         super(state);
-        determineUnderTheGunPosition();
-        poker().notifyCurrentPlayerChangedListeners(players().current().id());
         moveValidator = new MoveValidator(players(), bank());
     }
 
     @Override
-    public void placeBlindWagers() throws ForbiddenMoveException {
-        throw new ForbiddenMoveException("Placing blind wagers", toString());
+    public void start() {
+        if (timeToForcedShowdown()) {
+            attemptNextState();
+        }
+        determineUnderTheGunPosition();
+        moveAbility().setAllInIsAble(true);
+        updateMoveAbility();
+        makeDealerJob();
+        poker().notifyCurrentPlayerChangedListeners(players().current().id());
     }
 
     @Override
     public void call() throws UnallowableMoveException, IsNotEnoughMoneyException {
         Player currentPlayer = players().current();
-        moveValidator.validateCall(currentPlayer);
+        moveValidator.validateCall();
         bank().acceptCall(currentPlayer);
         notifyMoneyUpdatedListeners();
         poker().notifyPlayerCalledListeners(currentPlayer.id());
@@ -82,7 +87,7 @@ abstract class WageringState extends ActionState {
                     winner.id(),
                     winner.stack(), winner.wager()
             );
-            poker().setState(new RoundOfPlayIsOverState(this));
+            poker().setState(new RoundOfPlayIsOverState(poker(), players()));
             return;
         }
         attemptNextState();
@@ -102,7 +107,21 @@ abstract class WageringState extends ActionState {
         throw new ForbiddenMoveException("Show down", toString());
     }
 
-    abstract void determineUnderTheGunPosition();
+    //TODO think about all in ability if all in is raise
+
+    @Override
+    void updateMoveAbility() {
+        moveAbility().setRaiseIsAble(moveValidator.raiseIsAble(raisers.size()));
+        moveAbility().setCallIsAble(moveValidator.callIsAble());
+        moveAbility().setCheckIsAble(moveValidator.checkIsAble(raisers.size()));
+        poker().notifyMoveAbilityListeners(players().current().id(), moveAbility());
+    }
+
+    void determineUnderTheGunPosition() {
+        players().nextNonAllinnerAfterDealer();
+    }
+
+    abstract void makeDealerJob();
 
     abstract void attemptNextState();
 

@@ -9,6 +9,10 @@ class TurnWageringState extends WageringState {
 
     TurnWageringState(ActionState state) {
         super(state);
+    }
+
+    @Override
+    void makeDealerJob() {
         dealer().makeTurn();
         List<Card> addedCards = new ArrayList<>();
         addedCards.add(communityCards().cardAt(4));
@@ -27,11 +31,6 @@ class TurnWageringState extends WageringState {
         } else if (timeToNextState()) {
             poker().setState(new RiverWageringState(this));
         }
-    }
-
-    @Override
-    void determineUnderTheGunPosition() {
-        players().nextNonAllinnerAfterDealer();
     }
 
 }

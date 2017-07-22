@@ -1,6 +1,7 @@
 package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.event_listeners.ListenerManager;
+import com.lamtev.poker.core.event_listeners.MoveAbility;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.states.PokerState;
@@ -12,43 +13,8 @@ import java.util.Map;
 
 public class Poker implements RoundOfPlay {
 
-    private PokerState state = new SettingsState(this);
-    private ListenerManager listenerManager = new ListenerManager();
-
-    @Override
-    public void subscribe(PokerPlay pokerPlay) {
-        listenerManager.subscribe(pokerPlay);
-    }
-
-    @Override
-    public void subscribe(PokerAI pokerAI) {
-        listenerManager.subscribe(pokerAI);
-    }
-
-    @Override
-    public void setUp(List<PlayerIdStack> playersStacks, String dealerId, int smallBlindSize)
-            throws RoundOfPlayIsOverException {
-        if (playersStacks.size() < 2) {
-            //TODO
-            throw new RuntimeException("There must be at least 2 players");
-        }
-        if (!listenerManager.listenersSubscribed()) {
-            throw new RuntimeException("You must subscribe");
-        }
-        state.setUp(playersStacks, dealerId, smallBlindSize);
-    }
-
-    @Override
-    public void placeBlindWagers() throws
-            ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
-            IsNotEnoughMoneyException,
-            NotPositiveWagerException,
-            RoundOfPlayIsOverException,
-            UnallowableMoveException {
-        makeSureThatGameIsSetUp();
-        state.placeBlindWagers();
-    }
+    private PokerState state;
+    private final ListenerManager listenerManager = new ListenerManager();
 
     @Override
     public void call() throws
@@ -117,6 +83,7 @@ public class Poker implements RoundOfPlay {
     public void setState(PokerState newState) {
         state = newState;
         notifyStateChangedListeners();
+        state.start();
     }
 
     public void notifyBankMoneyUpdatedListeners(int money, int wager) {
@@ -139,11 +106,8 @@ public class Poker implements RoundOfPlay {
         listenerManager.notifyHoleCardsDealtListeners(playerIdToCards);
     }
 
-    public void notifyMoveAbilityListeners(boolean allInIsAble, boolean callIsAble,
-                                           boolean checkIsAble, boolean foldIsAble,
-                                           boolean raiseIsAble, boolean showdownIsAble) {
-        listenerManager.notifyMoveAbilityListeners(allInIsAble, callIsAble, checkIsAble,
-                foldIsAble, raiseIsAble, showdownIsAble);
+    public void notifyMoveAbilityListeners(String playerId, MoveAbility moveAbility) {
+        listenerManager.notifyMoveAbilityListeners(playerId, moveAbility);
     }
 
     public void notifyPlayerAllinnedListeners(String playerId) {
@@ -176,6 +140,23 @@ public class Poker implements RoundOfPlay {
 
     public void notifyRoundOfPlayIsOverListeners(List<PlayerIdStack> playersInfo) {
         listenerManager.notifyRoundOfPlayIsOverListeners(playersInfo);
+    }
+
+    Poker(List<PlayerIdStack> playerIdStackList, String dealerId, int smallBlindWager) {
+        state = new SettingsState(this, playerIdStackList, dealerId, smallBlindWager);
+    }
+
+    void registerPlay(PokerPlay pokerPlay) {
+        listenerManager.subscribe(pokerPlay);
+    }
+
+    void registerAI(PokerAI pokerAI) {
+        listenerManager.subscribe(pokerAI);
+        listenerManager.notifyRoundOfPlayChanged(this);
+    }
+
+    void start() {
+        state.start();
     }
 
     private void notifyStateChangedListeners() {

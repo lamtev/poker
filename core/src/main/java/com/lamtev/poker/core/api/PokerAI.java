@@ -22,8 +22,11 @@ public interface PokerAI extends
         PlayerMoneyUpdatedListener,
         PlayerRaisedListener,
         PlayerShowedDownListener,
+        RoundOfPlayChangedListener,
         RoundOfPlayIsOverListener,
         StateChangedListener {
+
+    void makeAMove();
 
     @Override
     @Deprecated
