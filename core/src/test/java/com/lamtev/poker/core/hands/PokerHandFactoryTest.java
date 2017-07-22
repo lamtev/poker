@@ -3,7 +3,6 @@ package com.lamtev.poker.core.hands;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.model.Rank;
-import com.lamtev.poker.core.model.Suit;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -12,8 +11,6 @@ import java.util.List;
 import static com.lamtev.poker.core.hands.PokerHand.Name.*;
 import static com.lamtev.poker.core.model.Rank.*;
 import static com.lamtev.poker.core.model.Suit.*;
-import static com.lamtev.poker.core.model.Suit.CLOVERS;
-import static com.lamtev.poker.core.model.Suit.TILES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

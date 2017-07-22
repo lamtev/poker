@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static org.junit.Assert.*;
@@ -14,6 +15,7 @@ public class PokerTest implements Play {
 
     private String state;
     private List<PlayerIdStack> playersInfo;
+    private List<Player> players;
     private List<Card> communityCards;
     private Map<String, PokerHand> hands;
     private String currentPlayerId;
@@ -22,14 +24,14 @@ public class PokerTest implements Play {
     private List<String> foldPlayers;
     private int bank;
 
-    private List<PlayerIdStack> generatePlayersInfo() {
-        List<PlayerIdStack> playersInfo = new ArrayList<>();
-        playersInfo.add(new PlayerIdStack("a", 500));
-        playersInfo.add(new PlayerIdStack("b", 500));
-        playersInfo.add(new PlayerIdStack("c", 500));
-        playersInfo.add(new PlayerIdStack("d", 500));
-        playersInfo.add(new PlayerIdStack("e", 500));
-        playersInfo.add(new PlayerIdStack("f", 500));
+    private List<Player> generatePlayers() {
+        List<Player> playersInfo = new ArrayList<>();
+        playersInfo.add(new User("a", 500));
+        playersInfo.add(new User("b", 500));
+        playersInfo.add(new User("c", 500));
+        playersInfo.add(new User("d", 500));
+        playersInfo.add(new User("e", 500));
+        playersInfo.add(new User("f", 500));
         return playersInfo;
     }
 
@@ -40,7 +42,8 @@ public class PokerTest implements Play {
         hands = new HashMap<>();
         currentPlayerId = null;
         playersCards = new HashMap<>();
-        playersInfo = generatePlayersInfo();
+        players = generatePlayers();
+        playersInfo = players.stream().map(it -> new PlayerIdStack(it.id(), it.stack())).collect(Collectors.toList());
         playersMoney = new HashMap<>();
         playersInfo.forEach(it -> playersMoney.put(it.id(), new AbstractMap.SimpleEntry<>(it.stack(), 0)));
         foldPlayers = new ArrayList<>();
@@ -51,7 +54,7 @@ public class PokerTest implements Play {
     public void test() throws Exception {
 
         RoundOfPlay poker = new PokerBuilder()
-                .registerPlayers(generatePlayersInfo())
+                .registerPlayers(players)
                 .setDealerId("a")
                 .setSmallBlindWager(5)
                 .registerPlay(this)

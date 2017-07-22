@@ -18,7 +18,7 @@ public class MoveValidatorTest {
         players.add(new Player("c", 200));
         players.add(new Player("d", 200));
         players.add(new Player("e", 200));
-        return new Players(players,"e");
+        return new Players(players, "e");
     }
 
     @Test(expected = UnallowableMoveException.class)

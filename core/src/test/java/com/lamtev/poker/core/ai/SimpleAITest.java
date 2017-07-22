@@ -1,7 +1,6 @@
 package com.lamtev.poker.core.ai;
 
 import com.lamtev.poker.core.api.*;
-import com.lamtev.poker.core.api.MoveAbility;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import org.junit.Test;
@@ -22,22 +21,21 @@ public class SimpleAITest implements Play {
     public void test() throws Exception {
         AI bot = new SimpleAI("bot1", 1000);
 
-        List<PlayerIdStack> playerIdStackList = new ArrayList<PlayerIdStack>() {{
-            add(new PlayerIdStack("xxx", 1000));
-            add(new PlayerIdStack("yyy", 1000));
-            add(new PlayerIdStack("zzz", 1000));
-            add(new PlayerIdStack("www", 1000));
-            add(new PlayerIdStack("aaa", 1000));
-            add(new PlayerIdStack("bbb", 1000));
-            add(new PlayerIdStack("bot1", 1000));
+        List<Player> players = new ArrayList<Player>() {{
+            add(new User("xxx", 1000));
+            add(new User("yyy", 1000));
+            add(new User("zzz", 1000));
+            add(new User("www", 1000));
+            add(new User("aaa", 1000));
+            add(new User("bbb", 1000));
+            add(bot);
         }};
 
         RoundOfPlay poker = new PokerBuilder()
-                .registerPlayers(playerIdStackList)
+                .registerPlayers(players)
                 .setDealerId("www")
                 .setSmallBlindWager(50)
                 .registerPlay(this)
-                .registerAI(bot)
                 .create();
 
         assertEquals("PreflopWageringState", state);

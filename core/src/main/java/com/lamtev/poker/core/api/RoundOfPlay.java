@@ -2,8 +2,6 @@ package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.states.exceptions.*;
 
-import java.util.List;
-
 public interface RoundOfPlay {
 
     void call() throws
