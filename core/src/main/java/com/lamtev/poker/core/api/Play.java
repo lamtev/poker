@@ -6,7 +6,7 @@ import com.lamtev.poker.core.model.Card;
 
 import java.util.List;
 
-public interface PokerPlay extends
+public interface Play extends
         BankMoneyUpdatedListener,
         BlindWagersPlacedListener,
         CommunityCardsDealtListener,

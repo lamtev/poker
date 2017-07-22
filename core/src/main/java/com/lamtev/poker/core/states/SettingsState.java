@@ -2,7 +2,7 @@ package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.event_listeners.MoveAbility;
+import com.lamtev.poker.core.api.MoveAbility;
 import com.lamtev.poker.core.model.*;
 import com.lamtev.poker.core.states.exceptions.GameHaveNotBeenStartedException;
 

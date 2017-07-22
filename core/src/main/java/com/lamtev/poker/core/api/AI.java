@@ -7,8 +7,8 @@ import com.lamtev.poker.core.model.Card;
 import java.util.List;
 import java.util.Map;
 
-public interface PokerAI extends
-        PokerPlayer,
+public interface AI extends
+        Player,
         BankMoneyUpdatedListener,
         BlindWagersPlacedListener,
         CommunityCardsDealtListener,

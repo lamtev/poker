@@ -1,7 +1,5 @@
 package com.lamtev.poker.core.api;
 
-import com.lamtev.poker.core.event_listeners.ListenerManager;
-import com.lamtev.poker.core.event_listeners.MoveAbility;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.states.PokerState;
@@ -146,11 +144,11 @@ public class Poker implements RoundOfPlay {
         state = new SettingsState(this, playerIdStackList, dealerId, smallBlindWager);
     }
 
-    void registerPlay(PokerPlay pokerPlay) {
-        listenerManager.subscribe(pokerPlay);
+    void registerPlay(Play play) {
+        listenerManager.subscribe(play);
     }
 
-    void registerAI(PokerAI pokerAI) {
+    void registerAI(AI pokerAI) {
         listenerManager.subscribe(pokerAI);
         listenerManager.notifyRoundOfPlayChanged(this);
     }

@@ -1,7 +1,7 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.event_listeners.MoveAbility;
+import com.lamtev.poker.core.api.MoveAbility;
 import com.lamtev.poker.core.model.Bank;
 import com.lamtev.poker.core.model.Cards;
 import com.lamtev.poker.core.model.Dealer;

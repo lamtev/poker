@@ -1,4 +1,4 @@
-package com.lamtev.poker.core.event_listeners;
+package com.lamtev.poker.core.api;
 
 public class MoveAbility {
 
@@ -12,16 +12,6 @@ public class MoveAbility {
 
     public MoveAbility() {
 
-    }
-
-    public MoveAbility(boolean allInIsAble, boolean callIsAble, boolean checkIsAble,
-                       boolean foldIsAble, boolean raiseIsAble, boolean showdownIsAble) {
-        this.allInIsAble = allInIsAble;
-        this.callIsAble = callIsAble;
-        this.checkIsAble = checkIsAble;
-        this.foldIsAble = foldIsAble;
-        this.raiseIsAble = raiseIsAble;
-        this.showdownIsAble = showdownIsAble;
     }
 
     public boolean allInIsAble() {

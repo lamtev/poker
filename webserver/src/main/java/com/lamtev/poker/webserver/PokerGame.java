@@ -2,7 +2,7 @@ package com.lamtev.poker.webserver;
 
 import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.PokerBuilder;
-import com.lamtev.poker.core.api.PokerPlay;
+import com.lamtev.poker.core.api.Play;
 import com.lamtev.poker.core.api.RoundOfPlay;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
@@ -12,7 +12,7 @@ import java.util.*;
 
 import static com.lamtev.poker.webserver.Util.names;
 
-public class PokerGame implements PokerPlay, GameAPI {
+public class PokerGame implements Play, GameAPI {
 
     private RoundOfPlay poker;
     private List<Card> communityCards = new ArrayList<>();
