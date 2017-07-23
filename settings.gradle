@@ -1,5 +1,5 @@
 rootProject.name = 'poker'
 include 'core'
 include 'desktop'
-include 'webserver'
+//include 'webserver'
 

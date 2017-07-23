@@ -5,9 +5,7 @@ import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,19 +14,20 @@ public class SimpleAITest implements Play {
     private MoveAbility moveAbility = new MoveAbility();
     private String currentPlayerId;
     private String state;
+    private Deque<String> log = new ArrayDeque<>();
 
     @Test
     public void test() throws Exception {
-        AI bot = new SimpleAI("bot1", 1000);
+        AI bot = new SimpleAI("bot", 1000);
 
         List<Player> players = new ArrayList<Player>() {{
+            add(new User("aaa", 1000));
+            add(new User("bbb", 1000));
+            add(bot);
             add(new User("xxx", 1000));
             add(new User("yyy", 1000));
             add(new User("zzz", 1000));
             add(new User("www", 1000));
-            add(new User("aaa", 1000));
-            add(new User("bbb", 1000));
-            add(bot);
         }};
 
         RoundOfPlay poker = new PokerBuilder()
@@ -39,9 +38,10 @@ public class SimpleAITest implements Play {
                 .create();
 
         assertEquals("PreflopWageringState", state);
-        assertEquals("bot1", currentPlayerId);
+        assertEquals("bot", currentPlayerId);
 
         bot.makeAMove();
+        assertEquals("bot called", log.pop());
         assertEquals("xxx", currentPlayerId);
 
         nTimes(5, poker::call);
@@ -50,9 +50,10 @@ public class SimpleAITest implements Play {
         assertEquals("aaa", currentPlayerId);
 
         nTimes(2, poker::check);
-        assertEquals("bot1", currentPlayerId);
+        assertEquals("bot", currentPlayerId);
 
         bot.makeAMove();
+        assertEquals("bot checked", log.pop());
         assertEquals("xxx", currentPlayerId);
 
         nTimes(4, poker::check);
@@ -60,9 +61,10 @@ public class SimpleAITest implements Play {
         assertEquals("aaa", currentPlayerId);
 
         nTimes(2, poker::check);
-        assertEquals("bot1", currentPlayerId);
+        assertEquals("bot", currentPlayerId);
 
         bot.makeAMove();
+        assertEquals("bot checked", log.pop());
         assertEquals("xxx", currentPlayerId);
 
         nTimes(4, poker::check);
@@ -70,9 +72,10 @@ public class SimpleAITest implements Play {
         assertEquals("aaa", currentPlayerId);
 
         nTimes(2, poker::check);
-        assertEquals("bot1", currentPlayerId);
+        assertEquals("bot", currentPlayerId);
 
         bot.makeAMove();
+        assertEquals("bot checked", log.pop());
         assertEquals("xxx", currentPlayerId);
 
         nTimes(4, poker::check);
@@ -80,9 +83,10 @@ public class SimpleAITest implements Play {
         assertEquals("aaa", currentPlayerId);
 
         nTimes(2, poker::showDown);
-        assertEquals("bot1", currentPlayerId);
+        assertEquals("bot", currentPlayerId);
 
         bot.makeAMove();
+        assertEquals("bot showed down", log.pop());
         assertEquals("xxx", currentPlayerId);
 
         nTimes(4, poker::showDown);
@@ -154,21 +158,24 @@ public class SimpleAITest implements Play {
 
     @Override
     public void playerAllinned(String playerId) {
-
+        log.push(playerId + " made all in");
     }
 
     @Override
     public void playerCalled(String playerId) {
+        log.push(playerId + " called");
 
     }
 
     @Override
     public void playerChecked(String playerId) {
+        log.push(playerId + " checked");
 
     }
 
     @Override
     public void playerFold(String playerId) {
+        log.push(playerId + " fold");
 
     }
 
@@ -179,11 +186,13 @@ public class SimpleAITest implements Play {
 
     @Override
     public void playerRaised(String playerId) {
+        log.push(playerId + " raised");
 
     }
 
     @Override
     public void playerShowedDown(String playerId, PokerHand hand) {
+        log.push(playerId + " showed down");
 
     }
 
