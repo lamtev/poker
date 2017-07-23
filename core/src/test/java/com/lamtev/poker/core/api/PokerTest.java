@@ -2,6 +2,9 @@ package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
+import com.lamtev.poker.core.states.exceptions.GameHaveNotBeenStartedException;
+import com.lamtev.poker.core.states.exceptions.RoundOfPlayIsOverException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,23 +18,21 @@ public class PokerTest implements Play {
 
     private String state;
     private List<PlayerIdStack> playersInfo;
-    private List<Player> players;
+    private List<User> users;
+    private List<Player> players = new ArrayList<>();
     private List<Card> communityCards;
     private Map<String, PokerHand> hands;
     private String currentPlayerId;
-    private Map<String, Map.Entry<Integer, Integer>> playersMoney;
-    private Map<String, List<Card>> playersCards;
-    private List<String> foldPlayers;
     private int bank;
 
-    private List<Player> generatePlayers() {
-        List<Player> playersInfo = new ArrayList<>();
-        playersInfo.add(new User("a", 500));
+    private List<User> generatePlayers() {
+        List<User> playersInfo = new ArrayList<>();
         playersInfo.add(new User("b", 500));
         playersInfo.add(new User("c", 500));
         playersInfo.add(new User("d", 500));
         playersInfo.add(new User("e", 500));
         playersInfo.add(new User("f", 500));
+        playersInfo.add(new User("a", 500));
         return playersInfo;
     }
 
@@ -41,12 +42,11 @@ public class PokerTest implements Play {
         communityCards = new ArrayList<>();
         hands = new HashMap<>();
         currentPlayerId = null;
-        playersCards = new HashMap<>();
-        players = generatePlayers();
-        playersInfo = players.stream().map(it -> new PlayerIdStack(it.id(), it.stack())).collect(Collectors.toList());
-        playersMoney = new HashMap<>();
-        playersInfo.forEach(it -> playersMoney.put(it.id(), new AbstractMap.SimpleEntry<>(it.stack(), 0)));
-        foldPlayers = new ArrayList<>();
+        users = generatePlayers();
+        players.addAll(users);
+        playersInfo = users.stream()
+                .map(it -> new PlayerIdStack(it.id(), it.stack()))
+                .collect(Collectors.toList());
         bank = 0;
     }
 
@@ -62,7 +62,7 @@ public class PokerTest implements Play {
 
         assertEquals("PreflopWageringState", state);
         assertEquals(15, bank);
-        playersCards.forEach((id, cards) -> assertEquals(2, cards.size()));
+        users.forEach(it -> assertEquals(2, it.cards().size()));
 
         poker.call();
         poker.raise(90);
@@ -85,18 +85,25 @@ public class PokerTest implements Play {
         for (int i = 0; i < 5; ++i) poker.call();
         assertEquals("ShowdownState", state);
         assertEquals(2400, bank);
-        playersMoney.forEach((id, playerMoney) -> {
-            assertEquals(Integer.valueOf(100), playerMoney.getKey());
-            assertEquals(Integer.valueOf(400), playerMoney.getValue());
+        users.forEach(it -> {
+            assertEquals(100, it.stack());
+            assertEquals(400, it.wager());
         });
 
-        for (int i = 0; i < 6; ++i) {
-            String id = currentPlayerId;
-            assertTrue(isNull(hands.get(id)));
-            poker.showDown();
-            assertFalse(isNull(hands.get(id)));
-            System.out.println(id + ": " + hands.get(id));
-        }
+        players.forEach(it -> assertTrue(isNull(hands.get(it.id()))));
+
+        players.forEach(it -> {
+            try {
+                poker.showDown();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        players.stream()
+                .filter(it -> hands.containsKey(it.id()))
+                .forEach(it -> System.out.println(it.id() + ": " + hands.get(it.id())));
+
         assertEquals("RoundOfPlayIsOverState", state);
 
         int actualPlayersStackSum = playersInfo
@@ -120,13 +127,22 @@ public class PokerTest implements Play {
 
     @Override
     public void playerFold(String playerId) {
-        foldPlayers.add(playerId);
+        users.stream()
+                .filter(it -> it.id().equals(playerId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new)
+                .setActive(false);
     }
 
     @Override
     public void playerMoneyUpdated(String playerId, int playerStack, int playerWager) {
-        playersMoney.remove(playerId);
-        playersMoney.put(playerId, new AbstractMap.SimpleEntry<>(playerStack, playerWager));
+        User user = users.stream()
+                .filter(it -> it.id()
+                        .equals(playerId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+        user.setStack(playerStack);
+        user.setWager(playerWager);
     }
 
     @Override
@@ -136,7 +152,11 @@ public class PokerTest implements Play {
 
     @Override
     public void holeCardsDealt(Map<String, List<Card>> playerIdToCards) {
-        playersCards = playerIdToCards;
+        playerIdToCards.forEach((id, cards) -> users.stream()
+                .filter(it -> it.id().equals(id))
+                .findFirst()
+                .orElseThrow(RuntimeException::new)
+                .setCards(cards));
     }
 
     @Override

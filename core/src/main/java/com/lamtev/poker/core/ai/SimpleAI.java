@@ -45,18 +45,14 @@ public class SimpleAI implements AI {
                 case "RiverWageringState":
                     if (moveAbility.checkIsAble()) {
                         poker.check();
-                        System.out.println(id + " checked");
                     } else if (moveAbility.callIsAble()) {
                         poker.call();
-                        System.out.println(id + " called");
                     } else {
                         poker.fold();
-                        System.out.println(id + " fold");
                     }
                     break;
                 case "ShowdownState":
                     poker.showDown();
-                    System.out.println(id + " showed down");
                     break;
                 default:
                     break;
@@ -194,6 +190,9 @@ public class SimpleAI implements AI {
     @Override
     public void roundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
         communityCards.clear();
+        isActive = true;
+        cards.clear();
+        wager = 0;
     }
 
     @Override

@@ -1,9 +1,6 @@
 package com.lamtev.poker.desktop;
 
-import com.lamtev.poker.core.api.PlayerIdStack;
-import com.lamtev.poker.core.api.PokerBuilder;
-import com.lamtev.poker.core.api.Play;
-import com.lamtev.poker.core.api.RoundOfPlay;
+import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.states.exceptions.RoundOfPlayIsOverException;
@@ -21,20 +18,22 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 public class PokerGame implements Play {
 
     private Stage primaryStage;
-
     private String playerNick;
     private RoundOfPlay poker;
     private String stateName;
     private int smallBlindSize;
     private String currentPlayerId;
     private List<Card> communityCards = new ArrayList<>();
-    private Map<String, Map.Entry<Integer, Integer>> playersInfo = new LinkedHashMap<>();
-    private Set<String> foldPlayers = new HashSet<>();
-    private Map<String, List<Card>> playersCards = new LinkedHashMap<>();
+    private List<Player> players;
+    private List<User> users;
+    private List<String> nicks;
     private List<String> showedDown = new ArrayList<>();
 
     private HBox playersCardsViewHBox = new HBox();
@@ -55,13 +54,16 @@ public class PokerGame implements Play {
     private Separator verticalSeparator = new Separator(Orientation.VERTICAL);
     private Separator horizontalSeparator = new Separator(Orientation.HORIZONTAL);
 
-    PokerGame(List<PlayerIdStack> playersInfo) {
-        playerNick = playersInfo.get(0).id();
+    PokerGame(List<Player> players, List<User> users) {
+        this.players = players;
+        this.users = users;
+        nicks = players.stream().map(Player::id).collect(Collectors.toList());
+        playerNick = players.get(0).id();
         Label nickNameLabel = new Label();
-        nickNameLabel.setText(playersInfo.get(0).id());
-        smallBlindSize = playersInfo.get(0).stack() / 100;
-        String dealerId = playersInfo.get(0).id();
-        startNewGame(playersInfo, dealerId);
+        nickNameLabel.setText(players.get(0).id());
+        smallBlindSize = players.get(0).stack() / 100;
+        String dealerId = nicks.get(0);
+        startNewGame(players, dealerId);
         setUpButtons();
     }
 
@@ -95,23 +97,14 @@ public class PokerGame implements Play {
         primaryStage.setScene(new Scene(root, 1200, 720));
     }
 
-    private void startNewGame(List<PlayerIdStack> playersInfo, String dealerId) {
+    private void startNewGame(List<Player> players, String dealerId) {
         statusBar.setText("Welcome to Texas Hold'em Poker!!!");
-        this.playersInfo.clear();
-        playersInfo.forEach(
-                playerInfo -> this.playersInfo.put(
-                        playerInfo.id(),
-                        new AbstractMap.SimpleEntry<>(playerInfo.stack(), 0)
-                )
-        );
-        foldPlayers.clear();
         showedDown.clear();
-        playersCards.clear();
         communityCards.clear();
         communityCardsView.getChildren().clear();
 
         poker = new PokerBuilder()
-                .registerPlayers(playersInfo)
+                .registerPlayers(players)
                 .setDealerId(dealerId)
                 .setSmallBlindWager(smallBlindSize)
                 .registerPlay(this)
@@ -244,7 +237,11 @@ public class PokerGame implements Play {
     @Override
     public void playerFold(String playerId) {
         //TODO add checking for Human-player fold
-        foldPlayers.add(playerId);
+        users.stream()
+                .filter(it -> it.id().equals(playerId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new)
+                .setActive(false);
         updateActiveAndFoldPlayersLists();
         updatePlayersCardsView();
     }
@@ -255,61 +252,58 @@ public class PokerGame implements Play {
         playersCardsViewHBox.setAlignment(Pos.CENTER);
         playersCardsViewHBox.setSpacing(5);
 
-        playersInfo.forEach((id, info) -> {
-            if (!foldPlayers.contains(id)) {
-                VBox playerIdAndCardsView = new VBox();
-                playerIdAndCardsView.setAlignment(Pos.CENTER);
-                playerIdAndCardsView.setSpacing(2);
-                playerIdAndCardsView.getChildren().add(new Label(id));
+        players.stream()
+                .filter(Player::isActive)
+                .forEach(it -> {
+                    VBox playerIdAndCardsView = new VBox();
+                    playerIdAndCardsView.setAlignment(Pos.CENTER);
+                    playerIdAndCardsView.setSpacing(2);
+                    playerIdAndCardsView.getChildren().add(new Label(it.id()));
 
-                HBox playerCardsView = new HBox();
-                playerCardsView.setAlignment(Pos.CENTER);
-                playerCardsView.setSpacing(1);
+                    HBox playerCardsView = new HBox();
+                    playerCardsView.setAlignment(Pos.CENTER);
+                    playerCardsView.setSpacing(1);
 
-                playersCards.get(id).forEach(card -> {
-                    String pathToPic;
-                    if (id.equals(playerNick) || showedDown.contains(id)) {
-                        pathToPic = "pics/" + card.toString() + ".png";
-                    } else {
-                        pathToPic = "pics/back_side2.png";
-                    }
-                    ImageView cardView = new ImageView(pathToPic);
-                    cardView.setFitHeight(97.5);
-                    cardView.setFitWidth(65);
-                    playerCardsView.getChildren().add(cardView);
+                    it.cards().forEach(card -> {
+                        String pathToPic;
+                        if (it.id().equals(playerNick) || showedDown.contains(it.id())) {
+                            pathToPic = "pics/" + card.toString() + ".png";
+                        } else {
+                            pathToPic = "pics/back_side2.png";
+                        }
+                        ImageView cardView = new ImageView(pathToPic);
+                        cardView.setFitHeight(97.5);
+                        cardView.setFitWidth(65);
+                        playerCardsView.getChildren().add(cardView);
+                    });
+
+                    playerIdAndCardsView.getChildren().add(playerCardsView);
+                    playersCardsViewHBox.getChildren().add(playerIdAndCardsView);
                 });
-
-                playerIdAndCardsView.getChildren().add(playerCardsView);
-
-                playersCardsViewHBox.getChildren().add(playerIdAndCardsView);
-
-
-            }
-        });
     }
 
     @Override
     public void playerMoneyUpdated(String playerId, int playerStack, int playerWager) {
-        playersInfo.remove(playerId);
-        playersInfo.put(playerId, new AbstractMap.SimpleEntry<>(playerStack, playerWager));
+        User user = users.stream()
+                .filter(it -> it.id().equals(playerId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+        user.setStack(playerStack);
+        user.setWager(playerWager);
         updateActiveAndFoldPlayersLists();
     }
 
     private void updateActiveAndFoldPlayersLists() {
         activePlayersList.getItems().clear();
         foldPlayersList.getItems().clear();
-        playersInfo.forEach((id, playerInfo) -> {
-            if (!foldPlayers.contains(id)) {
-                activePlayersList.getItems().add(
-                        new Label(id + ": " + playerInfo.getKey() + " " + playerInfo.getValue())
-                );
+        players.forEach(it -> {
+            Label label = new Label(it.id() + ": " + it.stack() + " " + it.wager());
+            if (it.isActive()) {
+                activePlayersList.getItems().add(label);
             } else {
-                foldPlayersList.getItems().add(
-                        new Label(id + ": " + playerInfo.getKey() + " " + playerInfo.getValue())
-                );
+                foldPlayersList.getItems().add(label);
             }
         });
-
     }
 
     private void updateBank(int bank) {
@@ -318,9 +312,22 @@ public class PokerGame implements Play {
 
     @Override
     public void roundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
+
+        users.forEach(it -> {
+            it.setActive(true);
+            it.setWager(0);
+            it.cards().clear();
+        });
+
         statusBar.setText("Game is over!");
 
-        if (this.playersInfo.get(playerNick).getKey() == 0) {
+        int userStack = users.stream()
+                .filter(it -> it.id().equals(playerNick))
+                .findFirst()
+                .orElseThrow(RuntimeException::new)
+                .stack();
+
+        if (userStack == 0) {
             Alert gameIsOverWindow = new Alert(Alert.AlertType.INFORMATION);
             gameIsOverWindow.setTitle("Game is over!!!");
             gameIsOverWindow.setContentText("You have lost all your money!!!");
@@ -335,8 +342,16 @@ public class PokerGame implements Play {
             gameIsOverWindow.showAndWait();
             return;
         }
-        playersInfo.removeIf(playerInfo -> playerInfo.stack() <= 0);
-        if (playersInfo.size() == 1) {
+
+        Set<String> losers = players.stream()
+                .filter(it -> it.stack() <= 0)
+                .map(Player::id)
+                .collect(toSet());
+
+        players.removeIf(it -> losers.contains(it.id()));
+        nicks.removeIf(losers::contains);
+
+        if (players.size() == 1) {
             Alert youWonWindow = new Alert(Alert.AlertType.INFORMATION);
             youWonWindow.setTitle("You won!!!");
             youWonWindow.setContentText("Congratulations!!!");
@@ -353,12 +368,11 @@ public class PokerGame implements Play {
         }
 
         smallBlindSize += (smallBlindSize >> 1);
-        List<PlayerIdStack> list = new ArrayList<>(playersInfo);
-        Collections.copy(list, playersInfo);
-        Collections.rotate(list, -1);
+        Collections.rotate(nicks, -1);
+        String dealerId = nicks.get(0);
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(2500),
-                ae -> startNewGame(playersInfo, list.get(0).id())
+                ae -> startNewGame(players, dealerId)
         ));
         timeline.play();
     }
@@ -398,7 +412,7 @@ public class PokerGame implements Play {
 
     @Override
     public void holeCardsDealt(Map<String, List<Card>> playerIdToCards) {
-        playersCards = playerIdToCards;
+        users.forEach(it -> it.setCards(playerIdToCards.get(it.id())));
         updatePlayersCardsView();
     }
 
@@ -459,4 +473,5 @@ public class PokerGame implements Play {
     public void showDownAbilityChanged(boolean flag) {
         //TODO implement
     }
+
 }

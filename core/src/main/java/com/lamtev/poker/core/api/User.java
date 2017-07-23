@@ -10,7 +10,7 @@ public class User implements Player {
     private int stack;
     private int wager;
     private List<Card> cards;
-    private boolean isActive;
+    private boolean isActive = true;
 
     public User(String id, int stack) {
         this.id = id;
@@ -40,6 +40,22 @@ public class User implements Player {
     @Override
     public boolean isActive() {
         return isActive;
+    }
+
+    public void setStack(int stack) {
+        this.stack = stack;
+    }
+
+    public void setWager(int wager) {
+        this.wager = wager;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     @Override

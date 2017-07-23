@@ -1,6 +1,7 @@
 package com.lamtev.poker.desktop;
 
-import com.lamtev.poker.core.api.PlayerIdStack;
+import com.lamtev.poker.core.api.Player;
+import com.lamtev.poker.core.api.User;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,15 +15,15 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Settings {
+class Settings {
 
-    List<PlayerIdStack> playersInfo = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
+    private List<Player> players = new ArrayList<>();
     private PokerGame pokerGame;
-    private String playerNick;
     private int numberOfOpponents;
     private int playerStackSize;
 
-    public void setToStage(Stage primaryStage) {
+    void setToStage(Stage primaryStage) {
         FlowPane rootNode = new FlowPane(10, 10);
         rootNode.setAlignment(Pos.CENTER);
         rootNode.setOrientation(Orientation.VERTICAL);
@@ -41,11 +42,16 @@ public class Settings {
             System.out.println("Nickname: " + playerNick.getText());
             System.out.println("Number of opponents: " + numbersOfOpponents.getValue());
             System.out.println("Stack size: " + playerStackSizes.getValue());
-            this.playerNick = playerNick.getText();
             this.numberOfOpponents = numbersOfOpponents.getValue();
             this.playerStackSize = playerStackSizes.getValue();
-            createPlayersInfo();
-            pokerGame = new PokerGame(playersInfo);
+
+            users.add(new User(playerNick.getText(), playerStackSize));
+            for (int i = 0; i < numberOfOpponents; ++i) {
+                users.add(new User("Bot " + (i + 1), playerStackSize));
+            }
+            players.addAll(users);
+
+            pokerGame = new PokerGame(players, users);
             pokerGame.setToStage(primaryStage);
         });
         rootNode.getChildren().addAll(
@@ -55,14 +61,6 @@ public class Settings {
                 start
         );
         primaryStage.setScene(new Scene(rootNode, 1200, 720));
-    }
-
-    public void createPlayersInfo() {
-        playersInfo.add(new PlayerIdStack(playerNick, playerStackSize));
-        for (int i = 0; i < numberOfOpponents; ++i) {
-            String id = "Bot " + i;
-            playersInfo.add(new PlayerIdStack(id, playerStackSize));
-        }
     }
 
 }
