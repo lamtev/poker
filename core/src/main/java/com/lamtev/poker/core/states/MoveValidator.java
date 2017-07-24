@@ -4,7 +4,7 @@ import com.lamtev.poker.core.model.Bank;
 import com.lamtev.poker.core.model.Players;
 import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
-class MoveValidator {
+final class MoveValidator {
 
     private final Players players;
     private final Bank bank;

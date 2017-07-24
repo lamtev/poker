@@ -1,6 +1,6 @@
 package com.lamtev.poker.core.api;
 
-public class MoveAbility {
+public final class MoveAbility {
 
     private boolean allInIsAble;
     private boolean callIsAble;

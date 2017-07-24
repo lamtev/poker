@@ -5,7 +5,7 @@ import com.lamtev.poker.core.model.Card;
 import java.util.ArrayList;
 import java.util.List;
 
-class FlopWageringState extends WageringState {
+final class FlopWageringState extends WageringState {
 
     FlopWageringState(ActionState state) {
         super(state);
