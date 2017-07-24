@@ -2,7 +2,6 @@ package com.lamtev.poker.core.api;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PokerBuilder {
 
@@ -33,15 +32,12 @@ public class PokerBuilder {
 
     public Poker create() {
         makeSureThatPokerConfigured();
-        List<PlayerIdStack> playerIdStackList = players.stream()
-                .map(it -> new PlayerIdStack(it.id(), it.stack()))
-                .collect(Collectors.toList());
-        Poker poker = new Poker(playerIdStackList, dealerId, smallBlindSize);
-        poker.registerPlay(play);
+        Poker poker = new Poker(players, dealerId, smallBlindSize);
         players.stream()
                 .filter(it -> it instanceof AI)
                 .map(it -> (AI) it)
                 .forEach(poker::registerAI);
+        poker.registerPlay(play);
         poker.start();
         return poker;
     }

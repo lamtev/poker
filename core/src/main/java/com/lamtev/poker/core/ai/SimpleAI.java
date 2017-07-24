@@ -2,7 +2,6 @@ package com.lamtev.poker.core.ai;
 
 import com.lamtev.poker.core.api.AI;
 import com.lamtev.poker.core.api.MoveAbility;
-import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.RoundOfPlay;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
@@ -34,7 +33,7 @@ public class SimpleAI implements AI {
     @Override
     public void makeAMove() {
         if (!id().equals(currentPlayer)) {
-            throw new RuntimeException();
+            throw new RuntimeException("Can not make a move in case i am " + id() + " but current is " + currentPlayer);
         }
         try {
             System.out.println(state);
@@ -94,6 +93,7 @@ public class SimpleAI implements AI {
 
     @Override
     public void holeCardsDealt(List<Card> holeCards) {
+        System.out.println("got cards");
         cards = holeCards;
     }
 
@@ -188,16 +188,14 @@ public class SimpleAI implements AI {
     }
 
     @Override
-    public void roundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
-        communityCards.clear();
-        isActive = true;
-        cards.clear();
-        wager = 0;
-    }
-
-    @Override
     public void stateChanged(String stateName) {
         state = stateName;
+        if ("RoundOfPlayIsOverState".equals(stateName)) {
+            communityCards.clear();
+            isActive = true;
+            cards.clear();
+            wager = 0;
+        }
     }
 
     @Override

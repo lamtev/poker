@@ -136,11 +136,7 @@ public class Poker implements RoundOfPlay {
         listenerManager.notifyPlayerShowedDownListeners(playerId, holeCards, hand);
     }
 
-    public void notifyRoundOfPlayIsOverListeners(List<PlayerIdStack> playersInfo) {
-        listenerManager.notifyRoundOfPlayIsOverListeners(playersInfo);
-    }
-
-    Poker(List<PlayerIdStack> playerIdStackList, String dealerId, int smallBlindWager) {
+    Poker(List<Player> playerIdStackList, String dealerId, int smallBlindWager) {
         state = new SettingsState(this, playerIdStackList, dealerId, smallBlindWager);
     }
 

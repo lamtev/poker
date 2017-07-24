@@ -13,18 +13,12 @@ public class Launcher extends Application {
     //TODO если дать ботам имена(человеческие), то это будет выглядеть приятнее
     //TODO сделать кнопку "Старт" в настройках больше и отодвинуть от остального (пользователь не должен долго думать куда ему нажать для начала игры, это должно сразу бросаться в глаза)
 
-    private StartMenu startMenu;
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Poker");
-        startMenu = new StartMenu();
-        setScene(primaryStage);
-        primaryStage.show();
-    }
-
-    private void setScene(Stage primaryStage) {
+        StartMenu startMenu = new StartMenu();
         startMenu.setToStage(primaryStage);
+        primaryStage.show();
     }
 
     public static void main(String[] args) {

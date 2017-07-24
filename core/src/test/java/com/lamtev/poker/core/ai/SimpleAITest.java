@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.util.*;
 
+import static com.lamtev.poker.core.TestUtils.nTimes;
 import static org.junit.Assert.assertEquals;
 
 public class SimpleAITest implements Play {
@@ -91,14 +92,6 @@ public class SimpleAITest implements Play {
 
         nTimes(4, poker::showDown);
         assertEquals("RoundOfPlayIsOverState", state);
-    }
-
-    private interface Action {
-        void run() throws Exception;
-    }
-
-    private void nTimes(int n, Action action) throws Exception {
-        for (int i = 0; i < n; ++i) action.run();
     }
 
     @Override
@@ -193,11 +186,6 @@ public class SimpleAITest implements Play {
     @Override
     public void playerShowedDown(String playerId, PokerHand hand) {
         log.push(playerId + " showed down");
-
-    }
-
-    @Override
-    public void roundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
 
     }
 

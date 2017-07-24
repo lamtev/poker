@@ -1,5 +1,7 @@
 package com.lamtev.poker.desktop;
 
+import com.lamtev.poker.core.ai.SimpleAI;
+import com.lamtev.poker.core.api.AI;
 import com.lamtev.poker.core.api.Player;
 import com.lamtev.poker.core.api.User;
 import javafx.geometry.Orientation;
@@ -17,8 +19,9 @@ import java.util.List;
 
 class Settings {
 
-    private List<User> users = new ArrayList<>();
+    private User user;
     private List<Player> players = new ArrayList<>();
+    private List<AI> ais = new ArrayList<>();
     private PokerGame pokerGame;
     private int numberOfOpponents;
     private int playerStackSize;
@@ -45,13 +48,15 @@ class Settings {
             this.numberOfOpponents = numbersOfOpponents.getValue();
             this.playerStackSize = playerStackSizes.getValue();
 
-            users.add(new User(playerNick.getText(), playerStackSize));
-            for (int i = 0; i < numberOfOpponents; ++i) {
-                users.add(new User("Bot " + (i + 1), playerStackSize));
-            }
-            players.addAll(users);
+            user = new User(playerNick.getText(), playerStackSize);
 
-            pokerGame = new PokerGame(players, users);
+            for (int i = 0; i < numberOfOpponents; ++i) {
+                ais.add(new SimpleAI("Bot " + (i + 1), playerStackSize));
+            }
+            players.add(user);
+            players.addAll(ais);
+
+            pokerGame = new PokerGame(players, user, ais);
             pokerGame.setToStage(primaryStage);
         });
         rootNode.getChildren().addAll(

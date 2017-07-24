@@ -20,7 +20,7 @@ class FlopWageringState extends WageringState {
     }
 
     @Override
-    void attemptNextState() {
+    boolean attemptNextState() {
         if (timeToForcedShowdown()) {
             //TODO think about how to dispose of code duplicates
             dealer().makeTurn();
@@ -35,9 +35,12 @@ class FlopWageringState extends WageringState {
                 players().setLatestAggressor(latestAggressor());
             }
             poker().setState(new ShowdownState(this, latestAggressor()));
+            return true;
         } else if (timeToNextState()) {
             poker().setState(new TurnWageringState(this));
+            return true;
         }
+        return false;
     }
 
 }
