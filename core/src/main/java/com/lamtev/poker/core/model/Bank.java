@@ -61,8 +61,10 @@ public final class Bank {
         List<Player> showedDownPlayersList = new ArrayList<>(showedDownPlayers.keySet());
         buildUpPots(showedDownPlayersList);
         Set<Player> winners = new HashSet<>();
-        int potsMoney = 0;
         while (!pots.isEmpty()) {
+            if (money < 0.5) {
+                break;
+            }
             Pot pot = pots.poll();
             PokerHand bestHand = determineBestHand(showedDownPlayers, pot);
             List<Player> potWinners = pot.applicants.stream()
@@ -72,10 +74,11 @@ public final class Bank {
                 player.addMoney(pot.money / potWinners.size());
                 winners.add(player);
             });
-            potsMoney += pot.money;
+            money -= pot.money;
         }
-        assert money - potsMoney < 0.5;
+        assert money < 0.5;
         money = 0;
+        wager = 0;
         return winners;
     }
 

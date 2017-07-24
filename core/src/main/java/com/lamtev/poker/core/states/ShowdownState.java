@@ -105,13 +105,13 @@ class ShowdownState extends ActionState {
 
             Set<Player> winners = bank().giveMoneyToWinners(showedDownPlayers);
 
-            //TODO think about rename PlayerMoneyUpdatedListener
             winners.forEach(winner -> poker().notifyPlayerMoneyUpdatedListeners(
                     winner.id(),
                     winner.stack(),
                     winner.wager()
             ));
-            poker().setState(new RoundOfPlayIsOverState(poker(), players()));
+            poker().notifyBankMoneyUpdatedListeners(bank().money(), bank().wager());
+            poker().setState(new RoundOfPlayIsOverState());
         }
     }
 

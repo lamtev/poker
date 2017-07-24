@@ -43,7 +43,7 @@ class PreflopWageringState extends WageringState {
     }
 
     @Override
-    void attemptNextState() {
+    boolean attemptNextState() {
         if (timeToForcedShowdown()) {
             dealer().makeFlop();
             dealer().makeTurn();
@@ -52,9 +52,12 @@ class PreflopWageringState extends WageringState {
                 communityCards().forEach(this::add);
             }});
             poker().setState(new ShowdownState(this, latestAggressor()));
+            return true;
         } else if (timeToNextState()) {
             poker().setState(new FlopWageringState(this));
+            return true;
         }
+        return false;
     }
 
     @Override

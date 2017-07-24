@@ -20,7 +20,6 @@ public interface Play extends
         PlayerMoneyUpdatedListener,
         PlayerRaisedListener,
         PlayerShowedDownListener,
-        RoundOfPlayIsOverListener,
         StateChangedListener {
 
     @Override

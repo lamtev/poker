@@ -2,22 +2,22 @@ package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
-import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
-import com.lamtev.poker.core.states.exceptions.GameHaveNotBeenStartedException;
-import com.lamtev.poker.core.states.exceptions.RoundOfPlayIsOverException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import static com.lamtev.poker.core.TestUtils.nTimes;
 import static java.util.Objects.isNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PokerTest implements Play {
 
     private String state;
-    private List<PlayerIdStack> playersInfo;
     private List<User> users;
     private List<Player> players = new ArrayList<>();
     private List<Card> communityCards;
@@ -43,10 +43,8 @@ public class PokerTest implements Play {
         hands = new HashMap<>();
         currentPlayerId = null;
         users = generatePlayers();
+        players.clear();
         players.addAll(users);
-        playersInfo = users.stream()
-                .map(it -> new PlayerIdStack(it.id(), it.stack()))
-                .collect(Collectors.toList());
         bank = 0;
     }
 
@@ -63,32 +61,41 @@ public class PokerTest implements Play {
         assertEquals("PreflopWageringState", state);
         assertEquals(15, bank);
         users.forEach(it -> assertEquals(2, it.cards().size()));
+        assertEquals("d", currentPlayerId);
 
         poker.call();
+        assertEquals("e", currentPlayerId);
+
         poker.raise(90);
-        for (int i = 0; i < 5; ++i) poker.call();
+        assertEquals("f", currentPlayerId);
+
+        nTimes(5, poker::call);
         assertEquals("FlopWageringState", state);
         assertEquals(600, bank);
         assertEquals(3, communityCards.size());
+        assertEquals("b", currentPlayerId);
 
-        for (int i = 0; i < 6; ++i) poker.check();
+        nTimes(6, poker::check);
         assertEquals("TurnWageringState", state);
         assertEquals(4, communityCards.size());
+        assertEquals("b", currentPlayerId);
 
-        for (int i = 0; i < 6; ++i) poker.check();
+        nTimes(6, poker::check);
         assertEquals("RiverWageringState", state);
         assertEquals(5, communityCards.size());
+        assertEquals("b", currentPlayerId);
 
         poker.raise(100);
         poker.raise(100);
         poker.raise(100);
-        for (int i = 0; i < 5; ++i) poker.call();
+        nTimes(5, poker::call);
         assertEquals("ShowdownState", state);
         assertEquals(2400, bank);
         users.forEach(it -> {
             assertEquals(100, it.stack());
             assertEquals(400, it.wager());
         });
+        assertEquals("d", currentPlayerId);
 
         players.forEach(it -> assertTrue(isNull(hands.get(it.id()))));
 
@@ -106,18 +113,57 @@ public class PokerTest implements Play {
 
         assertEquals("RoundOfPlayIsOverState", state);
 
-        int actualPlayersStackSum = playersInfo
-                .stream()
-                .map(PlayerIdStack::stack)
+        int actualPlayersStackSum = players.stream()
+                .map(Player::stack)
                 .mapToInt(Number::intValue)
                 .sum();
         assertEquals(3000, actualPlayersStackSum);
-        playersInfo.forEach(it -> System.out.println(it.id() + ": " + it.stack()));
+        players.forEach(it -> System.out.println(it.id() + ": " + it.stack()));
     }
 
-    @Override
-    public void roundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
-        this.playersInfo = playersInfo;
+    @Test
+    public void testAllIn() throws Exception {
+
+        RoundOfPlay poker = new PokerBuilder()
+                .registerPlayers(players)
+                .setDealerId("a")
+                .setSmallBlindWager(5)
+                .registerPlay(this)
+                .create();
+
+        assertEquals("PreflopWageringState", state);
+        assertEquals(15, bank);
+        users.forEach(it -> assertEquals(2, it.cards().size()));
+
+        poker.allIn();
+        nTimes(5, poker::call);
+
+        assertEquals("ShowdownState", state);
+        assertEquals(3000, bank);
+        assertEquals(5, communityCards.size());
+
+        players.forEach(it -> assertTrue(isNull(hands.get(it.id()))));
+
+        players.forEach(it -> {
+            try {
+                poker.showDown();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        players.stream()
+                .filter(it -> hands.containsKey(it.id()))
+                .forEach(it -> System.out.println(it.id() + ": " + hands.get(it.id())));
+
+        assertEquals("RoundOfPlayIsOverState", state);
+
+        int actualPlayersStackSum = players.stream()
+                .map(Player::stack)
+                .mapToInt(Number::intValue)
+                .sum();
+        assertEquals(3000, actualPlayersStackSum);
+        players.forEach(it -> System.out.println(it.id() + ": " + it.stack()));
     }
 
     @Override

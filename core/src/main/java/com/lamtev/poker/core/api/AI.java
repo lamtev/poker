@@ -23,7 +23,6 @@ public interface AI extends
         PlayerRaisedListener,
         PlayerShowedDownListener,
         RoundOfPlayChangedListener,
-        RoundOfPlayIsOverListener,
         StateChangedListener {
 
     void makeAMove();

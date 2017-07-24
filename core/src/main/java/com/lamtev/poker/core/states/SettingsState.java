@@ -1,7 +1,6 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.api.MoveAbility;
-import com.lamtev.poker.core.api.PlayerIdStack;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
 import com.lamtev.poker.core.states.exceptions.GameHaveNotBeenStartedException;
@@ -13,13 +12,13 @@ public class SettingsState extends AbstractPokerState {
 
     private final Poker poker;
 
-    private final List<PlayerIdStack> playerIdStackList;
+    private final List<com.lamtev.poker.core.api.Player> players;
     private final String dealerId;
     private final int smallBlindWager;
 
-    public SettingsState(Poker poker, List<PlayerIdStack> playerIdStackList, String dealerId, int smallBlindWager) {
+    public SettingsState(Poker poker, List<com.lamtev.poker.core.api.Player> players, String dealerId, int smallBlindWager) {
         this.poker = poker;
-        this.playerIdStackList = playerIdStackList;
+        this.players = players;
         this.dealerId = dealerId;
         this.smallBlindWager = smallBlindWager;
     }
@@ -27,9 +26,9 @@ public class SettingsState extends AbstractPokerState {
     @Override
     public void start() {
         List<Player> playerList = new ArrayList<>();
-        playerIdStackList.forEach(playerIdStack -> {
-            String id = playerIdStack.id();
-            int stack = playerIdStack.stack();
+        players.forEach(it -> {
+            String id = it.id();
+            int stack = it.stack();
             playerList.add(new Player(id, stack));
         });
         final Players players = new Players(playerList, dealerId);

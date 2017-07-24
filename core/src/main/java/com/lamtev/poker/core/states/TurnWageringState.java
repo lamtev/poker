@@ -20,7 +20,7 @@ class TurnWageringState extends WageringState {
     }
 
     @Override
-    void attemptNextState() {
+    boolean attemptNextState() {
         if (timeToForcedShowdown()) {
             //TODO think about how to dispose of code duplicates
             dealer().makeRiver();
@@ -28,9 +28,12 @@ class TurnWageringState extends WageringState {
             addedCards.add(communityCards().cardAt(5));
             poker().notifyCommunityCardsDealtListeners(addedCards);
             poker().setState(new ShowdownState(this, latestAggressor()));
+            return true;
         } else if (timeToNextState()) {
             poker().setState(new RiverWageringState(this));
+            return true;
         }
+        return false;
     }
 
 }

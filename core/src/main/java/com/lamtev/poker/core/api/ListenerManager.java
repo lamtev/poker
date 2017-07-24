@@ -24,7 +24,6 @@ class ListenerManager {
     private final List<PlayerMoneyUpdatedListener> playerMoneyUpdatedListeners = new ArrayList<>();
     private final List<PlayerRaisedListener> playerRaisedListeners = new ArrayList<>();
     private final List<PlayerShowedDownListener> playerShowedDownListeners = new ArrayList<>();
-    private final List<RoundOfPlayIsOverListener> roundOfPlayIsOverListeners = new ArrayList<>();
     private final List<StateChangedListener> stateChangedListeners = new ArrayList<>();
     private final List<RoundOfPlayChangedListener> roundOfPlayChangedListeners = new ArrayList<>();
 
@@ -111,10 +110,6 @@ class ListenerManager {
         });
     }
 
-    void notifyRoundOfPlayIsOverListeners(List<PlayerIdStack> playersInfo) {
-        roundOfPlayIsOverListeners.forEach(it -> it.roundOfPlayIsOver(playersInfo));
-    }
-
     void notifyStateChangedListeners(String state) {
         stateChangedListeners.forEach(it -> it.stateChanged(state));
     }
@@ -137,7 +132,6 @@ class ListenerManager {
         playerMoneyUpdatedListeners.add((PlayerMoneyUpdatedListener) listener);
         playerRaisedListeners.add((PlayerRaisedListener) listener);
         playerShowedDownListeners.add((PlayerShowedDownListener) listener);
-        roundOfPlayIsOverListeners.add((RoundOfPlayIsOverListener) listener);
         stateChangedListeners.add((StateChangedListener) listener);
         notifyStateChangedListeners(SettingsState.class.getSimpleName());
     }

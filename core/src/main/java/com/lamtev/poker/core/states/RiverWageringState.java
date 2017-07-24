@@ -20,10 +20,12 @@ class RiverWageringState extends WageringState {
     }
 
     @Override
-    void attemptNextState() {
+    boolean attemptNextState() {
         if (timeToNextState()) {
             poker().setState(new ShowdownState(this, latestAggressor()));
+            return true;
         }
+        return false;
     }
 
 }

@@ -22,14 +22,16 @@ abstract class WageringState extends ActionState {
 
     @Override
     public void start() {
-        if (timeToForcedShowdown()) {
-            attemptNextState();
-        }
         determineUnderTheGunPosition();
         moveAbility().setAllInIsAble(true);
         updateMoveAbility();
         makeDealerJob();
         poker().notifyCurrentPlayerChangedListeners(players().current().id());
+    }
+
+    @Override
+    boolean timeToForcedShowdown() {
+        return players().activeNonAllinnersNumber() == 0;
     }
 
     @Override
@@ -39,9 +41,13 @@ abstract class WageringState extends ActionState {
         bank().acceptCall(currentPlayer);
         notifyMoneyUpdatedListeners();
         poker().notifyPlayerCalledListeners(currentPlayer.id());
-        changePlayerIndex();
-        attemptNextState();
+        boolean stateChanged = attemptNextState();
+        if (!stateChanged) {
+            changePlayerIndex();
+        }
     }
+
+    //TODO raise should not be able when only one active non allinner
 
     @Override
     public void raise(int additionalWager) throws UnallowableMoveException,
@@ -69,8 +75,10 @@ abstract class WageringState extends ActionState {
             bank().acceptAllIn(players().current());
             notifyMoneyUpdatedListeners();
             poker().notifyPlayerAllinnedListeners(currentPlayer.id());
-            changePlayerIndex();
-            attemptNextState();
+            boolean stateChanged = attemptNextState();
+            if (!stateChanged) {
+                changePlayerIndex();
+            }
         }
     }
 
@@ -79,7 +87,6 @@ abstract class WageringState extends ActionState {
         Player currentPlayer = players().current();
         currentPlayer.fold();
         poker().notifyPlayerFoldListeners(currentPlayer.id());
-        changePlayerIndex();
         if (onlyOneActivePlayer()) {
             Player winner = players().nextActive();
             bank().giveMoneyToSingleWinner(winner);
@@ -87,10 +94,13 @@ abstract class WageringState extends ActionState {
                     winner.id(),
                     winner.stack(), winner.wager()
             );
-            poker().setState(new RoundOfPlayIsOverState(poker(), players()));
+            poker().setState(new RoundOfPlayIsOverState());
             return;
         }
-        attemptNextState();
+        boolean stateChanged = attemptNextState();
+        if (!stateChanged) {
+            changePlayerIndex();
+        }
     }
 
     @Override
@@ -98,8 +108,10 @@ abstract class WageringState extends ActionState {
         moveValidator.validateCheck(raisers.size());
         poker().notifyPlayerCheckedListeners(players().current().id());
         ++checks;
-        changePlayerIndex();
-        attemptNextState();
+        boolean stateChanged = attemptNextState();
+        if (!stateChanged) {
+            changePlayerIndex();
+        }
     }
 
     @Override
@@ -123,7 +135,7 @@ abstract class WageringState extends ActionState {
 
     abstract void makeDealerJob();
 
-    abstract void attemptNextState();
+    abstract boolean attemptNextState();
 
     boolean timeToNextState() {
         return allActiveNonAllinnersChecked() ||
