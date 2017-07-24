@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-class ListenerManager {
+final class ListenerManager {
 
     private final List<BankMoneyUpdatedListener> bankMoneyUpdatedListeners = new ArrayList<>();
     private final List<BlindWagersPlacedListener> blindWagersPlacedListeners = new ArrayList<>();

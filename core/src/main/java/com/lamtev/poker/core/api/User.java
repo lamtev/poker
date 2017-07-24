@@ -4,7 +4,7 @@ import com.lamtev.poker.core.model.Card;
 
 import java.util.List;
 
-public class User implements Player {
+public final class User implements Player {
 
     private final String id;
     private int stack;

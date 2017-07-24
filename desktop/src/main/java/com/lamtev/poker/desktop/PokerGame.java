@@ -26,7 +26,6 @@ public class PokerGame implements Play {
 
     private Stage primaryStage;
     private RoundOfPlay poker;
-    private String stateName;
     private int smallBlindSize;
     private String currentPlayerId;
     private List<Card> communityCards = new ArrayList<>();
@@ -231,7 +230,6 @@ public class PokerGame implements Play {
 
     @Override
     public void stateChanged(String stateName) {
-        this.stateName = stateName;
         System.out.println(stateName);
         System.out.println(currentPlayerId);
 
@@ -379,10 +377,6 @@ public class PokerGame implements Play {
         });
     }
 
-    private void updateBank(int bank) {
-        moneyInBankLabel.setText("Bank: " + bank);
-    }
-
     @Override
     public void currentPlayerChanged(String currentPlayerId) {
         this.currentPlayerId = currentPlayerId;
@@ -413,7 +407,7 @@ public class PokerGame implements Play {
 
     @Override
     public void bankMoneyUpdated(int money, int wager) {
-        updateBank(money);
+        moneyInBankLabel.setText("Bank: " + money);
     }
 
     @Override

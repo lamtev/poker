@@ -8,9 +8,9 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class StartMenu {
+class StartMenu {
 
-    public void setToStage(Stage primaryStage) {
+    void setToStage(Stage primaryStage) {
         FlowPane rootNode = new FlowPane(10, 10);
         rootNode.setOrientation(Orientation.VERTICAL);
         rootNode.setAlignment(Pos.CENTER);

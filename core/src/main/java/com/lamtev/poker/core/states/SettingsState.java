@@ -8,7 +8,7 @@ import com.lamtev.poker.core.states.exceptions.GameHaveNotBeenStartedException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsState extends AbstractPokerState {
+public final class SettingsState extends AbstractPokerState {
 
     private final Poker poker;
 
