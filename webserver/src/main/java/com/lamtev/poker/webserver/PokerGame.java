@@ -1,9 +1,6 @@
 package com.lamtev.poker.webserver;
 
-import com.lamtev.poker.core.api.PlayerIdStack;
-import com.lamtev.poker.core.api.PokerBuilder;
-import com.lamtev.poker.core.api.Play;
-import com.lamtev.poker.core.api.RoundOfPlay;
+import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.states.exceptions.*;
@@ -11,14 +8,16 @@ import com.lamtev.poker.core.states.exceptions.*;
 import java.util.*;
 
 import static com.lamtev.poker.webserver.Util.names;
+import static java.util.stream.Collectors.toList;
 
 public class PokerGame implements Play, GameAPI {
 
+    private List<User> users = new ArrayList<>();
+    private List<Player> players = new ArrayList<>();
     private RoundOfPlay poker;
     private List<Card> communityCards = new ArrayList<>();
-    private Map<String, Map.Entry<Integer, Integer>> playersMoney = new LinkedHashMap<>();
-    private Set<String> foldPlayers = new HashSet<>();
-    private Map<String, List<Card>> playersCards = new LinkedHashMap<>();
+    private List<String> nicks;
+    private Map<String, PokerHand> showedDownPlayers = new HashMap<>();
     private String currentPlayerId;
     private String currentStateName;
     private int bank;
@@ -28,17 +27,17 @@ public class PokerGame implements Play, GameAPI {
     @Override
     public void start(String humanId, int playersNumber, int stack) throws RoundOfPlayIsOverException, ForbiddenMoveException, NotPositiveWagerException, IsNotEnoughMoneyException, UnallowableMoveException, GameHaveNotBeenStartedException {
         final int numberOfBots = playersNumber - 1;
-        List<String> players = names(numberOfBots);
+        nicks = names(numberOfBots);
         //TODO check name existence
-        players.add(humanId);
-        Collections.shuffle(players);
-        players.forEach(id -> playersMoney.put(id, new AbstractMap.SimpleEntry<Integer, Integer>(stack, 0)));
-        List<PlayerIdStack> playersStacks = new ArrayList<>();
-        playersMoney.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getKey())));
+        nicks.add(humanId);
+        Collections.shuffle(nicks);
+        nicks.forEach(it -> users.add(new User(it, stack)));
+        players.addAll(users);
         smallBlindSize = stack / 1000;
+
         poker = new PokerBuilder()
-                .registerPlayers(playersStacks)
-                .setDealerId(playersStacks.get(0).id())
+                .registerPlayers(players)
+                .setDealerId(nicks.get(0))
                 .setSmallBlindWager(smallBlindSize)
                 .registerPlay(this)
                 .create();
@@ -75,8 +74,10 @@ public class PokerGame implements Play, GameAPI {
     }
 
     @Override
-    public List<Map.Entry<String, Map.Entry<Integer, Integer>>> getPlayersMoney() {
-        return new ArrayList<>(playersMoney.entrySet());
+    public List<String> getPlayersMoney() {
+        return players.stream()
+                .map(it -> "{\n\t\"id\": \"" + it.id() + "\",\n\t\"stack\": " + it.stack() + ",\n\t\"wager\": " + it.wager() + "\n }")
+                .collect(toList());
     }
 
     @Override
@@ -107,20 +108,31 @@ public class PokerGame implements Play, GameAPI {
     @Override
     public List<Card> getPlayerCards(String playerId) {
         List<Card> cards = new ArrayList<>();
-        cards.addAll(playersCards.get(playerId));
+        cards.addAll(players.stream()
+                .filter(it -> it.id().equals(playerId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new)
+                .cards());
         return cards;
     }
 
     @Override
     public void playerFold(String playerId) {
         //TODO
-        foldPlayers.add(playerId);
+        users.stream()
+                .filter(it -> it.id().equals(playerId))
+                .findFirst()
+                .ifPresent(o -> o.setActive(false));
     }
 
     @Override
     public void playerMoneyUpdated(String playerId, int playerStack, int playerWager) {
-        playersMoney.remove(playerId);
-        playersMoney.put(playerId, new AbstractMap.SimpleEntry<>(playerStack, playerWager));
+        User currentUser = users.stream()
+                .filter(it -> it.id().equals(playerId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+        currentUser.setStack(playerStack);
+        currentUser.setWager(playerWager);
     }
 
     @Override
@@ -128,45 +140,37 @@ public class PokerGame implements Play, GameAPI {
         //FIXME bug with states gameIsOver after preflop
         currentStateName = stateName;
         System.out.println(currentStateName);
+
+        if ("RoundOfPlayIsOverState".equals(stateName)) {
+            long cnt = players.stream().filter(x -> x.stack() > 0).count();
+            System.out.println(cnt);
+            if (cnt == 1) {
+                currentStateName = "Finished";
+                return;
+            }
+            users.forEach(it -> it.setWager(0));
+
+            players.removeIf(it -> it.stack() <= 0);
+
+            smallBlindSize *= 1.25;
+
+            communityCards.clear();
+            showedDownPlayers.clear();
+
+            Collections.rotate(nicks, -1);
+
+            poker = new PokerBuilder()
+                    .registerPlayers(players)
+                    .setDealerId(nicks.get(0))
+                    .setSmallBlindWager(smallBlindSize)
+                    .registerPlay(this)
+                    .create();
+        }
     }
 
     @Override
     public void currentPlayerChanged(String currentPlayerId) {
         this.currentPlayerId = currentPlayerId;
-    }
-
-    @Override
-    public void roundOfPlayIsOver(List<PlayerIdStack> playersInfo) {
-        long cnt = playersInfo.stream().filter(x -> x.stack() > 0).count();
-        System.out.println(cnt);
-        if (cnt == 1) {
-            currentStateName = "Finished";
-            return;
-        }
-        this.playersMoney = new LinkedHashMap<>();
-        playersInfo.stream()
-                .filter(playerIdStack -> playerIdStack.stack() > 0)
-                .forEach(playerIdStack -> {
-                    String id = playerIdStack.id();
-                    int stack = playerIdStack.stack();
-                    this.playersMoney.put(id, new AbstractMap.SimpleEntry<>(stack, 0));
-                });
-        foldPlayers = new HashSet<>();
-
-        smallBlindSize *= 1.25;
-
-        communityCards = new ArrayList<>();
-        playersCards = new LinkedHashMap<>();
-
-        List<PlayerIdStack> playersStacks = new ArrayList<>();
-        this.playersMoney.forEach((id, info) -> playersStacks.add(new PlayerIdStack(id, info.getKey())));
-
-        poker = new PokerBuilder()
-                .registerPlayers(playersStacks)
-                .setDealerId(playersStacks.get(0).id())
-                .setSmallBlindWager(smallBlindSize)
-                .registerPlay(this)
-                .create();
     }
 
     @Override
@@ -187,7 +191,7 @@ public class PokerGame implements Play, GameAPI {
 
     @Override
     public void holeCardsDealt(Map<String, List<Card>> playerIdToCards) {
-        playerIdToCards.forEach(playersCards::put);
+        users.forEach(it -> it.setCards(playerIdToCards.get(it.id())));
     }
 
     @Override
@@ -212,7 +216,7 @@ public class PokerGame implements Play, GameAPI {
 
     @Override
     public void playerShowedDown(String playerId, PokerHand hand) {
-
+        showedDownPlayers.put(playerId, hand);
     }
 
     @Override

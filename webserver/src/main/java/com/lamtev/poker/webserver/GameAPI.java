@@ -8,7 +8,7 @@ import java.util.Map;
 public interface GameAPI {
     void start(String humanId, int playersNumber, int stack) throws Exception;
 
-    List<Map.Entry<String, Map.Entry<Integer, Integer>>> getPlayersMoney();
+    List<String> getPlayersMoney();
 
     int getBank();
 
