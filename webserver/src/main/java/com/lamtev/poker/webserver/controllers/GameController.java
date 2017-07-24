@@ -28,7 +28,7 @@ public class GameController extends AbstractController {
 
     @GetMapping(value = "{roomId}/players", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    public List<Map.Entry<String, Map.Entry<Integer, Integer>>> getPlayers(@PathVariable String roomId) throws Exception {
+    public List<String> getPlayers(@PathVariable String roomId) throws Exception {
         makeSureThatRoomsExist();
         makeSureThatRoomExists(roomId);
         Room room = rooms.get(roomId);
