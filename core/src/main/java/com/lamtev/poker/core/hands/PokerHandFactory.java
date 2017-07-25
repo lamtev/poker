@@ -9,11 +9,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
-public class PokerHandFactory {
+public final class PokerHandFactory {
 
     private final static Comparator<Card> COMPARATOR_BY_RANK = Comparator.comparing(Card::rank);
     private final Cards communityCards;
@@ -107,8 +108,6 @@ public class PokerHandFactory {
         return null;
     }
 
-    //TODO remove code duplicate
-    //TODO increase code readability
     private PokerHand parseFourOfAKind(List<Card> cards) {
         for (int i = 0; i < 5; ++i) {
             int numberOfSameRanks = 1;
@@ -122,8 +121,6 @@ public class PokerHandFactory {
         return null;
     }
 
-    //TODO remove code duplicate
-    //TODO increase code readability
     private PokerHand parseFullHouse(List<Card> cards) {
         Rank threeOfAKindHighCardRank = null;
         for (int i = 0; i < 6; ++i) {
@@ -177,8 +174,6 @@ public class PokerHandFactory {
         return null;
     }
 
-    //TODO remove code duplicate
-    //TODO increase code readability
     private PokerHand parseThreeOfAKind(List<Card> cards) {
         for (int i = 0; i < 6; ++i) {
             int numberOfSameRanks = 1;
@@ -192,8 +187,6 @@ public class PokerHandFactory {
         return null;
     }
 
-    //TODO remove code duplicate
-    //TODO increase code readability
     private PokerHand parseTwoPairs(List<Card> cards) {
         Rank firstPairHighCardRank = null;
         for (int i = 0; i < 7; ++i) {
@@ -224,8 +217,6 @@ public class PokerHandFactory {
         return null;
     }
 
-    //TODO remove code duplicate
-    //TODO increase code readability
     private PokerHand parsePair(List<Card> cards) {
         for (int i = 0; i < 7; ++i) {
             int numberOfSameRanks = 1;
@@ -268,11 +259,12 @@ public class PokerHandFactory {
 
     private List<Rank> determineRanksExceptThese(List<Card> cards, Rank... exceptedRanks) {
         List<Rank> exceptedRanksList = asList(exceptedRanks);
+        Predicate<Rank> isNotExcepted = exceptedRanksList::contains;
+        isNotExcepted = isNotExcepted.negate();
         return cards.stream()
                 .map(Card::rank)
-                .filter(rank -> !exceptedRanksList.contains(rank))
+                .filter(isNotExcepted)
                 .collect(toList());
-
     }
 
 }

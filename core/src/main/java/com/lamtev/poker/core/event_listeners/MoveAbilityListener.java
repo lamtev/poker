@@ -1,6 +1,5 @@
 package com.lamtev.poker.core.event_listeners;
 
-//TODO javadoc
 public interface MoveAbilityListener {
     void allInAbilityChanged(boolean flag);
 
