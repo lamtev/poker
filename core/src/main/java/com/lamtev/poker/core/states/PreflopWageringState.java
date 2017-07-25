@@ -17,7 +17,6 @@ final class PreflopWageringState extends WageringState {
     @Override
     void makeDealerJob() {
         dealer.makePreflop();
-        //TODO notify players from sb to dealer
         poker.notifyHoleCardsDealtListeners(new LinkedHashMap<String, List<Card>>() {{
             players.forEach(player -> put(player.id(), new ArrayList<Card>() {{
                 player.cards().forEach(this::add);
