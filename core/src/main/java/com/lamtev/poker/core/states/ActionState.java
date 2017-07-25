@@ -9,12 +9,12 @@ import com.lamtev.poker.core.model.Players;
 
 abstract class ActionState extends AbstractPokerState {
 
-    private final Poker poker;
-    private final Players players;
-    private final Bank bank;
-    private final Dealer dealer;
-    private final Cards communityCards;
-    private final MoveAbility moveAbility;
+    final Poker poker;
+    final Players players;
+    final Bank bank;
+    final Dealer dealer;
+    final Cards communityCards;
+    final MoveAbility moveAbility;
 
     ActionState(ActionState state) {
         this(state.poker, state.players, state.bank, state.dealer, state.communityCards, state.moveAbility);
@@ -27,30 +27,6 @@ abstract class ActionState extends AbstractPokerState {
         this.dealer = dealer;
         this.communityCards = communityCards;
         this.moveAbility = moveAbility;
-    }
-
-    Poker poker() {
-        return poker;
-    }
-
-    Players players() {
-        return players;
-    }
-
-    Bank bank() {
-        return bank;
-    }
-
-    Dealer dealer() {
-        return dealer;
-    }
-
-    Cards communityCards() {
-        return communityCards;
-    }
-
-    MoveAbility moveAbility() {
-        return moveAbility;
     }
 
     void changePlayerIndex() {

@@ -231,8 +231,6 @@ public class PokerGame implements Play {
     @Override
     public void stateChanged(String stateName) {
         System.out.println(stateName);
-        System.out.println(currentPlayerId);
-
         if (stateName.equals("RoundOfPlayIsOverState")) {
             user.setActive(true);
             user.setWager(0);
@@ -379,6 +377,7 @@ public class PokerGame implements Play {
 
     @Override
     public void currentPlayerChanged(String currentPlayerId) {
+        System.out.println(currentPlayerId);
         this.currentPlayerId = currentPlayerId;
         whoseTurn.setText("Whose turn: " + currentPlayerId);
         if (user.id().equals(currentPlayerId)) {
