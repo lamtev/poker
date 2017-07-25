@@ -48,8 +48,6 @@ abstract class WageringState extends ActionState {
         }
     }
 
-    //TODO raise should not be able when only one active non allinner
-
     @Override
     public void raise(int additionalWager) throws UnallowableMoveException,
             IsNotEnoughMoneyException, NotPositiveWagerException {

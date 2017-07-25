@@ -32,7 +32,8 @@ final class MoveValidator {
     }
 
     boolean raiseIsAble(int raises) {
-        return (players.activePlayersNumber() > 2 && raises < 3 || players.activePlayersNumber() == 2);
+        return (players.activePlayersNumber() > 2 && raises < 3 || players.activePlayersNumber() == 2)
+                && players.activeNonAllinnersNumber() != 1;
     }
 
     void validateCheck(int raises) throws UnallowableMoveException {
