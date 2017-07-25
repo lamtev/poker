@@ -337,7 +337,7 @@ public class PokerGame implements Play {
                         });
                     } else {
                         for (int i = 0; i < 2; ++i) {
-                            String pathToPic = "pics/back_side2.png";
+                            String pathToPic = "pics/back_side.png";
                             ImageView cardView = new ImageView(pathToPic);
                             cardView.setFitHeight(97.5);
                             cardView.setFitWidth(65);
