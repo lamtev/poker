@@ -13,31 +13,31 @@ final class FlopWageringState extends WageringState {
 
     @Override
     void makeDealerJob() {
-        dealer().makeFlop();
+        dealer.makeFlop();
         List<Card> addedCards = new ArrayList<>();
-        communityCards().forEach(addedCards::add);
-        poker().notifyCommunityCardsDealtListeners(addedCards);
+        communityCards.forEach(addedCards::add);
+        poker.notifyCommunityCardsDealtListeners(addedCards);
     }
 
     @Override
     boolean attemptNextState() {
         if (timeToForcedShowdown()) {
             //TODO think about how to dispose of code duplicates
-            dealer().makeTurn();
-            dealer().makeRiver();
+            dealer.makeTurn();
+            dealer.makeRiver();
             List<Card> addedCards = new ArrayList<>();
-            addedCards.add(communityCards().cardAt(4));
-            addedCards.add(communityCards().cardAt(5));
-            poker().notifyCommunityCardsDealtListeners(addedCards);
+            addedCards.add(communityCards.cardAt(4));
+            addedCards.add(communityCards.cardAt(5));
+            poker.notifyCommunityCardsDealtListeners(addedCards);
             if (latestAggressor() == null) {
-                players().nextActiveAfterDealer();
+                players.nextActiveAfterDealer();
             } else {
-                players().setLatestAggressor(latestAggressor());
+                players.setLatestAggressor(latestAggressor());
             }
-            poker().setState(new ShowdownState(this, latestAggressor()));
+            poker.setState(new ShowdownState(this, latestAggressor()));
             return true;
         } else if (timeToNextState()) {
-            poker().setState(new TurnWageringState(this));
+            poker.setState(new TurnWageringState(this));
             return true;
         }
         return false;

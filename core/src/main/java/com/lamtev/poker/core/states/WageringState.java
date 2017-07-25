@@ -11,36 +11,37 @@ import java.util.List;
 
 abstract class WageringState extends ActionState {
 
+    private final List<Player> raisers = new ArrayList<>();
     private final MoveValidator moveValidator;
     private int checks = 0;
-    private final List<Player> raisers = new ArrayList<>();
 
     WageringState(ActionState state) {
         super(state);
-        moveValidator = new MoveValidator(players(), bank());
+        moveValidator = new MoveValidator(players, bank);
     }
 
     @Override
     public void start() {
         determineUnderTheGunPosition();
-        moveAbility().setAllInIsAble(true);
+        moveAbility.setAllInIsAble(true);
+        moveAbility.setFoldIsAble(true);
         updateMoveAbility();
         makeDealerJob();
-        poker().notifyCurrentPlayerChangedListeners(players().current().id());
+        poker.notifyCurrentPlayerChangedListeners(players.current().id());
     }
 
     @Override
     boolean timeToForcedShowdown() {
-        return players().activeNonAllinnersNumber() == 0;
+        return players.activeNonAllinnersNumber() == 0;
     }
 
     @Override
     public void call() throws UnallowableMoveException, IsNotEnoughMoneyException {
-        Player currentPlayer = players().current();
+        Player currentPlayer = players.current();
         moveValidator.validateCall();
-        bank().acceptCall(currentPlayer);
+        bank.acceptCall(currentPlayer);
         notifyMoneyUpdatedListeners();
-        poker().notifyPlayerCalledListeners(currentPlayer.id());
+        poker.notifyPlayerCalledListeners(currentPlayer.id());
         boolean stateChanged = attemptNextState();
         if (!stateChanged) {
             changePlayerIndex();
@@ -53,28 +54,28 @@ abstract class WageringState extends ActionState {
     public void raise(int additionalWager) throws UnallowableMoveException,
             IsNotEnoughMoneyException, NotPositiveWagerException {
         moveValidator.validateRaise(raisers.size());
-        Player currentPlayer = players().current();
-        bank().acceptRaise(additionalWager, currentPlayer);
+        Player currentPlayer = players.current();
+        bank.acceptRaise(additionalWager, currentPlayer);
         raisers.add(currentPlayer);
         notifyMoneyUpdatedListeners();
-        poker().notifyPlayerRaisedListeners(currentPlayer.id());
+        poker.notifyPlayerRaisedListeners(currentPlayer.id());
         changePlayerIndex();
     }
 
     @Override
     public void allIn() throws UnallowableMoveException,
             IsNotEnoughMoneyException, NotPositiveWagerException {
-        Player currentPlayer = players().current();
+        Player currentPlayer = players.current();
         int additionalWager = currentPlayer.stack() -
-                (bank().wager() - currentPlayer.wager());
+                (bank.wager() - currentPlayer.wager());
         if (additionalWager == 0) {
             call();
         } else if (additionalWager > 0) {
             raise(additionalWager);
         } else {
-            bank().acceptAllIn(players().current());
+            bank.acceptAllIn(players.current());
             notifyMoneyUpdatedListeners();
-            poker().notifyPlayerAllinnedListeners(currentPlayer.id());
+            poker.notifyPlayerAllinnedListeners(currentPlayer.id());
             boolean stateChanged = attemptNextState();
             if (!stateChanged) {
                 changePlayerIndex();
@@ -84,17 +85,17 @@ abstract class WageringState extends ActionState {
 
     @Override
     public void fold() throws UnallowableMoveException {
-        Player currentPlayer = players().current();
+        Player currentPlayer = players.current();
         currentPlayer.fold();
-        poker().notifyPlayerFoldListeners(currentPlayer.id());
+        poker.notifyPlayerFoldListeners(currentPlayer.id());
         if (onlyOneActivePlayer()) {
-            Player winner = players().nextActive();
-            bank().giveMoneyToSingleWinner(winner);
-            poker().notifyPlayerMoneyUpdatedListeners(
+            Player winner = players.nextActive();
+            bank.giveMoneyToSingleWinner(winner);
+            poker.notifyPlayerMoneyUpdatedListeners(
                     winner.id(),
                     winner.stack(), winner.wager()
             );
-            poker().setState(new RoundOfPlayIsOverState());
+            poker.setState(new RoundOfPlayIsOverState());
             return;
         }
         boolean stateChanged = attemptNextState();
@@ -106,7 +107,7 @@ abstract class WageringState extends ActionState {
     @Override
     public void check() throws ForbiddenMoveException, UnallowableMoveException {
         moveValidator.validateCheck(raisers.size());
-        poker().notifyPlayerCheckedListeners(players().current().id());
+        poker.notifyPlayerCheckedListeners(players.current().id());
         ++checks;
         boolean stateChanged = attemptNextState();
         if (!stateChanged) {
@@ -123,14 +124,18 @@ abstract class WageringState extends ActionState {
 
     @Override
     void updateMoveAbility() {
-        moveAbility().setRaiseIsAble(moveValidator.raiseIsAble(raisers.size()));
-        moveAbility().setCallIsAble(moveValidator.callIsAble());
-        moveAbility().setCheckIsAble(moveValidator.checkIsAble(raisers.size()));
-        poker().notifyMoveAbilityListeners(players().current().id(), moveAbility());
+        moveAbility.setRaiseIsAble(raiseIsAble());
+        moveAbility.setCallIsAble(moveValidator.callIsAble());
+        moveAbility.setCheckIsAble(moveValidator.checkIsAble(raisers.size()));
+        poker.notifyMoveAbilityListeners(players.current().id(), moveAbility);
+    }
+
+    final boolean raiseIsAble() {
+        return moveValidator.raiseIsAble(raisers.size());
     }
 
     void determineUnderTheGunPosition() {
-        players().nextNonAllinnerAfterDealer();
+        players.nextNonAllinnerAfterDealer();
     }
 
     abstract void makeDealerJob();
@@ -158,22 +163,22 @@ abstract class WageringState extends ActionState {
     }
 
     private boolean onlyOneActivePlayer() {
-        return players().activePlayersNumber() == 1;
+        return players.activePlayersNumber() == 1;
     }
 
     private boolean allActiveNonAllinnersChecked() {
-        return checks == players().activeNonAllinnersNumber();
+        return checks == players.activeNonAllinnersNumber();
     }
 
     private boolean thereWereRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers() {
-        return !raisers.isEmpty() && players().activeNonAllinnersWithSameWagerNumber(bank().wager())
-                + players().allinnersNumber() == players().activePlayersNumber();
+        return !raisers.isEmpty() && players.activeNonAllinnersWithSameWagerNumber(bank.wager())
+                + players.allinnersNumber() == players.activePlayersNumber();
     }
 
     private void notifyMoneyUpdatedListeners() {
-        Player currentPlayer = players().current();
-        poker().notifyPlayerMoneyUpdatedListeners(currentPlayer.id(), currentPlayer.stack(), currentPlayer.wager());
-        poker().notifyBankMoneyUpdatedListeners(bank().money(), bank().wager());
+        Player currentPlayer = players.current();
+        poker.notifyPlayerMoneyUpdatedListeners(currentPlayer.id(), currentPlayer.stack(), currentPlayer.wager());
+        poker.notifyBankMoneyUpdatedListeners(bank.money(), bank.wager());
     }
 
 }

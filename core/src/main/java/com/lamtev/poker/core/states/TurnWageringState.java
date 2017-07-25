@@ -13,24 +13,24 @@ final class TurnWageringState extends WageringState {
 
     @Override
     void makeDealerJob() {
-        dealer().makeTurn();
+        dealer.makeTurn();
         List<Card> addedCards = new ArrayList<>();
-        addedCards.add(communityCards().cardAt(4));
-        poker().notifyCommunityCardsDealtListeners(addedCards);
+        addedCards.add(communityCards.cardAt(4));
+        poker.notifyCommunityCardsDealtListeners(addedCards);
     }
 
     @Override
     boolean attemptNextState() {
         if (timeToForcedShowdown()) {
             //TODO think about how to dispose of code duplicates
-            dealer().makeRiver();
+            dealer.makeRiver();
             List<Card> addedCards = new ArrayList<>();
-            addedCards.add(communityCards().cardAt(5));
-            poker().notifyCommunityCardsDealtListeners(addedCards);
-            poker().setState(new ShowdownState(this, latestAggressor()));
+            addedCards.add(communityCards.cardAt(5));
+            poker.notifyCommunityCardsDealtListeners(addedCards);
+            poker.setState(new ShowdownState(this, latestAggressor()));
             return true;
         } else if (timeToNextState()) {
-            poker().setState(new RiverWageringState(this));
+            poker.setState(new RiverWageringState(this));
             return true;
         }
         return false;
