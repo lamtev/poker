@@ -20,35 +20,35 @@ final class BlindsState extends ActionState {
 
     @Override
     public void start() {
-        bank().acceptBlindWagers(smallBlindSize);
-        Player smallBlind = players().smallBlind();
-        poker().notifyPlayerMoneyUpdatedListeners(smallBlind.id(), smallBlind.stack(), smallBlind.wager());
-        Player bigBlind = players().bigBlind();
-        poker().notifyPlayerMoneyUpdatedListeners(bigBlind.id(), bigBlind.stack(), bigBlind.wager());
-        poker().notifyBankMoneyUpdatedListeners(bank().money(), bank().wager());
-        poker().notifyBlindWagersPlacedListeners();
+        bank.acceptBlindWagers(smallBlindSize);
+        Player smallBlind = players.smallBlind();
+        poker.notifyPlayerMoneyUpdatedListeners(smallBlind.id(), smallBlind.stack(), smallBlind.wager());
+        Player bigBlind = players.bigBlind();
+        poker.notifyPlayerMoneyUpdatedListeners(bigBlind.id(), bigBlind.stack(), bigBlind.wager());
+        poker.notifyBankMoneyUpdatedListeners(bank.money(), bank.wager());
+        poker.notifyBlindWagersPlacedListeners();
         nextState();
     }
 
     private void nextState() {
         if (timeToForcedShowdown()) {
-            dealer().makePreflop();
-            poker().notifyHoleCardsDealtListeners(new LinkedHashMap<String, List<Card>>() {{
-                players().forEach(player -> put(player.id(), new ArrayList<Card>() {{
+            dealer.makePreflop();
+            poker.notifyHoleCardsDealtListeners(new LinkedHashMap<String, List<Card>>() {{
+                players.forEach(player -> put(player.id(), new ArrayList<Card>() {{
                     player.cards().forEach(this::add);
                 }}));
             }});
-            dealer().makeFlop();
-            dealer().makeTurn();
-            dealer().makeRiver();
-            poker().notifyCommunityCardsDealtListeners(new ArrayList<Card>() {{
-                communityCards().forEach(this::add);
+            dealer.makeFlop();
+            dealer.makeTurn();
+            dealer.makeRiver();
+            poker.notifyCommunityCardsDealtListeners(new ArrayList<Card>() {{
+                communityCards.forEach(this::add);
             }});
-            Player latestAggressor = players().bigBlind().isAllinner() ?
-                    players().bigBlind() : players().smallBlind();
-            poker().setState(new ShowdownState(this, latestAggressor));
+            Player latestAggressor = players.bigBlind().isAllinner() ?
+                    players.bigBlind() : players.smallBlind();
+            poker.setState(new ShowdownState(this, latestAggressor));
         } else {
-            poker().setState(new PreflopWageringState(this));
+            poker.setState(new PreflopWageringState(this));
         }
     }
 

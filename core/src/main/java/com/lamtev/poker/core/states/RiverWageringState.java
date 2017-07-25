@@ -13,16 +13,16 @@ final class RiverWageringState extends WageringState {
 
     @Override
     void makeDealerJob() {
-        dealer().makeRiver();
+        dealer.makeRiver();
         List<Card> addedCards = new ArrayList<>();
-        addedCards.add(communityCards().cardAt(5));
-        poker().notifyCommunityCardsDealtListeners(addedCards);
+        addedCards.add(communityCards.cardAt(5));
+        poker.notifyCommunityCardsDealtListeners(addedCards);
     }
 
     @Override
     boolean attemptNextState() {
         if (timeToNextState()) {
-            poker().setState(new ShowdownState(this, latestAggressor()));
+            poker.setState(new ShowdownState(this, latestAggressor()));
             return true;
         }
         return false;

@@ -2,6 +2,7 @@ package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -164,6 +165,27 @@ public class PokerTest implements Play {
                 .sum();
         assertEquals(3000, actualPlayersStackSum);
         players.forEach(it -> System.out.println(it.id() + ": " + it.stack()));
+    }
+
+
+    @Test(expected = UnallowableMoveException.class)
+    public void testRaise() throws Exception {
+        ((User) players.get(1)).setStack(600);
+
+        RoundOfPlay poker = new PokerBuilder()
+                .registerPlayers(players)
+                .setDealerId("a")
+                .setSmallBlindWager(5)
+                .registerPlay(this)
+                .create();
+
+        assertEquals("PreflopWageringState", state);
+        assertEquals(15, bank);
+        users.forEach(it -> assertEquals(2, it.cards().size()));
+
+        poker.allIn();
+        nTimes(4, poker::call);
+        poker.raise(30);
     }
 
     @Override

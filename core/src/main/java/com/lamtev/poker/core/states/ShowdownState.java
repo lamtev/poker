@@ -17,26 +17,26 @@ class ShowdownState extends ActionState {
 
     ShowdownState(ActionState state, Player latestAggressor) {
         super(state);
-        handFactory = new PokerHandFactory(communityCards());
+        handFactory = new PokerHandFactory(communityCards);
         this.latestAggressor = latestAggressor;
     }
 
     @Override
     public void start() {
         if (latestAggressor == null) {
-            players().nextActiveAfterDealer();
+            players.nextActiveAfterDealer();
         } else {
-            players().setLatestAggressor(latestAggressor);
+            players.setLatestAggressor(latestAggressor);
         }
-        String currentPlayerId = players().current().id();
-        moveAbility().setAllInIsAble(false);
-        moveAbility().setCallIsAble(false);
-        moveAbility().setCheckIsAble(false);
-        moveAbility().setRaiseIsAble(false);
-        moveAbility().setFoldIsAble(false);
-        moveAbility().setShowdownIsAble(true);
-        poker().notifyMoveAbilityListeners(currentPlayerId, moveAbility());
-        poker().notifyCurrentPlayerChangedListeners(currentPlayerId);
+        String currentPlayerId = players.current().id();
+        moveAbility.setAllInIsAble(false);
+        moveAbility.setCallIsAble(false);
+        moveAbility.setCheckIsAble(false);
+        moveAbility.setRaiseIsAble(false);
+        moveAbility.setFoldIsAble(false);
+        moveAbility.setShowdownIsAble(true);
+        poker.notifyMoveAbilityListeners(currentPlayerId, moveAbility);
+        poker.notifyCurrentPlayerChangedListeners(currentPlayerId);
     }
 
     @Override
@@ -59,9 +59,9 @@ class ShowdownState extends ActionState {
         if (currentPlayerCantFold()) {
             throw new UnallowableMoveException("Fold");
         }
-        Player currentPlayer = players().current();
+        Player currentPlayer = players.current();
         currentPlayer.fold();
-        poker().notifyPlayerFoldListeners(currentPlayer.id());
+        poker.notifyPlayerFoldListeners(currentPlayer.id());
         changePlayerIndex();
         attemptDetermineWinners();
     }
@@ -73,50 +73,50 @@ class ShowdownState extends ActionState {
 
     @Override
     public void showDown() {
-        Player currentPlayer = players().current();
+        Player currentPlayer = players.current();
         PokerHand pokerHand = handFactory.createCombination(currentPlayer.cards());
         showedDownPlayers.put(currentPlayer, pokerHand);
         List<Card> holeCards = new ArrayList<>();
         currentPlayer.cards().forEach(holeCards::add);
-        poker().notifyPlayerShowedDownListeners(currentPlayer.id(), holeCards, pokerHand);
+        poker.notifyPlayerShowedDownListeners(currentPlayer.id(), holeCards, pokerHand);
         changePlayerIndex();
         attemptDetermineWinners();
     }
 
     @Override
     void updateMoveAbility() {
-        moveAbility().setFoldIsAble(!currentPlayerCantFold());
-        poker().notifyMoveAbilityListeners(players().current().id(), moveAbility());
+        moveAbility.setFoldIsAble(!currentPlayerCantFold());
+        poker.notifyMoveAbilityListeners(players.current().id(), moveAbility);
     }
 
     @Override
     void changePlayerIndex() {
-        players().nextActive();
+        players.nextActive();
         updateMoveAbility();
-        poker().notifyCurrentPlayerChangedListeners(players().current().id());
+        poker.notifyCurrentPlayerChangedListeners(players.current().id());
     }
 
     private boolean currentPlayerCantFold() {
-        return showedDownPlayers.isEmpty() || players().current().isAllinner();
+        return showedDownPlayers.isEmpty() || players.current().isAllinner();
     }
 
     private void attemptDetermineWinners() {
         if (timeToDetermineWinners()) {
 
-            Set<Player> winners = bank().giveMoneyToWinners(showedDownPlayers);
+            Set<Player> winners = bank.giveMoneyToWinners(showedDownPlayers);
 
-            winners.forEach(winner -> poker().notifyPlayerMoneyUpdatedListeners(
+            winners.forEach(winner -> poker.notifyPlayerMoneyUpdatedListeners(
                     winner.id(),
                     winner.stack(),
                     winner.wager()
             ));
-            poker().notifyBankMoneyUpdatedListeners(bank().money(), bank().wager());
-            poker().setState(new RoundOfPlayIsOverState());
+            poker.notifyBankMoneyUpdatedListeners(bank.money(), bank.wager());
+            poker.setState(new RoundOfPlayIsOverState());
         }
     }
 
     private boolean timeToDetermineWinners() {
-        return showedDownPlayers.size() == players().activePlayersNumber();
+        return showedDownPlayers.size() == players.activePlayersNumber();
     }
 
 }

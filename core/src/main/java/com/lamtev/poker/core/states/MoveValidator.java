@@ -21,7 +21,8 @@ final class MoveValidator {
     }
 
     boolean callIsAble() {
-        return players.current().wager() < bank.wager();
+        return players.current().wager() < bank.wager()
+                && players.current().stack() >= bank.wager() - players.current().wager();
     }
 
     void validateRaise(int raises) throws UnallowableMoveException {
@@ -31,7 +32,8 @@ final class MoveValidator {
     }
 
     boolean raiseIsAble(int raises) {
-        return players.activePlayersNumber() > 2 && raises < 3 || players.activePlayersNumber() == 2;
+        return (players.activePlayersNumber() > 2 && raises < 3 || players.activePlayersNumber() == 2)
+                && players.activeNonAllinnersNumber() != 1;
     }
 
     void validateCheck(int raises) throws UnallowableMoveException {

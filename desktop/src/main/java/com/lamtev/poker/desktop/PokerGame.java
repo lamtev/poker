@@ -34,6 +34,7 @@ public class PokerGame implements Play {
     private List<AI> ais;
     private List<String> nicks;
     private List<String> showedDown = new ArrayList<>();
+    private final MoveAbility moveAbility = new MoveAbility();
 
     private HBox playersCardsViewHBox = new HBox();
     private HBox communityCardsView = new HBox();
@@ -125,6 +126,7 @@ public class PokerGame implements Play {
 
     private void setUpCallButton() {
         call.setPrefSize(100, 50);
+        call.setId("call");
         call.setOnAction(event -> {
             try {
                 poker.call();
@@ -138,6 +140,7 @@ public class PokerGame implements Play {
 
     private void setUpAllInButton() {
         allIn.setPrefSize(100, 50);
+        allIn.setId("allIn");
         allIn.setOnAction(event -> {
             try {
                 poker.allIn();
@@ -151,6 +154,7 @@ public class PokerGame implements Play {
 
     private void setUpFoldButton() {
         fold.setPrefSize(100, 50);
+        fold.setId("fold");
         fold.setOnAction(event -> {
             try {
                 poker.fold();
@@ -164,6 +168,7 @@ public class PokerGame implements Play {
 
     private void setUpCheckButton() {
         check.setPrefSize(100, 50);
+        check.setId("check");
         check.setOnAction(event -> {
             try {
                 poker.check();
@@ -177,6 +182,7 @@ public class PokerGame implements Play {
 
     private void setUpShowDownButton() {
         showDown.setPrefSize(100, 50);
+        showDown.setId("showDown");
         showDown.setOnAction(event -> {
             try {
                 poker.showDown();
@@ -192,8 +198,8 @@ public class PokerGame implements Play {
 
     private void setUpRaiseButton() {
         raise.setPrefSize(100, 50);
+        raise.setId("raise");
         raise.setOnAction(event -> {
-
             TextInputDialog dialogWindow = new TextInputDialog("" + 50);
             dialogWindow.setTitle("Raise");
             dialogWindow.setContentText("Input additional wager:");
@@ -231,8 +237,6 @@ public class PokerGame implements Play {
     @Override
     public void stateChanged(String stateName) {
         System.out.println(stateName);
-        System.out.println(currentPlayerId);
-
         if (stateName.equals("RoundOfPlayIsOverState")) {
             user.setActive(true);
             user.setWager(0);
@@ -379,10 +383,34 @@ public class PokerGame implements Play {
 
     @Override
     public void currentPlayerChanged(String currentPlayerId) {
+        System.out.println(currentPlayerId);
         this.currentPlayerId = currentPlayerId;
         whoseTurn.setText("Whose turn: " + currentPlayerId);
         if (user.id().equals(currentPlayerId)) {
-            buttons.getChildren().forEach(it -> it.setVisible(true));
+            buttons.getChildren().forEach(it -> {
+                switch (it.getId()) {
+                    case "allIn":
+                        it.setVisible(moveAbility.allInIsAble());
+                        break;
+                    case "call":
+                        it.setVisible(moveAbility.callIsAble());
+                        break;
+                    case "check":
+                        it.setVisible(moveAbility.checkIsAble());
+                        break;
+                    case "fold":
+                        it.setVisible(moveAbility.foldIsAble());
+                        break;
+                    case "raise":
+                        it.setVisible(moveAbility.raiseIsAble());
+                        break;
+                    case "showDown":
+                        it.setVisible(moveAbility.showdownIsAble());
+                        break;
+                    default:
+                        throw new RuntimeException();
+                }
+            });
         } else {
             buttons.getChildren().forEach(it -> it.setVisible(false));
             makeAMoveOfAI();
@@ -455,32 +483,32 @@ public class PokerGame implements Play {
 
     @Override
     public void callAbilityChanged(boolean flag) {
-        //TODO implement
+        moveAbility.setCallIsAble(flag);
     }
 
     @Override
     public void raiseAbilityChanged(boolean flag) {
-        //TODO implement
+        moveAbility.setRaiseIsAble(flag);
     }
 
     @Override
     public void allInAbilityChanged(boolean flag) {
-        //TODO implement
+        moveAbility.setAllInIsAble(flag);
     }
 
     @Override
     public void checkAbilityChanged(boolean flag) {
-        //TODO implement
+        moveAbility.setCheckIsAble(flag);
     }
 
     @Override
     public void foldAbilityChanged(boolean flag) {
-        //TODO implement
+        moveAbility.setFoldIsAble(flag);
     }
 
     @Override
     public void showDownAbilityChanged(boolean flag) {
-        //TODO implement
+        moveAbility.setShowdownIsAble(flag);
     }
 
 }

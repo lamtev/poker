@@ -93,7 +93,7 @@ public class SimpleAI implements AI {
 
     @Override
     public void holeCardsDealt(List<Card> holeCards) {
-        System.out.println("got cards");
+        System.out.println(id() + " got cards");
         cards = holeCards;
     }
 

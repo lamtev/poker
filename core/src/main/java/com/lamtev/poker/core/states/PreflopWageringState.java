@@ -16,10 +16,10 @@ final class PreflopWageringState extends WageringState {
 
     @Override
     void makeDealerJob() {
-        dealer().makePreflop();
+        dealer.makePreflop();
         //TODO notify players from sb to dealer
-        poker().notifyHoleCardsDealtListeners(new LinkedHashMap<String, List<Card>>() {{
-            players().forEach(player -> put(player.id(), new ArrayList<Card>() {{
+        poker.notifyHoleCardsDealtListeners(new LinkedHashMap<String, List<Card>>() {{
+            players.forEach(player -> put(player.id(), new ArrayList<Card>() {{
                 player.cards().forEach(this::add);
             }}));
         }});
@@ -45,16 +45,16 @@ final class PreflopWageringState extends WageringState {
     @Override
     boolean attemptNextState() {
         if (timeToForcedShowdown()) {
-            dealer().makeFlop();
-            dealer().makeTurn();
-            dealer().makeRiver();
-            poker().notifyCommunityCardsDealtListeners(new ArrayList<Card>() {{
-                communityCards().forEach(this::add);
+            dealer.makeFlop();
+            dealer.makeTurn();
+            dealer.makeRiver();
+            poker.notifyCommunityCardsDealtListeners(new ArrayList<Card>() {{
+                communityCards.forEach(this::add);
             }});
-            poker().setState(new ShowdownState(this, latestAggressor()));
+            poker.setState(new ShowdownState(this, latestAggressor()));
             return true;
         } else if (timeToNextState()) {
-            poker().setState(new FlopWageringState(this));
+            poker.setState(new FlopWageringState(this));
             return true;
         }
         return false;
@@ -70,36 +70,36 @@ final class PreflopWageringState extends WageringState {
 
     @Override
     void determineUnderTheGunPosition() {
-        players().nextAfterBigBlind();
+        players.nextAfterBigBlind();
     }
 
     @Override
     void updateMoveAbility() {
-        super.updateMoveAbility();
-        moveAbility().setCallIsAble(!moveIsFinalBigBlindMove());
-        moveAbility().setCheckIsAble(moveIsFinalBigBlindMove());
-        moveAbility().setFoldIsAble(!moveIsFinalBigBlindMove());
-        poker().notifyMoveAbilityListeners(players().current().id(), moveAbility());
+        moveAbility.setRaiseIsAble(raiseIsAble());
+        moveAbility.setCallIsAble(!moveIsFinalBigBlindMove());
+        moveAbility.setCheckIsAble(moveIsFinalBigBlindMove());
+        moveAbility.setFoldIsAble(!moveIsFinalBigBlindMove());
+        poker.notifyMoveAbilityListeners(players.current().id(), moveAbility);
     }
 
     private boolean moveIsFinalBigBlindMove() {
         return raisers().isEmpty() &&
-                players().current() == players().bigBlind();
+                players.current() == players.bigBlind();
     }
 
     private boolean bigBlindChecked() {
-        return checks() == 1 && players().activePlayersNumber()
-                == players().activeNonAllinnersWithSameWagerNumber(bank().wager())
-                + players().allinnersNumber();
+        return checks() == 1 && players.activePlayersNumber()
+                == players.activeNonAllinnersWithSameWagerNumber(bank.wager())
+                + players.allinnersNumber();
     }
 
     private boolean bigBlindIsAllinner() {
-        return players().bigBlind().isAllinner();
+        return players.bigBlind().isAllinner();
     }
 
     private boolean noRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers() {
-        return raisers().isEmpty() && players().activePlayersNumber()
-                == players().activeNonAllinnersWithSameWagerNumber(bank().wager()) + players().allinnersNumber();
+        return raisers().isEmpty() && players.activePlayersNumber()
+                == players.activeNonAllinnersWithSameWagerNumber(bank.wager()) + players.allinnersNumber();
     }
 
 }

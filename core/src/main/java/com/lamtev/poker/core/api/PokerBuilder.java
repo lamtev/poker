@@ -3,7 +3,7 @@ package com.lamtev.poker.core.api;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PokerBuilder {
+public final class PokerBuilder {
 
     private List<Player> players = new ArrayList<>();
     private String dealerId;
