@@ -118,8 +118,6 @@ abstract class WageringState extends ActionState {
         throw new ForbiddenMoveException("Show down", toString());
     }
 
-    //TODO think about all in ability if all in is raise
-
     @Override
     void updateMoveAbility() {
         moveAbility.setRaiseIsAble(raiseIsAble());
@@ -128,7 +126,7 @@ abstract class WageringState extends ActionState {
         poker.notifyMoveAbilityListeners(players.current().id(), moveAbility);
     }
 
-    final boolean raiseIsAble() {
+    boolean raiseIsAble() {
         return moveValidator.raiseIsAble(raisers.size());
     }
 
