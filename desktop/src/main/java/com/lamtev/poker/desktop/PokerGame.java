@@ -20,7 +20,10 @@ import javafx.util.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.lamtev.poker.desktop.Launcher.height;
+import static com.lamtev.poker.desktop.Launcher.width;
 import static java.util.stream.Collectors.toSet;
+import static javafx.scene.layout.GridPane.REMAINING;
 
 public class PokerGame implements Play {
 
@@ -65,30 +68,31 @@ public class PokerGame implements Play {
 
     void setToStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        verticalSeparator.setPrefHeight(720);
-        horizontalSeparator.setPrefWidth(1000);
+        verticalSeparator.setPrefHeight(height);
+        horizontalSeparator.setPrefWidth(width - activePlayersList.getWidth());
         sb.getChildren().add(statusBar);
         sb.setAlignment(Pos.CENTER);
         activePlayersList.setMouseTransparent(true);
         foldPlayersList.setMouseTransparent(true);
 
+        activePlayersList.setPrefWidth(width / 8);
+        foldPlayersList.setPrefWidth(width / 8);
         root.add(whoseTurn, 0, 0, 1, 1);
         root.add(new Label("Active players:"), 0, 1, 1, 1);
         root.add(activePlayersList, 0, 2, 1, 21);
         root.add(new Label("Fold players:"), 0, 23, 1, 1);
         root.add(foldPlayersList, 0, 24, 1, 21);
-        root.add(verticalSeparator, 1, 0, 1, GridPane.REMAINING);
-        root.add(sb, 2, 0, GridPane.REMAINING, 1);
-        root.add(moneyInBankLabel, 2, 1, GridPane.REMAINING, 1);
-        root.add(horizontalSeparator, 2, 3, GridPane.REMAINING, 1);
+        root.add(verticalSeparator, 1, 0, 1, REMAINING);
+        root.add(sb, 2, 0, REMAINING, 1);
+        root.add(moneyInBankLabel, 2, 1, REMAINING, 1);
+        root.add(horizontalSeparator, 2, 3, REMAINING, 1);
 
-        root.add(playersCardsViewHBox, 2, 25, GridPane.REMAINING, 6);
-
+        root.add(playersCardsViewHBox, 2, 25, REMAINING, 6);
         buttons = new HBox();
         buttons.setAlignment(Pos.CENTER);
         buttons.setSpacing(10);
         buttons.getChildren().addAll(call, fold, raise, check, allIn, showDown);
-        root.add(buttons, 4, 44, GridPane.REMAINING, 1);
+        root.add(buttons, 4, 44, REMAINING, 1);
 
         Label nickNameLabel = new Label();
         nickNameLabel.setText(players.get(0).id());
@@ -314,7 +318,6 @@ public class PokerGame implements Play {
         playersCardsViewHBox.setAlignment(Pos.CENTER);
         playersCardsViewHBox.setSpacing(5);
 
-
         players.stream()
                 .filter(Player::isActive)
                 .forEach(it -> {
@@ -331,22 +334,23 @@ public class PokerGame implements Play {
                         it.cards().forEach(card -> {
                             String pathToPic = "pics/" + card.toString() + ".png";
                             ImageView cardView = new ImageView(pathToPic);
-                            cardView.setFitHeight(97.5);
-                            cardView.setFitWidth(65);
+                            cardView.setFitHeight(width / 15.8);
+                            cardView.setFitWidth(width / 24);
                             playerCardsView.getChildren().add(cardView);
                         });
                     } else {
                         for (int i = 0; i < 2; ++i) {
                             String pathToPic = "pics/back_side.png";
                             ImageView cardView = new ImageView(pathToPic);
-                            cardView.setFitHeight(97.5);
-                            cardView.setFitWidth(65);
+                            cardView.setFitHeight(width / 15.8);
+                            cardView.setFitWidth(width / 24);
                             playerCardsView.getChildren().add(cardView);
                         }
                     }
 
                     playerIdAndCardsView.getChildren().add(playerCardsView);
                     playersCardsViewHBox.getChildren().add(playerIdAndCardsView);
+                    playersCardsViewHBox.setAlignment(Pos.CENTER);
                 });
     }
 
@@ -430,7 +434,7 @@ public class PokerGame implements Play {
             communityCardsView.getChildren().add(cardView);
         });
         root.getChildren().remove(communityCardsView);
-        root.add(communityCardsView, 2, 4, GridPane.REMAINING, 20);
+        root.add(communityCardsView, 2, 4, REMAINING, 20);
     }
 
     @Override

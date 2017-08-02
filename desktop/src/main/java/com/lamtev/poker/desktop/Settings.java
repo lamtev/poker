@@ -4,18 +4,19 @@ import com.lamtev.poker.core.ai.SimpleAI;
 import com.lamtev.poker.core.api.AI;
 import com.lamtev.poker.core.api.Player;
 import com.lamtev.poker.core.api.User;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.lamtev.poker.desktop.Launcher.height;
+import static com.lamtev.poker.desktop.Launcher.width;
+import static java.util.Arrays.asList;
+import static javafx.scene.layout.GridPane.REMAINING;
 
 class Settings {
 
@@ -27,25 +28,29 @@ class Settings {
     private int playerStackSize;
 
     void setToStage(Stage primaryStage) {
-        FlowPane root = new FlowPane(10, 10);
+        GridPane root = new GridPane();
         root.setAlignment(Pos.CENTER);
-        root.setOrientation(Orientation.VERTICAL);
-        Label typeYourNick = new Label("Type your nickname");
-        Label chooseNumberOfOpponents = new Label("Choose number of opponents");
-        Label choosePlayerStack = new Label("Choose player stack size");
-        TextField playerNick = new TextField("Player 1");
+        root.setPrefWidth(width);
+        root.setPrefHeight(height);
+
+        Label typeYourNick = new Label("Type your nickname:");
+        Label chooseNumberOfOpponents = new Label("Choose number of opponents:");
+        Label choosePlayerStack = new Label("Choose player stack size:");
+        TextField playerNick = new TextField("User");
         ChoiceBox<Integer> numbersOfOpponents = new ChoiceBox<>();
-        numbersOfOpponents.getItems().addAll(2, 3, 4, 5, 6);
-        numbersOfOpponents.setValue(2);
+        Slider slider = new Slider(1, 9, 2);
+        slider.setShowTickLabels(true);
+        slider.setShowTickMarks(true);
+        slider.setMajorTickUnit(1);
+        slider.setMinorTickCount(0);
+        slider.setSnapToTicks(true);
         ChoiceBox<Integer> playerStackSizes = new ChoiceBox<>();
         playerStackSizes.getItems().addAll(1000, 2000, 5000, 10000, 15000, 25000, 50000);
         playerStackSizes.setValue(1000);
+        Button cancel = new Button("Cancel");
         Button start = new Button("Start");
         start.setOnAction(event -> {
-            System.out.println("Nickname: " + playerNick.getText());
-            System.out.println("Number of opponents: " + numbersOfOpponents.getValue());
-            System.out.println("Stack size: " + playerStackSizes.getValue());
-            this.numberOfOpponents = numbersOfOpponents.getValue();
+            this.numberOfOpponents = (int) slider.getValue();
             this.playerStackSize = playerStackSizes.getValue();
 
             user = new User(playerNick.getText(), playerStackSize);
@@ -59,13 +64,30 @@ class Settings {
             pokerGame = new PokerGame(players, user, ais);
             pokerGame.setToStage(primaryStage);
         });
-        root.getChildren().addAll(
+
+        List<Control> controls = asList(
                 typeYourNick, playerNick,
                 chooseNumberOfOpponents, numbersOfOpponents,
                 choosePlayerStack, playerStackSizes,
-                start
-        );
-        primaryStage.setScene(new Scene(root, 1200, 720));
+                start, cancel);
+        controls.forEach(it -> {
+            it.prefWidthProperty().bind(root.widthProperty().divide(7));
+            it.prefHeightProperty().bind(root.heightProperty().divide(20));
+        });
+
+        root.add(typeYourNick, 0, 0, 1, 1);
+        root.add(playerNick, 1, 0, 1, 1);
+        root.add(chooseNumberOfOpponents, 0, 1, 1, 1);
+        root.add(slider, 1, 1, 1, 1);
+        root.add(choosePlayerStack, 0, 2, 1, 1);
+        root.add(playerStackSizes, 1, 2, 1, 1);
+        root.add(start, 0, 3, REMAINING, REMAINING);
+        root.add(cancel, 1, 3, REMAINING, REMAINING);
+        root.setHgap(width / 40);
+        root.setVgap(height / 40);
+
+        Scene scene = new Scene(root, 1200, 720);
+        primaryStage.setScene(scene);
     }
 
 }

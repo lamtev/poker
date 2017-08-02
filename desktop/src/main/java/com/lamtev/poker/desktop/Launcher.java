@@ -16,7 +16,7 @@ public class Launcher extends Application {
     //TODO если дать ботам имена(человеческие), то это будет выглядеть приятнее
     //TODO сделать кнопку "Старт" в настройках больше и отодвинуть от остального (пользователь не должен долго думать куда ему нажать для начала игры, это должно сразу бросаться в глаза)
 
-    private static final double SCALE_FACTOR = 0.75;
+    private static final double SCALE_FACTOR = 0.8;
     private static final Rectangle2D screenRect = Screen.getPrimary().getVisualBounds();
     public static final double width = screenRect.getWidth() * SCALE_FACTOR;
     public static final double height = screenRect.getHeight() * SCALE_FACTOR;
