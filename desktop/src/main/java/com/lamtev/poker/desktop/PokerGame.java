@@ -1,5 +1,6 @@
 package com.lamtev.poker.desktop;
 
+import com.lamtev.poker.core.ai.SimpleAI;
 import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
@@ -32,9 +33,9 @@ public class PokerGame implements Play {
     private int smallBlindSize;
     private String currentPlayerId;
     private List<Card> communityCards = new ArrayList<>();
-    private List<Player> players;
+    private List<Player> players = new ArrayList<>();
     private User user;
-    private List<AI> ais;
+    private List<AI> ais = new ArrayList<>();
     private List<String> nicks;
     private List<String> showedDown = new ArrayList<>();
     private final MoveAbility moveAbility = new MoveAbility();
@@ -58,12 +59,13 @@ public class PokerGame implements Play {
     private Separator horizontalSeparator = new Separator(Orientation.HORIZONTAL);
     private HBox buttons;
 
-    PokerGame(List<Player> players, User user, List<AI> ais) {
-        this.players = players;
-        this.user = user;
-        this.ais = ais;
+    PokerGame(String userName, List<String> aiNames, int stackSize) {
+        aiNames.forEach(it -> ais.add(new SimpleAI(it, stackSize)));
+        user = new User(userName, stackSize);
+        players.add(user);
+        players.addAll(ais);
         nicks = players.stream().map(Player::id).collect(Collectors.toList());
-        smallBlindSize = players.get(0).stack() / 100;
+        smallBlindSize = stackSize / 100;
     }
 
     void setToStage(Stage primaryStage) {
