@@ -68,7 +68,7 @@ public class PokerGame implements Play {
         smallBlindSize = stackSize / 100;
     }
 
-    void setToStage(Stage primaryStage) {
+    void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         verticalSeparator.setPrefHeight(height);
         horizontalSeparator.setPrefWidth(width - activePlayersList.getWidth());
@@ -260,7 +260,7 @@ public class PokerGame implements Play {
                         Duration.millis(2500),
                         ae -> gameIsOverWindow.setOnCloseRequest(event -> {
                             StartMenu sm = new StartMenu();
-                            sm.setToStage(primaryStage);
+                            sm.start(primaryStage);
                         })
                 ));
                 timeline.play();
@@ -284,7 +284,7 @@ public class PokerGame implements Play {
                         Duration.millis(2500),
                         ae -> youWonWindow.setOnCloseRequest(event -> {
                             StartMenu sm = new StartMenu();
-                            sm.setToStage(primaryStage);
+                            sm.start(primaryStage);
                         })
                 ));
                 timeline.play();

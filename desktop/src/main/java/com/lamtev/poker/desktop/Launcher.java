@@ -25,7 +25,7 @@ public class Launcher extends Application {
     public void start(Stage primaryStage) throws Exception {
         configureStage(primaryStage);
         StartMenu startMenu = new StartMenu();
-        startMenu.setToStage(primaryStage);
+        startMenu.start(primaryStage);
         primaryStage.show();
     }
 

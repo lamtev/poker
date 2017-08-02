@@ -14,14 +14,14 @@ import static java.util.Arrays.asList;
 
 class StartMenu {
 
-    void setToStage(Stage primaryStage) {
+    void start(Stage primaryStage) {
         VBox root = new VBox(height / 40);
         root.setAlignment(Pos.CENTER);
         root.setPrefWidth(width);
         root.setPrefHeight(height);
 
         Button startGame = new Button("Start game");
-        startGame.setOnAction(e -> new Settings().setToStage(primaryStage));
+        startGame.setOnAction(e -> new Settings().start(primaryStage));
 
         Button about = new Button("About");
 
