@@ -18,8 +18,10 @@ class Settings {
 
     private static final int MAX_NICK_LENGTH = 10;
     private static final int MIN_NICK_LENGTH = 3;
+
     private int numberOfOpponents;
     private int stackSize;
+
     private final GridPane root = new GridPane();
     private final Label typeYourNick = new Label("Type your nickname:");
     private final Label chooseNumberOfOpponents = new Label("Choose number of opponents:");
@@ -97,6 +99,7 @@ class Settings {
     private void configureCancelButton(Stage primaryStage) {
         cancelButton.setOnAction(event -> new StartMenu().start(primaryStage));
     }
+
 
     private void configureControlsSizes() {
         asList(typeYourNick, playerNameField,

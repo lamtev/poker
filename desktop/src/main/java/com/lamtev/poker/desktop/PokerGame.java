@@ -74,16 +74,11 @@ public class PokerGame implements Play {
         horizontalSeparator.setPrefWidth(width - activePlayersList.getWidth());
         sb.getChildren().add(statusBar);
         sb.setAlignment(Pos.CENTER);
-        activePlayersList.setMouseTransparent(true);
-        foldPlayersList.setMouseTransparent(true);
 
         activePlayersList.setPrefWidth(width / 8);
-        foldPlayersList.setPrefWidth(width / 8);
         root.add(whoseTurn, 0, 0, 1, 1);
         root.add(new Label("Active players:"), 0, 1, 1, 1);
-        root.add(activePlayersList, 0, 2, 1, 21);
-        root.add(new Label("Fold players:"), 0, 23, 1, 1);
-        root.add(foldPlayersList, 0, 24, 1, 21);
+        root.add(activePlayersList, 0, 2, 1, 22);
         root.add(verticalSeparator, 1, 0, 1, REMAINING);
         root.add(sb, 2, 0, REMAINING, 1);
         root.add(moneyInBankLabel, 2, 1, REMAINING, 1);
@@ -333,6 +328,7 @@ public class PokerGame implements Play {
                     playerCardsView.setSpacing(1);
 
                     if (it.id().equals(user.id()) || showedDown.contains(it.id())) {
+                        if (it.cards() == null) return;
                         it.cards().forEach(card -> {
                             String pathToPic = "pics/" + card.toString() + ".png";
                             ImageView cardView = new ImageView(pathToPic);
@@ -351,6 +347,7 @@ public class PokerGame implements Play {
                     }
 
                     playerIdAndCardsView.getChildren().add(playerCardsView);
+                    playerIdAndCardsView.getChildren().add(new Label(Integer.toString(it.wager())));
                     playersCardsViewHBox.getChildren().add(playerIdAndCardsView);
                     playersCardsViewHBox.setAlignment(Pos.CENTER);
                 });
@@ -363,6 +360,7 @@ public class PokerGame implements Play {
             user.setWager(playerWager);
         }
         updateActiveAndFoldPlayersLists();
+        updatePlayersCardsView();
         players.forEach(System.out::println);
     }
 
@@ -370,7 +368,7 @@ public class PokerGame implements Play {
         activePlayersList.getItems().clear();
         foldPlayersList.getItems().clear();
         players.forEach(it -> {
-            String playerInfo = it.id() + ": " + it.stack() + " " + it.wager();
+            String playerInfo = it.id() + ": " + it.stack();
             if (it.id().equals(nicks.get(0))) {
                 playerInfo += "  Dealer";
             } else if (it.id().equals(nicks.get(1))) {
