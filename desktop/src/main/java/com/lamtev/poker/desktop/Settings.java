@@ -27,9 +27,9 @@ class Settings {
     private int playerStackSize;
 
     void setToStage(Stage primaryStage) {
-        FlowPane rootNode = new FlowPane(10, 10);
-        rootNode.setAlignment(Pos.CENTER);
-        rootNode.setOrientation(Orientation.VERTICAL);
+        FlowPane root = new FlowPane(10, 10);
+        root.setAlignment(Pos.CENTER);
+        root.setOrientation(Orientation.VERTICAL);
         Label typeYourNick = new Label("Type your nickname");
         Label chooseNumberOfOpponents = new Label("Choose number of opponents");
         Label choosePlayerStack = new Label("Choose player stack size");
@@ -59,13 +59,13 @@ class Settings {
             pokerGame = new PokerGame(players, user, ais);
             pokerGame.setToStage(primaryStage);
         });
-        rootNode.getChildren().addAll(
+        root.getChildren().addAll(
                 typeYourNick, playerNick,
                 chooseNumberOfOpponents, numbersOfOpponents,
                 choosePlayerStack, playerStackSizes,
                 start
         );
-        primaryStage.setScene(new Scene(rootNode, 1200, 720));
+        primaryStage.setScene(new Scene(root, 1200, 720));
     }
 
 }
