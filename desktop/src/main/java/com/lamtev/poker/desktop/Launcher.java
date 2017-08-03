@@ -2,6 +2,7 @@ package com.lamtev.poker.desktop;
 
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -35,6 +36,7 @@ public class Launcher extends Application {
 
     private void configureStage(Stage stage) {
         stage.setTitle("Poker");
+        stage.getIcons().add(new Image("pics/icon-64.png"));
         stage.setWidth(width);
         stage.setHeight(height);
         stage.setResizable(false);

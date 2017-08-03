@@ -11,6 +11,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -84,7 +85,7 @@ public class PokerGame implements Play {
         root.add(moneyInBankLabel, 2, 1, REMAINING, 1);
         root.add(horizontalSeparator, 2, 3, REMAINING, 1);
 
-        root.add(playersCardsViewHBox, 2, 25, REMAINING, 6);
+        root.add(playersCardsViewHBox, 2, 30, REMAINING, 6);
         buttons = new HBox();
         buttons.setAlignment(Pos.CENTER);
         buttons.setSpacing(10);
@@ -318,10 +319,9 @@ public class PokerGame implements Play {
         players.stream()
                 .filter(Player::isActive)
                 .forEach(it -> {
-                    VBox playerIdAndCardsView = new VBox();
-                    playerIdAndCardsView.setAlignment(Pos.CENTER);
-                    playerIdAndCardsView.setSpacing(2);
-                    playerIdAndCardsView.getChildren().add(new Label(it.id()));
+                    VBox playerTableView = new VBox();
+                    playerTableView.setAlignment(Pos.CENTER);
+                    playerTableView.setSpacing(2);
 
                     HBox playerCardsView = new HBox();
                     playerCardsView.setAlignment(Pos.CENTER);
@@ -345,10 +345,21 @@ public class PokerGame implements Play {
                             playerCardsView.getChildren().add(cardView);
                         }
                     }
-
-                    playerIdAndCardsView.getChildren().add(playerCardsView);
-                    playerIdAndCardsView.getChildren().add(new Label(Integer.toString(it.wager())));
-                    playersCardsViewHBox.getChildren().add(playerIdAndCardsView);
+                    ImageView buttonView = new ImageView();
+                    if (it.id().equals(nicks.get(0))) {
+                        buttonView.setImage(new Image("pics/dealer.png"));
+                    } else if (it.id().equals(nicks.get(1))) {
+                        buttonView.setImage(new Image("pics/small-blind.png"));
+                    } else if (it.id().equals(nicks.size() == 2 ? nicks.get(0) : nicks.get(2))) {
+                        buttonView.setImage(new Image("pics/big-blind.png"));
+                    }
+                    buttonView.setFitWidth(64);
+                    buttonView.setFitHeight(64);
+                    playerTableView.getChildren().add(buttonView);
+                    playerTableView.getChildren().add(new Label(Integer.toString(it.wager())));
+                    playerTableView.getChildren().add(playerCardsView);
+                    playerTableView.getChildren().add(new Label(it.id()));
+                    playersCardsViewHBox.getChildren().add(playerTableView);
                     playersCardsViewHBox.setAlignment(Pos.CENTER);
                 });
     }
@@ -369,13 +380,6 @@ public class PokerGame implements Play {
         foldPlayersList.getItems().clear();
         players.forEach(it -> {
             String playerInfo = it.id() + ": " + it.stack();
-            if (it.id().equals(nicks.get(0))) {
-                playerInfo += "  Dealer";
-            } else if (it.id().equals(nicks.get(1))) {
-                playerInfo += " Small Blind";
-            } else if (it.id().equals(nicks.size() == 2 ? nicks.get(0) : nicks.get(2))) {
-                playerInfo += " Big Blind";
-            }
             Label label = new Label(playerInfo);
             if (it.isActive()) {
                 activePlayersList.getItems().add(label);
