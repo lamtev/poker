@@ -20,8 +20,8 @@ import javafx.util.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.lamtev.poker.desktop.Launcher.height;
-import static com.lamtev.poker.desktop.Launcher.width;
+import static com.lamtev.poker.desktop.Launcher.HEIGHT;
+import static com.lamtev.poker.desktop.Launcher.WIDTH;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 import static javafx.geometry.Pos.CENTER;
@@ -29,6 +29,14 @@ import static javafx.geometry.Pos.CENTER;
 public class Game implements Play {
 
     private static final Image CARD_BACK_IMAGE = new Image("pics/back_side.png");
+    private static final double COMMUNITY_CARD_HEIGHT = HEIGHT / 3;
+    private static final double COMMUNITY_CARD_WIDTH = COMMUNITY_CARD_HEIGHT / 1.533;
+    private static final double HOLE_CARD_HEIGHT = WIDTH / 15;
+    private static final double HOLE_CARD_WIDTH = WIDTH / 22.8;
+    private static final double DEALER_BUTTON_SIZE = HEIGHT / 12.875;
+    private static final int BUTTON_WIDTH = 100;
+    private static final int BUTTON_HEIGHT = 50;
+
     private Stage primaryStage;
     private RoundOfPlay poker;
     private int smallBlindSize;
@@ -60,14 +68,14 @@ public class Game implements Play {
         players.add(user);
         players.addAll(ais);
         nicks = players.stream().map(Player::id).collect(Collectors.toList());
-        smallBlindSize = stackSize / 100;
-        communityCardsView.setPrefHeight(height / 3);
-        communityCardsView.setPrefWidth(width);
+        smallBlindSize = stackSize / BUTTON_WIDTH;
+        communityCardsView.setPrefHeight(COMMUNITY_CARD_HEIGHT);
+        communityCardsView.setPrefWidth(WIDTH);
     }
 
     void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        horizontalSeparator.setPrefWidth(width);
+        horizontalSeparator.setPrefWidth(WIDTH);
         sb.getChildren().add(statusBar);
         sb.setAlignment(CENTER);
 
@@ -142,8 +150,8 @@ public class Game implements Play {
         List<ImageView> cards = new ArrayList<>();
         for (int i = 0; i < 2; ++i) cards.add(new ImageView());
         cards.forEach(it -> {
-            it.setFitHeight(width / 15);
-            it.setFitWidth(width / 22.8);
+            it.setFitHeight(HOLE_CARD_HEIGHT);
+            it.setFitWidth(HOLE_CARD_WIDTH);
         });
         cardsHBox.getChildren().addAll(cards);
         return cardsHBox;
@@ -171,8 +179,8 @@ public class Game implements Play {
             buttons.add(new ImageView("pics/big-blind.png"));
         }
         buttons.forEach(it -> {
-            it.setFitWidth(height / 12.875);
-            it.setFitHeight(height / 12.875);
+            it.setFitWidth(DEALER_BUTTON_SIZE);
+            it.setFitHeight(DEALER_BUTTON_SIZE);
         });
         buttonsHBox.getChildren().addAll(buttons);
         return buttonsHBox;
@@ -201,7 +209,7 @@ public class Game implements Play {
     }
 
     private void setUpCallButton() {
-        call.setPrefSize(100, 50);
+        call.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         call.setId("call");
         call.setOnAction(event -> {
             try {
@@ -215,7 +223,7 @@ public class Game implements Play {
     }
 
     private void setUpAllInButton() {
-        allIn.setPrefSize(100, 50);
+        allIn.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         allIn.setId("allIn");
         allIn.setOnAction(event -> {
             try {
@@ -229,7 +237,7 @@ public class Game implements Play {
     }
 
     private void setUpFoldButton() {
-        fold.setPrefSize(100, 50);
+        fold.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         fold.setId("fold");
         fold.setOnAction(event -> {
             try {
@@ -243,7 +251,7 @@ public class Game implements Play {
     }
 
     private void setUpCheckButton() {
-        check.setPrefSize(100, 50);
+        check.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         check.setId("check");
         check.setOnAction(event -> {
             try {
@@ -257,7 +265,7 @@ public class Game implements Play {
     }
 
     private void setUpShowDownButton() {
-        showDown.setPrefSize(100, 50);
+        showDown.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         showDown.setId("showDown");
         showDown.setOnAction(event -> {
             try {
@@ -273,10 +281,10 @@ public class Game implements Play {
     }
 
     private void setUpRaiseButton() {
-        raise.setPrefSize(100, 50);
+        raise.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         raise.setId("raise");
         raise.setOnAction(event -> {
-            TextInputDialog dialogWindow = new TextInputDialog("" + 50);
+            TextInputDialog dialogWindow = new TextInputDialog("" + BUTTON_HEIGHT);
             dialogWindow.setTitle("Raise");
             dialogWindow.setContentText("Input additional wager:");
 
@@ -452,8 +460,8 @@ public class Game implements Play {
         communityCardsView.setSpacing(30);
         addedCommunityCards.forEach(card -> {
             ImageView cardView = new ImageView("pics/" + card.toString() + ".png");
-            cardView.setFitHeight(height / 3);
-            cardView.setFitWidth(cardView.getFitHeight() / 1.533);
+            cardView.setFitHeight(COMMUNITY_CARD_HEIGHT);
+            cardView.setFitWidth(COMMUNITY_CARD_WIDTH);
             communityCardsView.getChildren().add(cardView);
         });
     }

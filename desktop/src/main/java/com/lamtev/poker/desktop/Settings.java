@@ -7,8 +7,8 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
-import static com.lamtev.poker.desktop.Launcher.height;
-import static com.lamtev.poker.desktop.Launcher.width;
+import static com.lamtev.poker.desktop.Launcher.HEIGHT;
+import static com.lamtev.poker.desktop.Launcher.WIDTH;
 import static com.lamtev.poker.desktop.Util.nNamesExceptThis;
 import static java.util.Arrays.asList;
 import static javafx.geometry.Pos.CENTER;
@@ -40,12 +40,12 @@ class Settings {
         configureStartButton(primaryStage);
         configureCancelButton(primaryStage);
         configureControlsSizes();
-        primaryStage.setScene(new Scene(root, width, height));
+        primaryStage.setScene(new Scene(root, WIDTH, HEIGHT));
     }
 
     private void configureLayout() {
         root.setAlignment(CENTER);
-        root.setPrefSize(width, height);
+        root.setPrefSize(WIDTH, HEIGHT);
         root.add(typeYourNick, 0, 0, 1, 1);
         root.add(playerNameField, 1, 0, 1, 1);
         root.add(chooseNumberOfOpponents, 0, 1, 1, 1);
@@ -54,8 +54,8 @@ class Settings {
         root.add(stackSizeChoiceBox, 1, 2, 1, 1);
         root.add(startButton, 0, 3, REMAINING, REMAINING);
         root.add(cancelButton, 1, 3, REMAINING, REMAINING);
-        root.setHgap(width / 40);
-        root.setVgap(height / 40);
+        root.setHgap(WIDTH / 40);
+        root.setVgap(HEIGHT / 40);
     }
 
     private void configurePlayerNameField() {

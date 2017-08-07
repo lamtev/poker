@@ -8,17 +8,17 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
-import static com.lamtev.poker.desktop.Launcher.height;
-import static com.lamtev.poker.desktop.Launcher.width;
+import static com.lamtev.poker.desktop.Launcher.HEIGHT;
+import static com.lamtev.poker.desktop.Launcher.WIDTH;
 import static java.util.Arrays.asList;
 
 class StartMenu {
 
     void start(Stage primaryStage) {
-        VBox root = new VBox(height / 40);
+        VBox root = new VBox(HEIGHT / 40);
         root.setAlignment(Pos.CENTER);
-        root.setPrefWidth(width);
-        root.setPrefHeight(height);
+        root.setPrefWidth(WIDTH);
+        root.setPrefHeight(HEIGHT);
 
         Button startGame = new Button("Start game");
         startGame.setOnAction(e -> new Settings().start(primaryStage));
@@ -33,7 +33,7 @@ class StartMenu {
 
         root.getChildren().addAll(buttons);
 
-        Scene scene = new Scene(root, width, height);
+        Scene scene = new Scene(root, WIDTH, HEIGHT);
         primaryStage.setScene(scene);
     }
 

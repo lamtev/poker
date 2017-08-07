@@ -16,8 +16,8 @@ public class Launcher extends Application {
 
     private static final double SCALE_FACTOR = 0.8;
     private static final Rectangle2D screenRect = Screen.getPrimary().getVisualBounds();
-    public static final double width = screenRect.getWidth() * SCALE_FACTOR;
-    public static final double height = screenRect.getHeight() * SCALE_FACTOR;
+    public static final double WIDTH = screenRect.getWidth() * SCALE_FACTOR;
+    public static final double HEIGHT = screenRect.getHeight() * SCALE_FACTOR;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -34,8 +34,8 @@ public class Launcher extends Application {
     private void configureStage(Stage stage) {
         stage.setTitle("Poker");
         stage.getIcons().add(new Image("pics/icon-64.png"));
-        stage.setWidth(width);
-        stage.setHeight(height);
+        stage.setWidth(WIDTH);
+        stage.setHeight(HEIGHT);
         stage.setResizable(false);
         stage.centerOnScreen();
     }
