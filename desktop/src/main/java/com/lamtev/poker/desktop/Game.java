@@ -8,12 +8,10 @@ import com.lamtev.poker.core.states.exceptions.RoundOfPlayIsOverException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -24,87 +22,164 @@ import java.util.stream.Collectors;
 
 import static com.lamtev.poker.desktop.Launcher.height;
 import static com.lamtev.poker.desktop.Launcher.width;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
-import static javafx.scene.layout.GridPane.REMAINING;
+import static javafx.geometry.Pos.CENTER;
 
-public class PokerGame implements Play {
+public class Game implements Play {
 
+    private static final Image CARD_BACK_IMAGE = new Image("pics/back_side.png");
     private Stage primaryStage;
     private RoundOfPlay poker;
     private int smallBlindSize;
     private String currentPlayerId;
-    private List<Card> communityCards = new ArrayList<>();
-    private List<Player> players = new ArrayList<>();
-    private User user;
-    private List<AI> ais = new ArrayList<>();
-    private List<String> nicks;
-    private List<String> showedDown = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
+    private final User user;
+    private final List<AI> ais = new ArrayList<>();
+    private final List<String> nicks;
     private final MoveAbility moveAbility = new MoveAbility();
 
-    private HBox playersCardsViewHBox = new HBox();
+    private HBox playersView = new HBox();
     private HBox communityCardsView = new HBox();
-    private Label whoseTurn = new Label();
-    private GridPane root = new GridPane();
+    private VBox root = new VBox();
     private VBox sb = new VBox();
     private Label statusBar = new Label();
     private Label moneyInBankLabel = new Label();
-    private ListView<Label> activePlayersList = new ListView<>();
-    private ListView<Label> foldPlayersList = new ListView<>();
     private Button call = new Button("call");
     private Button fold = new Button("fold");
     private Button raise = new Button("raise");
     private Button check = new Button("check");
     private Button allIn = new Button("all in");
     private Button showDown = new Button("show down");
-    private Separator verticalSeparator = new Separator(Orientation.VERTICAL);
     private Separator horizontalSeparator = new Separator(Orientation.HORIZONTAL);
     private HBox buttons;
 
-    PokerGame(String userName, List<String> aiNames, int stackSize) {
+    Game(String userName, List<String> aiNames, int stackSize) {
         aiNames.forEach(it -> ais.add(new SimpleAI(it, stackSize)));
         user = new User(userName, stackSize);
         players.add(user);
         players.addAll(ais);
         nicks = players.stream().map(Player::id).collect(Collectors.toList());
         smallBlindSize = stackSize / 100;
+        communityCardsView.setPrefHeight(height / 3);
+        communityCardsView.setPrefWidth(width);
     }
 
     void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        verticalSeparator.setPrefHeight(height);
-        horizontalSeparator.setPrefWidth(width - activePlayersList.getWidth());
+        horizontalSeparator.setPrefWidth(width);
         sb.getChildren().add(statusBar);
-        sb.setAlignment(Pos.CENTER);
+        sb.setAlignment(CENTER);
 
-        activePlayersList.setPrefWidth(width / 8);
-        root.add(whoseTurn, 0, 0, 1, 1);
-        root.add(new Label("Active players:"), 0, 1, 1, 1);
-        root.add(activePlayersList, 0, 2, 1, 22);
-        root.add(verticalSeparator, 1, 0, 1, REMAINING);
-        root.add(sb, 2, 0, REMAINING, 1);
-        root.add(moneyInBankLabel, 2, 1, REMAINING, 1);
-        root.add(horizontalSeparator, 2, 3, REMAINING, 1);
-
-        root.add(playersCardsViewHBox, 2, 30, REMAINING, 6);
+        root.getChildren().add(sb);
+        root.getChildren().add(horizontalSeparator);
+        root.getChildren().add(communityCardsView);
+        VBox moneyInBank = new VBox();
+        moneyInBank.setAlignment(CENTER);
+        moneyInBank.getChildren().add(moneyInBankLabel);
+        root.getChildren().add(moneyInBank);
+        root.getChildren().add(playersView);
         buttons = new HBox();
-        buttons.setAlignment(Pos.CENTER);
+        buttons.setAlignment(CENTER);
         buttons.setSpacing(10);
-        buttons.getChildren().addAll(call, fold, raise, check, allIn, showDown);
-        root.add(buttons, 4, 44, REMAINING, 1);
-
+        buttons.getChildren().addAll(call, check, raise, allIn, fold, showDown);
+        root.getChildren().add(buttons);
         Label nickNameLabel = new Label();
         nickNameLabel.setText(players.get(0).id());
         String dealerId = nicks.get(0);
         setUpButtons();
+
+        configurePlayersView();
+
         startNewGame(players, dealerId);
 
         primaryStage.setScene(new Scene(root, 1200, 720));
     }
 
+    private void configurePlayersView() {
+        playersView.getChildren().clear();
+        playersView.setAlignment(CENTER);
+        playersView.setSpacing(5);
+
+        players.forEach(it -> {
+            VBox playerView = new VBox(2);
+            playerView.setId(it.id());
+            playerView.setAlignment(CENTER);
+
+            playerView.getChildren().addAll(
+                    asList(
+                            buttonsHBox(it.id()), wagerLabel(), cardsHBox(),
+                            nickLabel(it), stackLabel(it), currentLabel()
+                    )
+            );
+
+            playersView.getChildren().add(playerView);
+        });
+    }
+
+    private Label currentLabel() {
+        Label currentLabel = new Label();
+        currentLabel.setId("current");
+        return currentLabel;
+    }
+
+    private Label stackLabel(Player it) {
+        Label stackLabel = new Label(Integer.toString(it.stack()));
+        stackLabel.setId("stack");
+        return stackLabel;
+    }
+
+    private Label nickLabel(Player it) {
+        Label nickLabel = new Label(it.id());
+        nickLabel.setId("nick");
+        return nickLabel;
+    }
+
+    private HBox cardsHBox() {
+        HBox cardsHBox = new HBox(1);
+        cardsHBox.setAlignment(CENTER);
+        cardsHBox.setId("cards");
+        List<ImageView> cards = new ArrayList<>();
+        for (int i = 0; i < 2; ++i) cards.add(new ImageView());
+        cards.forEach(it -> {
+            it.setFitHeight(width / 15);
+            it.setFitWidth(width / 22.8);
+        });
+        cardsHBox.getChildren().addAll(cards);
+        return cardsHBox;
+    }
+
+    private Label wagerLabel() {
+        Label wagerLabel = new Label();
+        wagerLabel.setId("wager");
+        return wagerLabel;
+    }
+
+    private HBox buttonsHBox(String id) {
+        HBox buttonsHBox = new HBox(1);
+        buttonsHBox.setAlignment(CENTER);
+        buttonsHBox.setId("buttons");
+        List<ImageView> buttons = new ArrayList<>();
+        if (id.equals(nicks.get(0))) {
+            buttons.add(new ImageView("pics/dealer.png"));
+        }
+        if (id.equals(nicks.get(1))) {
+            buttons.add(new ImageView("pics/small-blind.png"));
+        }
+        if (nicks.size() > 2 && id.equals(nicks.get(2)) ||
+                nicks.size() == 2 && id.equals(nicks.get(0))) {
+            buttons.add(new ImageView("pics/big-blind.png"));
+        }
+        buttons.forEach(it -> {
+            it.setFitWidth(height / 12.875);
+            it.setFitHeight(height / 12.875);
+        });
+        buttonsHBox.getChildren().addAll(buttons);
+        return buttonsHBox;
+    }
+
     private void startNewGame(List<Player> players, String dealerId) {
         statusBar.setText("Welcome to Texas Hold'em Poker!!!");
-        showedDown.clear();
-        communityCards.clear();
         communityCardsView.getChildren().clear();
 
         poker = new PokerBuilder()
@@ -114,7 +189,6 @@ public class PokerGame implements Play {
                 .registerPlay(this)
                 .create();
 
-        updateActiveAndFoldPlayersLists();
     }
 
     private void setUpButtons() {
@@ -305,63 +379,13 @@ public class PokerGame implements Play {
         if (user.id().equals(playerId)) {
             user.setActive(false);
         }
-        updateActiveAndFoldPlayersLists();
-        updatePlayersCardsView();
-
-    }
-
-    private void updatePlayersCardsView() {
-        playersCardsViewHBox.getChildren().clear();
-
-        playersCardsViewHBox.setAlignment(Pos.CENTER);
-        playersCardsViewHBox.setSpacing(5);
-
-        players.stream()
-                .filter(Player::isActive)
-                .forEach(it -> {
-                    VBox playerTableView = new VBox();
-                    playerTableView.setAlignment(Pos.CENTER);
-                    playerTableView.setSpacing(2);
-
-                    HBox playerCardsView = new HBox();
-                    playerCardsView.setAlignment(Pos.CENTER);
-                    playerCardsView.setSpacing(1);
-
-                    if (it.id().equals(user.id()) || showedDown.contains(it.id())) {
-                        if (it.cards() == null) return;
-                        it.cards().forEach(card -> {
-                            String pathToPic = "pics/" + card.toString() + ".png";
-                            ImageView cardView = new ImageView(pathToPic);
-                            cardView.setFitHeight(width / 15.8);
-                            cardView.setFitWidth(width / 24);
-                            playerCardsView.getChildren().add(cardView);
-                        });
-                    } else {
-                        for (int i = 0; i < 2; ++i) {
-                            String pathToPic = "pics/back_side.png";
-                            ImageView cardView = new ImageView(pathToPic);
-                            cardView.setFitHeight(width / 15.8);
-                            cardView.setFitWidth(width / 24);
-                            playerCardsView.getChildren().add(cardView);
-                        }
-                    }
-                    ImageView buttonView = new ImageView();
-                    if (it.id().equals(nicks.get(0))) {
-                        buttonView.setImage(new Image("pics/dealer.png"));
-                    } else if (it.id().equals(nicks.get(1))) {
-                        buttonView.setImage(new Image("pics/small-blind.png"));
-                    } else if (it.id().equals(nicks.size() == 2 ? nicks.get(0) : nicks.get(2))) {
-                        buttonView.setImage(new Image("pics/big-blind.png"));
-                    }
-                    buttonView.setFitWidth(64);
-                    buttonView.setFitHeight(64);
-                    playerTableView.getChildren().add(buttonView);
-                    playerTableView.getChildren().add(new Label(Integer.toString(it.wager())));
-                    playerTableView.getChildren().add(playerCardsView);
-                    playerTableView.getChildren().add(new Label(it.id()));
-                    playersCardsViewHBox.getChildren().add(playerTableView);
-                    playersCardsViewHBox.setAlignment(Pos.CENTER);
-                });
+        VBox playerView = (VBox) playersView.getChildren().stream()
+                .filter(it -> it.getId().equals(playerId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+        playerView.getChildren().get(2).setVisible(false);
+        Label currentLabel = (Label) playerView.getChildren().get(5);
+        currentLabel.setText("fold");
     }
 
     @Override
@@ -370,75 +394,68 @@ public class PokerGame implements Play {
             user.setStack(playerStack);
             user.setWager(playerWager);
         }
-        updateActiveAndFoldPlayersLists();
-        updatePlayersCardsView();
+        VBox playerTableView = (VBox) playersView.getChildren().stream()
+                .filter(it -> it.getId().equals(playerId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+        playerTableView.getChildren().set(1, new Label(Integer.toString(playerWager)));
+        playerTableView.getChildren().set(4, new Label(Integer.toString(playerStack)));
         players.forEach(System.out::println);
-    }
-
-    private void updateActiveAndFoldPlayersLists() {
-        activePlayersList.getItems().clear();
-        foldPlayersList.getItems().clear();
-        players.forEach(it -> {
-            String playerInfo = it.id() + ": " + it.stack();
-            Label label = new Label(playerInfo);
-            if (it.isActive()) {
-                activePlayersList.getItems().add(label);
-            } else {
-                foldPlayersList.getItems().add(label);
-            }
-        });
     }
 
     @Override
     public void currentPlayerChanged(String currentPlayerId) {
         System.out.println(currentPlayerId);
         this.currentPlayerId = currentPlayerId;
-        whoseTurn.setText("Whose turn: " + currentPlayerId);
+        playersView.getChildren().forEach(it -> {
+            Label currentLabel = (Label) ((VBox) it).getChildren().get(5);
+            if (it.getId().equals(currentPlayerId)) {
+                currentLabel.setText("current");
+            } else {
+                currentLabel.setText("fold".equals(currentLabel.getText()) ? "fold" : "");
+            }
+        });
         if (user.id().equals(currentPlayerId)) {
             buttons.getChildren().forEach(it -> {
                 switch (it.getId()) {
                     case "allIn":
-                        it.setVisible(moveAbility.allInIsAble());
+                        it.setDisable(!moveAbility.allInIsAble());
                         break;
                     case "call":
-                        it.setVisible(moveAbility.callIsAble());
+                        it.setDisable(!moveAbility.callIsAble());
                         break;
                     case "check":
-                        it.setVisible(moveAbility.checkIsAble());
+                        it.setDisable(!moveAbility.checkIsAble());
                         break;
                     case "fold":
-                        it.setVisible(moveAbility.foldIsAble());
+                        it.setDisable(!moveAbility.foldIsAble());
                         break;
                     case "raise":
-                        it.setVisible(moveAbility.raiseIsAble());
+                        it.setDisable(!moveAbility.raiseIsAble());
                         break;
                     case "showDown":
-                        it.setVisible(moveAbility.showdownIsAble());
+                        it.setDisable(!moveAbility.showdownIsAble());
                         break;
                     default:
                         throw new RuntimeException();
                 }
             });
         } else {
-            buttons.getChildren().forEach(it -> it.setVisible(false));
+            buttons.getChildren().forEach(it -> it.setDisable(true));
             makeAMoveOfAI();
         }
     }
 
     @Override
     public void communityCardsDealt(List<Card> addedCommunityCards) {
-        communityCards.addAll(addedCommunityCards);
-        communityCardsView.getChildren().clear();
-        communityCardsView.setAlignment(Pos.CENTER);
+        communityCardsView.setAlignment(CENTER);
         communityCardsView.setSpacing(30);
-        communityCards.forEach(card -> {
+        addedCommunityCards.forEach(card -> {
             ImageView cardView = new ImageView("pics/" + card.toString() + ".png");
-            cardView.setFitHeight(230);
-            cardView.setFitWidth(150);
+            cardView.setFitHeight(height / 3);
+            cardView.setFitWidth(cardView.getFitHeight() / 1.533);
             communityCardsView.getChildren().add(cardView);
         });
-        root.getChildren().remove(communityCardsView);
-        root.add(communityCardsView, 2, 4, REMAINING, 20);
     }
 
     @Override
@@ -454,39 +471,64 @@ public class PokerGame implements Play {
     @Override
     public void holeCardsDealt(Map<String, List<Card>> playerIdToCards) {
         user.setCards(playerIdToCards.get(user.id()));
-        updatePlayersCardsView();
+        playersView.getChildren().forEach(it -> {
+            VBox playerView = (VBox) it;
+            HBox cards = (HBox) playerView.getChildren().get(2);
+            if (it.getId().equals(user.id())) {
+                int i = 0;
+                for (Card card : user.cards()) {
+                    ImageView imageView = (ImageView) cards.getChildren().get(i);
+                    imageView.setImage(new Image("pics/" + card.toString() + ".png"));
+                    ++i;
+                }
+            } else {
+                for (int i = 0; i < 2; ++i) {
+                    ImageView imageView = (ImageView) cards.getChildren().get(i);
+                    imageView.setImage(CARD_BACK_IMAGE);
+                }
+            }
+        });
     }
 
     @Override
     public void playerAllinned(String playerId) {
         statusBar.setText(playerId + " made all in");
-        updateActiveAndFoldPlayersLists();
     }
 
     @Override
     public void playerCalled(String playerId) {
         statusBar.setText(playerId + " called");
-        updateActiveAndFoldPlayersLists();
     }
 
     @Override
     public void playerChecked(String playerId) {
         statusBar.setText(playerId + " checked");
-        updateActiveAndFoldPlayersLists();
     }
 
     @Override
     public void playerRaised(String playerId) {
         statusBar.setText(playerId + " raised");
-        updateActiveAndFoldPlayersLists();
     }
 
     @Override
     public void playerShowedDown(String playerId, PokerHand hand) {
-        showedDown.add(playerId);
         statusBar.setText(playerId + " showed down: " + hand.getName());
-        updatePlayersCardsView();
-        updateActiveAndFoldPlayersLists();
+        VBox playerView = (VBox) playersView.getChildren().stream()
+                .filter(it -> it.getId().equals(playerId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+        HBox cardsHBox = (HBox) playerView.getChildren().get(2);
+        List<Card> cards = players.stream()
+                .filter(it -> it.id().equals(playerId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new)
+                .cards();
+        int i = 0;
+        for (Card card : cards) {
+            ImageView imageView = (ImageView) cardsHBox.getChildren().get(i);
+            imageView.setImage(new Image("pics/" + card.toString() + ".png"));
+            ++i;
+        }
     }
 
     @Override

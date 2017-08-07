@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("WeakerAccess")
 public class Util {
 
     private static final List<String> NAMES = Arrays.asList(

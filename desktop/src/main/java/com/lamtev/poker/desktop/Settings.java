@@ -16,7 +16,7 @@ import static javafx.scene.layout.GridPane.REMAINING;
 
 class Settings {
 
-    private static final int MAX_NICK_LENGTH = 10;
+    private static final int MAX_NICK_LENGTH = 15;
     private static final int MIN_NICK_LENGTH = 3;
 
     private int numberOfOpponents;
@@ -91,7 +91,7 @@ class Settings {
             stackSize = stackSizeChoiceBox.getValue();
             String playerName = playerNameField.getText();
             List<String> aiNames = nNamesExceptThis(numberOfOpponents, playerName);
-            new PokerGame(playerName, aiNames, stackSize)
+            new Game(playerName, aiNames, stackSize)
                     .start(primaryStage);
         });
     }
