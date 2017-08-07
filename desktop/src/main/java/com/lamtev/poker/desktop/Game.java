@@ -34,8 +34,8 @@ public class Game implements Play {
     private static final double HOLE_CARD_HEIGHT = WIDTH / 15;
     private static final double HOLE_CARD_WIDTH = WIDTH / 22.8;
     private static final double DEALER_BUTTON_SIZE = HEIGHT / 12.875;
-    private static final int BUTTON_WIDTH = 100;
-    private static final int BUTTON_HEIGHT = 50;
+    private static final double BUTTON_WIDTH = WIDTH / 12.8;
+    private static final double BUTTON_HEIGHT = HEIGHT / 16.48;
 
     private Stage primaryStage;
     private RoundOfPlay poker;
@@ -68,7 +68,7 @@ public class Game implements Play {
         players.add(user);
         players.addAll(ais);
         nicks = players.stream().map(Player::id).collect(Collectors.toList());
-        smallBlindSize = stackSize / BUTTON_WIDTH;
+        smallBlindSize = stackSize / 100;
         communityCardsView.setPrefHeight(COMMUNITY_CARD_HEIGHT);
         communityCardsView.setPrefWidth(WIDTH);
     }
@@ -287,7 +287,7 @@ public class Game implements Play {
         raise.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         raise.setId("raise");
         raise.setOnAction(event -> {
-            TextInputDialog dialogWindow = new TextInputDialog("" + BUTTON_HEIGHT);
+            TextInputDialog dialogWindow = new TextInputDialog("" + 50);
             dialogWindow.setTitle("Raise");
             dialogWindow.setContentText("Input additional wager:");
 
