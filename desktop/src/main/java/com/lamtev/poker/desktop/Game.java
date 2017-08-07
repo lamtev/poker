@@ -97,8 +97,6 @@ public class Game implements Play {
         String dealerId = nicks.get(0);
         setUpButtons();
 
-        configurePlayersView();
-
         startNewGame(players, dealerId);
 
         primaryStage.setScene(new Scene(root, 1200, 720));
@@ -158,7 +156,7 @@ public class Game implements Play {
     }
 
     private Label wagerLabel() {
-        Label wagerLabel = new Label();
+        Label wagerLabel = new Label("0");
         wagerLabel.setId("wager");
         return wagerLabel;
     }
@@ -178,6 +176,10 @@ public class Game implements Play {
                 nicks.size() == 2 && id.equals(nicks.get(0))) {
             buttons.add(new ImageView("pics/big-blind.png"));
         }
+        if (buttons.size() == 0) {
+            ImageView blankButton = new ImageView();
+            buttons.add(blankButton);
+        }
         buttons.forEach(it -> {
             it.setFitWidth(DEALER_BUTTON_SIZE);
             it.setFitHeight(DEALER_BUTTON_SIZE);
@@ -190,13 +192,14 @@ public class Game implements Play {
         statusBar.setText("Welcome to Texas Hold'em Poker!!!");
         communityCardsView.getChildren().clear();
 
+        configurePlayersView();
+
         poker = new PokerBuilder()
                 .registerPlayers(players)
                 .setDealerId(dealerId)
                 .setSmallBlindWager(smallBlindSize)
                 .registerPlay(this)
                 .create();
-
     }
 
     private void setUpButtons() {
