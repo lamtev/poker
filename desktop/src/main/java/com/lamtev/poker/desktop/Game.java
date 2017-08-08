@@ -4,10 +4,8 @@ import com.lamtev.poker.core.ai.SimpleAI;
 import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
-import com.lamtev.poker.core.states.exceptions.RoundOfPlayIsOverException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -24,6 +22,7 @@ import static com.lamtev.poker.desktop.Launcher.HEIGHT;
 import static com.lamtev.poker.desktop.Launcher.WIDTH;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
+import static javafx.geometry.Orientation.HORIZONTAL;
 import static javafx.geometry.Pos.CENTER;
 
 public class Game implements Play {
@@ -36,10 +35,11 @@ public class Game implements Play {
     private static final double DEALER_BUTTON_SIZE = HEIGHT / 12.875;
     private static final double BUTTON_WIDTH = WIDTH / 12.8;
     private static final double BUTTON_HEIGHT = HEIGHT / 16.48;
+    private static final double COMMUNITY_CARDS_SPACING = WIDTH / 51;
 
     private Stage primaryStage;
     private RoundOfPlay poker;
-    private int smallBlindSize;
+    private int smallBlindWager;
     private String currentPlayerId;
     private final List<Player> players = new ArrayList<>();
     private final User user;
@@ -47,20 +47,17 @@ public class Game implements Play {
     private final List<String> nicks;
     private final MoveAbility moveAbility = new MoveAbility();
 
-    private HBox playersView = new HBox();
-    private HBox communityCardsView = new HBox();
-    private VBox root = new VBox();
-    private VBox sb = new VBox();
-    private Label statusBar = new Label();
-    private Label moneyInBankLabel = new Label();
-    private Button call = new Button("call");
-    private Button fold = new Button("fold");
-    private Button raise = new Button("raise");
-    private Button check = new Button("check");
-    private Button allIn = new Button("all in");
-    private Button showDown = new Button("show down");
-    private Separator horizontalSeparator = new Separator(Orientation.HORIZONTAL);
-    private HBox buttons;
+    private final HBox playersView = new HBox();
+    private final HBox communityCardsView = new HBox();
+    private final Label statusBarLabel = new Label();
+    private final Label bankLabel = new Label();
+    private final Button call = new Button("call");
+    private final Button fold = new Button("fold");
+    private final Button raise = new Button("raise");
+    private final Button check = new Button("check");
+    private final Button allIn = new Button("all in");
+    private final Button showDown = new Button("show down");
+    private final HBox buttons = new HBox();
 
     Game(String userName, List<String> aiNames, int stackSize) {
         aiNames.forEach(it -> ais.add(new SimpleAI(it, stackSize)));
@@ -68,38 +65,57 @@ public class Game implements Play {
         players.add(user);
         players.addAll(ais);
         nicks = players.stream().map(Player::id).collect(Collectors.toList());
-        smallBlindSize = stackSize / 100;
-        communityCardsView.setPrefHeight(COMMUNITY_CARD_HEIGHT);
-        communityCardsView.setPrefWidth(WIDTH);
+        smallBlindWager = stackSize / 100;
     }
 
     void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        horizontalSeparator.setPrefWidth(WIDTH);
-        sb.getChildren().add(statusBar);
-        sb.setAlignment(CENTER);
+        VBox root = new VBox();
 
-        root.getChildren().add(sb);
+        VBox statusBarVBox = new VBox();
+        statusBarVBox.setAlignment(CENTER);
+        statusBarVBox.getChildren().add(statusBarLabel);
+        root.getChildren().add(statusBarVBox);
+
+        Separator horizontalSeparator = new Separator(HORIZONTAL);
+        horizontalSeparator.setPrefWidth(WIDTH);
         root.getChildren().add(horizontalSeparator);
+
+        communityCardsView.setPrefHeight(COMMUNITY_CARD_HEIGHT);
+        communityCardsView.setPrefWidth(WIDTH);
         root.getChildren().add(communityCardsView);
-        VBox moneyInBank = new VBox();
-        moneyInBank.setAlignment(CENTER);
-        moneyInBank.getChildren().add(moneyInBankLabel);
-        root.getChildren().add(moneyInBank);
+
+        VBox bankVBox = new VBox();
+        bankVBox.setAlignment(CENTER);
+        bankVBox.getChildren().add(bankLabel);
+        root.getChildren().add(bankVBox);
+
         root.getChildren().add(playersView);
-        buttons = new HBox();
+
         buttons.setAlignment(CENTER);
         buttons.setSpacing(10);
         buttons.getChildren().addAll(call, check, raise, allIn, fold, showDown);
         root.getChildren().add(buttons);
-        Label nickNameLabel = new Label();
-        nickNameLabel.setText(players.get(0).id());
-        String dealerId = nicks.get(0);
         setUpButtons();
 
+        String dealerId = nicks.get(0);
         startNewGame(players, dealerId);
 
-        primaryStage.setScene(new Scene(root, 1200, 720));
+        primaryStage.setScene(new Scene(root, WIDTH, HEIGHT));
+    }
+
+    private void startNewGame(List<Player> players, String dealerId) {
+        statusBarLabel.setText("Welcome to Texas Hold'em Poker!!!");
+        communityCardsView.getChildren().clear();
+
+        configurePlayersView();
+
+        poker = new PokerBuilder()
+                .registerPlayers(players)
+                .setDealerId(dealerId)
+                .setSmallBlindWager(smallBlindWager)
+                .registerPlay(this)
+                .create();
     }
 
     private void configurePlayersView() {
@@ -123,22 +139,35 @@ public class Game implements Play {
         });
     }
 
-    private Label currentLabel() {
-        Label currentLabel = new Label();
-        currentLabel.setId("current");
-        return currentLabel;
+    private HBox buttonsHBox(String id) {
+        HBox buttonsHBox = new HBox(1);
+        buttonsHBox.setAlignment(CENTER);
+        buttonsHBox.setId("buttons");
+        List<ImageView> buttons = new ArrayList<>();
+        if (id.equals(nicks.get(0))) {
+            buttons.add(new ImageView("pics/dealer.png"));
+        } else if (id.equals(nicks.get(1))) {
+            buttons.add(new ImageView("pics/small-blind.png"));
+        }
+        if (nicks.size() > 2 && id.equals(nicks.get(2)) ||
+                nicks.size() == 2 && id.equals(nicks.get(0))) {
+            buttons.add(new ImageView("pics/big-blind.png"));
+        }
+        if (buttons.size() == 0) {
+            buttons.add(new ImageView());
+        }
+        buttons.forEach(it -> {
+            it.setFitWidth(DEALER_BUTTON_SIZE);
+            it.setFitHeight(DEALER_BUTTON_SIZE);
+        });
+        buttonsHBox.getChildren().addAll(buttons);
+        return buttonsHBox;
     }
 
-    private Label stackLabel(Player it) {
-        Label stackLabel = new Label(Integer.toString(it.stack()));
-        stackLabel.setId("stack");
-        return stackLabel;
-    }
-
-    private Label nickLabel(Player it) {
-        Label nickLabel = new Label(it.id());
-        nickLabel.setId("nick");
-        return nickLabel;
+    private Label wagerLabel() {
+        Label wagerLabel = new Label("0");
+        wagerLabel.setId("wager");
+        return wagerLabel;
     }
 
     private HBox cardsHBox() {
@@ -155,51 +184,22 @@ public class Game implements Play {
         return cardsHBox;
     }
 
-    private Label wagerLabel() {
-        Label wagerLabel = new Label("0");
-        wagerLabel.setId("wager");
-        return wagerLabel;
+    private Label nickLabel(Player it) {
+        Label nickLabel = new Label(it.id());
+        nickLabel.setId("nick");
+        return nickLabel;
     }
 
-    private HBox buttonsHBox(String id) {
-        HBox buttonsHBox = new HBox(1);
-        buttonsHBox.setAlignment(CENTER);
-        buttonsHBox.setId("buttons");
-        List<ImageView> buttons = new ArrayList<>();
-        if (id.equals(nicks.get(0))) {
-            buttons.add(new ImageView("pics/dealer.png"));
-        }
-        if (id.equals(nicks.get(1))) {
-            buttons.add(new ImageView("pics/small-blind.png"));
-        }
-        if (nicks.size() > 2 && id.equals(nicks.get(2)) ||
-                nicks.size() == 2 && id.equals(nicks.get(0))) {
-            buttons.add(new ImageView("pics/big-blind.png"));
-        }
-        if (buttons.size() == 0) {
-            ImageView blankButton = new ImageView();
-            buttons.add(blankButton);
-        }
-        buttons.forEach(it -> {
-            it.setFitWidth(DEALER_BUTTON_SIZE);
-            it.setFitHeight(DEALER_BUTTON_SIZE);
-        });
-        buttonsHBox.getChildren().addAll(buttons);
-        return buttonsHBox;
+    private Label stackLabel(Player it) {
+        Label stackLabel = new Label(Integer.toString(it.stack()));
+        stackLabel.setId("stack");
+        return stackLabel;
     }
 
-    private void startNewGame(List<Player> players, String dealerId) {
-        statusBar.setText("Welcome to Texas Hold'em Poker!!!");
-        communityCardsView.getChildren().clear();
-
-        configurePlayersView();
-
-        poker = new PokerBuilder()
-                .registerPlayers(players)
-                .setDealerId(dealerId)
-                .setSmallBlindWager(smallBlindSize)
-                .registerPlay(this)
-                .create();
+    private Label currentLabel() {
+        Label currentLabel = new Label();
+        currentLabel.setId("current");
+        return currentLabel;
     }
 
     private void setUpButtons() {
@@ -217,10 +217,8 @@ public class Game implements Play {
         call.setOnAction(event -> {
             try {
                 poker.call();
-            } catch (RuntimeException e) {
-                e.printStackTrace();
             } catch (Exception e) {
-                statusBar.setText(e.getMessage());
+                statusBarLabel.setText(e.getMessage());
             }
         });
     }
@@ -231,10 +229,8 @@ public class Game implements Play {
         allIn.setOnAction(event -> {
             try {
                 poker.allIn();
-            } catch (RuntimeException e) {
-                e.printStackTrace();
             } catch (Exception e) {
-                statusBar.setText(e.getMessage());
+                statusBarLabel.setText(e.getMessage());
             }
         });
     }
@@ -245,10 +241,8 @@ public class Game implements Play {
         fold.setOnAction(event -> {
             try {
                 poker.fold();
-            } catch (RuntimeException e) {
-                e.printStackTrace();
             } catch (Exception e) {
-                statusBar.setText(e.getMessage());
+                statusBarLabel.setText(e.getMessage());
             }
         });
     }
@@ -259,10 +253,8 @@ public class Game implements Play {
         check.setOnAction(event -> {
             try {
                 poker.check();
-            } catch (RuntimeException e) {
-                e.printStackTrace();
             } catch (Exception e) {
-                statusBar.setText(e.getMessage());
+                statusBarLabel.setText(e.getMessage());
             }
         });
     }
@@ -273,12 +265,8 @@ public class Game implements Play {
         showDown.setOnAction(event -> {
             try {
                 poker.showDown();
-            } catch (RoundOfPlayIsOverException e) {
-                statusBar.setText(e.getMessage());
-            } catch (RuntimeException e) {
-                e.printStackTrace();
             } catch (Exception e) {
-                statusBar.setText(e.getMessage());
+                statusBarLabel.setText(e.getMessage());
             }
         });
     }
@@ -297,11 +285,9 @@ public class Game implements Play {
                     int additionalWager = Integer.parseInt(option.get());
                     poker.raise(additionalWager);
                 } catch (NumberFormatException e) {
-                    statusBar.setText("You input not a number");
-                } catch (RuntimeException e) {
-                    e.printStackTrace();
+                    statusBarLabel.setText("You input not a number");
                 } catch (Exception e) {
-                    statusBar.setText(e.getMessage());
+                    statusBarLabel.setText(e.getMessage());
                 }
             });
         });
@@ -325,75 +311,86 @@ public class Game implements Play {
     public void stateChanged(String stateName) {
         System.out.println(stateName);
         if (stateName.equals("RoundOfPlayIsOverState")) {
-            user.setActive(true);
-            user.setWager(0);
-            user.cards().clear();
+            statusBarLabel.setText("Round of play is over!");
+            initUser();
+            if (onUserHaveLost()) return;
+            if (onUserHaveWon()) return;
+            removeLosers();
+            startNextRound();
+        }
+    }
 
-            statusBar.setText("Round of play is over!");
+    private void initUser() {
+        user.setActive(true);
+        user.setWager(0);
+        user.cards().clear();
+    }
 
-            int userStack = user.stack();
-
-            if (userStack == 0) {
-                Alert gameIsOverWindow = new Alert(Alert.AlertType.INFORMATION);
-                gameIsOverWindow.setTitle("Game is over!!!");
-                gameIsOverWindow.setContentText("You have lost all your money!!!");
-                Timeline timeline = new Timeline(new KeyFrame(
-                        Duration.millis(2500),
-                        ae -> gameIsOverWindow.setOnCloseRequest(event -> {
-                            StartMenu sm = new StartMenu();
-                            sm.start(primaryStage);
-                        })
-                ));
-                timeline.play();
-                gameIsOverWindow.show();
-                return;
-            }
-
-            Set<String> losers = players.stream()
-                    .filter(it -> it.stack() <= 0)
-                    .map(Player::id)
-                    .collect(toSet());
-
-            players.removeIf(it -> losers.contains(it.id()));
-            nicks.removeIf(losers::contains);
-
-            if (players.size() == 1) {
-                Alert youWonWindow = new Alert(Alert.AlertType.INFORMATION);
-                youWonWindow.setTitle("You won!!!");
-                youWonWindow.setContentText("Congratulations!!!");
-                Timeline timeline = new Timeline(new KeyFrame(
-                        Duration.millis(2500),
-                        ae -> youWonWindow.setOnCloseRequest(event -> {
-                            StartMenu sm = new StartMenu();
-                            sm.start(primaryStage);
-                        })
-                ));
-                timeline.play();
-                youWonWindow.show();
-                return;
-            }
-
-            smallBlindSize += (smallBlindSize >> 1);
-            Collections.rotate(nicks, -1);
-            String dealerId = nicks.get(0);
+    private boolean onUserHaveLost() {
+        if (user.stack() == 0) {
+            Alert gameIsOverWindow = new Alert(Alert.AlertType.INFORMATION);
+            gameIsOverWindow.setTitle("Game is over!!!");
+            gameIsOverWindow.setContentText("You have lost all your money!!!");
             Timeline timeline = new Timeline(new KeyFrame(
                     Duration.millis(2500),
-                    ae -> startNewGame(players, dealerId)
+                    ae -> gameIsOverWindow.setOnCloseRequest(event -> {
+                        StartMenu startMenu = new StartMenu();
+                        startMenu.start(primaryStage);
+                    })
             ));
             timeline.play();
+            gameIsOverWindow.show();
+            return true;
         }
+        return false;
+    }
+
+    private boolean onUserHaveWon() {
+        if (players.size() == 1) {
+            Alert youWonWindow = new Alert(Alert.AlertType.INFORMATION);
+            youWonWindow.setTitle("You won!!!");
+            youWonWindow.setContentText("Congratulations!!!");
+            Timeline timeline = new Timeline(new KeyFrame(
+                    Duration.millis(2500),
+                    ae -> youWonWindow.setOnCloseRequest(event -> {
+                        StartMenu sm = new StartMenu();
+                        sm.start(primaryStage);
+                    })
+            ));
+            timeline.play();
+            youWonWindow.show();
+            return true;
+        }
+        return false;
+    }
+
+    private void removeLosers() {
+        Set<String> losers = players.stream()
+                .filter(it -> it.stack() <= 0)
+                .map(Player::id)
+                .collect(toSet());
+        players.removeIf(it -> losers.contains(it.id()));
+        nicks.removeIf(losers::contains);
+    }
+
+    private void startNextRound() {
+        smallBlindWager += (smallBlindWager >> 1);
+        Collections.rotate(nicks, -1);
+        String dealerId = nicks.get(0);
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.millis(2500),
+                ae -> startNewGame(players, dealerId)
+        ));
+        timeline.play();
     }
 
     @Override
     public void playerFold(String playerId) {
-        statusBar.setText(playerId + " fold");
+        statusBarLabel.setText(playerId + " fold");
         if (user.id().equals(playerId)) {
             user.setActive(false);
         }
-        VBox playerView = (VBox) playersView.getChildren().stream()
-                .filter(it -> it.getId().equals(playerId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+        VBox playerView = playerView(playerId);
         playerView.getChildren().get(2).setVisible(false);
         Label currentLabel = (Label) playerView.getChildren().get(5);
         currentLabel.setText("fold");
@@ -405,19 +402,16 @@ public class Game implements Play {
             user.setStack(playerStack);
             user.setWager(playerWager);
         }
-        VBox playerTableView = (VBox) playersView.getChildren().stream()
-                .filter(it -> it.getId().equals(playerId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-        playerTableView.getChildren().set(1, new Label(Integer.toString(playerWager)));
-        playerTableView.getChildren().set(4, new Label(Integer.toString(playerStack)));
+        VBox playerView = playerView(playerId);
+        playerView.getChildren().set(1, new Label(Integer.toString(playerWager)));
+        playerView.getChildren().set(4, new Label(Integer.toString(playerStack)));
         players.forEach(System.out::println);
     }
 
     @Override
     public void currentPlayerChanged(String currentPlayerId) {
-        System.out.println(currentPlayerId);
         this.currentPlayerId = currentPlayerId;
+        System.out.println(currentPlayerId);
         playersView.getChildren().forEach(it -> {
             Label currentLabel = (Label) ((VBox) it).getChildren().get(5);
             if (it.getId().equals(currentPlayerId)) {
@@ -427,40 +421,44 @@ public class Game implements Play {
             }
         });
         if (user.id().equals(currentPlayerId)) {
-            buttons.getChildren().forEach(it -> {
-                switch (it.getId()) {
-                    case "allIn":
-                        it.setDisable(!moveAbility.allInIsAble());
-                        break;
-                    case "call":
-                        it.setDisable(!moveAbility.callIsAble());
-                        break;
-                    case "check":
-                        it.setDisable(!moveAbility.checkIsAble());
-                        break;
-                    case "fold":
-                        it.setDisable(!moveAbility.foldIsAble());
-                        break;
-                    case "raise":
-                        it.setDisable(!moveAbility.raiseIsAble());
-                        break;
-                    case "showDown":
-                        it.setDisable(!moveAbility.showdownIsAble());
-                        break;
-                    default:
-                        throw new RuntimeException();
-                }
-            });
+            updateButtonsAbility();
         } else {
             buttons.getChildren().forEach(it -> it.setDisable(true));
             makeAMoveOfAI();
         }
     }
 
+    private void updateButtonsAbility() {
+        buttons.getChildren().forEach(it -> {
+            switch (it.getId()) {
+                case "allIn":
+                    it.setDisable(!moveAbility.allInIsAble());
+                    break;
+                case "call":
+                    it.setDisable(!moveAbility.callIsAble());
+                    break;
+                case "check":
+                    it.setDisable(!moveAbility.checkIsAble());
+                    break;
+                case "fold":
+                    it.setDisable(!moveAbility.foldIsAble());
+                    break;
+                case "raise":
+                    it.setDisable(!moveAbility.raiseIsAble());
+                    break;
+                case "showDown":
+                    it.setDisable(!moveAbility.showdownIsAble());
+                    break;
+                default:
+                    throw new RuntimeException();
+            }
+        });
+    }
+
     @Override
     public void communityCardsDealt(List<Card> addedCommunityCards) {
         communityCardsView.setAlignment(CENTER);
-        communityCardsView.setSpacing(30);
+        communityCardsView.setSpacing(COMMUNITY_CARDS_SPACING);
         addedCommunityCards.forEach(card -> {
             ImageView cardView = new ImageView("pics/" + card.toString() + ".png");
             cardView.setFitHeight(COMMUNITY_CARD_HEIGHT);
@@ -471,7 +469,7 @@ public class Game implements Play {
 
     @Override
     public void bankMoneyUpdated(int money, int wager) {
-        moneyInBankLabel.setText("Bank: " + money);
+        bankLabel.setText("Bank: " + money);
     }
 
     @Override
@@ -486,12 +484,7 @@ public class Game implements Play {
             VBox playerView = (VBox) it;
             HBox cards = (HBox) playerView.getChildren().get(2);
             if (it.getId().equals(user.id())) {
-                int i = 0;
-                for (Card card : user.cards()) {
-                    ImageView imageView = (ImageView) cards.getChildren().get(i);
-                    imageView.setImage(new Image("pics/" + card.toString() + ".png"));
-                    ++i;
-                }
+                showHoleCards(cards, user.cards());
             } else {
                 for (int i = 0; i < 2; ++i) {
                     ImageView imageView = (ImageView) cards.getChildren().get(i);
@@ -503,43 +496,50 @@ public class Game implements Play {
 
     @Override
     public void playerAllinned(String playerId) {
-        statusBar.setText(playerId + " made all in");
+        statusBarLabel.setText(playerId + " made all in");
     }
 
     @Override
     public void playerCalled(String playerId) {
-        statusBar.setText(playerId + " called");
+        statusBarLabel.setText(playerId + " called");
     }
 
     @Override
     public void playerChecked(String playerId) {
-        statusBar.setText(playerId + " checked");
+        statusBarLabel.setText(playerId + " checked");
     }
 
     @Override
     public void playerRaised(String playerId) {
-        statusBar.setText(playerId + " raised");
+        statusBarLabel.setText(playerId + " raised");
     }
 
     @Override
     public void playerShowedDown(String playerId, PokerHand hand) {
-        statusBar.setText(playerId + " showed down: " + hand.getName());
-        VBox playerView = (VBox) playersView.getChildren().stream()
-                .filter(it -> it.getId().equals(playerId))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-        HBox cardsHBox = (HBox) playerView.getChildren().get(2);
+        statusBarLabel.setText(playerId + " showed down: " + hand.getName());
+        HBox cardsHBox = (HBox) playerView(playerId).getChildren().get(2);
         List<Card> cards = players.stream()
                 .filter(it -> it.id().equals(playerId))
                 .findFirst()
                 .orElseThrow(RuntimeException::new)
                 .cards();
+        showHoleCards(cardsHBox, cards);
+    }
+
+    private void showHoleCards(HBox cardsHBox, List<Card> cards) {
         int i = 0;
         for (Card card : cards) {
             ImageView imageView = (ImageView) cardsHBox.getChildren().get(i);
             imageView.setImage(new Image("pics/" + card.toString() + ".png"));
             ++i;
         }
+    }
+
+    private VBox playerView(String playerId) {
+        return (VBox) playersView.getChildren().stream()
+                .filter(it -> it.getId().equals(playerId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
     }
 
     @Override
