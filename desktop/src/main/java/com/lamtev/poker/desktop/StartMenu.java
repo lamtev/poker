@@ -24,6 +24,7 @@ class StartMenu {
         startGame.setOnAction(e -> new Settings().start(primaryStage));
 
         Button about = new Button("About");
+        about.setOnAction(e -> new About().start(primaryStage));
 
         List<Button> buttons = asList(startGame, about);
         buttons.forEach(it -> {

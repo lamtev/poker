@@ -309,7 +309,6 @@ public class Game implements Play {
 
     @Override
     public void stateChanged(String stateName) {
-        System.out.println(stateName);
         if (stateName.equals("RoundOfPlayIsOverState")) {
             statusBarLabel.setText("Round of play is over!");
             initUser();
@@ -405,13 +404,11 @@ public class Game implements Play {
         VBox playerView = playerView(playerId);
         playerView.getChildren().set(1, new Label(Integer.toString(playerWager)));
         playerView.getChildren().set(4, new Label(Integer.toString(playerStack)));
-        players.forEach(System.out::println);
     }
 
     @Override
     public void currentPlayerChanged(String currentPlayerId) {
         this.currentPlayerId = currentPlayerId;
-        System.out.println(currentPlayerId);
         playersView.getChildren().forEach(it -> {
             Label currentLabel = (Label) ((VBox) it).getChildren().get(5);
             if (it.getId().equals(currentPlayerId)) {

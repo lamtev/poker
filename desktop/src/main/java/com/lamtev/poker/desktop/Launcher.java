@@ -32,7 +32,7 @@ public class Launcher extends Application {
     }
 
     private void configureStage(Stage stage) {
-        stage.setTitle("Poker");
+        stage.setTitle("Poker Texas Hold'em");
         stage.getIcons().add(new Image("pics/icon-64.png"));
         stage.setWidth(WIDTH);
         stage.setHeight(HEIGHT);
