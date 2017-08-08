@@ -16,7 +16,7 @@ import static javafx.geometry.Pos.CENTER;
 
 class About {
 
-    private static final VBox root = new VBox();
+    private static final VBox root = new VBox(25);
     private static final Button back = new Button("back");
     private static final List<Node> NODES = asList(
             new Label("Poker Texas Hold'em"),
@@ -32,7 +32,6 @@ class About {
         back.prefHeightProperty().bind(root.heightProperty().divide(15));
 
         root.setAlignment(CENTER);
-        root.setSpacing(25);
         root.getChildren().addAll(NODES);
     }
 
