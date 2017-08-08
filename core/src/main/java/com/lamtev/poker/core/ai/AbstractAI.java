@@ -1,0 +1,193 @@
+package com.lamtev.poker.core.ai;
+
+import com.lamtev.poker.core.api.AI;
+import com.lamtev.poker.core.api.MoveAbility;
+import com.lamtev.poker.core.api.RoundOfPlay;
+import com.lamtev.poker.core.hands.PokerHand;
+import com.lamtev.poker.core.model.Card;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@SuppressWarnings("WeakerAccess")
+abstract class AbstractAI implements AI {
+
+    private final String id;
+    private int stack;
+    private int wager;
+    private boolean isActive = true;
+    private final List<Card> cards = new ArrayList<>();
+    private RoundOfPlay poker;
+    private String currentPlayer;
+    private String state;
+    private int bank;
+    private int currentWager;
+
+    final List<Card> communityCards = new ArrayList<>();
+    final Map<String, PokerHand> playersHands = new HashMap<>();
+    final MoveAbility moveAbility = new MoveAbility();
+
+    AbstractAI(String id, int stack) {
+        this.id = id;
+        this.stack = stack;
+    }
+
+    @Override
+    final public String id() {
+        return id;
+    }
+
+    @Override
+    final public int stack() {
+        return stack;
+    }
+
+    @Override
+    final public int wager() {
+        return wager;
+    }
+
+    @Override
+    final public boolean isActive() {
+        return isActive;
+    }
+
+    @Override
+    final public List<Card> cards() {
+        return cards;
+    }
+
+    final RoundOfPlay poker() {
+        return poker;
+    }
+
+    final String currentPlayer() {
+        return currentPlayer;
+    }
+
+    final String state() {
+        return state;
+    }
+
+    final int bank() {
+        return bank;
+    }
+
+    final int currentWager() {
+        return currentWager;
+    }
+
+    @Override
+    final public void holeCardsDealt(List<Card> holeCards) {
+        System.out.println(id() + " got cards");
+        cards.addAll(holeCards);
+    }
+
+    @Override
+    final public void communityCardsDealt(List<Card> addedCommunityCards) {
+        communityCards.addAll(addedCommunityCards);
+    }
+
+    @Override
+    final public void bankMoneyUpdated(int money, int wager) {
+        bank = money;
+        currentWager = wager;
+    }
+
+    @Override
+    final public void playerMoneyUpdated(String playerId, int playerStack, int playerWager) {
+        if (id().equals(playerId)) {
+            stack = playerStack;
+            wager = playerWager;
+        }
+    }
+
+    @Override
+    final public void stateChanged(String stateName) {
+        state = stateName;
+    }
+
+    @Override
+    final public void playerFold(String playerId) {
+        if (id().equals(playerId)) {
+            isActive = false;
+        }
+    }
+
+    @Override
+    final public void roundOfPlayChanged(RoundOfPlay roundOfPlay) {
+        poker = roundOfPlay;
+        communityCards.clear();
+        isActive = true;
+        cards.clear();
+        wager = 0;
+    }
+
+    @Override
+    final public void currentPlayerChanged(String currentPlayerId) {
+        this.currentPlayer = currentPlayerId;
+    }
+
+    @Override
+    final public void allInAbilityChanged(boolean flag) {
+        moveAbility.setAllInIsAble(flag);
+    }
+
+    @Override
+    final public void callAbilityChanged(boolean flag) {
+        moveAbility.setCallIsAble(flag);
+    }
+
+    @Override
+    final public void checkAbilityChanged(boolean flag) {
+        moveAbility.setCheckIsAble(flag);
+    }
+
+    @Override
+    final public void raiseAbilityChanged(boolean flag) {
+        moveAbility.setRaiseIsAble(flag);
+    }
+
+    @Override
+    final public void foldAbilityChanged(boolean flag) {
+        moveAbility.setFoldIsAble(flag);
+    }
+
+    @Override
+    final public void showDownAbilityChanged(boolean flag) {
+        moveAbility.setShowdownIsAble(flag);
+    }
+
+    @Override
+    final public void blindWagersPlaced() {
+
+    }
+
+    @Override
+    final public void playerAllinned(String playerId) {
+        //TODO
+    }
+
+    @Override
+    final public void playerCalled(String playerId) {
+        //TODO
+    }
+
+    @Override
+    final public void playerChecked(String playerId) {
+        //TODO
+    }
+
+    @Override
+    final public void playerRaised(String playerId) {
+        //TODO
+    }
+
+    @Override
+    final public void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand) {
+        playersHands.put(playerId, hand);
+    }
+
+}

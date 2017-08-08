@@ -313,8 +313,8 @@ public class Game implements Play {
             statusBarLabel.setText("Round of play is over!");
             initUser();
             if (onUserHaveLost()) return;
-            if (onUserHaveWon()) return;
             removeLosers();
+            if (onUserHaveWon()) return;
             startNextRound();
         }
     }
