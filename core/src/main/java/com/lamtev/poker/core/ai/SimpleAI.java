@@ -204,8 +204,8 @@ public class SimpleAI implements AI {
                 "id='" + id + '\'' +
                 ", stack=" + stack +
                 ", wager=" + wager +
-                ", isActive=" + isActive +
                 ", cards=" + cards +
+                ", isActive=" + isActive +
                 '}';
     }
 

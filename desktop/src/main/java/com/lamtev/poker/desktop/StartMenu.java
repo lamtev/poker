@@ -1,32 +1,41 @@
 package com.lamtev.poker.desktop;
 
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.List;
+
+import static com.lamtev.poker.desktop.Launcher.HEIGHT;
+import static com.lamtev.poker.desktop.Launcher.WIDTH;
+import static java.util.Arrays.asList;
+
 class StartMenu {
 
-    void setToStage(Stage primaryStage) {
-        FlowPane rootNode = new FlowPane(10, 10);
-        rootNode.setOrientation(Orientation.VERTICAL);
-        rootNode.setAlignment(Pos.CENTER);
+    void start(Stage primaryStage) {
+        VBox root = new VBox(HEIGHT / 40);
+        root.setAlignment(Pos.CENTER);
+        root.setPrefWidth(WIDTH);
+        root.setPrefHeight(HEIGHT);
+
         Button startGame = new Button("Start game");
-        startGame.setPrefSize(150, 30);
-        startGame.setOnAction(e -> {
-            Settings settings = new Settings();
-            settings.setToStage(primaryStage);
-        });
+        startGame.setOnAction(e -> new Settings().start(primaryStage));
+
         Button about = new Button("About");
-        about.setPrefSize(150, 30);
-        VBox vBox = new VBox(10);
-        vBox.setAlignment(Pos.CENTER);
-        vBox.getChildren().addAll(startGame, about);
-        rootNode.getChildren().add(vBox);
-        primaryStage.setScene(new Scene(rootNode, 1200, 720));
+        about.setOnAction(e -> new About().start(primaryStage));
+
+        List<Button> buttons = asList(startGame, about);
+        buttons.forEach(it -> {
+            it.prefWidthProperty().bind(root.widthProperty().divide(5));
+            it.prefHeightProperty().bind(root.heightProperty().divide(15));
+        });
+
+        root.getChildren().addAll(buttons);
+
+        Scene scene = new Scene(root, WIDTH, HEIGHT);
+        primaryStage.setScene(scene);
     }
 
 }
