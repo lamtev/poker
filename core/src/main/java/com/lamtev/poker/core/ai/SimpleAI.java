@@ -22,6 +22,8 @@ public class SimpleAI extends AbstractAI {
                         poker().check();
                     } else if (moveAbility.callIsAble()) {
                         poker().call();
+                    } else if (moveAbility.allInIsAble()) {
+                        poker().allIn();
                     } else {
                         poker().fold();
                     }
