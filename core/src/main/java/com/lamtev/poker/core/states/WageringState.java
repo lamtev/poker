@@ -31,11 +31,6 @@ abstract class WageringState extends ActionState {
     }
 
     @Override
-    boolean timeToForcedShowdown() {
-        return players.activeNonAllinnersNumber() == 0;
-    }
-
-    @Override
     public void call() throws UnallowableMoveException, IsNotEnoughMoneyException {
         Player currentPlayer = players.current();
         moveValidator.validateCall();
