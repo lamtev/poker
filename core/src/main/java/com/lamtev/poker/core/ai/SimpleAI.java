@@ -12,7 +12,6 @@ public class SimpleAI extends AbstractAI {
             throw new RuntimeException("Can not make a move in case i am " + id() + " but current is " + currentPlayer());
         }
         try {
-            System.out.println(state());
             switch (state()) {
                 case "PreflopWageringState":
                 case "FlopWageringState":

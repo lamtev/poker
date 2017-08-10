@@ -75,7 +75,7 @@ final class PreflopWageringState extends WageringState {
     @Override
     void updateMoveAbility() {
         moveAbility.setRaiseIsAble(raiseIsAble());
-        moveAbility.setCallIsAble(!moveIsFinalBigBlindMove());
+        moveAbility.setCallIsAble(!moveIsFinalBigBlindMove() && callIsAble());
         moveAbility.setCheckIsAble(moveIsFinalBigBlindMove());
         moveAbility.setFoldIsAble(!moveIsFinalBigBlindMove());
         poker.notifyMoveAbilityListeners(players.current().id(), moveAbility);

@@ -116,9 +116,13 @@ abstract class WageringState extends ActionState {
     @Override
     void updateMoveAbility() {
         moveAbility.setRaiseIsAble(raiseIsAble());
-        moveAbility.setCallIsAble(moveValidator.callIsAble());
+        moveAbility.setCallIsAble(callIsAble());
         moveAbility.setCheckIsAble(moveValidator.checkIsAble(raisers.size()));
         poker.notifyMoveAbilityListeners(players.current().id(), moveAbility);
+    }
+
+    boolean callIsAble() {
+        return moveValidator.callIsAble();
     }
 
     boolean raiseIsAble() {
