@@ -1,6 +1,6 @@
 package com.lamtev.poker.desktop;
 
-import com.lamtev.poker.core.ai.SimpleAI;
+import com.lamtev.poker.core.ai.ThinkingAI;
 import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
@@ -60,7 +60,7 @@ public class Game implements Play {
     private final HBox buttons = new HBox();
 
     Game(String userName, List<String> aiNames, int stackSize) {
-        aiNames.forEach(it -> ais.add(new SimpleAI(it, stackSize)));
+        aiNames.forEach(it -> ais.add(new ThinkingAI(it, stackSize)));
         user = new User(userName, stackSize);
         players.add(user);
         players.addAll(ais);
@@ -373,7 +373,7 @@ public class Game implements Play {
     }
 
     private void startNextRound() {
-        smallBlindWager += (smallBlindWager >> 1);
+        smallBlindWager += (smallBlindWager >> 2);
         Collections.rotate(nicks, -1);
         String dealerId = nicks.get(0);
         Timeline timeline = new Timeline(new KeyFrame(

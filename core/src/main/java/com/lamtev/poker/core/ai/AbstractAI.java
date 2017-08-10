@@ -83,7 +83,6 @@ abstract class AbstractAI implements AI {
 
     @Override
     final public void holeCardsDealt(List<Card> holeCards) {
-        System.out.println(id() + " got cards");
         cards.addAll(holeCards);
     }
 
