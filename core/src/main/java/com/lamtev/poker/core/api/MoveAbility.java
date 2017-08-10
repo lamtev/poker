@@ -9,11 +9,6 @@ public final class MoveAbility {
     private boolean raiseIsAble;
     private boolean showdownIsAble;
 
-
-    public MoveAbility() {
-
-    }
-
     public boolean allInIsAble() {
         return allInIsAble;
     }

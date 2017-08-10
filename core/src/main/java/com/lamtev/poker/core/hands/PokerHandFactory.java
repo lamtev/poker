@@ -17,16 +17,20 @@ import static java.util.stream.Collectors.toList;
 public final class PokerHandFactory {
 
     private final static Comparator<Card> COMPARATOR_BY_RANK = Comparator.comparing(Card::rank);
-    private final Cards communityCards;
+    private final List<Card> communityCards = new ArrayList<>();
 
     public PokerHandFactory(Cards communityCards) {
-        this.communityCards = communityCards;
+        communityCards.forEach(this.communityCards::add);
     }
 
-    public PokerHand createCombination(Cards playerCards) {
+    public PokerHandFactory(List<Card> communityCards) {
+        this.communityCards.addAll(communityCards);
+    }
+
+    public PokerHand createCombination(List<Card> playerCards) {
         List<Card> cards = new ArrayList<>();
-        communityCards.forEach(cards::add);
-        playerCards.forEach(cards::add);
+        cards.addAll(communityCards);
+        cards.addAll(playerCards);
 
         cards.sort(COMPARATOR_BY_RANK.reversed());
         PokerHand pokerHand = parseRoyalFlush(cards);
@@ -76,6 +80,12 @@ public final class PokerHandFactory {
 
         pokerHand = parseHighCard(cards);
         return pokerHand;
+    }
+
+    public PokerHand createCombination(Cards playerCards) {
+        List<Card> playerCardList = new ArrayList<>();
+        playerCards.forEach(playerCardList::add);
+        return createCombination(playerCardList);
     }
 
     private PokerHand parseRoyalFlush(List<Card> cards) {

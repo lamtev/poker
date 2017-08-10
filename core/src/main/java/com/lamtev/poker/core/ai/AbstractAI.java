@@ -2,6 +2,7 @@ package com.lamtev.poker.core.ai;
 
 import com.lamtev.poker.core.api.AI;
 import com.lamtev.poker.core.api.MoveAbility;
+import com.lamtev.poker.core.api.Player;
 import com.lamtev.poker.core.api.RoundOfPlay;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
@@ -25,6 +26,7 @@ abstract class AbstractAI implements AI {
     private int bank;
     private int currentWager;
 
+    final Map<String, Contender> contenders = new HashMap<>();
     final List<Card> communityCards = new ArrayList<>();
     final Map<String, PokerHand> playersHands = new HashMap<>();
     final MoveAbility moveAbility = new MoveAbility();
@@ -101,6 +103,16 @@ abstract class AbstractAI implements AI {
         if (id().equals(playerId)) {
             stack = playerStack;
             wager = playerWager;
+        } else {
+            Contender contender;
+            if (!contenders.containsKey(playerId)) {
+                contender = new Contender(playerId);
+                contenders.put(playerId, contender);
+            } else {
+                contender = contenders.get(playerId);
+            }
+            contender.stack = playerStack;
+            contender.wager = playerWager;
         }
     }
 
@@ -113,6 +125,8 @@ abstract class AbstractAI implements AI {
     final public void playerFold(String playerId) {
         if (id().equals(playerId)) {
             isActive = false;
+        } else {
+            contenders.get(playerId).isActive = false;
         }
     }
 
@@ -188,6 +202,60 @@ abstract class AbstractAI implements AI {
     @Override
     final public void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand) {
         playersHands.put(playerId, hand);
+    }
+
+    public static class Contender implements Player {
+
+        private final String id;
+        private int stack;
+        private int wager;
+        private boolean isActive = true;
+
+        public Contender(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public String id() {
+            return id;
+        }
+
+        @Override
+        public int stack() {
+            return stack;
+        }
+
+        @Override
+        public int wager() {
+            return wager;
+        }
+
+        @Override
+        public boolean isActive() {
+            return isActive;
+        }
+
+        @Override
+        @Deprecated
+        public List<Card> cards() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Contender contender = (Contender) o;
+
+            return id.equals(contender.id);
+        }
+
+        @Override
+        public int hashCode() {
+            return id.hashCode();
+        }
+
     }
 
 }
