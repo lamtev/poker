@@ -28,9 +28,9 @@ public final class Bank {
         return wager;
     }
 
-    public void acceptBlindWagers(int smallBlindSize) {
-        acceptBlindWager(players.smallBlind(), smallBlindSize);
-        acceptBlindWager(players.bigBlind(), smallBlindSize * 2);
+    public void acceptBlindWagers(int smallBlindWager) {
+        acceptBlindWager(players.smallBlind(), smallBlindWager);
+        acceptBlindWager(players.bigBlind(), smallBlindWager * 2);
     }
 
     public void acceptCall(Player player) throws IsNotEnoughMoneyException {
