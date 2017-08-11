@@ -333,14 +333,10 @@ public class Game implements Play {
             Alert gameIsOverWindow = new Alert(Alert.AlertType.INFORMATION);
             gameIsOverWindow.setTitle("Game is over!!!");
             gameIsOverWindow.setContentText("You have lost all your money!!!");
-            Timeline timeline = new Timeline(new KeyFrame(
-                    Duration.millis(2500),
-                    ae -> gameIsOverWindow.setOnCloseRequest(event -> {
-                        StartMenu startMenu = new StartMenu();
-                        startMenu.start(primaryStage);
-                    })
-            ));
-            timeline.play();
+            gameIsOverWindow.setOnCloseRequest(event -> {
+                StartMenu startMenu = new StartMenu();
+                startMenu.start(primaryStage);
+            });
             gameIsOverWindow.show();
             return true;
         }
@@ -352,14 +348,10 @@ public class Game implements Play {
             Alert youWonWindow = new Alert(Alert.AlertType.INFORMATION);
             youWonWindow.setTitle("You won!!!");
             youWonWindow.setContentText("Congratulations!!!");
-            Timeline timeline = new Timeline(new KeyFrame(
-                    Duration.millis(2500),
-                    ae -> youWonWindow.setOnCloseRequest(event -> {
-                        StartMenu sm = new StartMenu();
-                        sm.start(primaryStage);
-                    })
-            ));
-            timeline.play();
+            youWonWindow.setOnCloseRequest(event -> {
+                StartMenu sm = new StartMenu();
+                sm.start(primaryStage);
+            });
             youWonWindow.show();
             return true;
         }

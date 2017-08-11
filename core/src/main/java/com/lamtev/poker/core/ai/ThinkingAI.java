@@ -155,17 +155,7 @@ public class ThinkingAI extends AbstractAI {
         return cards().get(0).rank().equals(cards().get(1).rank()) ||
                 cards().get(0).rank().equals(ACE) && cards().get(1).rank().equals(KING) ||
                 cards().get(1).rank().equals(ACE) && cards().get(0).rank().equals(KING) ||
-                averageStack() * 0.5 <= stack();
-    }
-
-    private double averageStack() {
-        return rivals.values()
-                .stream()
-                .filter(Rival::isActive)
-                .map(Rival::stack)
-                .mapToInt(Number::intValue)
-                .average()
-                .orElseThrow(RuntimeException::new);
+                (currentWager() - wager()) * 10 <= stack();
     }
 
     private void onShowdown() {
