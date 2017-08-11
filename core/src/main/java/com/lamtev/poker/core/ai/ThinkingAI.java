@@ -1,5 +1,6 @@
 package com.lamtev.poker.core.ai;
 
+import com.lamtev.poker.core.hands.Pair;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.hands.PokerHandFactory;
 
@@ -8,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.*;
+import static com.lamtev.poker.core.model.Rank.*;
+import static java.util.Arrays.asList;
 
 public class ThinkingAI extends AbstractAI {
 
@@ -27,15 +30,7 @@ public class ThinkingAI extends AbstractAI {
                     break;
                 case "TurnWageringState":
                 case "RiverWageringState":
-                    if (moveAbility.checkIsAble()) {
-                        poker().check();
-                    } else if (moveAbility.callIsAble()) {
-                        poker().call();
-                    } else if (moveAbility.allInIsAble()) {
-                        poker().allIn();
-                    } else {
-                        poker().fold();
-                    }
+                    onTurnOrRiverWagering();
                     break;
                 case "ShowdownState":
                     onShowdown();
@@ -48,18 +43,22 @@ public class ThinkingAI extends AbstractAI {
         }
     }
 
-    private void onFlopWagering() {
+    private void onTurnOrRiverWagering() {
         try {
-            if (moveAbility.checkIsAble()) {
+            if (moveAbility.raiseIsAble() && statusIsGoodForRaiseOnTurnOrRiver()) {
+                int additionalWager = (int)
+                        (currentWager() * 0.5 < stack() * 0.8 ? currentWager() * 0.5 : stack() * 0.8);
+                poker().raise(additionalWager);
+            } else if (moveAbility.checkIsAble()) {
                 poker().check();
             } else if (moveAbility.callIsAble()) {
-                if (statusOnFlopIsGood()) {
+                if (statusIsGoodForCallOnPostFlop()) {
                     poker().call();
                 } else {
                     poker().fold();
                 }
             } else if (moveAbility.allInIsAble()) {
-                if (statusOnFlopIsGood()) {
+                if (statusIsGoodForCallOnPostFlop()) {
                     poker().allIn();
                 } else {
                     poker().fold();
@@ -72,24 +71,63 @@ public class ThinkingAI extends AbstractAI {
         }
     }
 
-    private boolean statusOnFlopIsGood() {
+    private boolean statusIsGoodForRaiseOnTurnOrRiver() {
         PokerHandFactory phf = new PokerHandFactory(communityCards);
         PokerHand.Name hand = phf.createCombination(cards()).getName();
-        return hand != PAIR && hand != HIGH_CARD;
+        return hand == ROYAL_FLUSH ||
+                hand == STRAIGHT_FLUSH ||
+                hand == FOUR_OF_A_KIND ||
+                hand == FULL_HOUSE ||
+                hand == FLUSH ||
+                hand == STRAIGHT ||
+                hand == THREE_OF_A_KIND ||
+                hand == TWO_PAIRS;
     }
+
+    private void onFlopWagering() {
+        try {
+            if (moveAbility.checkIsAble()) {
+                poker().check();
+            } else if (moveAbility.callIsAble()) {
+                if (statusIsGoodForCallOnPostFlop()) {
+                    poker().call();
+                } else {
+                    poker().fold();
+                }
+            } else if (moveAbility.allInIsAble()) {
+                if (statusIsGoodForCallOnPostFlop()) {
+                    poker().allIn();
+                } else {
+                    poker().fold();
+                }
+            } else {
+                poker().fold();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean statusIsGoodForCallOnPostFlop() {
+        PokerHandFactory phf = new PokerHandFactory(communityCards);
+        PokerHand hand = phf.createCombination(cards());
+        PokerHand.Name handName = hand.getName();
+        return handName != HIGH_CARD && hand.compareTo(new Pair(SEVEN, asList(KING, JACK, TWO))) > 0;
+    }
+
 
     private void onPreflopWagering() {
         try {
             if (moveAbility.checkIsAble()) {
                 poker().check();
             } else if (moveAbility.callIsAble()) {
-                if (statusOnPreflopIsGood()) {
+                if (statusIsGoodForCallOnPreflop()) {
                     poker().call();
                 } else {
                     poker().fold();
                 }
             } else if (moveAbility.allInIsAble()) {
-                if (statusOnPreflopIsGood()) {
+                if (statusIsGoodForCallOnPreflop()) {
                     poker().allIn();
                 } else {
                     poker().fold();
@@ -102,8 +140,11 @@ public class ThinkingAI extends AbstractAI {
         }
     }
 
-    private boolean statusOnPreflopIsGood() {
-        return cards().get(0).rank().equals(cards().get(1).rank()) || averageStack() * 0.5 <= stack();
+    private boolean statusIsGoodForCallOnPreflop() {
+        return cards().get(0).rank().equals(cards().get(1).rank()) ||
+                cards().get(0).rank().equals(ACE) && cards().get(1).rank().equals(KING) ||
+                cards().get(1).rank().equals(ACE) && cards().get(0).rank().equals(KING) ||
+                averageStack() * 0.5 <= stack();
     }
 
     private double averageStack() {
