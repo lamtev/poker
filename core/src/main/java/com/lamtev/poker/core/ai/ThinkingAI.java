@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.lamtev.poker.core.hands.PokerHand.Name.*;
+
 public class ThinkingAI extends AbstractAI {
 
     public ThinkingAI(String id, int stack) {
@@ -18,7 +20,11 @@ public class ThinkingAI extends AbstractAI {
         try {
             switch (state()) {
                 case "PreflopWageringState":
+                    onPreflopWagering();
+                    break;
                 case "FlopWageringState":
+                    onFlopWagering();
+                    break;
                 case "TurnWageringState":
                 case "RiverWageringState":
                     if (moveAbility.checkIsAble()) {
@@ -40,6 +46,73 @@ public class ThinkingAI extends AbstractAI {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void onFlopWagering() {
+        try {
+            if (moveAbility.checkIsAble()) {
+                poker().check();
+            } else if (moveAbility.callIsAble()) {
+                if (statusOnFlopIsGood()) {
+                    poker().call();
+                } else {
+                    poker().fold();
+                }
+            } else if (moveAbility.allInIsAble()) {
+                if (statusOnFlopIsGood()) {
+                    poker().allIn();
+                } else {
+                    poker().fold();
+                }
+            } else {
+                poker().fold();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean statusOnFlopIsGood() {
+        PokerHandFactory phf = new PokerHandFactory(communityCards);
+        PokerHand.Name hand = phf.createCombination(cards()).getName();
+        return hand != PAIR && hand != HIGH_CARD;
+    }
+
+    private void onPreflopWagering() {
+        try {
+            if (moveAbility.checkIsAble()) {
+                poker().check();
+            } else if (moveAbility.callIsAble()) {
+                if (statusOnPreflopIsGood()) {
+                    poker().call();
+                } else {
+                    poker().fold();
+                }
+            } else if (moveAbility.allInIsAble()) {
+                if (statusOnPreflopIsGood()) {
+                    poker().allIn();
+                } else {
+                    poker().fold();
+                }
+            } else {
+                poker().fold();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean statusOnPreflopIsGood() {
+        return cards().get(0).rank().equals(cards().get(1).rank()) || averageStack() * 0.5 <= stack();
+    }
+
+    private double averageStack() {
+        return rivals.values()
+                .stream()
+                .map(Rival::stack)
+                .mapToInt(Number::intValue)
+                .average()
+                .orElseThrow(RuntimeException::new);
     }
 
     private void onShowdown() throws Exception {

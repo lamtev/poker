@@ -130,6 +130,8 @@ public abstract class AbstractAI implements AI {
         isActive = true;
         cards.clear();
         wager = 0;
+        rivals.clear();
+        playersHands.clear();
     }
 
     @Override
