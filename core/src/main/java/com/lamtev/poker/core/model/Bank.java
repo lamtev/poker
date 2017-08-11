@@ -99,7 +99,8 @@ public final class Bank {
     private void validateTakingMoneyFromPlayer(Player player, int moneyTakingFromPlayer)
             throws IsNotEnoughMoneyException {
         if (player.stack() < moneyTakingFromPlayer) {
-            throw new IsNotEnoughMoneyException("Try to make allIn");
+            throw new IsNotEnoughMoneyException("Try to make allIn" +
+                    "(" + player + ", moneyTakingFromHim=" + moneyTakingFromPlayer + ")");
         }
     }
 

@@ -20,34 +20,33 @@ public class ThinkingAI extends AbstractAI {
 
     @Override
     public void makeAMove() {
-        try {
-            switch (state()) {
-                case "PreflopWageringState":
-                    onPreflopWagering();
-                    break;
-                case "FlopWageringState":
-                    onFlopWagering();
-                    break;
-                case "TurnWageringState":
-                case "RiverWageringState":
-                    onTurnOrRiverWagering();
-                    break;
-                case "ShowdownState":
-                    onShowdown();
-                    break;
-                default:
-                    break;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        switch (state()) {
+            case "PreflopWageringState":
+                onPreflopWagering();
+                break;
+            case "FlopWageringState":
+                onFlopWagering();
+                break;
+            case "TurnWageringState":
+            case "RiverWageringState":
+                onTurnOrRiverWagering();
+                break;
+            case "ShowdownState":
+                onShowdown();
+                break;
+            default:
+                break;
         }
+
     }
 
     private void onTurnOrRiverWagering() {
         try {
-            if (moveAbility.raiseIsAble() && statusIsGoodForRaiseOnTurnOrRiver()) {
-                int additionalWager = (int)
-                        (currentWager() * 0.5 < stack() * 0.8 ? currentWager() * 0.5 : stack() * 0.8);
+            int additionalWager = (int)
+                    (currentWager() * 0.5 < stack() * 0.8 ? currentWager() * 0.5 : stack() * 0.8);
+            boolean enoughMoney = stack() > additionalWager + currentWager() - wager();
+            if (moveAbility.raiseIsAble() && enoughMoney  && statusIsGoodForRaiseOnTurnOrRiver()) {
+
                 poker().raise(additionalWager);
             } else if (moveAbility.checkIsAble()) {
                 poker().check();
@@ -150,22 +149,27 @@ public class ThinkingAI extends AbstractAI {
     private double averageStack() {
         return rivals.values()
                 .stream()
+                .filter(Rival::isActive)
                 .map(Rival::stack)
                 .mapToInt(Number::intValue)
                 .average()
                 .orElseThrow(RuntimeException::new);
     }
 
-    private void onShowdown() throws Exception {
-        PokerHandFactory handFactory = new PokerHandFactory(communityCards);
-        PokerHand itsHand = handFactory.createCombination(cards());
-        Optional<PokerHand> betterHand = handsOfPotConcurrents().stream()
-                .filter(it -> it.compareTo(itsHand) > 0)
-                .findFirst();
-        if (betterHand.isPresent() && moveAbility.foldIsAble()) {
-            poker().fold();
-        } else {
-            poker().showDown();
+    private void onShowdown() {
+        try {
+            PokerHandFactory handFactory = new PokerHandFactory(communityCards);
+            PokerHand itsHand = handFactory.createCombination(cards());
+            Optional<PokerHand> betterHand = handsOfPotConcurrents().stream()
+                    .filter(it -> it.compareTo(itsHand) > 0)
+                    .findFirst();
+            if (betterHand.isPresent() && moveAbility.foldIsAble()) {
+                poker().fold();
+            } else {
+                poker().showDown();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

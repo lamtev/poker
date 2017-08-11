@@ -513,7 +513,11 @@ public class Game implements Play {
 
     @Override
     public void playerShowedDown(String playerId, PokerHand hand) {
-        statusBarLabel.setText(playerId + " showed down: " + hand.getName());
+        String handStr = hand.getName().toString().toLowerCase();
+        statusBarLabel.setText(playerId + " showed down: " +
+                handStr.replaceAll("_", " ")
+                        .replaceFirst(handStr.substring(0, 1), handStr.substring(0, 1)
+                                .toUpperCase()));
         HBox cardsHBox = (HBox) playerView(playerId).getChildren().get(2);
         List<Card> cards = players.stream()
                 .filter(it -> it.id().equals(playerId))

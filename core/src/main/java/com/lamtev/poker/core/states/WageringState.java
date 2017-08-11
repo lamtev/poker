@@ -46,6 +46,7 @@ abstract class WageringState extends ActionState {
     @Override
     public void raise(int additionalWager) throws UnallowableMoveException,
             IsNotEnoughMoneyException, NotPositiveWagerException {
+        checks = 0;
         moveValidator.validateRaise(raisers.size());
         Player currentPlayer = players.current();
         bank.acceptRaise(additionalWager, currentPlayer);
