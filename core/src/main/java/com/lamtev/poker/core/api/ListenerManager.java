@@ -1,13 +1,16 @@
 package com.lamtev.poker.core.api;
 
+import com.lamtev.poker.core.ai.AbstractAI.Rival;
 import com.lamtev.poker.core.event_listeners.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.states.SettingsState;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 final class ListenerManager {
 
@@ -26,6 +29,7 @@ final class ListenerManager {
     private final List<PlayerShowedDownListener> playerShowedDownListeners = new ArrayList<>();
     private final List<StateChangedListener> stateChangedListeners = new ArrayList<>();
     private final List<RoundOfPlayChangedListener> roundOfPlayChangedListeners = new ArrayList<>();
+    private final List<RivalsBecomeKnownListener> rivalsBecomeKnownListeners = new ArrayList<>();
 
     void subscribe(Play play) {
         subscribeForUpdates(play);
@@ -34,6 +38,7 @@ final class ListenerManager {
     void subscribe(AI ai) {
         subscribeForUpdates(ai);
         roundOfPlayChangedListeners.add(ai);
+        rivalsBecomeKnownListeners.add(ai);
     }
 
     void notifyBankMoneyUpdatedListeners(int money, int wager) {
@@ -116,6 +121,19 @@ final class ListenerManager {
 
     void notifyRoundOfPlayChanged(RoundOfPlay roundOfPlay) {
         roundOfPlayChangedListeners.forEach(it -> it.roundOfPlayChanged(roundOfPlay));
+    }
+
+    void notifyRivalsBecomeKnownListeners(List<Player> players) {
+        List<Rival> rivals = players.stream()
+                .map(it -> new Rival(it.id(), it.stack()))
+                .collect(Collectors.toList());
+        rivalsBecomeKnownListeners.forEach(
+                listener -> listener.rivalsBecomeKnown(
+                        rivals.stream()
+                                .filter(rival -> !rival.id().equals(listener.id()))
+                                .collect(Collectors.toList())
+                )
+        );
     }
 
     private void subscribeForUpdates(Object listener) {

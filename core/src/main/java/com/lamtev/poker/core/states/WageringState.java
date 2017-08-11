@@ -31,11 +31,6 @@ abstract class WageringState extends ActionState {
     }
 
     @Override
-    boolean timeToForcedShowdown() {
-        return players.activeNonAllinnersNumber() == 0;
-    }
-
-    @Override
     public void call() throws UnallowableMoveException, IsNotEnoughMoneyException {
         Player currentPlayer = players.current();
         moveValidator.validateCall();
@@ -51,6 +46,7 @@ abstract class WageringState extends ActionState {
     @Override
     public void raise(int additionalWager) throws UnallowableMoveException,
             IsNotEnoughMoneyException, NotPositiveWagerException {
+        checks = 0;
         moveValidator.validateRaise(raisers.size());
         Player currentPlayer = players.current();
         bank.acceptRaise(additionalWager, currentPlayer);
@@ -121,9 +117,13 @@ abstract class WageringState extends ActionState {
     @Override
     void updateMoveAbility() {
         moveAbility.setRaiseIsAble(raiseIsAble());
-        moveAbility.setCallIsAble(moveValidator.callIsAble());
+        moveAbility.setCallIsAble(callIsAble());
         moveAbility.setCheckIsAble(moveValidator.checkIsAble(raisers.size()));
         poker.notifyMoveAbilityListeners(players.current().id(), moveAbility);
+    }
+
+    boolean callIsAble() {
+        return moveValidator.callIsAble();
     }
 
     boolean raiseIsAble() {

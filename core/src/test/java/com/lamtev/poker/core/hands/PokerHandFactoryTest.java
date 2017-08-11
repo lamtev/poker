@@ -11,6 +11,7 @@ import java.util.List;
 import static com.lamtev.poker.core.hands.PokerHand.Name.*;
 import static com.lamtev.poker.core.model.Rank.*;
 import static com.lamtev.poker.core.model.Suit.*;
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -185,7 +186,7 @@ public class PokerHandFactoryTest {
         }};
         PokerHand flush = pcf.createCombination(playerCards);
         assertEquals(FLUSH, flush.getName());
-        assertTrue(flush.compareTo(new Flush(KING)) == 0);
+        assertTrue(flush.compareTo(new Flush(asList(KING, EIGHT, FIVE, FOUR, TWO))) == 0);
     }
 
     @Test
@@ -204,7 +205,7 @@ public class PokerHandFactoryTest {
         }};
         PokerHand flush = pcf.createCombination(playerCards);
         assertEquals(FLUSH, flush.getName());
-        assertTrue(flush.compareTo(new Flush(QUEEN)) == 0);
+        assertTrue(flush.compareTo(new Flush(asList(QUEEN, JACK, SEVEN, FOUR, TWO))) == 0);
     }
 
     @Test

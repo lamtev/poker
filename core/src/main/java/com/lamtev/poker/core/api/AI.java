@@ -22,6 +22,7 @@ public interface AI extends
         PlayerMoneyUpdatedListener,
         PlayerRaisedListener,
         PlayerShowedDownListener,
+        RivalsBecomeKnownListener,
         RoundOfPlayChangedListener,
         StateChangedListener {
 

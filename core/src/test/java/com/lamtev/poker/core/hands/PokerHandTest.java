@@ -7,15 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.lamtev.poker.core.model.Rank.*;
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertTrue;
 
 public class PokerHandTest {
 
     @Test
     public void testComparisonBetweenTwoFlushes() {
-        assertTrue(new Flush(ACE).compareTo(new Flush(ACE)) == 0);
-        assertTrue(new Flush(ACE).compareTo(new Flush(KING)) > 0);
-        assertTrue(new Flush(KING).compareTo(new Flush(ACE)) < 0);
+        assertTrue(new Flush(asList(ACE, TEN, SEVEN, FIVE, TWO))
+                .compareTo(new Flush(asList(ACE, TEN, SEVEN, FIVE, TWO))) == 0);
+        assertTrue(new Flush(asList(ACE, KING, TEN, FIVE, THREE))
+                .compareTo(new Flush(asList(ACE, KING, TEN, FIVE, TWO))) > 0);
+        assertTrue(new Flush(asList(KING, TEN, SEVEN, FIVE, TWO))
+                .compareTo(new Flush(asList(ACE, TEN, SEVEN, FIVE, TWO))) < 0);
     }
 
     @Test
@@ -27,8 +31,8 @@ public class PokerHandTest {
 
     @Test
     public void testComparisonBetweenStraightAndFlush() {
-        assertTrue(new Flush(KING).compareTo(new Straight(ACE)) > 0);
-        assertTrue(new Straight(ACE).compareTo(new Flush(KING)) < 0);
+        assertTrue(new Flush(asList(KING, TEN, SEVEN, FIVE, TWO)).compareTo(new Straight(ACE)) > 0);
+        assertTrue(new Straight(ACE).compareTo(new Flush(asList(KING, TEN, SEVEN, FIVE, TWO))) < 0);
     }
 
     @Test
@@ -40,8 +44,8 @@ public class PokerHandTest {
 
     @Test
     public void testComparisonBetweenStraightFlushAndFlush() {
-        assertTrue(new StraightFlush(TWO).compareTo(new Flush(ACE)) > 0);
-        assertTrue(new Flush(ACE).compareTo(new StraightFlush(TWO)) < 0);
+        assertTrue(new StraightFlush(TWO).compareTo(new Flush(asList(ACE, KING, TEN, FIVE, TWO))) > 0);
+        assertTrue(new Flush(asList(ACE, KING, TEN, FIVE, TWO)).compareTo(new StraightFlush(TWO)) < 0);
     }
 
     @Test

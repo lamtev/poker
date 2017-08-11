@@ -1,6 +1,6 @@
 package com.lamtev.poker.desktop;
 
-import com.lamtev.poker.core.ai.SimpleAI;
+import com.lamtev.poker.core.ai.ThinkingAI;
 import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
@@ -60,7 +60,7 @@ public class Game implements Play {
     private final HBox buttons = new HBox();
 
     Game(String userName, List<String> aiNames, int stackSize) {
-        aiNames.forEach(it -> ais.add(new SimpleAI(it, stackSize)));
+        aiNames.forEach(it -> ais.add(new ThinkingAI(it, stackSize)));
         user = new User(userName, stackSize);
         players.add(user);
         players.addAll(ais);
@@ -275,7 +275,7 @@ public class Game implements Play {
         raise.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         raise.setId("raise");
         raise.setOnAction(event -> {
-            TextInputDialog dialogWindow = new TextInputDialog("" + 50);
+            TextInputDialog dialogWindow = new TextInputDialog("" + smallBlindWager * 2);
             dialogWindow.setTitle("Raise");
             dialogWindow.setContentText("Input additional wager:");
 
@@ -283,6 +283,9 @@ public class Game implements Play {
             option.ifPresent(o -> {
                 try {
                     int additionalWager = Integer.parseInt(option.get());
+                    if (additionalWager < smallBlindWager * 2) {
+                        throw new RuntimeException("Additional wager can't be less than Big Blind wager");
+                    }
                     poker.raise(additionalWager);
                 } catch (NumberFormatException e) {
                     statusBarLabel.setText("You input not a number");
@@ -300,7 +303,7 @@ public class Game implements Play {
                 .orElse(null);
         if (ai != null) {
             Timeline timeline = new Timeline(new KeyFrame(
-                    Duration.millis(2500),
+                    Duration.millis(2000),
                     ae -> ai.makeAMove()
             ));
             timeline.play();
@@ -313,8 +316,8 @@ public class Game implements Play {
             statusBarLabel.setText("Round of play is over!");
             initUser();
             if (onUserHaveLost()) return;
-            if (onUserHaveWon()) return;
             removeLosers();
+            if (onUserHaveWon()) return;
             startNextRound();
         }
     }
@@ -373,7 +376,7 @@ public class Game implements Play {
     }
 
     private void startNextRound() {
-        smallBlindWager += (smallBlindWager >> 1);
+        smallBlindWager += (smallBlindWager >> 2);
         Collections.rotate(nicks, -1);
         String dealerId = nicks.get(0);
         Timeline timeline = new Timeline(new KeyFrame(
@@ -513,7 +516,11 @@ public class Game implements Play {
 
     @Override
     public void playerShowedDown(String playerId, PokerHand hand) {
-        statusBarLabel.setText(playerId + " showed down: " + hand.getName());
+        String handStr = hand.getName().toString().toLowerCase();
+        statusBarLabel.setText(playerId + " showed down: " +
+                handStr.replaceAll("_", " ")
+                        .replaceFirst(handStr.substring(0, 1), handStr.substring(0, 1)
+                                .toUpperCase()));
         HBox cardsHBox = (HBox) playerView(playerId).getChildren().get(2);
         List<Card> cards = players.stream()
                 .filter(it -> it.id().equals(playerId))

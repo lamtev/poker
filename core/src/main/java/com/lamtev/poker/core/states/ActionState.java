@@ -38,7 +38,9 @@ abstract class ActionState extends AbstractPokerState {
     abstract void updateMoveAbility();
 
     boolean timeToForcedShowdown() {
-        return players.activeNonAllinnersNumber() <= 1;
+        return players.activeNonAllinnersNumber() == 1
+                && players.activeNonAllinnersWithSameWagerNumber(bank.wager()) == 1
+                || players.activeNonAllinnersNumber() == 0;
     }
 
 }

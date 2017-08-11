@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.lamtev.poker.core.TestUtils.nTimes;
+import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -167,6 +168,21 @@ public class PokerTest implements Play {
         players.forEach(it -> System.out.println(it.id() + ": " + it.stack()));
     }
 
+    @Test
+    public void testAllIn2Players() throws Exception {
+        List<Player> players = asList(new User("a", 700), new User("b", 500));
+        RoundOfPlay poker = new PokerBuilder()
+                .setSmallBlindWager(150)
+                .registerPlayers(players)
+                .setDealerId("a")
+                .registerPlay(this)
+                .create();
+
+        poker.call();
+        poker.allIn();
+        poker.allIn();
+        assertEquals("ShowdownState", state);
+    }
 
     @Test(expected = UnallowableMoveException.class)
     public void testRaise() throws Exception {

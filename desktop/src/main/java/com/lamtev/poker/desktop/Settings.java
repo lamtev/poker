@@ -28,7 +28,7 @@ class Settings {
     private final Label choosePlayerStack = new Label("Choose player stack size:");
     private final TextField playerNameField = new TextField("User");
     private final Slider numberOfOpponentsSlider = new Slider(1, 9, 2);
-    private final ChoiceBox<Integer> stackSizeChoiceBox = new ChoiceBox<>();
+    private final ChoiceBox<String> stackSizeChoiceBox = new ChoiceBox<>();
     private final Button startButton = new Button("Start");
     private final Button cancelButton = new Button("Cancel");
 
@@ -81,14 +81,15 @@ class Settings {
     }
 
     private void configureStackSizeChoiceBox() {
-        stackSizeChoiceBox.getItems().addAll(1000, 2000, 5000, 10_000, 15_000, 25_000, 50_000, 100_000);
-        stackSizeChoiceBox.setValue(5000);
+        stackSizeChoiceBox.getItems().addAll("1000", "5000", "10 000", "25 000",
+                "50 000", "100 000", "250 000", "1 000 000", "5 000 000", "10 000 000");
+        stackSizeChoiceBox.setValue("5000");
     }
 
     private void configureStartButton(Stage primaryStage) {
         startButton.setOnAction(event -> {
             numberOfOpponents = (int) numberOfOpponentsSlider.getValue();
-            stackSize = stackSizeChoiceBox.getValue();
+            stackSize = Integer.parseInt(stackSizeChoiceBox.getValue().replaceAll("\\s+", ""));
             String playerName = playerNameField.getText();
             List<String> aiNames = nNamesExceptThis(numberOfOpponents, playerName);
             new Game(playerName, aiNames, stackSize)
