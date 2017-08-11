@@ -275,7 +275,7 @@ public class Game implements Play {
         raise.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         raise.setId("raise");
         raise.setOnAction(event -> {
-            TextInputDialog dialogWindow = new TextInputDialog("" + 50);
+            TextInputDialog dialogWindow = new TextInputDialog("" + smallBlindWager * 2);
             dialogWindow.setTitle("Raise");
             dialogWindow.setContentText("Input additional wager:");
 
@@ -283,6 +283,9 @@ public class Game implements Play {
             option.ifPresent(o -> {
                 try {
                     int additionalWager = Integer.parseInt(option.get());
+                    if (additionalWager < smallBlindWager * 2) {
+                        throw new RuntimeException("Additional wager can't be less than Big Blind wager");
+                    }
                     poker.raise(additionalWager);
                 } catch (NumberFormatException e) {
                     statusBarLabel.setText("You input not a number");
@@ -300,7 +303,7 @@ public class Game implements Play {
                 .orElse(null);
         if (ai != null) {
             Timeline timeline = new Timeline(new KeyFrame(
-                    Duration.millis(2500),
+                    Duration.millis(2000),
                     ae -> ai.makeAMove()
             ));
             timeline.play();
