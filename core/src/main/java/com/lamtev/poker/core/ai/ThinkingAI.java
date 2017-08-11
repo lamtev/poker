@@ -7,12 +7,15 @@ import com.lamtev.poker.core.hands.PokerHandFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.*;
 import static com.lamtev.poker.core.model.Rank.*;
 import static java.util.Arrays.asList;
 
 public class ThinkingAI extends AbstractAI {
+
+    private static final Random RANDOM = new Random(System.currentTimeMillis());
 
     public ThinkingAI(String id, int stack) {
         super(id, stack);
@@ -45,8 +48,8 @@ public class ThinkingAI extends AbstractAI {
             int additionalWager = (int)
                     (currentWager() * 0.5 < stack() * 0.8 ? currentWager() * 0.5 : stack() * 0.8);
             boolean enoughMoney = stack() > additionalWager + currentWager() - wager();
-            if (moveAbility.raiseIsAble() && enoughMoney  && statusIsGoodForRaiseOnTurnOrRiver()) {
 
+            if (moveAbility.raiseIsAble() && enoughMoney && (statusIsGoodForRaiseOnTurnOrRiver() || timeToBluff())) {
                 poker().raise(additionalWager);
             } else if (moveAbility.checkIsAble()) {
                 poker().check();
@@ -68,6 +71,15 @@ public class ThinkingAI extends AbstractAI {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Probability of true is 0.25
+     *
+     * @return true if there is time to bluff and false - if not.
+     */
+    private boolean timeToBluff() {
+        return RANDOM.nextInt(4) == 0;
     }
 
     private boolean statusIsGoodForRaiseOnTurnOrRiver() {
