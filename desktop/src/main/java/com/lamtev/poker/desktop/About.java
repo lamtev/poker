@@ -16,26 +16,25 @@ import static javafx.geometry.Pos.CENTER;
 
 class About {
 
-    private static final VBox root = new VBox(25);
-    private static final Button back = new Button("back");
-    private static final List<Node> NODES = asList(
-            new Label("Poker Texas Hold'em"),
-            new Label("Project: https://github.com/lamtev/poker"),
-            new Label("Developer: Anton Lamtev"),
-            new Label("Mail to: antonlamtev@gmail.com"),
-            new Label("Github: @lamtev"),
-            back
-    );
+    void start(Stage primaryStage) {
+        final VBox root = new VBox(25);
+        final Button back = new Button("back");
 
-    static {
+        final List<Node> NODES = asList(
+                new Label("Poker Texas Hold'em"),
+                new Label("Project: https://github.com/lamtev/poker"),
+                new Label("Developer: Anton Lamtev"),
+                new Label("Mail to: antonlamtev@gmail.com"),
+                new Label("Github: @lamtev"),
+                back
+        );
+
         back.prefWidthProperty().bind(root.widthProperty().divide(5));
         back.prefHeightProperty().bind(root.heightProperty().divide(15));
 
         root.setAlignment(CENTER);
         root.getChildren().addAll(NODES);
-    }
 
-    void start(Stage primaryStage) {
         back.setOnAction(e -> new StartMenu().start(primaryStage));
         primaryStage.setScene(new Scene(root, WIDTH, HEIGHT));
     }
