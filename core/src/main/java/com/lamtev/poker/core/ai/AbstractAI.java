@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("WeakerAccess")
-abstract class AbstractAI implements AI {
+public abstract class AbstractAI implements AI {
 
     private final String id;
     private int stack;
@@ -26,7 +26,7 @@ abstract class AbstractAI implements AI {
     private int bank;
     private int currentWager;
 
-    final Map<String, Contender> contenders = new HashMap<>();
+    final Map<String, Rival> rivals = new HashMap<>();
     final List<Card> communityCards = new ArrayList<>();
     final Map<String, PokerHand> playersHands = new HashMap<>();
     final MoveAbility moveAbility = new MoveAbility();
@@ -103,15 +103,9 @@ abstract class AbstractAI implements AI {
             stack = playerStack;
             wager = playerWager;
         } else {
-            Contender contender;
-            if (!contenders.containsKey(playerId)) {
-                contender = new Contender(playerId);
-                contenders.put(playerId, contender);
-            } else {
-                contender = contenders.get(playerId);
-            }
-            contender.stack = playerStack;
-            contender.wager = playerWager;
+            Rival rival = rivals.get(playerId);
+            rival.stack = playerStack;
+            rival.wager = playerWager;
         }
     }
 
@@ -125,7 +119,7 @@ abstract class AbstractAI implements AI {
         if (id().equals(playerId)) {
             isActive = false;
         } else {
-            contenders.get(playerId).isActive = false;
+            rivals.get(playerId).isActive = false;
         }
     }
 
@@ -203,15 +197,21 @@ abstract class AbstractAI implements AI {
         playersHands.put(playerId, hand);
     }
 
-    public static class Contender implements Player {
+    @Override
+    public void rivalsBecomeKnown(List<Rival> rivals) {
+        rivals.forEach(it -> this.rivals.put(it.id, it));
+    }
+
+    public static final class Rival implements Player {
 
         private final String id;
         private int stack;
         private int wager;
         private boolean isActive = true;
 
-        public Contender(String id) {
+        public Rival(String id, int stack) {
             this.id = id;
+            this.stack = stack;
         }
 
         @Override
@@ -245,9 +245,9 @@ abstract class AbstractAI implements AI {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            Contender contender = (Contender) o;
+            Rival rival = (Rival) o;
 
-            return id.equals(contender.id);
+            return id.equals(rival.id);
         }
 
         @Override

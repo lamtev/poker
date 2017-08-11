@@ -32,22 +32,26 @@ public class ThinkingAI extends AbstractAI {
                     }
                     break;
                 case "ShowdownState":
-                    PokerHandFactory handFactory = new PokerHandFactory(communityCards);
-                    PokerHand itsHand = handFactory.createCombination(cards());
-                    Optional<PokerHand> betterHand = handsOfPotConcurrents().stream()
-                            .filter(it -> it.compareTo(itsHand) > 0)
-                            .findFirst();
-                    if (betterHand.isPresent() && moveAbility.foldIsAble()) {
-                        poker().fold();
-                    } else {
-                        poker().showDown();
-                    }
+                    onShowdown();
                     break;
                 default:
                     break;
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void onShowdown() throws Exception {
+        PokerHandFactory handFactory = new PokerHandFactory(communityCards);
+        PokerHand itsHand = handFactory.createCombination(cards());
+        Optional<PokerHand> betterHand = handsOfPotConcurrents().stream()
+                .filter(it -> it.compareTo(itsHand) > 0)
+                .findFirst();
+        if (betterHand.isPresent() && moveAbility.foldIsAble()) {
+            poker().fold();
+        } else {
+            poker().showDown();
         }
     }
 
@@ -65,7 +69,7 @@ public class ThinkingAI extends AbstractAI {
     private List<PokerHand> handsOfPotConcurrents() {
         List<PokerHand> handsOfPotConcurrents = new ArrayList<>();
         playersHands.forEach((id, hand) -> {
-            if (!id.equals(id()) && contenders.get(id).wager() <= wager()) {
+            if (!id.equals(id()) && rivals.get(id).wager() <= wager()) {
                 handsOfPotConcurrents.add(hand);
             }
         });
