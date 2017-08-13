@@ -9,7 +9,7 @@ import java.util.List;
 
 import static com.lamtev.poker.desktop.Launcher.HEIGHT;
 import static com.lamtev.poker.desktop.Launcher.WIDTH;
-import static com.lamtev.poker.desktop.Util.nNamesExceptThis;
+import static com.lamtev.poker.core.util.PlayersNames.nNamesExceptThis;
 import static java.util.Arrays.asList;
 import static javafx.geometry.Pos.CENTER;
 import static javafx.scene.layout.GridPane.REMAINING;

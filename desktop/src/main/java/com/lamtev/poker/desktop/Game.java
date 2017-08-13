@@ -40,6 +40,7 @@ public class Game implements Play {
     private Stage primaryStage;
     private RoundOfPlay poker;
     private int smallBlindWager;
+    private int roundOfPlayCounter = 1;
     private String currentPlayerId;
     private final List<Player> players = new ArrayList<>();
     private final User user;
@@ -59,13 +60,13 @@ public class Game implements Play {
     private final Button showDown = new Button("show down");
     private final HBox buttons = new HBox();
 
-    Game(String userName, List<String> aiNames, int stackSize) {
-        aiNames.forEach(it -> ais.add(new ThinkingAI(it, stackSize)));
-        user = new User(userName, stackSize);
+    Game(String userName, List<String> aiNames, int stack) {
+        aiNames.forEach(it -> ais.add(new ThinkingAI(it, stack)));
+        user = new User(userName, stack);
         players.add(user);
         players.addAll(ais);
         nicks = players.stream().map(Player::id).collect(Collectors.toList());
-        smallBlindWager = stackSize / 100;
+        smallBlindWager = stack / 500;
     }
 
     void start(Stage primaryStage) {
@@ -368,7 +369,9 @@ public class Game implements Play {
     }
 
     private void startNextRound() {
-        smallBlindWager += (smallBlindWager >> 2);
+        if (++roundOfPlayCounter % 4 == 0) {
+            smallBlindWager += (smallBlindWager >> 2);
+        }
         Collections.rotate(nicks, -1);
         String dealerId = nicks.get(0);
         Timeline timeline = new Timeline(new KeyFrame(

@@ -7,7 +7,7 @@ import com.lamtev.poker.core.states.exceptions.*;
 
 import java.util.*;
 
-import static com.lamtev.poker.webserver.Util.names;
+import static com.lamtev.poker.core.util.PlayersNames.nNamesExceptThis;
 import static java.util.stream.Collectors.toList;
 
 public class PokerGame implements Play, GameAPI {
@@ -27,8 +27,7 @@ public class PokerGame implements Play, GameAPI {
     @Override
     public void start(String humanId, int playersNumber, int stack) throws RoundOfPlayIsOverException, ForbiddenMoveException, NotPositiveWagerException, IsNotEnoughMoneyException, UnallowableMoveException, GameHaveNotBeenStartedException {
         final int numberOfBots = playersNumber - 1;
-        nicks = names(numberOfBots);
-        //TODO check name existence
+        nicks = nNamesExceptThis(numberOfBots, humanId);
         nicks.add(humanId);
         Collections.shuffle(nicks);
         nicks.forEach(it -> users.add(new User(it, stack)));
