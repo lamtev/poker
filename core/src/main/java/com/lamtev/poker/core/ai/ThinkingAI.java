@@ -16,7 +16,7 @@ import static java.util.Arrays.asList;
 public final class ThinkingAI extends AbstractAI {
 
     private static final Random RANDOM = new Random(System.currentTimeMillis());
-    private boolean wasBluff;
+    private boolean thereWasBluff;
 
     public ThinkingAI(String id, int stack) {
         super(id, stack);
@@ -55,7 +55,7 @@ public final class ThinkingAI extends AbstractAI {
             } else if (moveAbility.checkIsAble()) {
                 poker().check();
             } else if (moveAbility.callIsAble()) {
-                if (statusIsGoodForCallOnPostFlop() || wasBluff) {
+                if (statusIsGoodForCallOnPostFlop() || thereWasBluff) {
                     poker().call();
                 } else {
                     poker().fold();
@@ -188,7 +188,7 @@ public final class ThinkingAI extends AbstractAI {
 
     @Override
     protected void beforeNextRound() {
-        wasBluff = false;
+        thereWasBluff = false;
     }
 
     @Override
