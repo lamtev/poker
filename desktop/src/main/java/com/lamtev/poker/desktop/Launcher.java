@@ -6,16 +6,12 @@ import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-@SuppressWarnings("WeakerAccess")
 public class Launcher extends Application {
-
-    //TODO хотелось бы видеть документацию к коду, чтобы была возможность сравнить что должен делать метод, и что он делает (если писать её во время создания новых методов, то это почти не занимает времени)
-    //TODO добавь правила игры, потому что сейчас у тебя получается узкоспециализированное приложение (только для тех, кто знает правила игры в определённый тип покера), и тому кто будет делать ревью в будущем помогут лучше разобраться
 
     private static final double SCALE_FACTOR = 0.8;
     private static final Rectangle2D screenRect = Screen.getPrimary().getVisualBounds();
-    public static final double WIDTH = screenRect.getWidth() * SCALE_FACTOR;
-    public static final double HEIGHT = screenRect.getHeight() * SCALE_FACTOR;
+    static final double WIDTH = screenRect.getWidth() * SCALE_FACTOR;
+    static final double HEIGHT = screenRect.getHeight() * SCALE_FACTOR;
 
     @Override
     public void start(Stage primaryStage) throws Exception {

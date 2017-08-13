@@ -22,7 +22,6 @@ final class FlopWageringState extends WageringState {
     @Override
     boolean attemptNextState() {
         if (timeToForcedShowdown()) {
-            //TODO think about how to dispose of code duplicates
             dealer.makeTurn();
             dealer.makeRiver();
             List<Card> addedCards = new ArrayList<>();
