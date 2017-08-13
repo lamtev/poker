@@ -1,6 +1,6 @@
 package com.lamtev.poker.core.ai;
 
-public class SimpleAI extends AbstractAI {
+public final class SimpleAI extends AbstractAI {
 
     public SimpleAI(String id, int stack) {
         super(id, stack);
@@ -36,6 +36,11 @@ public class SimpleAI extends AbstractAI {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void beforeNextRound() {
+
     }
 
     @Override

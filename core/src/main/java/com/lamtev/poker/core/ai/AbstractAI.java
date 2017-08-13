@@ -131,7 +131,10 @@ public abstract class AbstractAI implements AI {
         rivals.clear();
         playersHands.clear();
         moves.clear();
+        beforeNextRound();
     }
+
+    protected abstract void beforeNextRound();
 
     @Override
     final public void currentPlayerChanged(String currentPlayerId) {

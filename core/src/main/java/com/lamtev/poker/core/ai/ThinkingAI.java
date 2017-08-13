@@ -13,9 +13,10 @@ import static com.lamtev.poker.core.hands.PokerHand.Name.*;
 import static com.lamtev.poker.core.model.Rank.*;
 import static java.util.Arrays.asList;
 
-public class ThinkingAI extends AbstractAI {
+public final class ThinkingAI extends AbstractAI {
 
     private static final Random RANDOM = new Random(System.currentTimeMillis());
+    private boolean wasBluff;
 
     public ThinkingAI(String id, int stack) {
         super(id, stack);
@@ -54,7 +55,7 @@ public class ThinkingAI extends AbstractAI {
             } else if (moveAbility.checkIsAble()) {
                 poker().check();
             } else if (moveAbility.callIsAble()) {
-                if (statusIsGoodForCallOnPostFlop()) {
+                if (statusIsGoodForCallOnPostFlop() || wasBluff) {
                     poker().call();
                 } else {
                     poker().fold();
@@ -175,6 +176,21 @@ public class ThinkingAI extends AbstractAI {
         }
     }
 
+    private List<PokerHand> handsOfPotConcurrents() {
+        List<PokerHand> handsOfPotConcurrents = new ArrayList<>();
+        playersHands.forEach((id, hand) -> {
+            if (!id.equals(id()) && rivals.get(id).wager() <= wager()) {
+                handsOfPotConcurrents.add(hand);
+            }
+        });
+        return handsOfPotConcurrents;
+    }
+
+    @Override
+    protected void beforeNextRound() {
+        wasBluff = false;
+    }
+
     @Override
     public String toString() {
         return "ThinkingAI{" +
@@ -184,16 +200,6 @@ public class ThinkingAI extends AbstractAI {
                 ", cards=" + cards() +
                 ", isActive=" + isActive() +
                 '}';
-    }
-
-    private List<PokerHand> handsOfPotConcurrents() {
-        List<PokerHand> handsOfPotConcurrents = new ArrayList<>();
-        playersHands.forEach((id, hand) -> {
-            if (!id.equals(id()) && rivals.get(id).wager() <= wager()) {
-                handsOfPotConcurrents.add(hand);
-            }
-        });
-        return handsOfPotConcurrents;
     }
 
 }
