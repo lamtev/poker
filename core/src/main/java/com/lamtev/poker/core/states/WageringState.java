@@ -22,8 +22,6 @@ abstract class WageringState extends ActionState {
     @Override
     public void start() {
         determineUnderTheGunPosition();
-        moveAbility.setAllInIsAble(true);
-        moveAbility.setFoldIsAble(true);
         updateMoveAbility();
         makeDealerJob();
         poker.notifyCurrentPlayerChangedListeners(players.current().id());
@@ -58,8 +56,7 @@ abstract class WageringState extends ActionState {
 
     @Override
     public void allIn() throws UnallowableMoveException {
-        Player currentPlayer = players.current();
-        int additionalWager = currentPlayer.stack() - (bank.wager() - currentPlayer.wager());
+        int additionalWager = additionalWager();
         if (additionalWager == 0) {
             try {
                 call();
@@ -75,7 +72,7 @@ abstract class WageringState extends ActionState {
         } else {
             bank.acceptAllIn(players.current());
             notifyMoneyUpdatedListeners();
-            poker.notifyPlayerAllinnedListeners(currentPlayer.id());
+            poker.notifyPlayerAllinnedListeners(players.current().id());
             boolean stateChanged = attemptNextState();
             if (!stateChanged) {
                 changePlayerIndex();
@@ -122,6 +119,8 @@ abstract class WageringState extends ActionState {
 
     @Override
     void updateMoveAbility() {
+        moveAbility.setAllInIsAble(allInIsAble());
+        moveAbility.setFoldIsAble(true);
         moveAbility.setRaiseIsAble(raiseIsAble());
         moveAbility.setCallIsAble(callIsAble());
         moveAbility.setCheckIsAble(moveValidator.checkIsAble(raises));
@@ -138,6 +137,10 @@ abstract class WageringState extends ActionState {
 
     boolean raiseIsAble() {
         return moveValidator.raiseIsAble(raises);
+    }
+
+    boolean allInIsAble() {
+        return !allInIsRaise() || raiseIsAble();
     }
 
     void determineUnderTheGunPosition() {
@@ -159,6 +162,15 @@ abstract class WageringState extends ActionState {
 
     int raises() {
         return raises;
+    }
+
+    private boolean allInIsRaise() {
+        return additionalWager() > 0;
+    }
+
+    private int additionalWager() {
+        Player currentPlayer = players.current();
+        return currentPlayer.stack() - (bank.wager() - currentPlayer.wager());
     }
 
     private boolean onlyOneActivePlayer() {
