@@ -3,6 +3,7 @@ package com.lamtev.poker.core.ai;
 import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.model.MoveAbility;
 import org.junit.Test;
 
 import java.util.*;

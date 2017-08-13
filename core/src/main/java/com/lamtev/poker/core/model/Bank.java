@@ -110,14 +110,14 @@ public final class Bank {
         Set<Player> allinnersWhichAlreadyInPot = new HashSet<>();
         for (Player allinner : allinners) {
             Pot pot = new Pot();
-            pot.addApplicantsFrom(showedDownPlayersList, allinnersWhichAlreadyInPot);
+            pot.addApplicantsFromListExcludeThese(showedDownPlayersList, allinnersWhichAlreadyInPot);
             pot.money = foldPlayersWagers + (allinner.wager() - previousAllinnerWager) * pot.applicants.size();
             allinnersWhichAlreadyInPot.add(allinner);
             pots.offer(pot);
             previousAllinnerWager = allinner.wager();
         }
         Pot pot = new Pot();
-        pot.addApplicantsFrom(showedDownPlayersList, allinnersWhichAlreadyInPot);
+        pot.addApplicantsFromListExcludeThese(showedDownPlayersList, allinnersWhichAlreadyInPot);
         pot.money = allinners.isEmpty() ?
                 foldPlayersWagers + wager * pot.applicants.size() :
                 (wager - previousAllinnerWager) * pot.applicants.size();
@@ -155,7 +155,7 @@ public final class Bank {
         private int money;
         private Set<Player> applicants = new HashSet<>();
 
-        private void addApplicantsFrom(List<Player> showedDownPlayersList, Set<Player> excludedPlayers) {
+        private void addApplicantsFromListExcludeThese(List<Player> showedDownPlayersList, Set<Player> excludedPlayers) {
             showedDownPlayersList.stream()
                     .filter(player -> !excludedPlayers.contains(player))
                     .forEach(applicants::add);

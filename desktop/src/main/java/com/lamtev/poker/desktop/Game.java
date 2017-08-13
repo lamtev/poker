@@ -4,6 +4,7 @@ import com.lamtev.poker.core.ai.ThinkingAI;
 import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.model.MoveAbility;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Node;

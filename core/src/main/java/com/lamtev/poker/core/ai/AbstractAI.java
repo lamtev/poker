@@ -1,7 +1,7 @@
 package com.lamtev.poker.core.ai;
 
 import com.lamtev.poker.core.api.AI;
-import com.lamtev.poker.core.api.MoveAbility;
+import com.lamtev.poker.core.model.MoveAbility;
 import com.lamtev.poker.core.api.Player;
 import com.lamtev.poker.core.api.RoundOfPlay;
 import com.lamtev.poker.core.hands.PokerHand;
