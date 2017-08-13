@@ -6,6 +6,7 @@ import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -20,22 +21,36 @@ import java.util.stream.Collectors;
 
 import static com.lamtev.poker.desktop.Launcher.HEIGHT;
 import static com.lamtev.poker.desktop.Launcher.WIDTH;
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 import static javafx.geometry.Orientation.HORIZONTAL;
 import static javafx.geometry.Pos.CENTER;
 
 public class Game implements Play {
 
+    private static final ImageView DEALER_BUTTON_VIEW = new ImageView("pics/dealer.png");
+    private static final ImageView SMALL_BLIND_BUTTON_VIEW = new ImageView("pics/small-blind.png");
+    private static final ImageView BIG_BLIND_BUTTON_VIEW = new ImageView("pics/big-blind.png");
     private static final Image CARD_BACK_IMAGE = new Image("pics/back_side.png");
     private static final double COMMUNITY_CARD_HEIGHT = HEIGHT / 3;
     private static final double COMMUNITY_CARD_WIDTH = COMMUNITY_CARD_HEIGHT / 1.533;
     private static final double HOLE_CARD_HEIGHT = WIDTH / 15;
     private static final double HOLE_CARD_WIDTH = WIDTH / 22.8;
     private static final double DEALER_BUTTON_SIZE = HEIGHT / 12.875;
-    private static final double BUTTON_WIDTH = WIDTH / 12.8;
+    private static final double BUTTON_WIDTH = WIDTH / 12;
     private static final double BUTTON_HEIGHT = HEIGHT / 16.48;
     private static final double COMMUNITY_CARDS_SPACING = WIDTH / 51;
+    private static final int PLAYER_BUTTON_INDEX = 0;
+    private static final int PLAYER_WAGER_INDEX = 1;
+    private static final int PLAYER_CARDS_INDEX = 2;
+    private static final int PLAYER_NICK_INDEX = 3;
+    private static final int PLAYER_STACK_INDEX = 4;
+    private static final int PLAYER_CURRENT_OR_FOLD_INDEX = 5;
+    private static final int AI_THINKING_TIME_IN_MILLIS = 2000;
+    private static final int NEXT_ROUND_DELAY_IN_MILLIS = 2500;
+    private static final int EACH_ROUND_TO_INCREASE_BLIND_WAGERS = 5;
+    private static final double BLIND_WAGERS_INCREASING_COEFFICIENT = 1.25;
+    private static final int PLAYERS_VIEW_HBOX_SPACING = 10;
+    private static final int BUTTONS_HBOX_SPACING = 10;
 
     private Stage primaryStage;
     private RoundOfPlay poker;
@@ -94,18 +109,18 @@ public class Game implements Play {
         root.getChildren().add(playersView);
 
         buttons.setAlignment(CENTER);
-        buttons.setSpacing(10);
+        buttons.setSpacing(BUTTONS_HBOX_SPACING);
         buttons.getChildren().addAll(call, check, raise, allIn, fold, showDown);
         root.getChildren().add(buttons);
         setUpButtons();
 
-        String dealerId = nicks.get(0);
-        startNewGame(players, dealerId);
+        String dealerId = dealerId();
+        startNewRound(players, dealerId);
 
         primaryStage.setScene(new Scene(root, WIDTH, HEIGHT));
     }
 
-    private void startNewGame(List<Player> players, String dealerId) {
+    private void startNewRound(List<Player> players, String dealerId) {
         statusBarLabel.setText("Welcome to Texas Hold'em Poker!!!");
         communityCardsView.getChildren().clear();
 
@@ -122,19 +137,20 @@ public class Game implements Play {
     private void configurePlayersView() {
         playersView.getChildren().clear();
         playersView.setAlignment(CENTER);
-        playersView.setSpacing(5);
+        playersView.setSpacing(PLAYERS_VIEW_HBOX_SPACING);
 
         players.forEach(it -> {
             VBox playerView = new VBox(2);
             playerView.setId(it.id());
             playerView.setAlignment(CENTER);
 
-            playerView.getChildren().addAll(
-                    asList(
-                            buttonsHBox(it.id()), wagerLabel(), cardsHBox(),
-                            nickLabel(it), stackLabel(it), currentLabel()
-                    )
-            );
+            List<Node> playerViewChildren = playerView.getChildren();
+            playerViewChildren.add(PLAYER_BUTTON_INDEX, buttonsHBox(it.id()));
+            playerViewChildren.add(PLAYER_WAGER_INDEX, wagerLabel());
+            playerViewChildren.add(PLAYER_CARDS_INDEX, cardsHBox());
+            playerViewChildren.add(PLAYER_NICK_INDEX, nickLabel(it));
+            playerViewChildren.add(PLAYER_STACK_INDEX, stackLabel(it));
+            playerViewChildren.add(PLAYER_CURRENT_OR_FOLD_INDEX, currentOrFoldLabel());
 
             playersView.getChildren().add(playerView);
         });
@@ -145,14 +161,14 @@ public class Game implements Play {
         buttonsHBox.setAlignment(CENTER);
         buttonsHBox.setId("buttons");
         List<ImageView> buttons = new ArrayList<>();
-        if (id.equals(nicks.get(0))) {
-            buttons.add(new ImageView("pics/dealer.png"));
-        } else if (id.equals(nicks.get(1))) {
-            buttons.add(new ImageView("pics/small-blind.png"));
+        if (id.equals(dealerId())) {
+            buttons.add(DEALER_BUTTON_VIEW);
+        } else if (id.equals(smallBlindId())) {
+            buttons.add(SMALL_BLIND_BUTTON_VIEW);
         }
-        if (nicks.size() > 2 && id.equals(nicks.get(2)) ||
-                nicks.size() == 2 && id.equals(nicks.get(0))) {
-            buttons.add(new ImageView("pics/big-blind.png"));
+        if (nicks.size() > 2 && id.equals(bigBlindId()) ||
+                nicks.size() == 2 && id.equals(dealerId())) {
+            buttons.add(BIG_BLIND_BUTTON_VIEW);
         }
         if (buttons.size() == 0) {
             buttons.add(new ImageView());
@@ -197,7 +213,7 @@ public class Game implements Play {
         return stackLabel;
     }
 
-    private Label currentLabel() {
+    private Label currentOrFoldLabel() {
         Label currentLabel = new Label();
         currentLabel.setId("current");
         return currentLabel;
@@ -304,7 +320,7 @@ public class Game implements Play {
                 .orElse(null);
         if (ai != null) {
             Timeline timeline = new Timeline(new KeyFrame(
-                    Duration.millis(2000),
+                    Duration.millis(AI_THINKING_TIME_IN_MILLIS),
                     ae -> ai.makeAMove()
             ));
             timeline.play();
@@ -369,14 +385,13 @@ public class Game implements Play {
     }
 
     private void startNextRound() {
-        if (++roundOfPlayCounter % 4 == 0) {
-            smallBlindWager += (smallBlindWager >> 2);
+        if (++roundOfPlayCounter % EACH_ROUND_TO_INCREASE_BLIND_WAGERS == 0) {
+            smallBlindWager *= BLIND_WAGERS_INCREASING_COEFFICIENT;
         }
         Collections.rotate(nicks, -1);
-        String dealerId = nicks.get(0);
         Timeline timeline = new Timeline(new KeyFrame(
-                Duration.millis(2500),
-                ae -> startNewGame(players, dealerId)
+                Duration.millis(NEXT_ROUND_DELAY_IN_MILLIS),
+                ae -> startNewRound(players, dealerId())
         ));
         timeline.play();
     }
@@ -388,8 +403,8 @@ public class Game implements Play {
             user.setActive(false);
         }
         VBox playerView = playerView(playerId);
-        playerView.getChildren().get(2).setVisible(false);
-        Label currentLabel = (Label) playerView.getChildren().get(5);
+        playerView.getChildren().get(PLAYER_CARDS_INDEX).setVisible(false);
+        Label currentLabel = (Label) playerView.getChildren().get(PLAYER_CURRENT_OR_FOLD_INDEX);
         currentLabel.setText("fold");
     }
 
@@ -400,15 +415,15 @@ public class Game implements Play {
             user.setWager(playerWager);
         }
         VBox playerView = playerView(playerId);
-        playerView.getChildren().set(1, new Label(Integer.toString(playerWager)));
-        playerView.getChildren().set(4, new Label(Integer.toString(playerStack)));
+        playerView.getChildren().set(PLAYER_WAGER_INDEX, new Label(Integer.toString(playerWager)));
+        playerView.getChildren().set(PLAYER_STACK_INDEX, new Label(Integer.toString(playerStack)));
     }
 
     @Override
     public void currentPlayerChanged(String currentPlayerId) {
         this.currentPlayerId = currentPlayerId;
         playersView.getChildren().forEach(it -> {
-            Label currentLabel = (Label) ((VBox) it).getChildren().get(5);
+            Label currentLabel = (Label) ((VBox) it).getChildren().get(PLAYER_CURRENT_OR_FOLD_INDEX);
             if (it.getId().equals(currentPlayerId)) {
                 currentLabel.setText("current");
             } else {
@@ -477,7 +492,7 @@ public class Game implements Play {
         user.setCards(playerIdToCards.get(user.id()));
         playersView.getChildren().forEach(it -> {
             VBox playerView = (VBox) it;
-            HBox cards = (HBox) playerView.getChildren().get(2);
+            HBox cards = (HBox) playerView.getChildren().get(PLAYER_CARDS_INDEX);
             if (it.getId().equals(user.id())) {
                 showHoleCards(cards, user.cards());
             } else {
@@ -516,7 +531,7 @@ public class Game implements Play {
                 handStr.replaceAll("_", " ")
                         .replaceFirst(handStr.substring(0, 1), handStr.substring(0, 1)
                                 .toUpperCase()));
-        HBox cardsHBox = (HBox) playerView(playerId).getChildren().get(2);
+        HBox cardsHBox = (HBox) playerView(playerId).getChildren().get(PLAYER_CARDS_INDEX);
         List<Card> cards = players.stream()
                 .filter(it -> it.id().equals(playerId))
                 .findFirst()
@@ -569,6 +584,18 @@ public class Game implements Play {
     @Override
     public void showDownAbilityChanged(boolean flag) {
         moveAbility.setShowdownIsAble(flag);
+    }
+
+    private String dealerId() {
+        return nicks.get(0);
+    }
+
+    private String smallBlindId() {
+        return nicks.get(1);
+    }
+
+    private String bigBlindId() {
+        return nicks.get(2);
     }
 
 }
