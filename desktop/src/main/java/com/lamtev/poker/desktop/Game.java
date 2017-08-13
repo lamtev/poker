@@ -37,7 +37,7 @@ public class Game implements Play {
     private static final double HOLE_CARD_HEIGHT = WIDTH / 15;
     private static final double HOLE_CARD_WIDTH = WIDTH / 22.8;
     private static final double DEALER_BUTTON_SIZE = HEIGHT / 12.875;
-    private static final double BUTTON_WIDTH = WIDTH / 12;
+    private static final double BUTTON_WIDTH = WIDTH / 10;
     private static final double BUTTON_HEIGHT = HEIGHT / 16.48;
     private static final double COMMUNITY_CARDS_SPACING = WIDTH / 51;
     private static final int PLAYER_BUTTON_INDEX = 0;
@@ -50,8 +50,9 @@ public class Game implements Play {
     private static final int NEXT_ROUND_DELAY_IN_MILLIS = 2500;
     private static final int EACH_ROUND_TO_INCREASE_BLIND_WAGERS = 5;
     private static final double BLIND_WAGERS_INCREASING_COEFFICIENT = 1.25;
-    private static final int PLAYERS_VIEW_HBOX_SPACING = 10;
+    private static final double PLAYERS_VIEW_HBOX_SPACING = WIDTH / 153;
     private static final int BUTTONS_HBOX_SPACING = 10;
+    private static final double ROOT_SPACING = HEIGHT / 33;
 
     private Stage primaryStage;
     private RoundOfPlay poker;
@@ -88,6 +89,7 @@ public class Game implements Play {
     void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         VBox root = new VBox();
+        root.setSpacing(ROOT_SPACING);
 
         VBox statusBarVBox = new VBox();
         statusBarVBox.setAlignment(CENTER);
