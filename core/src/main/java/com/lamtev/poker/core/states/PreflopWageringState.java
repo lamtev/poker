@@ -82,7 +82,7 @@ final class PreflopWageringState extends WageringState {
     }
 
     private boolean moveIsFinalBigBlindMove() {
-        return raisers().isEmpty() &&
+        return raises() == 0 &&
                 players.current() == players.bigBlind();
     }
 
@@ -97,7 +97,7 @@ final class PreflopWageringState extends WageringState {
     }
 
     private boolean noRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers() {
-        return raisers().isEmpty() && players.activePlayersNumber()
+        return raises() == 0 && players.activePlayersNumber()
                 == players.activeNonAllinnersWithSameWagerNumber(bank.wager()) + players.allinnersNumber();
     }
 

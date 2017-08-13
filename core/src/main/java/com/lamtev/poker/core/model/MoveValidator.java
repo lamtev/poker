@@ -1,48 +1,46 @@
-package com.lamtev.poker.core.states;
+package com.lamtev.poker.core.model;
 
-import com.lamtev.poker.core.model.Bank;
-import com.lamtev.poker.core.model.Players;
 import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
-final class MoveValidator {
+public final class MoveValidator {
 
     private final Players players;
     private final Bank bank;
 
-    MoveValidator(Players players, Bank bank) {
+    public MoveValidator(Players players, Bank bank) {
         this.players = players;
         this.bank = bank;
     }
 
-    void validateCall() throws UnallowableMoveException {
+    public void validateCall() throws UnallowableMoveException {
         if (!callIsAble()) {
             throw new UnallowableMoveException("Call");
         }
     }
 
-    boolean callIsAble() {
+    public boolean callIsAble() {
         return players.current().wager() < bank.wager()
                 && players.current().stack() >= bank.wager() - players.current().wager();
     }
 
-    void validateRaise(int raises) throws UnallowableMoveException {
+    public void validateRaise(int raises) throws UnallowableMoveException {
         if (!raiseIsAble(raises)) {
             throw new UnallowableMoveException("Raise");
         }
     }
 
-    boolean raiseIsAble(int raises) {
+    public boolean raiseIsAble(int raises) {
         return (players.activePlayersNumber() > 2 && raises < 3 || players.activePlayersNumber() == 2)
                 && players.activeNonAllinnersNumber() != 1;
     }
 
-    void validateCheck(int raises) throws UnallowableMoveException {
+    public void validateCheck(int raises) throws UnallowableMoveException {
         if (!checkIsAble(raises)) {
             throw new UnallowableMoveException("Check");
         }
     }
 
-    boolean checkIsAble(int raises) {
+    public boolean checkIsAble(int raises) {
         return raises == 0;
     }
 

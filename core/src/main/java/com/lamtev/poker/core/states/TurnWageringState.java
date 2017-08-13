@@ -22,7 +22,6 @@ final class TurnWageringState extends WageringState {
     @Override
     boolean attemptNextState() {
         if (timeToForcedShowdown()) {
-            //TODO think about how to dispose of code duplicates
             dealer.makeRiver();
             List<Card> addedCards = new ArrayList<>();
             addedCards.add(communityCards.cardAt(5));

@@ -1,6 +1,7 @@
 package com.lamtev.poker.core.states;
 
 import com.lamtev.poker.core.model.Bank;
+import com.lamtev.poker.core.model.MoveValidator;
 import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.model.Players;
 import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;

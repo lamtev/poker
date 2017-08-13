@@ -1,17 +1,16 @@
 package com.lamtev.poker.core.states;
 
+import com.lamtev.poker.core.model.MoveValidator;
 import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 import com.lamtev.poker.core.states.exceptions.IsNotEnoughMoneyException;
 import com.lamtev.poker.core.states.exceptions.NotPositiveWagerException;
 import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 abstract class WageringState extends ActionState {
 
-    private final List<Player> raisers = new ArrayList<>();
+    private int raises;
+    private Player latestAggressor;
     private final MoveValidator moveValidator;
     private int checks = 0;
 
@@ -47,10 +46,11 @@ abstract class WageringState extends ActionState {
     public void raise(int additionalWager) throws UnallowableMoveException,
             IsNotEnoughMoneyException, NotPositiveWagerException {
         checks = 0;
-        moveValidator.validateRaise(raisers.size());
+        moveValidator.validateRaise(raises);
         Player currentPlayer = players.current();
         bank.acceptRaise(additionalWager, currentPlayer);
-        raisers.add(currentPlayer);
+        ++raises;
+        latestAggressor = currentPlayer;
         notifyMoneyUpdatedListeners();
         poker.notifyPlayerRaisedListeners(currentPlayer.id());
         changePlayerIndex();
@@ -100,7 +100,7 @@ abstract class WageringState extends ActionState {
 
     @Override
     public void check() throws ForbiddenMoveException, UnallowableMoveException {
-        moveValidator.validateCheck(raisers.size());
+        moveValidator.validateCheck(raises);
         poker.notifyPlayerCheckedListeners(players.current().id());
         ++checks;
         boolean stateChanged = attemptNextState();
@@ -118,25 +118,25 @@ abstract class WageringState extends ActionState {
     void updateMoveAbility() {
         moveAbility.setRaiseIsAble(raiseIsAble());
         moveAbility.setCallIsAble(callIsAble());
-        moveAbility.setCheckIsAble(moveValidator.checkIsAble(raisers.size()));
+        moveAbility.setCheckIsAble(moveValidator.checkIsAble(raises));
         poker.notifyMoveAbilityListeners(players.current().id(), moveAbility);
     }
+
+    abstract void makeDealerJob();
+
+    abstract boolean attemptNextState();
 
     boolean callIsAble() {
         return moveValidator.callIsAble();
     }
 
     boolean raiseIsAble() {
-        return moveValidator.raiseIsAble(raisers.size());
+        return moveValidator.raiseIsAble(raises);
     }
 
     void determineUnderTheGunPosition() {
         players.nextNonAllinnerAfterDealer();
     }
-
-    abstract void makeDealerJob();
-
-    abstract boolean attemptNextState();
 
     boolean timeToNextState() {
         return allActiveNonAllinnersChecked() ||
@@ -144,18 +144,15 @@ abstract class WageringState extends ActionState {
     }
 
     Player latestAggressor() {
-        return raisers.stream()
-                .filter(Player::isActive)
-                .reduce((first, second) -> second)
-                .orElse(null);
+        return latestAggressor;
     }
 
     int checks() {
         return checks;
     }
 
-    List<Player> raisers() {
-        return raisers;
+    int raises() {
+        return raises;
     }
 
     private boolean onlyOneActivePlayer() {
@@ -167,7 +164,7 @@ abstract class WageringState extends ActionState {
     }
 
     private boolean thereWereRaisesAndAllActivePlayersAreAllinnersOrHaveSameWagers() {
-        return !raisers.isEmpty() && players.activeNonAllinnersWithSameWagerNumber(bank.wager())
+        return raises != 0 && players.activeNonAllinnersWithSameWagerNumber(bank.wager())
                 + players.allinnersNumber() == players.activePlayersNumber();
     }
 

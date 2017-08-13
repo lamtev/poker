@@ -10,8 +10,8 @@ public class PlayersNames {
 
     private static final List<String> NAMES = Arrays.asList(
             "Anna", "Arina", "Katya", "Vova", "Alena", "Zhenya", "Olga", "Keanu",
-            "Wayne", "Charlize", "Anastasia", "Max", "Vika", "Mel", "Donald",
-            "Masha", "Alexandra", "Zlatan", "Michele", "Megan", "Nataly",
+            "Wayne", "Charlize", "Vadik", "Anastasia", "Max", "Vika", "Mel", "Donald",
+            "Masha", "Alexandra", "Zlatan", "Michele", "Megan", "Nataly", "Yuriy",
             "Steve", "Bill", "Elon", "Alina", "Dimon", "Anton", "Artem", "Tanya",
             "Elizabeth", "Malorie", "George", "Rita", "Boris", "Alex", "Elena"
     );
