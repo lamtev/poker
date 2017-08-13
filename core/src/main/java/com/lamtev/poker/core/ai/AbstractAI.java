@@ -1,16 +1,13 @@
 package com.lamtev.poker.core.ai;
 
 import com.lamtev.poker.core.api.AI;
-import com.lamtev.poker.core.model.MoveAbility;
 import com.lamtev.poker.core.api.Player;
 import com.lamtev.poker.core.api.RoundOfPlay;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.model.MoveAbility;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings("WeakerAccess")
 public abstract class AbstractAI implements AI {
@@ -30,6 +27,7 @@ public abstract class AbstractAI implements AI {
     final List<Card> communityCards = new ArrayList<>();
     final Map<String, PokerHand> playersHands = new HashMap<>();
     final MoveAbility moveAbility = new MoveAbility();
+    final Deque<String> moves = new ArrayDeque<>();
 
     AbstractAI(String id, int stack) {
         this.id = id;
@@ -132,6 +130,7 @@ public abstract class AbstractAI implements AI {
         wager = 0;
         rivals.clear();
         playersHands.clear();
+        moves.clear();
     }
 
     @Override
@@ -176,27 +175,28 @@ public abstract class AbstractAI implements AI {
 
     @Override
     final public void playerAllinned(String playerId) {
-        //TODO
+        moves.push(playerId + " made all in");
     }
 
     @Override
     final public void playerCalled(String playerId) {
-        //TODO
+        moves.push(playerId + " called");
     }
 
     @Override
     final public void playerChecked(String playerId) {
-        //TODO
+        moves.push(playerId + " checked");
     }
 
     @Override
     final public void playerRaised(String playerId) {
-        //TODO
+        moves.push(playerId + " raised");
     }
 
     @Override
     final public void playerShowedDown(String playerId, List<Card> holeCards, PokerHand hand) {
         playersHands.put(playerId, hand);
+        moves.push(playerId + "showed down");
     }
 
     @Override
