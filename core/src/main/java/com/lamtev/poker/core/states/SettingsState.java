@@ -1,9 +1,7 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.model.MoveAbility;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
-import com.lamtev.poker.core.states.exceptions.GameHaveNotBeenStartedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,33 +44,33 @@ public final class SettingsState extends AbstractPokerState {
     }
 
     @Override
-    public void call() throws GameHaveNotBeenStartedException {
-        throw new GameHaveNotBeenStartedException();
+    public void call() {
+
     }
 
     @Override
-    public void raise(int additionalWager) throws GameHaveNotBeenStartedException {
-        throw new GameHaveNotBeenStartedException();
+    public void raise(int additionalWager) {
+
     }
 
     @Override
-    public void allIn() throws GameHaveNotBeenStartedException {
-        throw new GameHaveNotBeenStartedException();
+    public void allIn() {
+
     }
 
     @Override
-    public void fold() throws GameHaveNotBeenStartedException {
-        throw new GameHaveNotBeenStartedException();
+    public void fold() {
+
     }
 
     @Override
-    public void check() throws GameHaveNotBeenStartedException {
-        throw new GameHaveNotBeenStartedException();
+    public void check() {
+
     }
 
     @Override
-    public void showDown() throws GameHaveNotBeenStartedException {
-        throw new GameHaveNotBeenStartedException();
+    public void showDown() {
+
     }
 
 }

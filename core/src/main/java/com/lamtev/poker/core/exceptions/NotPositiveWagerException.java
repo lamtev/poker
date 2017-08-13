@@ -1,4 +1,4 @@
-package com.lamtev.poker.core.states.exceptions;
+package com.lamtev.poker.core.exceptions;
 
 public class NotPositiveWagerException extends Exception {
 

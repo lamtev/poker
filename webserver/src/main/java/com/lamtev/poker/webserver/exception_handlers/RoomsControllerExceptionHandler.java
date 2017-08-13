@@ -1,6 +1,6 @@
 package com.lamtev.poker.webserver.exception_handlers;
 
-import com.lamtev.poker.core.states.exceptions.RoundOfPlayIsOverException;
+import com.lamtev.poker.core.exceptions.RoundOfPlayIsOverException;
 import com.lamtev.poker.webserver.controllers.exceptions.RequestBodyHasUnsuitableFormatException;
 import com.lamtev.poker.webserver.controllers.exceptions.ResourceAlreadyExistsException;
 import com.lamtev.poker.webserver.controllers.exceptions.ResourceNotFoundException;

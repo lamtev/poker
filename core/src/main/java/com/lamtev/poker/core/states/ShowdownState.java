@@ -1,11 +1,11 @@
 package com.lamtev.poker.core.states;
 
+import com.lamtev.poker.core.exceptions.ForbiddenMoveException;
+import com.lamtev.poker.core.exceptions.UnallowableMoveException;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.hands.PokerHandFactory;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Player;
-import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
-import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
 import java.util.*;
 

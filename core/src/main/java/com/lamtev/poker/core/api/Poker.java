@@ -1,12 +1,12 @@
 package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.event_listeners.ListenerManager;
+import com.lamtev.poker.core.exceptions.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.MoveAbility;
 import com.lamtev.poker.core.states.PokerState;
 import com.lamtev.poker.core.states.SettingsState;
-import com.lamtev.poker.core.states.exceptions.*;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,6 @@ public class Poker implements RoundOfPlay {
     @Override
     public void call() throws
             ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
             IsNotEnoughMoneyException,
             RoundOfPlayIsOverException,
             UnallowableMoveException {
@@ -29,7 +28,6 @@ public class Poker implements RoundOfPlay {
     @Override
     public void raise(int additionalWager) throws
             ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
             IsNotEnoughMoneyException,
             NotPositiveWagerException,
             RoundOfPlayIsOverException,
@@ -40,9 +38,6 @@ public class Poker implements RoundOfPlay {
     @Override
     public void allIn() throws
             ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
-            IsNotEnoughMoneyException,
-            NotPositiveWagerException,
             RoundOfPlayIsOverException,
             UnallowableMoveException {
         state.allIn();
@@ -51,7 +46,6 @@ public class Poker implements RoundOfPlay {
     @Override
     public void fold() throws
             ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
             RoundOfPlayIsOverException,
             UnallowableMoveException {
         state.fold();
@@ -60,7 +54,6 @@ public class Poker implements RoundOfPlay {
     @Override
     public void check() throws
             ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
             RoundOfPlayIsOverException,
             UnallowableMoveException {
         state.check();
@@ -69,7 +62,6 @@ public class Poker implements RoundOfPlay {
     @Override
     public void showDown() throws
             ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
             RoundOfPlayIsOverException {
         state.showDown();
     }

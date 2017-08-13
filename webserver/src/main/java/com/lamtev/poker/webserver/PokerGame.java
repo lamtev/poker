@@ -3,7 +3,7 @@ package com.lamtev.poker.webserver;
 import com.lamtev.poker.core.api.*;
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
-import com.lamtev.poker.core.states.exceptions.*;
+import com.lamtev.poker.core.exceptions.*;
 
 import java.util.*;
 
@@ -25,7 +25,7 @@ public class PokerGame implements Play, GameAPI {
     private int wager;
 
     @Override
-    public void start(String humanId, int playersNumber, int stack) throws RoundOfPlayIsOverException, ForbiddenMoveException, NotPositiveWagerException, IsNotEnoughMoneyException, UnallowableMoveException, GameHaveNotBeenStartedException {
+    public void start(String humanId, int playersNumber, int stack) throws RoundOfPlayIsOverException, ForbiddenMoveException, NotPositiveWagerException, IsNotEnoughMoneyException, UnallowableMoveException {
         final int numberOfBots = playersNumber - 1;
         nicks = nNamesExceptThis(numberOfBots, humanId);
         nicks.add(humanId);

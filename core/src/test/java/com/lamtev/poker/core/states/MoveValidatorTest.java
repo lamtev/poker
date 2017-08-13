@@ -4,7 +4,7 @@ import com.lamtev.poker.core.model.Bank;
 import com.lamtev.poker.core.model.MoveValidator;
 import com.lamtev.poker.core.model.Player;
 import com.lamtev.poker.core.model.Players;
-import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
+import com.lamtev.poker.core.exceptions.UnallowableMoveException;
 import org.junit.Test;
 
 import java.util.ArrayList;

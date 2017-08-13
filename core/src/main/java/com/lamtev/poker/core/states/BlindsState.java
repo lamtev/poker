@@ -1,9 +1,7 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.model.MoveAbility;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
-import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -53,33 +51,33 @@ final class BlindsState extends ActionState {
     }
 
     @Override
-    public void call() throws ForbiddenMoveException {
-        throw new ForbiddenMoveException("Call", toString());
+    public void call() {
+
     }
 
     @Override
-    public void raise(int additionalWager) throws ForbiddenMoveException {
-        throw new ForbiddenMoveException("Raise", toString());
+    public void raise(int additionalWager) {
+
     }
 
     @Override
-    public void allIn() throws ForbiddenMoveException {
-        throw new ForbiddenMoveException("All in", toString());
+    public void allIn() {
+
     }
 
     @Override
-    public void fold() throws ForbiddenMoveException {
-        throw new ForbiddenMoveException("Fold", toString());
+    public void fold() {
+
     }
 
     @Override
-    public void check() throws ForbiddenMoveException {
-        throw new ForbiddenMoveException("Check", toString());
+    public void check() {
+
     }
 
     @Override
-    public void showDown() throws ForbiddenMoveException {
-        throw new ForbiddenMoveException("Show down", toString());
+    public void showDown() {
+
     }
 
     @Override

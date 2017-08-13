@@ -2,7 +2,7 @@ package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
-import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
+import com.lamtev.poker.core.exceptions.UnallowableMoveException;
 import org.junit.Before;
 import org.junit.Test;
 

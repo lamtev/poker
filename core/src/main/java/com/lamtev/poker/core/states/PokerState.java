@@ -1,20 +1,18 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.states.exceptions.*;
+import com.lamtev.poker.core.exceptions.*;
 
 public interface PokerState {
 
     void start();
 
     void call() throws
-            GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             UnallowableMoveException,
             IsNotEnoughMoneyException,
             RoundOfPlayIsOverException;
 
     void raise(int additionalWager) throws
-            GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             UnallowableMoveException,
             IsNotEnoughMoneyException,
@@ -22,26 +20,21 @@ public interface PokerState {
             RoundOfPlayIsOverException;
 
     void allIn() throws
-            GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             UnallowableMoveException,
-            RoundOfPlayIsOverException,
-            IsNotEnoughMoneyException,
-            NotPositiveWagerException;
+            RoundOfPlayIsOverException;
 
     void fold() throws
+            ForbiddenMoveException,
             UnallowableMoveException,
-            RoundOfPlayIsOverException,
-            GameHaveNotBeenStartedException, ForbiddenMoveException;
+            RoundOfPlayIsOverException;
 
     void check() throws
-            GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             UnallowableMoveException,
             RoundOfPlayIsOverException;
 
     void showDown() throws
-            GameHaveNotBeenStartedException,
             ForbiddenMoveException,
             RoundOfPlayIsOverException;
 

@@ -1,6 +1,6 @@
 package com.lamtev.poker.core.model;
 
-import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
+import com.lamtev.poker.core.exceptions.UnallowableMoveException;
 
 public final class MoveValidator {
 

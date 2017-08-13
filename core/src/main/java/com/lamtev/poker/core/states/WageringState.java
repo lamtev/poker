@@ -1,11 +1,11 @@
 package com.lamtev.poker.core.states;
 
+import com.lamtev.poker.core.exceptions.ForbiddenMoveException;
+import com.lamtev.poker.core.exceptions.IsNotEnoughMoneyException;
+import com.lamtev.poker.core.exceptions.NotPositiveWagerException;
+import com.lamtev.poker.core.exceptions.UnallowableMoveException;
 import com.lamtev.poker.core.model.MoveValidator;
 import com.lamtev.poker.core.model.Player;
-import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
-import com.lamtev.poker.core.states.exceptions.IsNotEnoughMoneyException;
-import com.lamtev.poker.core.states.exceptions.NotPositiveWagerException;
-import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
 
 abstract class WageringState extends ActionState {
 
@@ -57,15 +57,21 @@ abstract class WageringState extends ActionState {
     }
 
     @Override
-    public void allIn() throws UnallowableMoveException,
-            IsNotEnoughMoneyException, NotPositiveWagerException {
+    public void allIn() throws UnallowableMoveException {
         Player currentPlayer = players.current();
-        int additionalWager = currentPlayer.stack() -
-                (bank.wager() - currentPlayer.wager());
+        int additionalWager = currentPlayer.stack() - (bank.wager() - currentPlayer.wager());
         if (additionalWager == 0) {
-            call();
+            try {
+                call();
+            } catch (IsNotEnoughMoneyException e) {
+                e.printStackTrace();
+            }
         } else if (additionalWager > 0) {
-            raise(additionalWager);
+            try {
+                raise(additionalWager);
+            } catch (NotPositiveWagerException | IsNotEnoughMoneyException e) {
+                e.printStackTrace();
+            }
         } else {
             bank.acceptAllIn(players.current());
             notifyMoneyUpdatedListeners();

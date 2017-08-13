@@ -1,11 +1,7 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.model.MoveAbility;
 import com.lamtev.poker.core.api.Poker;
-import com.lamtev.poker.core.model.Bank;
-import com.lamtev.poker.core.model.Cards;
-import com.lamtev.poker.core.model.Dealer;
-import com.lamtev.poker.core.model.Players;
+import com.lamtev.poker.core.model.*;
 
 abstract class ActionState extends AbstractPokerState {
 

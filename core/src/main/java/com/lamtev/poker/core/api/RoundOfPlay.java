@@ -1,19 +1,29 @@
 package com.lamtev.poker.core.api;
 
-import com.lamtev.poker.core.states.exceptions.*;
+import com.lamtev.poker.core.exceptions.*;
 
+/**
+ * A round of Texas Hold'em poker play.
+ * The user of this interface has precise control over round of play game process.
+ */
 public interface RoundOfPlay {
 
+    /**
+     * A poker action which allows to place a wager equaled to current wager.
+     *
+     * @throws ForbiddenMoveException     when the action is forbidden on current game state.
+     * @throws IsNotEnoughMoneyException  x
+     * @throws RoundOfPlayIsOverException x
+     * @throws UnallowableMoveException   x
+     */
     void call() throws
             ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
             IsNotEnoughMoneyException,
             RoundOfPlayIsOverException,
             UnallowableMoveException;
 
     void raise(int additionalWager) throws
             ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
             IsNotEnoughMoneyException,
             NotPositiveWagerException,
             RoundOfPlayIsOverException,
@@ -21,27 +31,21 @@ public interface RoundOfPlay {
 
     void allIn() throws
             ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
-            IsNotEnoughMoneyException,
-            NotPositiveWagerException,
             RoundOfPlayIsOverException,
             UnallowableMoveException;
 
     void fold() throws
             ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
             RoundOfPlayIsOverException,
             UnallowableMoveException;
 
     void check() throws
             ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
             RoundOfPlayIsOverException,
             UnallowableMoveException;
 
     void showDown() throws
             ForbiddenMoveException,
-            GameHaveNotBeenStartedException,
             RoundOfPlayIsOverException;
 
 }

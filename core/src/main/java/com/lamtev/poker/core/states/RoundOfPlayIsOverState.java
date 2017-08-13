@@ -1,6 +1,6 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.states.exceptions.RoundOfPlayIsOverException;
+import com.lamtev.poker.core.exceptions.RoundOfPlayIsOverException;
 
 class RoundOfPlayIsOverState extends AbstractPokerState {
 

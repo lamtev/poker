@@ -1,9 +1,9 @@
 package com.lamtev.poker.webserver.exception_handlers;
 
-import com.lamtev.poker.core.states.exceptions.ForbiddenMoveException;
-import com.lamtev.poker.core.states.exceptions.IsNotEnoughMoneyException;
-import com.lamtev.poker.core.states.exceptions.NotPositiveWagerException;
-import com.lamtev.poker.core.states.exceptions.UnallowableMoveException;
+import com.lamtev.poker.core.exceptions.ForbiddenMoveException;
+import com.lamtev.poker.core.exceptions.IsNotEnoughMoneyException;
+import com.lamtev.poker.core.exceptions.NotPositiveWagerException;
+import com.lamtev.poker.core.exceptions.UnallowableMoveException;
 import com.lamtev.poker.webserver.controllers.exceptions.NoCardsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

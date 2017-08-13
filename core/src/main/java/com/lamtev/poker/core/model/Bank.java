@@ -1,8 +1,8 @@
 package com.lamtev.poker.core.model;
 
+import com.lamtev.poker.core.exceptions.IsNotEnoughMoneyException;
+import com.lamtev.poker.core.exceptions.NotPositiveWagerException;
 import com.lamtev.poker.core.hands.PokerHand;
-import com.lamtev.poker.core.states.exceptions.IsNotEnoughMoneyException;
-import com.lamtev.poker.core.states.exceptions.NotPositiveWagerException;
 
 import java.util.*;
 import java.util.stream.Collectors;
