@@ -23,7 +23,6 @@ public class Poker implements RoundOfPlay {
             IsNotEnoughMoneyException,
             RoundOfPlayIsOverException,
             UnallowableMoveException {
-        makeSureThatGameIsSetUp();
         state.call();
     }
 
@@ -35,7 +34,6 @@ public class Poker implements RoundOfPlay {
             NotPositiveWagerException,
             RoundOfPlayIsOverException,
             UnallowableMoveException {
-        makeSureThatGameIsSetUp();
         state.raise(additionalWager);
     }
 
@@ -47,7 +45,6 @@ public class Poker implements RoundOfPlay {
             NotPositiveWagerException,
             RoundOfPlayIsOverException,
             UnallowableMoveException {
-        makeSureThatGameIsSetUp();
         state.allIn();
     }
 
@@ -57,7 +54,6 @@ public class Poker implements RoundOfPlay {
             GameHaveNotBeenStartedException,
             RoundOfPlayIsOverException,
             UnallowableMoveException {
-        makeSureThatGameIsSetUp();
         state.fold();
     }
 
@@ -67,7 +63,6 @@ public class Poker implements RoundOfPlay {
             GameHaveNotBeenStartedException,
             RoundOfPlayIsOverException,
             UnallowableMoveException {
-        makeSureThatGameIsSetUp();
         state.check();
     }
 
@@ -76,7 +71,6 @@ public class Poker implements RoundOfPlay {
             ForbiddenMoveException,
             GameHaveNotBeenStartedException,
             RoundOfPlayIsOverException {
-        makeSureThatGameIsSetUp();
         state.showDown();
     }
 
@@ -161,12 +155,6 @@ public class Poker implements RoundOfPlay {
 
     private void notifyStateChangedListeners() {
         listenerManager.notifyStateChangedListeners(state.toString());
-    }
-
-    private void makeSureThatGameIsSetUp() {
-        if ("SettingsState".equals(state.toString())) {
-            throw new RuntimeException("Game is not set up");
-        }
     }
 
 }

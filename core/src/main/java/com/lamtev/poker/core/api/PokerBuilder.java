@@ -7,7 +7,7 @@ public final class PokerBuilder {
 
     private List<Player> players = new ArrayList<>();
     private String dealerId;
-    private int smallBlindSize;
+    private int smallBlindWager;
     private Play play;
 
     public PokerBuilder registerPlay(Play play) {
@@ -26,13 +26,15 @@ public final class PokerBuilder {
     }
 
     public PokerBuilder setSmallBlindWager(int smallBlindWager) {
-        this.smallBlindSize = smallBlindWager;
+        makeSureThatSmallBlindWagerIsPositive(smallBlindWager);
+        this.smallBlindWager = smallBlindWager;
         return this;
     }
 
     public Poker create() {
         makeSureThatPokerConfigured();
-        Poker poker = new Poker(players, dealerId, smallBlindSize);
+        makeSureThatDealerExists();
+        Poker poker = new Poker(players, dealerId, smallBlindWager);
         players.stream()
                 .filter(it -> it instanceof AI)
                 .map(it -> (AI) it)
@@ -42,10 +44,23 @@ public final class PokerBuilder {
         return poker;
     }
 
-    private void makeSureThatPokerConfigured() {
-        if (players.isEmpty() || dealerId == null || smallBlindSize == 0 || play == null) {
-            throw new RuntimeException();
+    private void makeSureThatSmallBlindWagerIsPositive(int smallBlindWager) {
+        if (smallBlindWager <= 0) {
+            throw new RuntimeException("Small blind wager should be greater than 0");
         }
+    }
+
+    private void makeSureThatPokerConfigured() {
+        if (players.isEmpty() || dealerId == null || smallBlindWager == 0 || play == null) {
+            throw new RuntimeException("Poker is not configured");
+        }
+    }
+
+    private void makeSureThatDealerExists() {
+        players.stream()
+                .filter(it -> it.id().equals(dealerId))
+                .findFirst().orElseThrow(() ->
+                new RuntimeException("Players does not contain dealer with this id: " + dealerId));
     }
 
 }
