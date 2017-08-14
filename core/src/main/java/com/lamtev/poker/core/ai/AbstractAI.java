@@ -203,7 +203,7 @@ public abstract class AbstractAI implements AI {
     }
 
     @Override
-    public void rivalsBecomeKnown(List<Rival> rivals) {
+    final public void rivalsBecomeKnown(List<Rival> rivals) {
         rivals.forEach(it -> this.rivals.put(it.id, it));
     }
 
