@@ -32,15 +32,21 @@ final class BlindsState extends ActionState {
         if (timeToForcedShowdown()) {
             dealer.makePreflop();
             poker.notifyHoleCardsDealtListeners(new LinkedHashMap<String, List<Card>>() {{
-                players.forEach(player -> put(player.id(), new ArrayList<Card>() {{
-                    player.cards().forEach(this::add);
-                }}));
+                for (final Player player : players) {
+                    put(player.id(), new ArrayList<Card>() {{
+                        for (Card card : player.cards()) {
+                            add(card);
+                        }
+                    }});
+                }
             }});
             dealer.makeFlop();
             dealer.makeTurn();
             dealer.makeRiver();
             poker.notifyCommunityCardsDealtListeners(new ArrayList<Card>() {{
-                communityCards.forEach(this::add);
+                for (Card communityCard : communityCards) {
+                    add(communityCard);
+                }
             }});
             Player latestAggressor = players.bigBlind().isAllinner() ?
                     players.bigBlind() : players.smallBlind();
