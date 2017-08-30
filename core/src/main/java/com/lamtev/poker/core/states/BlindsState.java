@@ -3,10 +3,6 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 final class BlindsState extends ActionState {
 
     private final int smallBlindWager;
@@ -30,18 +26,10 @@ final class BlindsState extends ActionState {
 
     private void nextState() {
         if (timeToForcedShowdown()) {
-            dealer.makePreflop();
-            poker.notifyHoleCardsDealtListeners(new LinkedHashMap<String, List<Card>>() {{
-                players.forEach(player -> put(player.id(), new ArrayList<Card>() {{
-                    player.cards().forEach(this::add);
-                }}));
-            }});
-            dealer.makeFlop();
-            dealer.makeTurn();
-            dealer.makeRiver();
-            poker.notifyCommunityCardsDealtListeners(new ArrayList<Card>() {{
-                communityCards.forEach(this::add);
-            }});
+            PreflopWageringState.makeDealerJob(poker, players, dealer);
+            FlopWageringState.makeDealerJob(poker, dealer, communityCards);
+            TurnWageringState.makeDealerJob(poker, dealer, communityCards);
+            RiverWageringState.makeDealerJob(poker, dealer, communityCards);
             Player latestAggressor = players.bigBlind().isAllinner() ?
                     players.bigBlind() : players.smallBlind();
             poker.setState(new ShowdownState(this, latestAggressor));

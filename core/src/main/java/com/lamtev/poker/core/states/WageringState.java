@@ -88,10 +88,7 @@ abstract class WageringState extends ActionState {
         if (onlyOneActivePlayer()) {
             Player winner = players.nextActive();
             bank.giveMoneyToSingleWinner(winner);
-            poker.notifyPlayerMoneyUpdatedListeners(
-                    winner.id(),
-                    winner.stack(), winner.wager()
-            );
+            poker.notifyPlayerMoneyUpdatedListeners(winner.id(), winner.stack(), winner.wager());
             poker.setState(new RoundOfPlayIsOverState());
             return;
         }

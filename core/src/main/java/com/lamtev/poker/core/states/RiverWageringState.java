@@ -1,9 +1,10 @@
 package com.lamtev.poker.core.states;
 
-import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.api.Poker;
+import com.lamtev.poker.core.model.Cards;
+import com.lamtev.poker.core.model.Dealer;
 
-import java.util.ArrayList;
-import java.util.List;
+import static java.util.Collections.singletonList;
 
 final class RiverWageringState extends WageringState {
 
@@ -11,12 +12,15 @@ final class RiverWageringState extends WageringState {
         super(state);
     }
 
+    static void makeDealerJob(Poker poker, Dealer dealer, Cards communityCards) {
+        dealer.makeRiver();
+
+        poker.notifyCommunityCardsDealtListeners(singletonList(communityCards.cardAt(5)));
+    }
+
     @Override
     void makeDealerJob() {
-        dealer.makeRiver();
-        List<Card> addedCards = new ArrayList<>();
-        addedCards.add(communityCards.cardAt(5));
-        poker.notifyCommunityCardsDealtListeners(addedCards);
+        makeDealerJob(poker, dealer, communityCards);
     }
 
     @Override

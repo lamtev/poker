@@ -3,8 +3,6 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.model.*;
 
-import java.util.Collection;
-
 abstract class ActionState extends AbstractPokerState {
     final Poker poker;
     final Players players;

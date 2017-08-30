@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
-public final class PokerHandFactory {
+final class PokerHandFactory {
 
     private final static Comparator<Card> COMPARATOR_BY_RANK = Comparator.comparing(Card::rank).reversed();
 

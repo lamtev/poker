@@ -1,12 +1,16 @@
 package com.lamtev.poker.core.states;
 
+import com.lamtev.poker.core.api.Poker;
 import com.lamtev.poker.core.exceptions.ForbiddenMoveException;
 import com.lamtev.poker.core.exceptions.UnallowableMoveException;
 import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.model.Dealer;
+import com.lamtev.poker.core.model.Players;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 final class PreflopWageringState extends WageringState {
 
@@ -14,14 +18,20 @@ final class PreflopWageringState extends WageringState {
         super(state);
     }
 
+    static void makeDealerJob(Poker poker, Players players, Dealer dealer) {
+        dealer.makePreflop();
+        Map<String, List<Card>> playersIdToCards = new HashMap<>();
+        players.forEach(it -> {
+            List<Card> cards = new ArrayList<>();
+            it.cards().forEach(cards::add);
+            playersIdToCards.put(it.id(), cards);
+        });
+        poker.notifyHoleCardsDealtListeners(playersIdToCards);
+    }
+
     @Override
     void makeDealerJob() {
-        dealer.makePreflop();
-        poker.notifyHoleCardsDealtListeners(new LinkedHashMap<String, List<Card>>() {{
-            players.forEach(player -> put(player.id(), new ArrayList<Card>() {{
-                player.cards().forEach(this::add);
-            }}));
-        }});
+        makeDealerJob(poker, players, dealer);
     }
 
     @Override
@@ -44,12 +54,9 @@ final class PreflopWageringState extends WageringState {
     @Override
     boolean attemptNextState() {
         if (timeToForcedShowdown()) {
-            dealer.makeFlop();
-            dealer.makeTurn();
-            dealer.makeRiver();
-            poker.notifyCommunityCardsDealtListeners(new ArrayList<Card>() {{
-                communityCards.forEach(this::add);
-            }});
+            FlopWageringState.makeDealerJob(poker, dealer, communityCards);
+            TurnWageringState.makeDealerJob(poker, dealer, communityCards);
+            RiverWageringState.makeDealerJob(poker, dealer, communityCards);
             poker.setState(new ShowdownState(this, latestAggressor()));
             return true;
         } else if (timeToNextState()) {

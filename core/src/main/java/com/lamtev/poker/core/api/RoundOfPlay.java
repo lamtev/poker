@@ -16,10 +16,10 @@ import java.util.List;
  * @see PokerBuilder
  * @see PokerBuilder#create()
  * But first, users must subscribe for updates and configure round of play, calling register and set methods.
- * @see PokerBuilder#registerPlayers(List)
- * @see PokerBuilder#registerPlay(Play)
- * @see PokerBuilder#setSmallBlindWager(int)
- * @see PokerBuilder#setDealerId(String)
+ * @see PokerBuilder#registerPlayers(List players)
+ * @see PokerBuilder#registerPlay(Play play)
+ * @see PokerBuilder#setSmallBlindWager(int smallBlindWager)
+ * @see PokerBuilder#setDealerId(String dealerId)
  */
 public interface RoundOfPlay {
 
