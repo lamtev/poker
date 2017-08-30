@@ -1,7 +1,6 @@
 package com.lamtev.poker.core.ai;
 
 import com.lamtev.poker.core.api.*;
-import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.MoveAbility;
 import org.junit.Test;
@@ -185,7 +184,7 @@ public class SimpleAITest implements Play {
     }
 
     @Override
-    public void playerShowedDown(String playerId, PokerHand hand) {
+    public void playerShowedDown(String playerId, String hand) {
         log.push(playerId + " showed down");
 
     }

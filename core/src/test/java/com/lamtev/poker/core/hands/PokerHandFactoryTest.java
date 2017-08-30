@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.*;
+import static com.lamtev.poker.core.hands.PokerHandFactory.createCombination;
 import static com.lamtev.poker.core.model.Rank.*;
 import static com.lamtev.poker.core.model.Suit.*;
 import static java.util.Arrays.asList;
@@ -19,249 +20,222 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testRoyalFlushCreation1() {
-        Cards commonCards = new Cards() {{
-            add(new Card(TWO, HEARTS));
-            add(new Card(NINE, HEARTS));
-            add(new Card(TEN, HEARTS));
-            add(new Card(JACK, HEARTS));
-            add(new Card(QUEEN, HEARTS));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(KING, HEARTS));
-            add(new Card(ACE, HEARTS));
+        Cards communityCards = Cards.of(asList(
+                new Card(TWO, HEARTS),
+                new Card(NINE, HEARTS),
+                new Card(TEN, HEARTS),
+                new Card(JACK, HEARTS),
+                new Card(QUEEN, HEARTS)
+        ));
+        
+        Cards playerCards = Cards.of(asList(new Card(KING, HEARTS), new Card(ACE, HEARTS)));
 
-        }};
-        PokerHand royalFlush = pcf.createCombination(playerCards);
+        PokerHand royalFlush = createCombination(playerCards, communityCards);
         assertEquals(ROYAL_FLUSH, royalFlush.getName());
         assertTrue(royalFlush.compareTo(new RoyalFlush()) == 0);
     }
 
     @Test
     public void testStraightFlushCreation1() {
-        Cards commonCards = new Cards() {{
-            add(new Card(THREE, PIKES));
-            add(new Card(ACE, PIKES));
-            add(new Card(FIVE, PIKES));
-            add(new Card(TWO, PIKES));
-            add(new Card(KING, HEARTS));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(FOUR, PIKES));
-            add(new Card(QUEEN, HEARTS));
-        }};
-        PokerHand straightFlush = pcf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(THREE, PIKES),
+                new Card(ACE, PIKES),
+                new Card(FIVE, PIKES),
+                new Card(TWO, PIKES),
+                new Card(KING, HEARTS)
+        ));
+
+        Cards playerCards = Cards.of(asList(new Card(FOUR, PIKES), new Card(QUEEN, HEARTS)));
+
+        PokerHand straightFlush = createCombination(playerCards, communityCards);
         assertEquals(STRAIGHT_FLUSH, straightFlush.getName());
         assertTrue(straightFlush.compareTo(new StraightFlush(FIVE)) == 0);
     }
 
     @Test
     public void testStraightFlushCreation2() {
-        Cards commonCards = new Cards() {{
-            add(new Card(TEN, PIKES));
-            add(new Card(ACE, TILES));
-            add(new Card(JACK, PIKES));
-            add(new Card(TWO, CLOVERS));
-            add(new Card(KING, PIKES));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(NINE, PIKES));
-            add(new Card(QUEEN, PIKES));
-        }};
-        PokerHand straightFlush = pcf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(TEN, PIKES),
+                new Card(ACE, TILES),
+                new Card(JACK, PIKES),
+                new Card(TWO, CLOVERS),
+                new Card(KING, PIKES)
+        ));
+
+        Cards playerCards = Cards.of(asList(new Card(NINE, PIKES), new Card(QUEEN, PIKES)));
+
+        PokerHand straightFlush = createCombination(playerCards, communityCards);
         assertEquals(STRAIGHT_FLUSH, straightFlush.getName());
         assertTrue(straightFlush.compareTo(new StraightFlush(KING)) == 0);
     }
 
     @Test
     public void testStraightFlushCreation3() {
-        Cards commonCards = new Cards() {{
-            add(new Card(TWO, PIKES));
-            add(new Card(THREE, PIKES));
-            add(new Card(FOUR, PIKES));
-            add(new Card(FIVE, PIKES));
-            add(new Card(SIX, PIKES));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(SEVEN, PIKES));
-            add(new Card(EIGHT, PIKES));
-        }};
-        PokerHand straightFlush = pcf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(TWO, PIKES),
+                new Card(THREE, PIKES),
+                new Card(FOUR, PIKES),
+                new Card(FIVE, PIKES),
+                new Card(SIX, PIKES)
+        ));
+
+        Cards playerCards = Cards.of(asList(new Card(SEVEN, PIKES), new Card(EIGHT, PIKES)));
+
+        PokerHand straightFlush = createCombination(playerCards, communityCards);
         assertEquals(STRAIGHT_FLUSH, straightFlush.getName());
         assertTrue(straightFlush.compareTo(new StraightFlush(EIGHT)) == 0);
     }
 
     @Test
     public void testFourOfAKindCreation1() {
-        Cards commonCards = new Cards() {{
-            add(new Card(TEN, PIKES));
-            add(new Card(KING, TILES));
-            add(new Card(TWO, HEARTS));
-            add(new Card(TWO, TILES));
-            add(new Card(TWO, CLOVERS));
-        }};
-        PokerHandFactory phf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(TWO, PIKES));
-            add(new Card(KING, HEARTS));
-        }};
-        PokerHand fourOfAKind = phf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(TEN, PIKES),
+                new Card(KING, TILES),
+                new Card(TWO, HEARTS),
+                new Card(TWO, TILES),
+                new Card(TWO, CLOVERS)
+        ));
+
+        Cards playerCards = Cards.of(asList(new Card(TWO, PIKES), new Card(KING, HEARTS)));
+
+        PokerHand fourOfAKind = createCombination(playerCards, communityCards);
         assertEquals(FOUR_OF_A_KIND, fourOfAKind.getName());
         assertTrue(fourOfAKind.compareTo(new FourOfAKind(TWO, KING)) == 0);
     }
 
     @Test
     public void testFourOfAKindCreation2() {
-        Cards commonCards = new Cards() {{
-            add(new Card(FOUR, PIKES));
-            add(new Card(ACE, TILES));
-            add(new Card(FOUR, HEARTS));
-            add(new Card(FOUR, TILES));
-            add(new Card(FOUR, CLOVERS));
-        }};
-        PokerHandFactory phf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(TWO, PIKES));
-            add(new Card(KING, HEARTS));
-        }};
-        PokerHand fourOfAKind = phf.createCombination(playerCards);
+        Cards communityCards = Cards.of(
+                asList(new Card(FOUR, PIKES),
+                        new Card(ACE, TILES),
+                        new Card(FOUR, HEARTS),
+                        new Card(FOUR, TILES),
+                        new Card(FOUR, CLOVERS)
+                ));
+
+        Cards playerCards = Cards.of(asList(new Card(TWO, PIKES), new Card(KING, HEARTS)));
+
+        PokerHand fourOfAKind = createCombination(playerCards, communityCards);
         assertEquals(FOUR_OF_A_KIND, fourOfAKind.getName());
         assertTrue(fourOfAKind.compareTo(new FourOfAKind(FOUR, ACE)) == 0);
     }
 
     @Test
     public void testFullHouseCreation1() {
-        Cards commonCards = new Cards() {{
-            add(new Card(FOUR, PIKES));
-            add(new Card(KING, TILES));
-            add(new Card(FOUR, HEARTS));
-            add(new Card(FOUR, TILES));
-            add(new Card(TWO, CLOVERS));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(TWO, PIKES));
-            add(new Card(KING, HEARTS));
-        }};
-        PokerHand fullHouse = pcf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(FOUR, PIKES),
+                new Card(KING, TILES),
+                new Card(FOUR, HEARTS),
+                new Card(FOUR, TILES),
+                new Card(TWO, CLOVERS)
+        ));
+
+        Cards playerCards = Cards.of(asList(new Card(TWO, PIKES), new Card(KING, HEARTS)));
+
+        PokerHand fullHouse = createCombination(playerCards, communityCards);
         assertEquals(FULL_HOUSE, fullHouse.getName());
         assertTrue(fullHouse.compareTo(new FullHouse(FOUR, KING)) == 0);
     }
 
     @Test
     public void testFullHouseCreation2() {
-        Cards commonCards = new Cards() {{
-            add(new Card(TWO, PIKES));
-            add(new Card(FIVE, TILES));
-            add(new Card(FIVE, HEARTS));
-            add(new Card(FOUR, TILES));
-            add(new Card(THREE, CLOVERS));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(FOUR, PIKES));
-            add(new Card(FOUR, CLOVERS));
-        }};
-        PokerHand fullHouse = pcf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(TWO, PIKES),
+                new Card(FIVE, TILES),
+                new Card(FIVE, HEARTS),
+                new Card(FOUR, TILES),
+                new Card(THREE, CLOVERS)
+        ));
+
+        Cards playerCards = Cards.of(asList(new Card(FOUR, PIKES), new Card(FOUR, CLOVERS)));
+
+        PokerHand fullHouse = createCombination(playerCards, communityCards);
         assertEquals(FULL_HOUSE, fullHouse.getName());
         assertTrue(fullHouse.compareTo(new FullHouse(FOUR, FIVE)) == 0);
     }
 
     @Test
     public void testFlushCreation1() {
-        Cards commonCards = new Cards() {{
-            add(new Card(ACE, TILES));
-            add(new Card(KING, HEARTS));
-            add(new Card(TEN, PIKES));
-            add(new Card(TWO, HEARTS));
-            add(new Card(FIVE, HEARTS));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(FOUR, HEARTS));
-            add(new Card(EIGHT, HEARTS));
-        }};
-        PokerHand flush = pcf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(ACE, TILES),
+                new Card(KING, HEARTS),
+                new Card(TEN, PIKES),
+                new Card(TWO, HEARTS),
+                new Card(FIVE, HEARTS)
+        ));
+
+        Cards playerCards = Cards.of(asList(new Card(FOUR, HEARTS), new Card(EIGHT, HEARTS)));
+
+        PokerHand flush = createCombination(playerCards, communityCards);
         assertEquals(FLUSH, flush.getName());
         assertTrue(flush.compareTo(new Flush(asList(KING, EIGHT, FIVE, FOUR, TWO))) == 0);
     }
 
     @Test
     public void testFlushCreation2() {
-        Cards commonCards = new Cards() {{
-            add(new Card(JACK, HEARTS));
-            add(new Card(ACE, TILES));
-            add(new Card(TEN, PIKES));
-            add(new Card(TWO, HEARTS));
-            add(new Card(SEVEN, HEARTS));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(FOUR, HEARTS));
-            add(new Card(QUEEN, HEARTS));
-        }};
-        PokerHand flush = pcf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(JACK, HEARTS),
+                new Card(ACE, TILES),
+                new Card(TEN, PIKES),
+                new Card(TWO, HEARTS),
+                new Card(SEVEN, HEARTS)
+        ));
+
+        
+        Cards playerCards = Cards.of(asList(new Card(FOUR, HEARTS), new Card(QUEEN, HEARTS)));
+
+        PokerHand flush = createCombination(playerCards, communityCards);
         assertEquals(FLUSH, flush.getName());
         assertTrue(flush.compareTo(new Flush(asList(QUEEN, JACK, SEVEN, FOUR, TWO))) == 0);
     }
 
     @Test
     public void testStraightCreation1() {
-        Cards commonCards = new Cards() {{
-            add(new Card(JACK, HEARTS));
-            add(new Card(ACE, TILES));
-            add(new Card(TEN, PIKES));
-            add(new Card(TWO, CLOVERS));
-            add(new Card(KING, HEARTS));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(FOUR, HEARTS));
-            add(new Card(QUEEN, HEARTS));
-        }};
-        PokerHand straight = pcf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(JACK, HEARTS),
+                new Card(ACE, TILES),
+                new Card(TEN, PIKES),
+                new Card(TWO, CLOVERS),
+                new Card(KING, HEARTS)
+        ));
+
+        Cards playerCards = Cards.of(asList(new Card(FOUR, HEARTS), new Card(QUEEN, HEARTS)));
+
+        PokerHand straight = createCombination(playerCards, communityCards);
         assertEquals(STRAIGHT, straight.getName());
         assertTrue(straight.compareTo(new Straight(ACE)) == 0);
     }
 
     @Test
     public void testStraightCreation2() {
-        Cards commonCards = new Cards() {{
-            add(new Card(THREE, HEARTS));
-            add(new Card(ACE, TILES));
-            add(new Card(FIVE, PIKES));
-            add(new Card(TWO, CLOVERS));
-            add(new Card(KING, HEARTS));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(FOUR, HEARTS));
-            add(new Card(QUEEN, HEARTS));
-        }};
-        PokerHand straight = pcf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(THREE, HEARTS),
+                new Card(ACE, TILES),
+                new Card(FIVE, PIKES),
+                new Card(TWO, CLOVERS),
+                new Card(KING, HEARTS)
+        ));
+
+        Cards playerCards = Cards.of(asList(new Card(FOUR, HEARTS), new Card(QUEEN, HEARTS)));
+
+        PokerHand straight = createCombination(playerCards, communityCards);
         assertEquals(STRAIGHT, straight.getName());
         assertTrue(straight.compareTo(new Straight(FIVE)) == 0);
     }
 
     @Test
     public void testThreeOfAKindCreation1() {
-        Cards commonCards = new Cards() {{
-            add(new Card(ACE, PIKES));
-            add(new Card(NINE, TILES));
-            add(new Card(TEN, HEARTS));
-            add(new Card(TWO, TILES));
-            add(new Card(ACE, CLOVERS));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(JACK, PIKES));
-            add(new Card(ACE, HEARTS));
+        Cards communityCards = Cards.of(asList(
+                new Card(ACE, PIKES),
+                new Card(NINE, TILES),
+                new Card(TEN, HEARTS),
+                new Card(TWO, TILES),
+                new Card(ACE, CLOVERS)
+        ));
 
-        }};
-        PokerHand threeOfAKind = pcf.createCombination(playerCards);
+        Cards playerCards = Cards.of(asList(new Card(JACK, PIKES), new Card(ACE, HEARTS)));
+
+        PokerHand threeOfAKind = createCombination(playerCards, communityCards);
         assertEquals(THREE_OF_A_KIND, threeOfAKind.getName());
         List<Rank> otherCardsRanks = new ArrayList<Rank>() {{
             add(JACK);
@@ -272,20 +246,18 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testThreeOfAKindCreation2() {
-        Cards commonCards = new Cards() {{
-            add(new Card(ACE, PIKES));
-            add(new Card(JACK, TILES));
-            add(new Card(TEN, HEARTS));
-            add(new Card(TWO, TILES));
-            add(new Card(THREE, CLOVERS));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(JACK, PIKES));
-            add(new Card(JACK, HEARTS));
+        Cards communityCards = Cards.of(asList(
+                new Card(ACE, PIKES),
+                new Card(JACK, TILES),
+                new Card(TEN, HEARTS),
+                new Card(TWO, TILES),
+                new Card(THREE, CLOVERS)
+        ));
 
-        }};
-        PokerHand threeOfAKind = pcf.createCombination(playerCards);
+        
+        Cards playerCards = Cards.of(asList(new Card(JACK, PIKES), new Card(JACK, HEARTS)));
+
+        PokerHand threeOfAKind = createCombination(playerCards, communityCards);
         assertEquals(THREE_OF_A_KIND, threeOfAKind.getName());
         List<Rank> otherCardsRanks = new ArrayList<Rank>() {{
             add(ACE);
@@ -296,77 +268,70 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testTwoPairsCreation1() {
-        Cards commonCards = new Cards() {{
-            add(new Card(TEN, PIKES));
-            add(new Card(JACK, TILES));
-            add(new Card(EIGHT, HEARTS));
-            add(new Card(TWO, TILES));
-            add(new Card(THREE, CLOVERS));
-        }};
-        PokerHandFactory phf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(TWO, PIKES));
-            add(new Card(JACK, HEARTS));
-        }};
-        PokerHand twoPairs = phf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(TEN, PIKES),
+                new Card(JACK, TILES),
+                new Card(EIGHT, HEARTS),
+                new Card(TWO, TILES),
+                new Card(THREE, CLOVERS)
+        ));
+
+        Cards playerCards = Cards.of(asList(new Card(TWO, PIKES), new Card(JACK, HEARTS)));
+
+        PokerHand twoPairs = createCombination(playerCards, communityCards);
         assertEquals(TWO_PAIRS, twoPairs.getName());
         assertTrue(twoPairs.compareTo(new TwoPairs(JACK, TWO, TEN)) == 0);
     }
 
     @Test
     public void testTwoPairsCreation2() {
-        Cards commonCards = new Cards() {{
-            add(new Card(TEN, PIKES));
-            add(new Card(KING, TILES));
-            add(new Card(TWO, HEARTS));
-            add(new Card(TWO, TILES));
-            add(new Card(NINE, CLOVERS));
-        }};
-        PokerHandFactory phf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(THREE, PIKES));
-            add(new Card(KING, HEARTS));
-        }};
-        PokerHand twoPairs = phf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(TEN, PIKES),
+                new Card(KING, TILES),
+                new Card(TWO, HEARTS),
+                new Card(TWO, TILES),
+                new Card(NINE, CLOVERS)
+        ));
+
+        Cards playerCards = Cards.of(asList(new Card(THREE, PIKES), new Card(KING, HEARTS)));
+
+        PokerHand twoPairs = createCombination(playerCards, communityCards);
         assertEquals(TWO_PAIRS, twoPairs.getName());
         assertTrue(twoPairs.compareTo(new TwoPairs(KING, TWO, TEN)) == 0);
     }
 
     @Test
     public void testTwoPairsCreation3() {
-        Cards commonCards = new Cards() {{
-            add(new Card(QUEEN, CLOVERS));
-            add(new Card(JACK, CLOVERS));
-            add(new Card(TWO, TILES));
-            add(new Card(NINE, CLOVERS));
-            add(new Card(TEN, CLOVERS));
-        }};
-        PokerHandFactory phf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(QUEEN, PIKES));
-            add(new Card(JACK, PIKES));
-        }};
-        PokerHand twoPairs = phf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(QUEEN, CLOVERS),
+                new Card(JACK, CLOVERS),
+                new Card(TWO, TILES),
+                new Card(NINE, CLOVERS),
+                new Card(TEN, CLOVERS)
+        ));
+
+        
+        Cards playerCards = Cards.of(asList(new Card(QUEEN, PIKES), new Card(JACK, PIKES)));
+
+        PokerHand twoPairs = createCombination(playerCards, communityCards);
         assertEquals(TWO_PAIRS, twoPairs.getName());
         assertTrue(twoPairs.compareTo(new TwoPairs(QUEEN, JACK, TEN)) == 0);
     }
 
     @Test
     public void testPairCreation1() {
-        Cards commonCards = new Cards() {{
-            add(new Card(TEN, PIKES));
-            add(new Card(NINE, TILES));
-            add(new Card(EIGHT, HEARTS));
-            add(new Card(TWO, TILES));
-            add(new Card(ACE, CLOVERS));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(JACK, PIKES));
-            add(new Card(ACE, HEARTS));
+        Cards communityCards = Cards.of(asList(
+                new Card(TEN, PIKES),
+                new Card(NINE, TILES),
+                new Card(EIGHT, HEARTS),
+                new Card(TWO, TILES),
+                new Card(ACE, CLOVERS)
+        ));
 
-        }};
-        PokerHand pair = pcf.createCombination(playerCards);
+        
+        Cards playerCards = Cards.of(asList(new Card(JACK, PIKES), new Card(ACE, HEARTS)));
+
+        PokerHand pair = createCombination(playerCards, communityCards);
         assertEquals(PAIR, pair.getName());
         List<Rank> otherCardsRanks = new ArrayList<Rank>() {{
             add(JACK);
@@ -378,19 +343,17 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testPairCreation2() {
-        Cards commonCards = new Cards() {{
-            add(new Card(TEN, PIKES));
-            add(new Card(FOUR, TILES));
-            add(new Card(EIGHT, HEARTS));
-            add(new Card(TWO, TILES));
-            add(new Card(THREE, CLOVERS));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards = new Cards() {{
-            add(new Card(JACK, PIKES));
-            add(new Card(JACK, HEARTS));
-        }};
-        PokerHand pair = pcf.createCombination(playerCards);
+        Cards communityCards = Cards.of(asList(
+                new Card(TEN, PIKES),
+                new Card(FOUR, TILES),
+                new Card(EIGHT, HEARTS),
+                new Card(TWO, TILES),
+                new Card(THREE, CLOVERS)
+        ));
+
+        Cards playerCards = Cards.of(asList(new Card(JACK, PIKES), new Card(JACK, HEARTS)));
+
+        PokerHand pair = createCombination(playerCards, communityCards);
         assertEquals(PAIR, pair.getName());
         List<Rank> otherCardsRanks = new ArrayList<Rank>() {{
             add(TEN);
@@ -402,19 +365,17 @@ public class PokerHandFactoryTest {
 
     @Test
     public void testHighCardCreation1() {
-        Cards commonCards = new Cards() {{
-            add(new Card(TEN, PIKES));
-            add(new Card(FOUR, TILES));
-            add(new Card(EIGHT, HEARTS));
-            add(new Card(TWO, TILES));
-            add(new Card(SIX, CLOVERS));
-        }};
-        PokerHandFactory pcf = new PokerHandFactory(commonCards);
-        Cards playerCards1 = new Cards() {{
-            add(new Card(KING, PIKES));
-            add(new Card(JACK, HEARTS));
-        }};
-        PokerHand highCard1 = pcf.createCombination(playerCards1);
+        Cards communityCards = Cards.of(asList(
+                new Card(TEN, PIKES),
+                new Card(FOUR, TILES),
+                new Card(EIGHT, HEARTS),
+                new Card(TWO, TILES),
+                new Card(SIX, CLOVERS)
+        ));
+
+        Cards playerCards = Cards.of(asList(new Card(KING, PIKES), new Card(JACK, HEARTS)));
+
+        PokerHand highCard1 = createCombination(playerCards, communityCards);
         assertEquals(HIGH_CARD, highCard1.getName());
     }
 

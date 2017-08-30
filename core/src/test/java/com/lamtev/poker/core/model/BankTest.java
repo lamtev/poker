@@ -1,7 +1,6 @@
 package com.lamtev.poker.core.model;
 
 import com.lamtev.poker.core.hands.PokerHand;
-import com.lamtev.poker.core.hands.PokerHandFactory;
 import org.junit.Test;
 
 import java.util.*;
@@ -97,13 +96,13 @@ public class BankTest {
         bank.acceptCall(players.get("d"));
         bank.acceptCall(players.get("e"));
 
-        PokerHandFactory phf = new PokerHandFactory(generateCommunityCards());
+        Cards communityCards = generateCommunityCards();
         Map<Player, PokerHand> showedDownPlayers = new HashMap<Player, PokerHand>() {{
-            put(players.get("a"), phf.createCombination(players.get("a").cards()));
-            put(players.get("b"), phf.createCombination(players.get("b").cards()));
-            put(players.get("c"), phf.createCombination(players.get("c").cards()));
-            put(players.get("d"), phf.createCombination(players.get("d").cards()));
-            put(players.get("e"), phf.createCombination(players.get("e").cards()));
+            put(players.get("a"), PokerHand.of(players.get("a").cards(), communityCards));
+            put(players.get("b"), PokerHand.of(players.get("b").cards(), communityCards));
+            put(players.get("c"), PokerHand.of(players.get("c").cards(), communityCards));
+            put(players.get("d"), PokerHand.of(players.get("d").cards(), communityCards));
+            put(players.get("e"), PokerHand.of(players.get("e").cards(), communityCards));
         }};
 
         Set<Player> winners = bank.giveMoneyToWinners(showedDownPlayers);

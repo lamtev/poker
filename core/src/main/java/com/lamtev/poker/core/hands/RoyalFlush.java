@@ -2,7 +2,7 @@ package com.lamtev.poker.core.hands;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.ROYAL_FLUSH;
 
-class RoyalFlush implements PokerHand {
+final class RoyalFlush implements PokerHand {
 
     private final Name NAME = ROYAL_FLUSH;
 

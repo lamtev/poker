@@ -3,9 +3,9 @@ package com.lamtev.poker.core.model;
 public final class Player {
 
     private final String id;
+    private final Cards cards = new Cards();
     private int stack;
     private int wager = 0;
-    private final Cards cards = new Cards();
     private boolean isActive = true;
 
     public Player(String id, int stack) {
@@ -56,9 +56,7 @@ public final class Player {
         if (cards.isEmpty()) {
             throw new RuntimeException("can't fold");
         }
-        while (!cards.isEmpty()) {
-            cards.pickUpTop();
-        }
+        cards.cards.clear();
         isActive = false;
     }
 
@@ -75,11 +73,11 @@ public final class Player {
     @Override
     public String toString() {
         return "Player{" +
-                "stack=" + stack +
+                "id='" + id + '\'' +
+                ", stack=" + stack +
                 ", wager=" + wager +
                 ", cards=" + cards +
                 ", isActive=" + isActive +
-                ", id='" + id + '\'' +
                 '}';
     }
 

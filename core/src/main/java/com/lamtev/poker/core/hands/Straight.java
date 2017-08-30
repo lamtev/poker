@@ -4,7 +4,7 @@ import com.lamtev.poker.core.model.Rank;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.STRAIGHT;
 
-class Straight implements PokerHand {
+final class Straight implements PokerHand {
 
     private final Name NAME = STRAIGHT;
     private final Rank highCardRank;

@@ -1,6 +1,25 @@
 package com.lamtev.poker.core.hands;
 
+import com.lamtev.poker.core.model.Card;
+import com.lamtev.poker.core.model.Cards;
+
+import java.util.List;
+
 public interface PokerHand extends Comparable<PokerHand> {
+
+    static PokerHand of(List<Card> cards) {
+        return PokerHandFactory.createCombination(cards);
+    }
+
+    static PokerHand of(Cards playerCards, Cards communityCards) {
+        return PokerHandFactory.createCombination(playerCards, communityCards);
+    }
+
+    static PokerHand of(List<Card> playerCards, List<Card> communityCards) {
+        return PokerHandFactory.createCombination(playerCards, communityCards);
+    }
+
+    Name getName();
 
     enum Name {
         HIGH_CARD,
@@ -14,7 +33,5 @@ public interface PokerHand extends Comparable<PokerHand> {
         STRAIGHT_FLUSH,
         ROYAL_FLUSH
     }
-
-    Name getName();
 
 }

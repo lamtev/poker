@@ -2,7 +2,6 @@ package com.lamtev.poker.desktop;
 
 import com.lamtev.poker.core.ai.ThinkingAI;
 import com.lamtev.poker.core.api.*;
-import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.MoveAbility;
 import javafx.animation.KeyFrame;
@@ -528,12 +527,11 @@ public class Game implements Play {
     }
 
     @Override
-    public void playerShowedDown(String playerId, PokerHand hand) {
-        String handStr = hand.getName().toString().toLowerCase();
+    public void playerShowedDown(String playerId, String hand) {
+        String handStr = hand.toLowerCase();
         statusBarLabel.setText(playerId + " showed down: " +
                 handStr.replaceAll("_", " ")
-                        .replaceFirst(handStr.substring(0, 1), handStr.substring(0, 1)
-                                .toUpperCase()));
+                        .replaceFirst(handStr.substring(0, 1), handStr.substring(0, 1).toUpperCase()));
         HBox cardsHBox = (HBox) playerView(playerId).getChildren().get(PLAYER_CARDS_INDEX);
         List<Card> cards = players.stream()
                 .filter(it -> it.id().equals(playerId))

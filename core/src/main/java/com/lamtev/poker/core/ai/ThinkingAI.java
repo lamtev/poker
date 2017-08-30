@@ -1,8 +1,7 @@
 package com.lamtev.poker.core.ai;
 
-import com.lamtev.poker.core.hands.Pair;
 import com.lamtev.poker.core.hands.PokerHand;
-import com.lamtev.poker.core.hands.PokerHandFactory;
+import com.lamtev.poker.core.model.Card;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +10,19 @@ import java.util.Random;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.*;
 import static com.lamtev.poker.core.model.Rank.*;
+import static com.lamtev.poker.core.model.Suit.*;
 import static java.util.Arrays.asList;
 
 public final class ThinkingAI extends AbstractAI {
 
     private static final Random RANDOM = new Random(System.currentTimeMillis());
+    private static final List<Card> CARDS_OF_PAIR_OF_SEVEN = asList(
+            new Card(SEVEN, PIKES),
+            new Card(SEVEN, TILES),
+            new Card(KING, HEARTS),
+            new Card(JACK, TILES),
+            new Card(TWO, CLOVERS)
+    );
     private boolean thereWasBluff;
 
     public ThinkingAI(String id, int stack) {
@@ -77,15 +84,14 @@ public final class ThinkingAI extends AbstractAI {
     /**
      * Probability of true is 0.25
      *
-     * @return true if there is time to bluff and false - if not.
+     * @return true if there is time to bluff, otherwise -- false
      */
     private boolean timeToBluff() {
         return RANDOM.nextInt(4) == 0;
     }
 
     private boolean statusIsGoodForRaiseOnTurnOrRiver() {
-        PokerHandFactory phf = new PokerHandFactory(communityCards);
-        PokerHand.Name hand = phf.createCombination(cards()).getName();
+        PokerHand.Name hand = PokerHand.of(cards(), communityCards).getName();
         return hand == ROYAL_FLUSH ||
                 hand == STRAIGHT_FLUSH ||
                 hand == FOUR_OF_A_KIND ||
@@ -121,12 +127,10 @@ public final class ThinkingAI extends AbstractAI {
     }
 
     private boolean statusIsGoodForCallOnPostFlop() {
-        PokerHandFactory phf = new PokerHandFactory(communityCards);
-        PokerHand hand = phf.createCombination(cards());
+        PokerHand hand = PokerHand.of(cards(), communityCards);
         PokerHand.Name handName = hand.getName();
-        return handName != HIGH_CARD && hand.compareTo(new Pair(SEVEN, asList(KING, JACK, TWO))) > 0;
+        return handName != HIGH_CARD && hand.compareTo(PokerHand.of(CARDS_OF_PAIR_OF_SEVEN)) > 0;
     }
-
 
     private void onPreflopWagering() {
         try {
@@ -161,8 +165,7 @@ public final class ThinkingAI extends AbstractAI {
 
     private void onShowdown() {
         try {
-            PokerHandFactory handFactory = new PokerHandFactory(communityCards);
-            PokerHand itsHand = handFactory.createCombination(cards());
+            PokerHand itsHand = PokerHand.of(cards(), communityCards);
             Optional<PokerHand> betterHand = handsOfPotConcurrents().stream()
                     .filter(it -> it.compareTo(itsHand) > 0)
                     .findFirst();

@@ -1,8 +1,7 @@
 package com.lamtev.poker.core.api;
 
-import com.lamtev.poker.core.hands.PokerHand;
-import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.exceptions.UnallowableMoveException;
+import com.lamtev.poker.core.model.Card;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +22,7 @@ public class PokerTest implements Play {
     private List<User> users;
     private List<Player> players = new ArrayList<>();
     private List<Card> communityCards;
-    private Map<String, PokerHand> hands;
+    private Map<String, String> hands;
     private String currentPlayerId;
     private int bank;
 
@@ -249,7 +248,7 @@ public class PokerTest implements Play {
     }
 
     @Override
-    public void playerShowedDown(String playerId, PokerHand hand) {
+    public void playerShowedDown(String playerId, String hand) {
         hands.put(playerId, hand);
     }
 

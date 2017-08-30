@@ -1,7 +1,6 @@
 package com.lamtev.poker.core.api;
 
 import com.lamtev.poker.core.event_listeners.*;
-import com.lamtev.poker.core.hands.PokerHand;
 import com.lamtev.poker.core.model.Card;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public interface AI extends
 
     @Override
     @Deprecated
-    default void playerShowedDown(String playerId, PokerHand hand) {
+    default void playerShowedDown(String playerId, String hand) {
         throw new UnsupportedOperationException();
     }
 

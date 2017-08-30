@@ -18,18 +18,6 @@ public class CardDeckTest extends CardsTest {
     }
 
     @Test
-    public void testInitCards() {
-        CardDeck cardDeck = new CardDeck();
-        assertEquals(52, cardDeck.size());
-        cardDeck.pickUpTop();
-        assertEquals(51, cardDeck.size());
-        cardDeck.pickUpTop();
-        assertEquals(50, cardDeck.size());
-        cardDeck.initCards();
-        assertEquals(52, cardDeck.size());
-    }
-
-    @Test
     public void testShuffle() {
         CardDeck cardDeck = new CardDeck();
         cardDeck.shuffle();

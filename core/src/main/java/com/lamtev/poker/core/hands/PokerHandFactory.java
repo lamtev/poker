@@ -16,23 +16,14 @@ import static java.util.stream.Collectors.toList;
 
 public final class PokerHandFactory {
 
-    private final static Comparator<Card> COMPARATOR_BY_RANK = Comparator.comparing(Card::rank);
-    private final List<Card> communityCards = new ArrayList<>();
+    private final static Comparator<Card> COMPARATOR_BY_RANK = Comparator.comparing(Card::rank).reversed();
 
-    public PokerHandFactory(Cards communityCards) {
-        communityCards.forEach(this.communityCards::add);
+    private PokerHandFactory() {
+
     }
 
-    public PokerHandFactory(List<Card> communityCards) {
-        this.communityCards.addAll(communityCards);
-    }
-
-    public PokerHand createCombination(List<Card> playerCards) {
-        List<Card> cards = new ArrayList<>();
-        cards.addAll(communityCards);
-        cards.addAll(playerCards);
-
-        cards.sort(COMPARATOR_BY_RANK.reversed());
+    static PokerHand createCombination(List<Card> cards) {
+        cards.sort(COMPARATOR_BY_RANK);
         PokerHand pokerHand = parseRoyalFlush(cards);
         if (pokerHand != null) {
             return pokerHand;
@@ -82,13 +73,21 @@ public final class PokerHandFactory {
         return pokerHand;
     }
 
-    public PokerHand createCombination(Cards playerCards) {
-        List<Card> playerCardList = new ArrayList<>();
-        playerCards.forEach(playerCardList::add);
-        return createCombination(playerCardList);
+    static PokerHand createCombination(List<Card> playerCards, List<Card> communityCards) {
+        List<Card> cards = new ArrayList<>();
+        cards.addAll(playerCards);
+        cards.addAll(communityCards);
+        return createCombination(cards);
     }
 
-    private PokerHand parseRoyalFlush(List<Card> cards) {
+    static PokerHand createCombination(Cards playerCards, Cards communityCards) {
+        List<Card> cards = new ArrayList<>();
+        playerCards.forEach(cards::add);
+        communityCards.forEach(cards::add);
+        return createCombination(cards);
+    }
+
+    private static PokerHand parseRoyalFlush(List<Card> cards) {
         for (int i = 0; i < 4; ++i) {
             int numberOfSameSuits = 1;
             for (int j = 0; j < cards.size(); ++j) {
@@ -103,7 +102,7 @@ public final class PokerHandFactory {
         return null;
     }
 
-    private PokerHand parseStraightFlush(List<Card> cards) {
+    private static PokerHand parseStraightFlush(List<Card> cards) {
         for (int i = 0; i < 4; ++i) {
             int numberOfSameSuits = 1;
             for (int j = 0; j < cards.size(); ++j) {
@@ -118,7 +117,7 @@ public final class PokerHandFactory {
         return null;
     }
 
-    private PokerHand parseFourOfAKind(List<Card> cards) {
+    private static PokerHand parseFourOfAKind(List<Card> cards) {
         for (int i = 0; i < 5; ++i) {
             int numberOfSameRanks = 1;
             for (int j = 0; j < cards.size(); ++j) {
@@ -131,7 +130,7 @@ public final class PokerHandFactory {
         return null;
     }
 
-    private PokerHand parseFullHouse(List<Card> cards) {
+    private static PokerHand parseFullHouse(List<Card> cards) {
         Rank threeOfAKindHighCardRank = null;
         for (int i = 0; i < cards.size() - 1; ++i) {
             int threeOfAKindNumberOfSameRanks = 1;
@@ -160,7 +159,7 @@ public final class PokerHandFactory {
         return null;
     }
 
-    private PokerHand parseFlush(List<Card> cards) {
+    private static PokerHand parseFlush(List<Card> cards) {
         for (int i = 0; i < 3; ++i) {
             final Suit suit = cards.get(i).suit();
             int numberOfSameSuits = 1;
@@ -174,7 +173,7 @@ public final class PokerHandFactory {
         return null;
     }
 
-    private PokerHand parseStraight(List<Card> cards) {
+    private static PokerHand parseStraight(List<Card> cards) {
         for (int i = Rank.ACE.ordinal(); i >= Rank.FIVE.ordinal(); --i) {
             Rank rank = Rank.values()[i];
             if (isStraightFromRank(cards, rank)) {
@@ -184,7 +183,7 @@ public final class PokerHandFactory {
         return null;
     }
 
-    private PokerHand parseThreeOfAKind(List<Card> cards) {
+    private static PokerHand parseThreeOfAKind(List<Card> cards) {
         for (int i = 0; i < cards.size() - 1; ++i) {
             int numberOfSameRanks = 1;
             for (int j = 0; j < cards.size(); ++j) {
@@ -197,7 +196,7 @@ public final class PokerHandFactory {
         return null;
     }
 
-    private PokerHand parseTwoPairs(List<Card> cards) {
+    private static PokerHand parseTwoPairs(List<Card> cards) {
         Rank firstPairHighCardRank = null;
         for (int i = 0; i < cards.size(); ++i) {
             int firstPairNumberOfSameRanks = 1;
@@ -227,7 +226,7 @@ public final class PokerHandFactory {
         return null;
     }
 
-    private PokerHand parsePair(List<Card> cards) {
+    private static PokerHand parsePair(List<Card> cards) {
         for (int i = 0; i < cards.size(); ++i) {
             int numberOfSameRanks = 1;
             for (int j = 0; j < cards.size(); ++j) {
@@ -240,23 +239,23 @@ public final class PokerHandFactory {
         return null;
     }
 
-    private PokerHand parseHighCard(List<Card> cards) {
+    private static PokerHand parseHighCard(List<Card> cards) {
         List<Rank> cardsRanks = determineRanksExceptThese(cards).subList(0, 5);
         return new HighCard(cardsRanks);
     }
 
-    private boolean isStraightFromRank(List<Card> cards, Rank rank) {
+    private static boolean isStraightFromRank(List<Card> cards, Rank rank) {
         for (int i = rank.ordinal(); i >= -1 && i > rank.ordinal() - 5; --i) {
             int currentRankIndex = i == -1 ? Rank.ACE.ordinal() : i;
             final Card card = new Card(Rank.values()[currentRankIndex], Suit.HEARTS);
-            if (Collections.binarySearch(cards, card, COMPARATOR_BY_RANK.reversed()) < 0) {
+            if (Collections.binarySearch(cards, card, COMPARATOR_BY_RANK) < 0) {
                 return false;
             }
         }
         return true;
     }
 
-    private List<Rank> determineRanksOfFlush(List<Card> cards, Suit suit) {
+    private static List<Rank> determineRanksOfFlush(List<Card> cards, Suit suit) {
         List<Rank> cardsRanks = new ArrayList<>();
         cards.forEach(it -> {
             if (cardsRanks.size() != 5 && it.suit() == suit) {
@@ -266,7 +265,7 @@ public final class PokerHandFactory {
         return cardsRanks;
     }
 
-    private List<Rank> determineRanksExceptThese(List<Card> cards, Rank... exceptedRanks) {
+    private static List<Rank> determineRanksExceptThese(List<Card> cards, Rank... exceptedRanks) {
         List<Rank> exceptedRanksList = asList(exceptedRanks);
         Predicate<Rank> isNotExcepted = exceptedRanksList::contains;
         isNotExcepted = isNotExcepted.negate();

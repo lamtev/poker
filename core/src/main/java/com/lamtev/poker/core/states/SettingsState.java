@@ -30,7 +30,7 @@ public final class SettingsState extends AbstractPokerState {
             playerList.add(new Player(id, stack));
         });
         final Players players = new Players(playerList, dealerId);
-        final Cards communityCards = new Cards();
+        final Cards communityCards = Cards.newInstance();
         poker.notifyRivalsBecomeKnownListeners(playerList);
         poker.setState(new BlindsState(
                 poker,

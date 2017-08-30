@@ -4,7 +4,7 @@ import com.lamtev.poker.core.model.Rank;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.STRAIGHT_FLUSH;
 
-class StraightFlush implements PokerHand {
+final class StraightFlush implements PokerHand {
 
     private final Name NAME = STRAIGHT_FLUSH;
     private final Rank highCardRank;

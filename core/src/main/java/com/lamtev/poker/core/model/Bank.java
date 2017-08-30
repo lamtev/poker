@@ -11,10 +11,10 @@ import static java.util.stream.Collectors.toList;
 
 public final class Bank {
 
-    private int money;
-    private int wager;
     private final Players players;
     private final Queue<Pot> pots = new ArrayDeque<>();
+    private int money;
+    private int wager;
 
     public Bank(Players players) {
         this.players = players;
@@ -62,7 +62,7 @@ public final class Bank {
         buildUpPots(showedDownPlayersList);
         Set<Player> winners = new HashSet<>();
         while (!pots.isEmpty()) {
-            if (money < 0.5) {
+            if (money == 0) {
                 break;
             }
             Pot pot = pots.poll();
@@ -76,8 +76,6 @@ public final class Bank {
             });
             money -= pot.money;
         }
-        assert money < 0.5;
-        money = 0;
         wager = 0;
         return winners;
     }

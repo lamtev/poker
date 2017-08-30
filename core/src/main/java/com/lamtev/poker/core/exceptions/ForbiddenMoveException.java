@@ -1,6 +1,6 @@
 package com.lamtev.poker.core.exceptions;
 
-public class ForbiddenMoveException extends Exception {
+public final class ForbiddenMoveException extends Exception {
 
     private final static String IS_FORBIDDEN_MOVE_IN = " is forbidden move in ";
 

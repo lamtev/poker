@@ -4,7 +4,7 @@ import com.lamtev.poker.core.model.Rank;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.TWO_PAIRS;
 
-class TwoPairs implements PokerHand {
+final class TwoPairs implements PokerHand {
 
     private final Name NAME = TWO_PAIRS;
     private final Rank firstPairRank;

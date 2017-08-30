@@ -7,9 +7,9 @@ public final class Players implements Iterable<Player> {
 
     private static final int OFFSET_OF_SMALL_BLIND = 1;
     private static final int OFFSET_OF_BIG_BLIND = 2;
+    private final List<Player> players = new ArrayList<>();
     private int dealerIndex;
     private int currentPlayerIndex = 0;
-    private final List<Player> players = new ArrayList<>();
 
     public Players(Collection<Player> players, String dealerId) {
         this.players.addAll(players);

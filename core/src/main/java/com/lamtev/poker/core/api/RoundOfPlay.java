@@ -7,19 +7,19 @@ import java.util.List;
 /**
  * A round of Texas Hold'em poker play.
  * The user of this interface has precise control over round of play game process.
- *
+ * <p>
  * A Poker class implements RoundOfPlay interface and it interacts with users through the Listener (Observer) pattern.
- * @see Poker
  *
+ * @see Poker
+ * <p>
  * To get an instance of Poker -- use create() method of PokerBuilder class.
  * @see PokerBuilder
  * @see PokerBuilder#create()
- * But first, users must subscribe to updates and configure round of play calling register and set methods.
+ * But first, users must subscribe for updates and configure round of play, calling register and set methods.
  * @see PokerBuilder#registerPlayers(List)
  * @see PokerBuilder#registerPlay(Play)
  * @see PokerBuilder#setSmallBlindWager(int)
  * @see PokerBuilder#setDealerId(String)
- *
  */
 public interface RoundOfPlay {
 

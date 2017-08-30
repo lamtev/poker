@@ -17,7 +17,7 @@ public class PokerGame implements Play, GameAPI {
     private RoundOfPlay poker;
     private List<Card> communityCards = new ArrayList<>();
     private List<String> nicks;
-    private Map<String, PokerHand> showedDownPlayers = new HashMap<>();
+    private Map<String, String> showedDownPlayers = new HashMap<>();
     private String currentPlayerId;
     private String currentStateName;
     private int bank;
@@ -214,7 +214,7 @@ public class PokerGame implements Play, GameAPI {
     }
 
     @Override
-    public void playerShowedDown(String playerId, PokerHand hand) {
+    public void playerShowedDown(String playerId, String hand) {
         showedDownPlayers.put(playerId, hand);
     }
 

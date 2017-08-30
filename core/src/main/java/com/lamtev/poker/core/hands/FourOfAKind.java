@@ -4,7 +4,7 @@ import com.lamtev.poker.core.model.Rank;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.FOUR_OF_A_KIND;
 
-class FourOfAKind implements PokerHand {
+final class FourOfAKind implements PokerHand {
 
     private final Name NAME = FOUR_OF_A_KIND;
     private final Rank highCardRank;

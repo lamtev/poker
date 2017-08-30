@@ -6,7 +6,7 @@ import java.util.List;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.HIGH_CARD;
 
-class HighCard implements PokerHand {
+final class HighCard implements PokerHand {
 
     private final Name NAME = HIGH_CARD;
     private final List<Rank> cardsRanks;

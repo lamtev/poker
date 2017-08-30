@@ -113,7 +113,7 @@ public final class ListenerManager {
             if (listenerIsAI(it)) {
                 it.playerShowedDown(playerId, holeCards, hand);
             } else {
-                it.playerShowedDown(playerId, hand);
+                it.playerShowedDown(playerId, hand.getName().toString());
             }
         });
     }

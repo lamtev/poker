@@ -12,22 +12,21 @@ import java.util.*;
 @SuppressWarnings("WeakerAccess")
 public abstract class AbstractAI implements AI {
 
-    private final String id;
-    private int stack;
-    private int wager;
-    private boolean isActive = true;
-    private final List<Card> cards = new ArrayList<>();
-    private RoundOfPlay poker;
-    private String currentPlayer;
-    private String state;
-    private int bank;
-    private int currentWager;
-
     final Map<String, Rival> rivals = new HashMap<>();
     final List<Card> communityCards = new ArrayList<>();
     final Map<String, PokerHand> playersHands = new HashMap<>();
     final MoveAbility moveAbility = new MoveAbility();
     final Deque<String> moves = new ArrayDeque<>();
+    private final String id;
+    private final List<Card> cards = new ArrayList<>();
+    private int stack;
+    private int wager;
+    private boolean isActive = true;
+    private RoundOfPlay poker;
+    private String currentPlayer;
+    private String state;
+    private int bank;
+    private int currentWager;
 
     AbstractAI(String id, int stack) {
         this.id = id;

@@ -11,10 +11,14 @@ import com.lamtev.poker.core.states.SettingsState;
 import java.util.List;
 import java.util.Map;
 
-public class Poker implements RoundOfPlay {
+public final class Poker implements RoundOfPlay {
 
-    private PokerState state;
     private final ListenerManager listenerManager = new ListenerManager();
+    private PokerState state;
+
+    Poker(List<Player> playerIdStackList, String dealerId, int smallBlindWager) {
+        state = new SettingsState(this, playerIdStackList, dealerId, smallBlindWager);
+    }
 
     @Override
     public void call() throws
@@ -126,10 +130,6 @@ public class Poker implements RoundOfPlay {
 
     public void notifyRivalsBecomeKnownListeners(List<com.lamtev.poker.core.model.Player> players) {
         listenerManager.notifyRivalsBecomeKnownListeners(players);
-    }
-
-    Poker(List<Player> playerIdStackList, String dealerId, int smallBlindWager) {
-        state = new SettingsState(this, playerIdStackList, dealerId, smallBlindWager);
     }
 
     void registerPlay(Play play) {

@@ -7,7 +7,7 @@ import java.util.List;
 
 import static com.lamtev.poker.core.hands.PokerHand.Name.FLUSH;
 
-class Flush implements PokerHand {
+final class Flush implements PokerHand {
 
     private final Name NAME = FLUSH;
     private final List<Rank> cardsRanks = new ArrayList<>();

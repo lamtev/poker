@@ -9,6 +9,16 @@ public class Cards implements Iterable<Card> {
 
     final List<Card> cards = new ArrayList<>();
 
+    public static Cards newInstance() {
+        return new Cards();
+    }
+
+    public static Cards of(List<Card> cardList) {
+        Cards cards = newInstance();
+        cards.cards.addAll(cardList);
+        return cards;
+    }
+
     public Card cardAt(int index) {
         return cards.get(index - 1);
     }
@@ -59,6 +69,10 @@ public class Cards implements Iterable<Card> {
         return "Cards{" +
                 "cards=" + cards +
                 '}';
+    }
+
+    Cards() {
+
     }
 
 }

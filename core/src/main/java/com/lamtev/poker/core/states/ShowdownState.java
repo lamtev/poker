@@ -3,7 +3,6 @@ package com.lamtev.poker.core.states;
 import com.lamtev.poker.core.exceptions.ForbiddenMoveException;
 import com.lamtev.poker.core.exceptions.UnallowableMoveException;
 import com.lamtev.poker.core.hands.PokerHand;
-import com.lamtev.poker.core.hands.PokerHandFactory;
 import com.lamtev.poker.core.model.Card;
 import com.lamtev.poker.core.model.Player;
 
@@ -12,12 +11,10 @@ import java.util.*;
 class ShowdownState extends ActionState {
 
     private final Map<Player, PokerHand> showedDownPlayers = new HashMap<>();
-    private final PokerHandFactory handFactory;
     private final Player latestAggressor;
 
     ShowdownState(ActionState state, Player latestAggressor) {
         super(state);
-        handFactory = new PokerHandFactory(communityCards);
         this.latestAggressor = latestAggressor;
     }
 
@@ -74,7 +71,7 @@ class ShowdownState extends ActionState {
     @Override
     public void showDown() {
         Player currentPlayer = players.current();
-        PokerHand pokerHand = handFactory.createCombination(currentPlayer.cards());
+        PokerHand pokerHand = PokerHand.of(currentPlayer.cards(), communityCards);
         showedDownPlayers.put(currentPlayer, pokerHand);
         List<Card> holeCards = new ArrayList<>();
         currentPlayer.cards().forEach(holeCards::add);

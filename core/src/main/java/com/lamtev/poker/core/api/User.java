@@ -42,6 +42,10 @@ public final class User implements Player {
         return isActive;
     }
 
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     public void setStack(int stack) {
         this.stack = stack;
     }
@@ -52,10 +56,6 @@ public final class User implements Player {
 
     public void setCards(List<Card> cards) {
         this.cards = cards;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 
     @Override
